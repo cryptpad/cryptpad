@@ -34,8 +34,12 @@ define([
         };
         return fakeStorage;
     };
-    let loc = localStorage;
-    let ses = sessionStorage;
+    let loc = {};
+    let ses = {};
+    try { // required for Tor Browser
+        loc = localStorage;
+        ses = sessionStorage;
+    } catch (e) {}
     window.__defineGetter__('localStorage', function () { return mkFakeStore(loc); });
     window.__defineGetter__('sessionStorage', function () { return mkFakeStore(ses); });
 

@@ -17,19 +17,12 @@ define([
     '/common/common-realtime.js',
     '/common/clipboard.js',
     '/common/inner/common-mediatag.js',
+    '/common/inner/badges.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/application_config.js',
     '/components/marked/marked.min.js',
-    '/common/sframe-common-codemirror.js',
-    'cm/lib/codemirror',
 
-    'cm/mode/gfm/gfm',
-
-
-    'css!/components/codemirror/lib/codemirror.css',
-    'css!/components/codemirror/addon/dialog/dialog.css',
-    'css!/components/codemirror/addon/fold/foldgutter.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/profile/app-profile.less',
@@ -48,13 +41,11 @@ define([
     Realtime,
     Clipboard,
     MT,
+    Badges,
     h,
     Messages,
     AppConfig,
-    Marked,
-    SFCodeMirror,
-    CodeMirror
-    )
+    Marked)
 {
     var APP = window.APP = {
         _onRefresh: []
@@ -102,13 +93,14 @@ define([
     var sFrameChan;
 
     var addViewButton = function ($container) {
-        if (APP.readOnly) {
+        if (!APP.isOwnProfile) {
             return;
         }
 
         var hash = common.getMetadataMgr().getPrivateData().hashes.viewHash;
         var url = APP.origin + '/profile/#' + hash;
 
+        /*
         var $blockView = $('<div>', {class: PROFILE_SECTION}).appendTo($container);
         var button = h('button.btn.' + VIEW_PROFILE_BUTTON, {
             'aria-labelledby': 'cp-profile-view-button'
@@ -118,7 +110,7 @@ define([
         $(button).click(function () {
             window.open(url, '_blank');
         }).appendTo($blockView);
-
+        */
         var $blockShare = $('<div>', {class: PROFILE_SECTION}).appendTo($container);
         var buttonS = h('button.btn.btn-primary.' + VIEW_PROFILE_BUTTON, {
             'aria-labelledby': 'cp-profile-share-button'
@@ -159,41 +151,6 @@ define([
         });
 
         APP.$linkEdit = $();
-        if (APP.readOnly) { return; }
-
-        var button = h('button.btn', {
-            title: Messages.clickToEdit
-        }, Messages.profile_addLink);
-        APP.$linkEdit = $(button);
-        $block.append(button);
-        var save = h('button.btn.btn-primary', { 'aria-labelledby': 'cp-save-link' }, Messages.settings_save);
-        var text = h('input#cp-save-link');
-        var code = h('div.cp-app-profile-link-code', [
-            text,
-            save
-        ]);
-        var div = h('div.cp-app-profile-link-edit', [
-            code
-        ]);
-        $block.append(div);
-        $(button).click(function () {
-            $(text).val(APP.$link.attr('href'));
-            $(code).css('display', 'flex');
-            APP.editor.refresh();
-            $(button).hide();
-        });
-        $(save).click(function () {
-            $(save).hide();
-            APP.module.execCommand('SET', {
-                key: 'url',
-                value: $(text).val()
-            }, function (data) {
-                APP.updateValues(data);
-                $(code).hide();
-                $(button).show();
-                $(save).show();
-            });
-        });
     };
     var refreshLink = function (data) {
         APP.$linkEdit.removeClass('fa-pencil').removeClass('fa');
@@ -357,7 +314,7 @@ define([
                 }, [
                     h('i.fa.fa-bell-slash', {'aria-hidden': 'true' }),
                     h('span#cp-profile-mute-button', Messages.contacts_mute || 'mute')
-                ]);            
+                ]);
             $(muteButton).click(function () {
                 module.execCommand('MUTE_USER', {
                     curvePublic: data.curvePublic,
@@ -372,80 +329,49 @@ define([
         });
     };
 
-    var displayAvatar = function (val) {
-        var sframeChan = common.getSframeChannel();
+    var displayAvatar = function (val, data, badgeOK) {
         var $span = APP.$avatar;
-        $span.html('');
-        if (!val) {
-            $('<img>', {
-                src: '/customize/images/avatar.png',
-                title: Messages.profile_defaultAlt,
-                alt: Messages.profile_defaultAlt,
-            }).appendTo($span);
+        $span.empty();
+        const badge = data?.badge;
+        if (badge && !badgeOK) {
+            if (!data.proof || !data.edPublic) {
+                return displayAvatar(val);
+            }
+            var metadataMgr = common.getMetadataMgr();
+            var privateData = metadataMgr.getPrivateData();
+            APP.badge.execCommand('CHECK_BADGE', {
+                badge: badge,
+                //channel: privateData.channel,
+                ed: data.edPublic,
+                sig: data.proof,
+                nid: privateData.channel
+            }, res => {
+                if (!res?.verified) {
+                    if (Badges.safeBadges.includes(data.badge)) {
+                        delete data.badge;
+                    } else {
+                        data.badge = 'error';
+                    }
+                    displayAvatar(val, data, true);
+                    return;
+                }
+                displayAvatar(val, data, true);
+            });
             return;
         }
-        common.displayAvatar($span, val);
-
-        if (APP.readOnly) { return; }
-
-        var $delButton = $('<button>', {
-            'class': 'cp-app-profile-avatar-delete btn btn-danger fa fa-times',
-            title: Messages.profile_remove_avatar
-        });
-        $span.append($delButton);
-        $delButton.click(function () {
-            var old = common.getMetadataMgr().getUserData().avatar;
-            APP.module.execCommand("SET", {
-                key: 'avatar',
-                value: ""
-            }, function () {
-                sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old, function (err, err2) {
-                    if (err || err2) { return void UI.log(err || err2); }
-                    displayAvatar();
-                });
-            });
-        });
+        const name = data?.name || Messages.anonymous;
+        common.displayAvatar($span, val, name, void 0,
+                void 0, badge);
     };
     var addAvatar = function ($container) {
         var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
-        APP.$avatar = $('<span>').appendTo($block);
-        var sframeChan = common.getSframeChannel();
+        APP.$avatar = $(h('span.cp-avatar')).appendTo($block);
         displayAvatar();
-        if (APP.readOnly) { return; }
-
-        var data = MT.addAvatar(common, function (ev, data) {
-            var old = common.getMetadataMgr().getUserData().avatar;
-            var todo = function () {
-                APP.module.execCommand("SET", {
-                    key: 'avatar',
-                    value: data.url
-                }, function () {
-                    sframeChan.query("Q_PROFILE_AVATAR_ADD", data.url, function (err, err2) {
-                        if (err || err2) { return void UI.log(err || err2); }
-                        displayAvatar(data.url);
-                    });
-                });
-            };
-            if (old) {
-                sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old, function (err, err2) {
-                    if (err || err2) { return void UI.log(err || err2); }
-                    todo();
-                });
-                return;
-            }
-            todo();
-        });
-        //upload profile photo button should be secondary
-        var $upButton = common.createButton('upload', false, data);
-        $upButton.removeClass('btn-primary').addClass('btn-secondary');
-        $upButton.removeProp('title');
-        $upButton.text(Messages.profile_upload);
-        $upButton.prepend($('<i>', {'class': 'fa fa-upload', 'aria-hidden': 'true'}));
-        $block.append($upButton);
     };
     var refreshAvatar = function (data) {
-        displayAvatar(data.avatar);
+        displayAvatar(data.avatar, data);
     };
+
 
     var addDescription = function ($container) {
         var $block = $('<div>', {id: DESCRIPTION_ID, class: PROFILE_SECTION}).appendTo($container);
@@ -455,65 +381,6 @@ define([
         }).appendTo($block);
 
         APP.$descriptionEdit = $();
-        if (APP.readOnly) { return; }
-
-        var button = h('button.btn.btn-secondary', {
-            'aria-labelledby': 'cp-profile-add-description-button' 
-            }, [
-                h('i.fa.fa-pencil', {'aria-hidden': 'true' }),
-                h('span#cp-profile-add-description-button', Messages.profile_addDescription)
-            ]);        
-        APP.$descriptionEdit = $(button);
-        var save = h('button.btn.btn-primary', Messages.settings_save);
-        var text = h('textarea');
-        var code = h('div.cp-app-profile-description-code', [
-            text,
-            h('br'),
-            save
-        ]);
-        var div = h('div.cp-app-profile-description-edit', [
-            h('p.cp-app-profile-info', Messages.profile_info),
-            button,
-            code
-        ]);
-        $block.append(div);
-        $(div).insertBefore(APP.$description);
-
-        var cm = SFCodeMirror.create("gfm", CodeMirror, text);
-        var editor = APP.editor = cm.editor;
-        editor.setOption('lineNumbers', true);
-        editor.setOption('lineWrapping', true);
-        editor.setOption('styleActiveLine', true);
-        editor.setOption('readOnly', false);
-        cm.configureTheme(common, function () {});
-        editor.setOption("extraKeys", {
-            "Esc": function () {
-                cm.getInputField().blur();
-                $(save).focus();
-            }
-        });
-
-        var markdownTb = common.createMarkdownToolbar(editor);
-        $(code).prepend(markdownTb.toolbar);
-        $(markdownTb.toolbar).show();
-
-        $(button).click(function () {
-            $(code).show();
-            APP.editor.refresh();
-            $(button).hide();
-        });
-        $(save).click(function () {
-            $(save).hide();
-            APP.module.execCommand('SET', {
-                key: 'description',
-                value: editor.getValue()
-            }, function (data) {
-                APP.updateValues(data);
-                $(code).hide();
-                $(button).show();
-                $(save).show();
-            });
-        });
     };
     var refreshDescription = function (data) {
         var descriptionData = data.description || "";
@@ -618,11 +485,10 @@ define([
         }
     };
 
-    var updateValues = APP.updateValues = function (data) {
+    var updateValues = APP.updateValues = function (_data) {
+        const data = Util.clone(_data);
         // Only update avatar if it has changed
-        if (!APP._lastUpdate || APP._lastUpdate.avatar !== data.avatar) {
-            refreshAvatar(data);
-        }
+        refreshAvatar(data);
         // Always update other profile information
         refreshName(data);
         refreshLink(data);
@@ -700,8 +566,11 @@ define([
             return;
         }
 
+        APP.badge = common.makeUniversal('badge', {
+            onEvent: onEvent
+        });
         if (privateData.isOwnProfile) {
-
+            APP.isOwnProfile = true;
             APP.module = common.makeUniversal('profile', {
                 onEvent: onEvent
             });
@@ -709,7 +578,6 @@ define([
 
             init();
 
-            console.log('POST SUBSCRIBE');
             execCommand('SUBSCRIBE', null, function (obj) {
                 updateValues(obj);
                 UI.removeLoadingScreen();

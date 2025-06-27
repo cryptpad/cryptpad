@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([], function () {
+define(['/common/common-util.js'], function (Util) {
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
 
@@ -57,8 +57,8 @@ define([], function () {
                 if (msg.indexOf('[4') === 0) {
                     var id = '';
                     if (window.nacl) {
-                        var hash = window.nacl.hash(window.nacl.util.decodeUTF8(msg));
-                        id = window.nacl.util.encodeBase64(hash.subarray(0, 8)) + '|';
+                        var hash = window.nacl.hash(Util.decodeUTF8(msg));
+                        id = Util.encodeBase64(hash.subarray(0, 8)) + '|';
                     } else {
                         console.log("Checkpoint sent without an ID. Nacl is missing.");
                     }

@@ -123,6 +123,7 @@ define([
         var password, newPadPassword, newPadPasswordForce;
         var initialPathInDrive;
         var burnAfterReading;
+        var parsedUnsafeLink;
         var Handler;
 
         var currentPad = window.CryptPad_location = {
@@ -138,7 +139,7 @@ define([
                 '/common/cryptpad-common.js',
                 '/components/chainpad-crypto/crypto.js',
                 '/common/cryptget.js',
-                '/common/outer/worker-channel.js',
+                '/common/events-channel.js',
                 '/secureiframe/main.js',
                 '/unsafeiframe/main.js',
                 '/common/onlyoffice/ooiframe.js',
@@ -151,7 +152,7 @@ define([
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
                 '/common/outer/login-block.js',
-                '/common/outer/cache-store.js',
+                '/common/cache-store.js',
                 '/customize/application_config.js',
                 //'/common/test.js',
                 '/common/user-object.js',
@@ -319,7 +320,7 @@ define([
                 let canNoDrive = false;
                 try {
                     var parsed = Utils.Hash.parsePadUrl(currentPad.href);
-                    canNoDrive = !(parsed?.hashData?.version === 3) && !parsed?.hashData?.password;
+                    canNoDrive = ![3,4].includes(parsed?.hashData?.version) && !parsed?.hashData?.password;
                     var options = parsed.getOptions();
                     if (options.loginOpts) {
                         var loginOpts = Utils.Hash.decodeDataOptions(options.loginOpts);
@@ -631,6 +632,7 @@ define([
                         // Use the same options in the full hash
                         var opts = parsed.getOptions();
                         parsed = Utils.Hash.parsePadUrl(newHref);
+                        parsedUnsafeLink = Utils.Hash.parsePadUrl(newHref);
                         currentPad.href = parsed.getUrl(opts);
                         currentPad.hash = parsed.hashData && parsed.hashData.getHash(opts);
                     }
@@ -751,6 +753,7 @@ define([
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
+            var edPrivate;
             var settings = {};
             var isSafe = ['debug', 'profile', 'drive', 'teams', 'calendar', 'file'].indexOf(currentPad.app) !== -1;
             var isOO = ['sheet', 'doc', 'presentation'].indexOf(parsed.type) !== -1;
@@ -760,6 +763,7 @@ define([
             if (isDeleted) {
                 Utils.Cache.clearChannel(secret.channel);
             }
+            let signature;
 
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
@@ -775,6 +779,9 @@ define([
                         curvePublic = metaObj.user.curvePublic;
                         notifications = metaObj.user.notifications;
                         settings = metaObj.priv.settings;
+
+                        edPrivate = metaObj.priv.edPrivate;
+                        delete metaObj.priv.edPrivate; // don't send to inner
                     }));
                     if (typeof(isTemplate) === "undefined") {
                         Cryptpad.isTemplate(currentPad.href, waitFor(function (err, t) {
@@ -794,7 +801,7 @@ define([
                         origin: window.location.origin,
                         pathname: window.location.pathname,
                         fileHost: ApiConfig.fileHost,
-                        readOnly: readOnly,
+                        readOnly: cfg?.integrationConfig?.readOnly || readOnly,
                         isTemplate: isTemplate,
                         newTemplate: Array.isArray(Cryptpad.initialPath)
                                         && Cryptpad.initialPath[0] === "template",
@@ -808,8 +815,7 @@ define([
                         isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
                         notifications: notifs,
                         accounts: {
-                            donateURL: Cryptpad.donateURL,
-                            upgradeURL: Cryptpad.upgradeURL
+                            donateURL: Cryptpad.donateURL
                         },
                         isNewFile: isNewFile,
                         isDeleted: isDeleted,
@@ -856,6 +862,18 @@ define([
                         }
                     }
 
+                    if (metaObj?.user?.edPublic) {
+                        let str = metaObj?.user?.netfluxId;// + secret.channel;
+                        if (!signature && str) {
+                            let myIDu8 = Utils.Util.decodeUTF8(str);
+                            let k = Utils.Util.decodeBase64(edPrivate);
+                            let nacl = Utils.Crypto.Nacl;
+                            let s = nacl.sign(myIDu8, k);
+                            signature = Utils.Util.encodeBase64(s);
+                        }
+                        metaObj.user.signature = signature;
+                    }
+
                     // Early access
                     var priv = metaObj.priv;
                     var _plan = typeof(priv.plan) === "undefined" ? Utils.LocalStore.getPremium() : priv.plan;
@@ -877,7 +895,7 @@ define([
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
                     if (cfg.addData) {
-                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user, Utils);
+                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user, Utils, parsedUnsafeLink);
                     }
 
                     if (metaObj && metaObj.priv && typeof(metaObj.priv.plan) === "string") {
@@ -1037,12 +1055,6 @@ define([
                     openURL(url);
                 });
                 sframeChan.on('EV_OPEN_URL', openURL);
-
-                sframeChan.on('EV_OPEN_UNSAFE_URL', function (url) {
-                    if (url) {
-                        window.open(ApiConfig.httpSafeOrigin + '/bounce/#' + encodeURIComponent(url));
-                    }
-                });
 
                 sframeChan.on('Q_GET_PAD_METADATA', function (data, cb) {
                     if (!data || !data.channel) {
@@ -1682,7 +1694,7 @@ define([
                             }
                         });
                     };
-                    data.blob = Crypto.Nacl.util.decodeBase64(data.blob);
+                    data.blob = Utils.Util.decodeBase64(data.blob);
                     Files.upload(data, data.noStore, Cryptpad, updateProgress, onComplete, onError, onPending);
                     cb();
                 });
@@ -2063,7 +2075,6 @@ define([
 
             sframeChan.on('Q_ASK_NOTIFICATION', function (data, cb) {
                 if (!Utils.Notify.isSupported()) { return void cb(false); }
-                // eslint-disable-next-line compat/compat
                 Notification.requestPermission(function (s) {
                     cb(s === "granted");
                 });

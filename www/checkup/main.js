@@ -15,7 +15,7 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/pinpad.js',
-    '/common/outer/network-config.js',
+    '/common/network-config.js',
     '/common/outer/login-block.js',
     '/customize/pages.js',
     '/checkup/checkup-tools.js',
@@ -82,7 +82,7 @@ define([
     var trimmedSafe = trimSlashes(ApiConfig.httpSafeOrigin);
     var trimmedUnsafe = trimSlashes(ApiConfig.httpUnsafeOrigin);
     var fileHost = ApiConfig.fileHost;
-    var accounts_api = ApiConfig.accounts_api || AppConfig.accounts_api || undefined;
+    var accounts_api = ApiConfig.accounts_api || undefined;
 
     var getAPIPlaceholderPath = function (relative) {
         var absolute;
@@ -111,15 +111,6 @@ define([
             httpApi.protocol = API_URL.protocol === 'wss:' ? 'https:' : 'http:';
             HTTP_API_URL = httpApi.origin;
         } catch (e) {}
-    }
-
-    var ACCOUNTS_URL;
-    try {
-        if (typeof(AppConfig.upgradeURL) === 'string') {
-            ACCOUNTS_URL = new URL(AppConfig.upgradeURL, trimmedUnsafe).origin;
-        }
-    } catch (err) {
-        console.error(err);
     }
 
     var debugOrigins = {
@@ -1026,8 +1017,7 @@ define([
                     (HTTP_API_URL && HTTP_API_URL !== $outer) ? HTTP_API_URL : undefined,
                     isHTTPS(fileHost)? fileHost: undefined,
                     // support for cryptpad.fr configuration
-                    accounts_api,
-                    ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
+                    accounts_api
                 ],
 
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
@@ -1066,8 +1056,7 @@ define([
                     API_URL.origin,
                     (HTTP_API_URL && HTTP_API_URL !== $outer) ? HTTP_API_URL : undefined,
                     isHTTPS(fileHost)? fileHost: undefined,
-                    accounts_api,
-                    ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
+                    accounts_api
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],

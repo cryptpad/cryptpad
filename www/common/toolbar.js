@@ -13,12 +13,13 @@ define([
     '/common/common-util.js',
     '/common/common-feedback.js',
     '/common/inner/common-mediatag.js',
+    '/common/inner/badges.js',
     '/common/hyperscript.js',
     '/common/messenger-ui.js',
     '/customize/messages.js',
     '/customize/pages.js',
     '/common/pad-types.js',
-], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, h,
+], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, Badges, h,
 MessengerUI, Messages, Pages, PadTypes) {
     var Common;
 
@@ -193,16 +194,14 @@ MessengerUI, Messages, Pages, PadTypes) {
         // Display only one time each user (if he is connected in multiple tabs)
         var uids = [];
         Object.keys(userData).forEach(function(user) {
-            //if (user !== userNetfluxId) {
                 var data = userData[user] || {};
                 var userId = data.uid;
                 if (!userId) { return; }
-                //data.netfluxId = user;
-                if (uids.indexOf(userId) === -1) {// && (!myUid || userId !== myUid)) {
+                if (user !== data.netfluxId) { return; }
+                if (uids.indexOf(userId) === -1) {
                     uids.push(userId);
                     list.push(data);
                 } else { i++; }
-            //}
         });
         return {
             list: list,
@@ -223,6 +222,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         });
     };
     var showColors = false;
+    const validatedBadges = {};
     var updateUserList = function (toolbar, config, forceOffline) {
         if (!config.displayed || config.displayed.indexOf('userlist') === -1) { return; }
         if (toolbar.isAlone) { return; }
@@ -309,7 +309,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var safeName = Util.fixHTML(name);
-            var $span = $('<span>', {'class': 'cp-avatar'});
+            var $span = $('<span>', {'class': 'cp-userlist-entry'});
             if (data.color && showColors) {
                 $span.css('border-color', data.color);
             }
@@ -423,10 +423,48 @@ MessengerUI, Messages, Pages, PadTypes) {
                     Common.openURL(origin+'/profile/#' + data.profile);
                 });
             }
-            Common.displayAvatar($span, data.avatar, name, function () {
+            const spanAvatar = h('span.cp-avatar');
+            const $avatar = $(spanAvatar).prependTo($span);;
+            Common.displayAvatar($avatar, data.avatar, name, function () {
                 $span.append($rightCol);
             }, data.uid);
             $span.data('uid', data.uid);
+            if (data.badge && data.edPublic) {
+                const addBadge = (badge) => {
+                    let i = Badges.render(badge);
+                    if (!i) { return; }
+                    //$rightCol.append(h('div.cp-userlist-badge', i));
+                    $avatar.append(i);
+                };
+                const key = data.signature + '-' + data.badge;
+                const v = validatedBadges[key];
+                if (typeof (v) === "string") {
+                    addBadge(v);
+                } else if (v === false) {
+                    if (!Badges.safeBadges.includes(data.badge)) {
+                        addBadge('error');
+                    }
+                } else {
+                    let ev = validatedBadges[key] ||= Util.mkEvent(true);
+                    ev.reg(badge => { addBadge(badge); });
+                    toolbar.badges.execCommand('CHECK_BADGE', {
+                        badge: data.badge,
+                        channel: priv.channel,
+                        ed: data.edPublic,
+                        sig: data.signature,
+                        nid: data.netfluxId
+                    }, res => {
+                        if (!res?.verified) {
+                            validatedBadges[key] = false;
+                            if (Badges.safeBadges.includes(data.badge)) { return; }
+                            return void addBadge('error');
+                        }
+                        validatedBadges[key] = res.badge;
+                        ev.fire(res.badge);
+                    });
+                }
+
+            }
             $editUsersList.append($span);
         });
 
@@ -1021,17 +1059,16 @@ MessengerUI, Messages, Pages, PadTypes) {
             if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
                 $limit.show().click(function () {
-                    if (ApiConfig.allowSubscriptions && Config.upgradeURL) {
-                        var msg = Pages.setHTML(h('span'), Messages.pinLimitReachedAlert);
-                        $(msg).find('a').attr({
-                            target: '_blank',
-                            href: Config.upgradeURL,
-                        });
+                    let handled = false;
+                    // Msg.pinLimitReachedAlert
+                    Common.getExtensionsSync('QUOTA_REACHED').forEach(ext => {
+                        if (!ext.getAlert) { return; }
+                        handled = true;
+                        ext.getAlert();
+                    });
+                    if (handled) { return; }
 
-                        UI.alert(msg);
-                    } else {
-                        UI.alert(Messages.pinLimitReachedAlertNoAccounts);
-                    }
+                    UI.alert(Messages.pinLimitReachedAlertNoAccounts);
                 });
             }
         };
@@ -1400,6 +1437,8 @@ MessengerUI, Messages, Pages, PadTypes) {
 
         toolbar.connected = false;
         toolbar.firstConnection = true;
+
+        toolbar.badges = Common.makeUniversal('badge');
 
         if (Array.isArray(cfg.displayed) && cfg.displayed.includes('pad')) {
             cfg.addFileMenu = true;

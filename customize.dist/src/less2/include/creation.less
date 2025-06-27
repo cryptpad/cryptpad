@@ -33,6 +33,11 @@
     .creation_vars();
 
     #cp-creation-container {
+        &:focus-visible {
+            outline: @variables_focus_style;
+            border-radius: @variables_radius;
+        }
+
         position: absolute;
         z-index: 100000000; // #loading * 10
         top: 0px;
@@ -122,6 +127,9 @@
                     font-size: 16px;
                     color: inherit;
                 }
+                a:focus-visible {
+                    border-radius: 50%;
+                }
             }
         }
         .cp-creation-early {
@@ -142,9 +150,8 @@
                 border: none;
                 border-radius: @variables_radius;
                 cursor: pointer;
-                outline: none;
                 text-transform: uppercase;
-                &:hover {
+                &:hover, &:focus-visible {
                     background: contrast(@cp_creation-button-fg, lighten(@cp_creation-button-bg, 5%), darken(@cp_creation-button-bg, 5%));
                 }
             }
@@ -186,12 +193,13 @@
                 }
             }
             .cp-creation-slider {
-                display: block;
+                display: none;
                 overflow: hidden;
                 max-height: 0px;
                 max-width: 0px;
                 //margin-top: 10px;
                 &.active {
+                    display: block;
                     transition: max-height 0.5s ease-in-out;
                     max-width: none;
                     max-height: 100px;
@@ -259,13 +267,11 @@
                     input {
                         width: 45px;
                         margin: 0 5px;
-                        padding: 0;
-                        padding-left: 3px;
-                        margin: 0 5px;
+                        padding: 0 0 0 3px;
                     }
                     select {
-                        margin-right: 5px;
                         border-radius: @variables_radius;
+                        margin: 0.2rem;
                     }
                 }
                 &.active {
@@ -286,9 +292,13 @@
                         input {
                             width: 150px;
                             padding: 0 5px;
+                            margin: 0.2rem;
                         }
                         label {
                             flex: none;
+                        }
+                        .cp-password-reveal {
+                            margin:0.2rem;
                         }
                     }
                 }
@@ -313,9 +323,12 @@
                 justify-content: space-between;
                 .cp-creation-template-more {
                     font-size: 30px;
-                    cursor: pointer;
                     margin: 0 5px;
                     text-align: center;
+                    background-color: transparent;
+                    border-color: transparent;
+                    color: @cryptpad_text_col;
+                    border-radius: @variables_radius;
                     &:first-child {
                         left: 5px;
                     }

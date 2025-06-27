@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = (Crypt, FO, Hash, Realtime) => {
     var exp = {};
 
@@ -91,22 +90,9 @@ const factory = (Crypt, FO, Hash, Realtime) => {
     return exp;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        require('../../common/cryptget'),
-        require('../../common/user-object'),
-        require('../../common/common-hash'),
-        require('../../common/common-realtime')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/cryptget.js',
-        '/common/user-object.js',
-        '/common/common-hash.js',
-        '/common/common-realtime.js',
-    ], factory);
-} else {
-    // unsupported initialization
-}
-})();
+module.exports = factory(
+    require('../../common/cryptget'),
+    require('../../common/user-object'),
+    require('../../common/common-hash'),
+    require('../../common/common-realtime')
+);

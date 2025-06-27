@@ -727,6 +727,36 @@ define([
         };
     };
 
+    UI.alertPromise = function (msg, opt) {
+        return new Promise((resolve) => {
+            UI.alert(msg, resolve, opt);
+        });
+    };
+
+    /**
+     * @callback promptCallback
+     * @param {string} value - the value the user chose
+     */
+
+    /**
+     * Optional parameters for UI.prompt()
+     * @typedef {Object} PromptParams
+     * @property {boolean} [password] - if true: ask the user for a password
+     * @property {Element} [typeInput] - if set: add a dropdown next to the text input field (create it with UIElements.createDropdown())
+     * @property {Object} [inputOpts] - parameters for dialog.textInput()
+     * @property {string} [ok] - caption for the OK button
+     * @property {string} [cancel] - caption for the cancel button
+     */
+
+    /**
+     * Show a popup to ask something.
+     *
+     * @param {(string|Element)} [msg] - Message/title to show
+     * @param {string} [def] - the default value
+     * @param {promptCallback} [cb] - called when the used selected a value
+     * @param {PromptParams} [opt] - optional settings for the prompt
+     * @param {boolean} [force] - if true: do not HTML escape msg
+     */
     UI.prompt = function (msg, def, cb, opt, force) {
         cb = cb || function () {};
         opt = opt || {};
@@ -960,7 +990,10 @@ define([
 
         var input = h('input.cp-password-input', attributes);
         var eye = h('span.fa.fa-eye.cp-password-reveal', {
-            tabindex: 0
+            tabindex: 0,
+            role: 'button',
+            'aria-label': Messages.show_password,
+            'aria-pressed': 'false'
         });
 
         var $eye = $(eye);
@@ -983,12 +1016,12 @@ define([
                 if ($eye.hasClass('fa-eye')) {
                     $input.prop('type', 'text');
                     $input.focus();
-                    $eye.removeClass('fa-eye').addClass('fa-eye-slash');
+                    $eye.removeClass('fa-eye').addClass('fa-eye-slash').attr('aria-label', Messages.hide_password).attr('aria-pressed', 'true');
                     return;
                 }
                 $input.prop('type', 'password');
                 $input.focus();
-                $eye.removeClass('fa-eye-slash').addClass('fa-eye');
+                $eye.removeClass('fa-eye-slash').addClass('fa-eye').attr('aria-label', Messages.show_password).attr('aria-pressed', 'false');
             });
         }
 
@@ -1006,7 +1039,7 @@ define([
             href: href,
             target: "_blank",
             'data-tippy-placement': "right",
-            'aria-label': Messages.help_genericMore //TBC XXX
+            'aria-label': text
         });
         return q;
     };
@@ -1094,6 +1127,13 @@ define([
         $('head > link[href^="/customize/src/pre-loading.css"]').remove();
         $('html').toggleClass('cp-loading-noscroll', false);
     };
+    UI.emptyLoadingScreen = function (content) {
+        UI.addLoadingScreen();
+        var $loading = $('#' + LOADING);
+        $loading.find('.cp-loading-container').hide();
+        $loading.find('.cp-loading-logo').hide();
+        $loading.append(content);
+    };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
         if (error === 'Error: XDR encoding failure') {
             console.warn(error);
@@ -1126,6 +1166,7 @@ define([
                 window.open('/bounce/#'+encodeURIComponent(href));
                 return;
             }
+            // XXX
             window.parent.location = href;
         });
         if (exitable) {
@@ -1222,6 +1263,10 @@ define([
         arrow: true,
         maxWidth: '200px',
         flip: true,
+        onShow: () => {
+            // Hide other tooltips
+            $('body').find('.tippy-popper').hide();
+        },
         popperOptions: {
             modifiers: {
                 preventOverflow: { boundariesElement: 'window' }
@@ -1322,13 +1367,12 @@ define([
         });
 
         $input.change(function () {
+            $mark.attr('aria-checked', $input.is(':checked'));
             if (!opts.labelAlt) { return; }
             if ($input.is(':checked') !== checked) {
                 $(label).text(opts.labelAlt);
-                $mark.attr('aria-checked', 'true');
             } else {
                 $(label).text(labelTxt);
-                $mark.attr('aria-checked', 'false');
             }
         });
 

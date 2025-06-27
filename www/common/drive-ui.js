@@ -25,6 +25,7 @@ define([
     '/customize/messages.js',
     '/customize/pages.js',
     '/common/pad-types.js',
+    '/common/onlyoffice/broken-formats.js',
 ], function (
     $,
     ApiConfig,
@@ -45,7 +46,8 @@ define([
     AppConfig,
     Messages,
     Pages,
-    PadTypes)
+    PadTypes,
+    BrokenFormats)
 {
 
     var APP = window.APP = {
@@ -658,25 +660,30 @@ define([
         var $trashContextMenu = $("#cp-app-drive-context-trash");
 
         $content.attr("tabindex", "0");
-        var splitter = h('div.cp-splitter', [
-            h('i.fa.fa-ellipsis-v')
-        ]);
-        $contentContainer.append(splitter);
-        APP.$splitter = $(splitter).on('mousedown', function (e) {
-            e.preventDefault();
-            var x = e.pageX;
-            var w = $tree.width();
-            var handler = function (evt) {
-                if (evt.type === 'mouseup') {
-                    $(window).off('mouseup mousemove', handler);
-                    return;
-                }
-                $tree.css('width', (w - x + evt.pageX) + 'px');
-            };
-            $(window).off('mouseup mousemove', handler);
-            $(window).on('mouseup mousemove', handler);
-        });
-
+        if (APP.loggedIn) {
+            var splitter = h('div.cp-splitter', [
+                h('i.fa.fa-ellipsis-v')
+            ]);
+            $contentContainer.append(splitter);
+            APP.$splitter = $(splitter).on('mousedown touchstart', function (e) {
+                e.preventDefault();
+                var x = e.type === 'touchstart' ? e.originalEvent.touches[0].pageX : e.pageX;
+                var w = $tree.width();
+                
+                var handler = function (evt) {
+                    if (evt.type === 'mouseup' || evt.type === 'touchend') {
+                        $(window).off('mouseup mousemove touchend touchmove', handler);
+                        return; 
+                    }
+                    var pageX = evt.type === 'touchmove'
+                        ? evt.originalEvent.touches[0].pageX
+                        : evt.pageX;
+                    $tree.css('width', (w - x + pageX) + 'px');
+                };
+                $(window).off('mouseup mousemove touchend touchmove', handler, { passive: false });
+                $(window).on('mouseup mousemove touchend touchmove', handler);
+            });
+        }
         // TOOLBAR
 
         // DRIVE
@@ -1652,15 +1659,15 @@ define([
                 if (($(e.target).offset().top + $(e.target).height()) > ($(window).height()-$menu.height())) {
                     if ( $(e.target).offset().top < $menu.height()) {
                         menuPositionTop = 0;
-                        
+
                     } else {
-                        menuPositionTop = ($(e.target).offset().top - $menu.height()); 
-                    } 
+                        menuPositionTop = ($(e.target).offset().top - $menu.height());
+                    }
                 } else {
                     menuPositionTop = $(e.target).offset().top + $(e.target).outerHeight();
                 }
                 if (($(e.target).offset().left + $(e.target).width()) < $menu.width()) {
-                    menuPositionLeft = $(e.target).offset().left; 
+                    menuPositionLeft = $(e.target).offset().left;
                 } else {
                     menuPositionLeft = $(e.target).offset().left - ($menu.width() - $(e.target).width()) + 10;
                 }
@@ -1755,7 +1762,11 @@ define([
                             var parsed = Hash.parsePadUrl(metadata.roHref);
                             // Forms: change "Open (read-only)" to "Open (as participant)"
                             if (parsed.type === "form") {
-                                $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_formro);
+                                if (parsed.hashData.auditorKey) {
+                                    $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_formaud);
+                                } else {
+                                    $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_formro);
+                                }
                             }
                         }
                     }
@@ -3460,19 +3471,23 @@ define([
                 b = [b];
             }
 
-            if(a.length === 0 && b.length === 0) {
+            if (a.length === 0 && b.length === 0) {
                 return 0;
             } else if (a.length === 0) {
                 return -1;
             } else if (b.length === 0) {
                 return 1;
-            } else if(a[0] < b[0]) {
-                return -1;
-            } else if(a[0] > b[0]) {
-                return 1;
+            } else if (typeof (a[0]) !== typeof (b[0])) {
+                return String(a[0]) < String(b[0]) ? -1 : 1;
             } else {
-                // This means `a[0] == b[0]`. Chop off the first elements and compare the rest.
-                return lexicographicCompare(a.slice(1), b.slice(1));
+                if (a[0] < b[0]) {
+                    return -1;
+                } else if (a[0] > b[0]) {
+                    return 1;
+                } else {
+                    // This means `a[0] == b[0]`. Chop off the first elements and compare the rest.
+                    return lexicographicCompare(a.slice(1), b.slice(1));
+                }
             }
         };
 
@@ -3790,8 +3805,6 @@ define([
                 });
                 $element.contextmenu(openContextMenu('default'));
                 $element.data('context', 'default');
-                var $fileMenu = $('<li>').append($fileMenuIcon);
-                $element.append($fileMenu);
                 $container.append($element);
             });
             createGhostIcon($container);
@@ -4841,7 +4854,7 @@ define([
             });
         };
 
-        var openInApp = function (paths, app) {
+        var openInApp = async function (paths, app) {
             var p = paths[0];
             var el = manager.find(p.path);
             var path = currentPath;
@@ -4854,6 +4867,12 @@ define([
                 password: _metadata.password,
                 channel: _metadata.channel,
             };
+
+            const ext = _simpleData.title.split('.').pop();
+            if (BrokenFormats.brokenImportFormats.includes(ext)) {
+                await UI.alertPromise(Messages.oo_unstableMigrationWarning);
+            }
+
             openIn(app, path, APP.team, _simpleData);
         };
 
@@ -5110,6 +5129,11 @@ define([
                     }
 
                     var roParsed = Hash.parsePadUrl(data.roHref);
+                    if (!auditorHash && roParsed.type === "form" &&
+                        roParsed?.hashData?.auditorKey) {
+                        // If we have stored the auditor hash, mark it as such
+                        auditorHash = roParsed.hash;
+                    }
                     var padType = parsed.type || roParsed.type;
                     var ro = !sf || (folders[el] && folders[el].version >= 2);
                     var padData = {
@@ -5552,22 +5576,6 @@ define([
             UI.removeLoadingScreen();
         }, {init:true});
 
-        /*
-        if (!APP.team) {
-            sframeChan.query('Q_DRIVE_GETDELETED', null, function (err, data) {
-                var ids = manager.findChannels(data);
-                var titles = [];
-                ids.forEach(function (id) {
-                    var title = manager.getTitle(id);
-                    titles.push(title);
-                    var paths = manager.findFile(id);
-                    manager.delete(paths, refresh);
-                });
-                if (!titles.length) { return; }
-                UI.log(Messages._getKey('fm_deletedPads', [titles.join(', ')]));
-            });
-        }
-        */
         APP.passwordModal = function (fId, data, cb) {
             var content = [];
 
@@ -5642,4 +5650,3 @@ define([
         logError: logError
     };
 });
-

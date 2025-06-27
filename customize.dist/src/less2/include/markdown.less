@@ -289,3 +289,32 @@
     }
 }
 
+//reusable styling for the markdown toggle button across all apps
+.markdown-toolbar-button-style() {
+    padding: 3px 5px;
+    height: fit-content;
+    margin: 0;
+    line-height: 1;
+    border-radius: @variables_radius;
+    display: inline-flex;
+    background-color: @cp_toolbar-bottom-bg;
+    color: @cp_toolbar-bottom-fg;
+
+    &:hover {
+        background-color: fade(@cryptpad_text_col, 20%);
+        border-color: @cryptpad_text_col;
+        color: @cryptpad_text_col;
+    }
+
+    &.cp-toolbar-button-active {
+        background-color: @cp_toolbar-bg;
+        border-color: @cp_toolbar-fg;
+        color: @cp_toolbar-fg;
+
+        &:hover {
+            background-color: fade(@cryptpad_text_col, 20%);
+        }
+    }
+}
+
+

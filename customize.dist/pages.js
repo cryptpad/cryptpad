@@ -10,8 +10,10 @@ define([
     '/customize/messages.js',
     'jquery',
     '/api/config',
+    '/common/extensions.js',
     'optional!/api/instance',
-], function (h, Language, Util, AppConfig, Msg, $, ApiConfig, Instance) {
+], function (h, Language, Util, AppConfig, Msg, $, ApiConfig,
+            Extensions, Instance) {
     var Pages = {};
 
     Pages.setHTML = function (e, html) {
@@ -49,15 +51,8 @@ define([
         return Pages.externalLink(el, Pages.localizeDocsLink(href));
     };
 
-    var accounts = Pages.accounts = {
+    Pages.accounts = {
         donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
-        upgradeURL: AppConfig.upgradeURL
-    };
-
-    Pages.areSubscriptionsAllowed = function () {
-        try {
-            return ApiConfig.allowSubscriptions && accounts.upgradeURL && !ApiConfig.restrictRegistration;
-        } catch (err) { return void console.error(err); }
     };
 
     var languageSelector = function () {
@@ -226,12 +221,19 @@ define([
             Msg.homePage
         ]);
 
+        let pricingName = Msg.features;
+        Extensions.getExtensionsSync('PRICING_NAME').some(ext => {
+            if (!ext.name) { return; }
+            pricingName = ext.name;
+            return true;
+        });
+
         return h('nav.navbar.navbar-expand-lg',
             [
                 !isHome? homeLink: undefined,
                 h('a.nav-item.nav-link', { href: '/features.html'}, [
                     h('i.fa.fa-info-circle'),
-                    Pages.areSubscriptionsAllowed()? Msg.pricing: Msg.features
+                    pricingName
                 ]),
                 h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.org'},
                     [h('i.fa.fa-book', {'aria-hidden':'true'}),Msg.docs_link]),

@@ -4,6 +4,170 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# 2025.3.1
+
+## Goals
+
+This release introduces version 8 of OnlyOffice applications (Document, Sheet, Presentation) alongside  smaller fixes and improvements.
+
+## Features
+
+- Upgrade OnlyOffice to version 8.3 [#1807](https://github.com/cryptpad/cryptpad/pull/1807)
+
+## Improvements
+
+- Show error message when x2t conversion fails in OO editor [#1890](https://github.com/cryptpad/cryptpad/pull/1890)
+- Add x2t warning [#1887](https://github.com/cryptpad/cryptpad/pull/1887)
+
+## Fixes
+
+- Fix OnlyOffice document copy [#1864](https://github.com/cryptpad/cryptpad/pull/1864)
+- Fix u8 increment issue in file-crypto [#1860](https://github.com/cryptpad/cryptpad/pull/1860) thanks @ansuz
+- Fix eviction issues [#1856](https://github.com/cryptpad/cryptpad/pull/1856)
+
+## Dependencies
+
+- Upgrade TweetNaCl [#1854](https://github.com/cryptpad/cryptpad/pull/1854)
+
+## Upgrade notes
+
+> [!NOTE]  
+> The new version of OnlyOffice is much bigger than the previous versions. When installing version 8.3 with `install-onlyoffice.sh` ~830MB additional disk space is needed.
+
+If you are upgrading from a version older than `2025.3.0` please read the upgrade notes of all versions between yours and `2025.3.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch --depth 1 origin tag 2025.3.1
+git checkout 2025.3.1
+npm ci
+npm run install:components
+```
+
+1. Restart your server
+2. Review your instance's checkup page to ensure that you are passing all tests
+
+## Contributors
+
+Alumni: @ansuz  
+CryptPad team: @AAAMON @wginolas @yflory
+
+# 💐 Spring 2025 release (2025.3.0)
+
+## Goals
+
+This release starts the important work of refactoring CryptPad code to be more modular and optimized. The first improvements will benefit users with large drives or teams as we now avoid loading _all of your drives and shared folders_ before opening a document. We also include some admin features, numerous fixes and improvements with our usual focus on accessibility and mobile usage.
+
+> [!NOTE]  
+> We had planned to upgrade OnlyOffice applications (Sheet, Document, Presentation) to version 8 in this release. However we are still working on blocking bugs in the integration. Since the upgrade of documents is non-reversible we are going to keep working to fix the bugs and release `2025.3.1` with OnlyOffice 8 when ready.
+
+> [!IMPORTANT]
+> This release contains security fixes, we encourage instance administrators to upgrade.
+
+
+## Features
+
+- SharedWorker build with faster loading for requested data [#1822](https://github.com/cryptpad/cryptpad/pull/1822)
+- Add and remove admins from the UI [#1801](https://github.com/cryptpad/cryptpad/pull/1801)
+- Upload diagram images on import [#1828](https://github.com/cryptpad/cryptpad/pull/1828)
+- Integration API [#1797](https://github.com/cryptpad/cryptpad/pull/1797)
+
+
+## Improvements
+
+- Drive
+  - Sort files and folders with "natural" sort [#1739](https://github.com/cryptpad/cryptpad/pull/1739) thanks to @jfly
+  - "recent pads" drive category improvements [#1836](https://github.com/cryptpad/cryptpad/pull/1836)
+- Mobile
+  - Enable preview mode on mobile code app [#1759](https://github.com/cryptpad/cryptpad/pull/1759)
+  - Fix profile layout on small screens [#1742](https://github.com/cryptpad/cryptpad/pull/1742)
+  - Buttons for moving Kanban boards and items on mobile [#1727](https://github.com/cryptpad/cryptpad/pull/1727)
+  - Buttons for moving question blocks in Forms (mobile) [#1753](https://github.com/cryptpad/cryptpad/pull/1753)
+- Calendar
+  - Improved calendar dropdown: keyboard accessibility and title overflow fixes [#1755](https://github.com/cryptpad/cryptpad/pull/1755)
+- OnlyOffice
+  - New OnlyOffice default config options [#1820](https://github.com/cryptpad/cryptpad/pull/1820)
+  - Add `--check`, `--rdfind`, `--no-rdfind` options to `install-onlyoffice.sh` [#1740](https://github.com/cryptpad/cryptpad/pull/1740) thanks to @jfly
+  - OnlyOffice configurations (compact header, hide right menu, light/dark theme) [d1799d1](https://github.com/cryptpad/cryptpad/commit/d1799d106cd45b1f97251f9e0451cd519eb169d0)
+- Treat relative URLs in the sandbox as relative to the outer domain [#1752](https://github.com/cryptpad/cryptpad/pull/1752) thanks to @ansuz
+- Blob metadata refactoring [#1800](https://github.com/cryptpad/cryptpad/pull/1800)
+- Reload server subprocesses after a configured number of tasks [#1796](https://github.com/cryptpad/cryptpad/pull/1796)
+- Reduce server memory usage when accessing document history [#1795](https://github.com/cryptpad/cryptpad/pull/1795)
+- Add descriptive error messages [#1789](https://github.com/cryptpad/cryptpad/pull/1789)
+- Add Skip Link [#1774](https://github.com/cryptpad/cryptpad/pull/1774)
+
+## Fixes
+
+- Kanban
+  - Fix kanban cursor issues when editing collaboratively [#1816](https://github.com/cryptpad/cryptpad/pull/1816)
+  - Kanban "See all tags" button fix [#1812](https://github.com/cryptpad/cryptpad/pull/1812)
+  - Enable keyboard usage for "Add Item" buttons in Kanban [#1802](https://github.com/cryptpad/cryptpad/pull/1802)
+- Forms
+  - Conditional section after page break [#1749](https://github.com/cryptpad/cryptpad/pull/1749)
+  - Fix long question text overflow and weird sizing of the required label in forms [#1747](https://github.com/cryptpad/cryptpad/pull/1747)
+- Drive
+  - Fix anonymous drive download [#1784](https://github.com/cryptpad/cryptpad/pull/1784)
+  - Form answers Drive download [#1711](https://github.com/cryptpad/cryptpad/pull/1711)
+  - Prevent saving file to Drive multiple times [#1775](https://github.com/cryptpad/cryptpad/pull/1775)
+- Links
+  - Fix link dialog focus issues & Improve error handling [#1758](https://github.com/cryptpad/cryptpad/pull/1758)
+- OnlyOffice
+  - Fix /checkup/ false positive when OnlyOffice is not installed [#1731](https://github.com/cryptpad/cryptpad/pull/1731)
+- Large file uploads don't fail anymore on Chromium [#1783](https://github.com/cryptpad/cryptpad/issues/1783)
+- Fix blob Access-Control-Allow-Origin header [#1832](https://github.com/cryptpad/cryptpad/pull/1832)
+- Remove OCSP Stapling support for Nginx [#1818](https://github.com/cryptpad/cryptpad/pull/1818)
+- Notifications sidebar: Fix keyboard navigation issues [#1780](https://github.com/cryptpad/cryptpad/pull/1780)
+- Accessibility fixes to Admin UI [#1829](https://github.com/cryptpad/cryptpad/pull/1829)
+
+<!---
+## Dependencies
+
+nothing here?
+-->
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2024.12.0` please read the upgrade notes of all versions between yours and `2025.3.0` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch --depth 1 origin tag 2025.3.0
+git checkout 2025.3.0
+npm ci
+npm run install:components
+```
+
+1. Restart your server
+2. Review your instance's checkup page to ensure that you are passing all tests
+
+
+### (Optional) Re-build the SharedWorker
+
+
+With this release we introduce `www/common/worker.bundle.min.js` which contains all code for the  Shared Worker (thread common to all your CryptPad tabs) in a single built and minified file. 
+
+You can build this file yourself with `npm run api` before restarting the server.
+
+**Note:** You must install the dev dependencies from npm if you want to build this command (don't use the `--production` flag)
+
+
+## Contributors
+
+Community: @jfly, @nisbet-hubbard
+
+Alumni: @ansuz
+
+CryptPad team: @AAAMON @Chouhartem @dariiing @davidbenque @DianaXWIKI @mathilde-cryptpad @wginolas @yflory @zuzanna-maria
+
+
 
 # ❄️ Winter release (2024.12.0)
 

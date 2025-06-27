@@ -134,8 +134,28 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    
     Messages.help_close_button = 'Close help notification'; // XXX
+    // XXX
+    Messages.badges_admin = "Instance administrator";
+    Messages.badges_moderator = "Instance moderator";
+    Messages.badges_premium = "Premium user";
+    Messages.badges_error = "Error while validating this user's data";
+    Messages.profile_badges = "Badges";
+    Messages.show_password = "Show password";
+    Messages.hide_password = "Hide password";
+    Messages.page_next = "Next page";
+    Messages.page_previous = "Previous page";
+    Messages.contact_mastodon = 'Mastodon'; // XXX
+    Messages.contact_forum = 'Forum'; // XXX
+    Messages.toolbar_text_tools  = "Text tools";
+    Messages.toolbar_show_text_tools = "Show text tools";
+    Messages.toolbar_hide_text_tools = "Hide text tools";
+    Messages.settings_profileAvatarLabel = "Avatar";
+    Messages.settings_profileHeaderTitle = "Edit your profile";
+    Messages.settings_profileHeaderHint = "Edit your public profile...";
+    Messages.next_templateList = "Next template list";
+    Messages.previous_templateList = "Previous template list";
+    Messages.fc_open_formaud = 'Open (as auditor)';
     return Messages;
 
 });

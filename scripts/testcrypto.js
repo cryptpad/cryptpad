@@ -5,13 +5,14 @@
 let SodiumNative = require('sodium-native');
 let Nacl = require('tweetnacl/nacl-fast');
 let LibSodium = require('libsodium-wrappers');
+let Util = require('../lib/common-util');
 
 
 let msgStr = "This is a test";
 let keys = Nacl.sign.keyPair();
 let pub = keys.publicKey;
 
-let msg = Nacl.util.decodeUTF8(msgStr);
+let msg = Util.decodeUTF8(msgStr);
 let signedMsg = Nacl.sign(msg, keys.secretKey);
 let sig = signedMsg.subarray(0, 64);
 

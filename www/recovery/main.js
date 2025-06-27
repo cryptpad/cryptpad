@@ -76,10 +76,10 @@ define([
             var toSign = {
                 intent: 'Disable TOTP',
                 date: new Date().toISOString(),
-                blockId: Nacl.util.encodeBase64(pub),
+                blockId: Util.encodeBase64(pub),
             };
-            var proof = Nacl.sign.detached(Nacl.util.decodeUTF8(Sortify(toSign)), sec);
-            toSign.proof = Nacl.util.encodeBase64(proof);
+            var proof = Nacl.sign.detached(Util.decodeUTF8(Sortify(toSign)), sec);
+            toSign.proof = Util.encodeBase64(proof);
             proofStr = JSON.stringify(toSign, 0, 2);
             $mfaProof.html(proofStr);
         };

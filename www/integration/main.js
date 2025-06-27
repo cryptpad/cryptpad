@@ -6,10 +6,10 @@ define([
     '/api/config',
     '/common/sframe-common-outer.js',
     '/common/common-hash.js',
+    '/common/common-util.js',
     '/components/tweetnacl/nacl-fast.min.js'
-], function (Config, SCO, Hash) {
+], function (Config, SCO, Hash, Util) {
 
-    let Nacl = window.nacl;
     var getTxid = function () {
         return Math.random().toString(16).replace('0.', '');
     };
@@ -100,10 +100,10 @@ define([
         };
         let sanitizeKey = key => {
             try {
-                Nacl.util.decodeBase64(key);
+                Util.decodeBase64(key);
                 return key;
             } catch (e) {
-                return Nacl.util.encodeBase64(Nacl.util.decodeUTF8(key)).replaceAll('=', '');
+                return Util.encodeBase64(Util.decodeUTF8(key)).replaceAll('=', '');
             }
         };
         chan.on('GET_SESSION', function (data, cb) {
@@ -240,6 +240,7 @@ define([
                     href: href,
                     initialState: blob,
                     config: {
+                        readOnly: data.readOnly,
                         fileName: data.name,
                         fileType: data.ext,
                         autosave: data.autosave,

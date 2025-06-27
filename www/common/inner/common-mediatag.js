@@ -4,22 +4,22 @@
 
 define([
     'jquery',
+    '/api/config',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/hyperscript.js',
     '/common/media-tag.js',
+    '/common/inner/badges.js',
     '/customize/messages.js',
     '/customize/application_config.js',
 
-    '/components/tweetnacl/nacl-fast.min.js',
     '/components/croppie/croppie.min.js',
     '/components/file-saver/FileSaver.min.js',
     'css!/components/croppie/croppie.css',
-], function ($, Util, Hash, UI, h, MediaTag, Messages, AppConfig) {
+], function ($, ApiConfig, Util, Hash, UI, h, MediaTag, Badges,
+            Messages, AppConfig) {
     var MT = {};
-
-    var Nacl = window.nacl;
 
     // Configure MediaTags to use our local viewer
     // This file is loaded by sframe-common so the following config is used in all the inner apps
@@ -46,7 +46,7 @@ define([
         let path = 'legacy';
         if (isModernFirefox || isModernChromium) { path = 'modern'; }
         MediaTag.setDefaultConfig('pdf', {
-            viewer: `/lib/pdfjs/${path}/web/viewer.html`
+            viewer: `${ApiConfig.httpSafeOrigin}/lib/pdfjs/${path}/web/viewer.html`
         });
         MediaTag.setDefaultConfig('download', {
             text: Messages.mediatag_saveButton,
@@ -150,8 +150,9 @@ define([
         return text;
     };
 
-    MT.displayAvatar = function (common, $container, href, name, _cb, uid) {
+    MT.displayAvatar = function (common, $container, href, name, _cb, uid, badge) {
         var cb = Util.once(Util.mkAsync(_cb || function () {}));
+        const badgeEl = badge ? Badges.render(badge) : undefined;
         var displayDefault = function () {
             var animal_avatar;
             if (uid && animal_avatars[uid]) {
@@ -177,6 +178,7 @@ define([
                 'aria-hidden': true,
             }).text(text);
             $container.append($avatar);
+            $container.append(badgeEl);
             if (uid && animal_avatar) {
                 animal_avatars[uid] = animal_avatar;
             }
@@ -188,7 +190,8 @@ define([
         if (avatars[href]) {
             var nodes = $.parseHTML(avatars[href]);
             var $el = $(nodes[0]);
-            $container.append($el);
+            $container.empty().append($el);
+            $container.append(badgeEl);
             return void cb($el);
         }
 
@@ -224,7 +227,8 @@ define([
                 if (typeof data !== "number") { return void displayDefault(); }
                 if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
                 var mt = UI.mediaTag(src, cryptKey);
-                var $img = $(mt).appendTo($container);
+                var $img = $(mt).appendTo($container.empty());
+                $container.append(badgeEl);
                 MT.displayMediatagImage(common, $img, function (err, $image) {
                     if (err) { return void console.error(err); }
                     centerImage($img, $image);
@@ -383,7 +387,7 @@ define([
                     var host = priv.fileHost || priv.origin || '';
                     src = host + Hash.getBlobPathFromHex(secret.channel);
                     var _key = secret.keys && secret.keys.cryptKey;
-                    if (_key) { key = 'cryptpad:' + Nacl.util.encodeBase64(_key); }
+                    if (_key) { key = 'cryptpad:' + Util.encodeBase64(_key); }
                 }
                 if (!src || !key) {
                     $spinner.hide();
