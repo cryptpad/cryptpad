@@ -72,15 +72,11 @@
                 color: @color !important;
             }
             .cp-form-type-sort {
-                border-radius: @variables_radius;
                 &:hover {
                     color: @color !important;
                     .cp-form-sort-order {
                         border-color: @color !important;
                     }
-                }
-                &:focus-visible {
-                    outline: @variables_focus_style;
                 }
             }
             .cp-form-input-block {
@@ -1141,6 +1137,7 @@
         display: flex;
         align-items: center;
         word-break: break-word;
+        border-radius: @variables_radius;
         .cp-form-handle {
             min-width: 12px;
         }
@@ -1155,6 +1152,9 @@
             .cp-form-sort-order {
                 border-color: @cryptpad_color_link;
             }
+        }
+        &:focus-visible {
+            outline: @variables_focus_style;
         }
     }
 
