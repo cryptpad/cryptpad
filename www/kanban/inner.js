@@ -1164,15 +1164,24 @@ define([
                 allTags.forEach(function (t) {
                     var tag;
                     $list.append(tag = h('span', {
-                        'data-tag': t
+                        'data-tag': t,
+                        'tabindex': 0,
+                        'role': 'button',
+                        'aria-pressed': 'false'
                     }, t));
                     var $tag = $(tag).click(function () {
                         if ($tag.hasClass('active')) {
                             $tag.removeClass('active');
+                            $tag.attr('aria-pressed', 'false');
                         } else {
                             $tag.addClass('active');
+                            $tag.attr('aria-pressed', 'true');
                         }
                         commitTags();
+                    }).keydown(function (e) {
+                        if (e.which === 13 || e.which === 32) {
+                            $tag.click();
+                        }
                     });
                 });
             };
@@ -1200,7 +1209,7 @@ define([
                 commitTags();
             });
 
-            let toggleTagsButton = h('button.btn.btn-toolbar-alt.cp-kanban-toggle-tags', [
+            let toggleTagsButton = h('button.btn.btn-toolbar-alt.cp-kanban-toggle-tags', {'aria-expanded': 'true'}, [
                 h('i.fa.fa-tags'),
                 h('span', Messages.fm_tagsName)
             ]);
@@ -1212,6 +1221,7 @@ define([
             let toggle = () => {
                 $tags.toggle();
                 let visible = $tags.is(':visible');
+                $toggleBtn.attr('aria-expanded', visible.toString());
                 $(toggleContainer).toggleClass('cp-kanban-container-flex', !visible);
                 $toggleBtn.toggleClass('btn-toolbar-alt', visible);
                 $toggleBtn.toggleClass('btn-toolbar', !visible);
