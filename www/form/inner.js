@@ -2266,18 +2266,21 @@ define([
                 var isDefaultOpts = !opts;
                 if (!opts) { opts = Util.clone(TYPES.multicheck.defaultOpts); }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
-                var lines = opts.items.map(function (itemData) {
+                var lines = opts.items.map(function (itemData, i) {
                     var name = itemData.uid;
                     var item = itemData.v;
+                    var rowId = 'cp-row-multicheck-' + i;
                     var els = extractValues(opts.values).map(function (data, i) {
+                        var columnId = 'cp-column-multicheck-' + i;
                         var cbox = UI.createCheckbox('cp-form-'+name+'-'+i,
                                    '', false, {});
                         $(cbox).find('input').data('uid', name);
                         $(cbox).find('input').data('val', data);
+                        $(cbox).find('span').attr('aria-labelledby', rowId + ' ' + columnId);
                         return cbox;
                     });
-                    els.unshift(h('div.cp-form-multiradio-item', item));
-                    els.unshift(h('div.cp-form-multiradio-item', item));
+                    els.unshift(h('div.cp-form-multiradio-item', { id: rowId }, item));
+                    els.unshift(h('div.cp-form-multiradio-item', { id: rowId }, item));
                     return h('div.radio-group', {'data-uid':name}, els);
                 });
 
@@ -2299,9 +2302,10 @@ define([
                     });
                 });
 
-                var header = extractValues(opts.values).map(function (v) {
+                var header = extractValues(opts.values).map(function (v,index) {
                     return h('span', {
-                        title: Util.fixHTML(v)
+                        title: Util.fixHTML(v),
+                        id: 'cp-column-multicheck-' + index
                     }, v);
                 });
                 header.unshift(h('span'));
