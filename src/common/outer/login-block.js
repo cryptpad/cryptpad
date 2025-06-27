@@ -188,9 +188,14 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
         try {
             // Use Block.sign to create a hybrid signature if available
             var hybridSig = Block.sign(u8_pub, O);
+            let result = [u8_pub, hybridSig].map(Util.encodeBase64);
+
+            if (O.pqKeypair && O.pqKeypair.publicKey) {
+                result.push(Util.encodeBase64(O.pqKeypair.publicKey));
+            }
 
             // Return an array with the signature and the pubkey
-            return JSON.stringify([u8_pub, hybridSig].map(Util.encodeBase64));
+            return JSON.stringify(result);
         } catch (err) {
             return void console.error(err);
         }
