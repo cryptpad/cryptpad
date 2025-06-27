@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = AStore => {
     var create = function (config) {
         var Store = AStore.create(config);
@@ -13,23 +12,18 @@ const factory = AStore => {
             // Ready
             CONNECT: Store.init,
             DISCONNECT: Store.disconnect,
-            MIGRATE_ANON_DRIVE: Store.migrateAnonDrive,
             PING: function (cId, data, cb) { cb(); },
             CACHE_DISABLE: Store.disableCache,
-            HAS_DRIVE: Store.hasDrive,
             // RPC
-            UPDATE_PIN_LIMIT: Store.updatePinLimit,
             GET_PIN_LIMIT: Store.getPinLimit,
-            CLEAR_OWNED_CHANNEL: Store.clearOwnedChannel,
-            REMOVE_OWNED_CHANNEL: Store.removeOwnedChannel,
+            PIN_PADS: Store.pinPads,
+            UNPIN_PADS: Store.unpinPads,
+            GET_PINNED_USAGE: Store.getPinnedUsage,
+            GET_DELETED_PADS: Store.getDeletedPads,
             UPLOAD_CHUNK: Store.uploadChunk,
             UPLOAD_COMPLETE: Store.uploadComplete,
             UPLOAD_STATUS: Store.uploadStatus,
             UPLOAD_CANCEL: Store.uploadCancel,
-            PIN_PADS: Store.pinPads,
-            UNPIN_PADS: Store.unpinPads,
-            GET_DELETED_PADS: Store.getDeletedPads,
-            GET_PINNED_USAGE: Store.getPinnedUsage,
             // ANON RPC
             ANON_RPC_MESSAGE: Store.anonRpcMsg,
             GET_FILE_SIZE: Store.getFileSize,
@@ -37,8 +31,6 @@ const factory = AStore => {
             // Store
             GET: Store.get,
             SET: Store.set,
-            GET_DRIVE: Store.drive.get,
-            SET_DRIVE: Store.drive.set,
             ADD_PAD: Store.addPad,
             SET_PAD_TITLE: Store.setPadTitle,
             MOVE_TO_TRASH: Store.moveToTrash,
@@ -74,9 +66,13 @@ const factory = AStore => {
             // Universal
             UNIVERSAL_COMMAND: Store.universal.execCommand,
             // Pad
-            SEND_PAD_MSG: Store.sendPadMsg,
-            JOIN_PAD: Store.joinPad,
-            LEAVE_PAD: Store.leavePad,
+            SEND_PAD_MSG: Store.pad.sendMessage,
+            JOIN_PAD: Store.pad.join,
+            LEAVE_PAD: Store.pad.leave,
+            REMOVE_OWNED_CHANNEL: Store.pad.destroy,
+            CLEAR_OWNED_CHANNEL: Store.pad.clear,
+            CORRUPTED_CACHE: Store.pad.onCorruptedCache,
+            GET_LAST_HASH: Store.pad.getLastHash,
             GET_FULL_HISTORY: Store.getFullHistory,
             GET_HISTORY: Store.getHistory,
             GET_HISTORY_RANGE: Store.getHistoryRange,
@@ -84,15 +80,17 @@ const factory = AStore => {
             CONTACT_PAD_OWNER: Store.contactPadOwner,
             GIVE_PAD_ACCESS: Store.givePadAccess,
             BURN_PAD: Store.burnPad,
-            GET_PAD_METADATA: Store.getPadMetadata,
-            SET_PAD_METADATA: Store.setPadMetadata,
+            GET_PAD_METADATA: Store.pad?.getMetadata,
+            SET_PAD_METADATA: Store.pad?.setMetadata,
             CHANGE_PAD_PASSWORD_PIN: Store.changePadPasswordPin,
-            GET_LAST_HASH: Store.getLastHash,
             GET_SNAPSHOT: Store.getSnapshot,
-            CORRUPTED_CACHE: Store.corruptedCache,
             DELETE_MAILBOX_MESSAGE: Store.deleteMailboxMessage,
             // Drive
             DRIVE_USEROBJECT: Store.userObjectCommand,
+            GET_DRIVE: Store.drive.get,
+            SET_DRIVE: Store.drive.set,
+            MIGRATE_ANON_DRIVE: Store.drive.migrateAnon,
+            HAS_DRIVE: Store.drive.exists,
             // Settings,
             DELETE_ACCOUNT: Store.deleteAccount,
             REMOVE_OWNED_PADS: Store.removeOwnedPads,
@@ -118,16 +116,6 @@ const factory = AStore => {
     return { create };
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        require('../async-store')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/outer/async-store.js'
-    ], factory);
-} else {
-    // unsupported initialization
-}
-})();
+module.exports = factory(
+    require('../async-store')
+);

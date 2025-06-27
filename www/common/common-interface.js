@@ -212,6 +212,12 @@ define([
                 h('div'+cls, content),
             ])
         ]);
+
+        var dialogContent = frame.querySelector('div' + cls);
+        dialogContent.setAttribute('aria-live', 'assertive');
+        dialogContent.setAttribute('role', 'alertdialog');
+        dialogContent.setAttribute('aria-modal', 'true');
+
         var $frame = $(frame);
         frame.closeModal = function (cb) {
             frame.closeModal = function () {}; // Prevent further calls
@@ -578,6 +584,7 @@ define([
     };
 
     let addTabListener = UI.addTabListener = frame => {
+        $(frame).attr('role', 'dialog').attr('aria-modal', 'true');
         // find focusable elements
         let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)');
 
@@ -990,7 +997,10 @@ define([
 
         var input = h('input.cp-password-input', attributes);
         var eye = h('span.fa.fa-eye.cp-password-reveal', {
-            tabindex: 0
+            tabindex: 0,
+            role: 'button',
+            'aria-label': Messages.show_password,
+            'aria-pressed': 'false'
         });
 
         var $eye = $(eye);
@@ -1013,12 +1023,12 @@ define([
                 if ($eye.hasClass('fa-eye')) {
                     $input.prop('type', 'text');
                     $input.focus();
-                    $eye.removeClass('fa-eye').addClass('fa-eye-slash');
+                    $eye.removeClass('fa-eye').addClass('fa-eye-slash').attr('aria-label', Messages.hide_password).attr('aria-pressed', 'true');
                     return;
                 }
                 $input.prop('type', 'password');
                 $input.focus();
-                $eye.removeClass('fa-eye-slash').addClass('fa-eye');
+                $eye.removeClass('fa-eye-slash').addClass('fa-eye').attr('aria-label', Messages.show_password).attr('aria-pressed', 'false');
             });
         }
 
@@ -1036,7 +1046,7 @@ define([
             href: href,
             target: "_blank",
             'data-tippy-placement': "right",
-            'aria-label': Messages.help_genericMore //TBC XXX
+            'aria-label': text
         });
         return q;
     };
@@ -1077,6 +1087,7 @@ define([
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
             $loading.removeClass('cp-loading-transparent');
+            $loading.attr('aria-live','polite');
             if (config.newProgress) {
                 var progress = h('div.cp-loading-progress', [
                     h('p.cp-loading-progress-list'),
@@ -1123,6 +1134,13 @@ define([
         setTimeout(cb, 750);
         $('head > link[href^="/customize/src/pre-loading.css"]').remove();
         $('html').toggleClass('cp-loading-noscroll', false);
+    };
+    UI.emptyLoadingScreen = function (content) {
+        UI.addLoadingScreen();
+        var $loading = $('#' + LOADING);
+        $loading.find('.cp-loading-container').hide();
+        $loading.find('.cp-loading-logo').hide();
+        $loading.append(content);
     };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
         if (error === 'Error: XDR encoding failure') {
@@ -1253,6 +1271,10 @@ define([
         arrow: true,
         maxWidth: '200px',
         flip: true,
+        onShow: () => {
+            // Hide other tooltips
+            $('body').find('.tippy-popper').hide();
+        },
         popperOptions: {
             modifiers: {
                 preventOverflow: { boundariesElement: 'window' }
@@ -1353,13 +1375,12 @@ define([
         });
 
         $input.change(function () {
+            $mark.attr('aria-checked', $input.is(':checked'));
             if (!opts.labelAlt) { return; }
             if ($input.is(':checked') !== checked) {
                 $(label).text(opts.labelAlt);
-                $mark.attr('aria-checked', 'true');
             } else {
                 $(label).text(labelTxt);
-                $mark.attr('aria-checked', 'false');
             }
         });
 

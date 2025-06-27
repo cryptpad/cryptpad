@@ -13,9 +13,8 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-constants.js',
     '/common/pad-types.js',
-], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements, Constants, PadTypes) {
-    var accounts = Pages.accounts;
-
+    '/common/extensions.js'
+], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements, Constants, PadTypes, Extensions) {
     return function () {
         document.title = Msg.features;
         Msg.features_f_apps_note = PadTypes.availableTypes.map(function (app) {
@@ -25,12 +24,6 @@ define([
                   AppConfig.enableEarlyAccess) { return; }
             return Msg.type[app];
         }).filter(function (x) { return x; }).join(', ');
-        var premiumButton = h('a', {
-            href: accounts.upgradeURL,
-            target: '_blank',
-            rel: 'noopener noreferrer',
-            class: 'cp-features-register-button',
-        }, Msg.features_f_subscribe);
 
         var groupItemTemplate = function (title, content) {
             return h('li.list-group-item', [
@@ -127,38 +120,23 @@ define([
                     ]),
                 ]),
             ]);
-        var premiumFeatures =
-            h('div.col-12.col-sm-4.cp-premium-user',[
-                h('div.card',[
-                    h('div.title-card',[
-                        h('h3.text-center',Msg.features_premium)
-                    ]),
-                    h('div.card-body.cp-pricing',[
-                        h('div.text-center', h('a', {
-                            href: accounts.upgradeURL,
-                            target: '_blank'
-                        }, Msg._getKey('features_pricing', ['5', '10', '15']))),
-                        h('div.text-center', Msg.features_emailRequired),
-                    ]),
-                    h('ul.list-group.list-group-flush', [
-                        'reg', // Msg.features_f_reg, .features_f_reg_note
-                        'storage2',
-                        'support', // Msg.features_f_support, .features_f_support_note
-                        'supporter' // Msg.features_f_supporter, .features_f_supporter_note
-                    ].map(groupItem)),
-                    h('div.card-body',[
-                        h('div.cp-features-register#cp-features-subscribe', [
-                            premiumButton
-                        ]),
-                        LocalStore.isLoggedIn() ? undefined : h('div.cp-note', Msg.features_f_subscribe_note)
-                    ]),
-                ]),
-            ]);
+
         var availableFeatures = [
             anonymousFeatures,
             registeredFeatures,
-            Pages.areSubscriptionsAllowed() ? premiumFeatures: undefined,
         ];
+
+        // Msg.features_premium
+        // Msg.features_pricing
+        // Msg.features_emailRequired
+        // Msg.features_f_subscribe, .features_f_subscribe_note
+        // Msg.features_f_reg, .features_f_reg_note
+        // Msg.features_f_support, .features_f_support_note
+        // Msg.features_f_supporter, .features_f_supporter_note
+        Extensions.getExtensionsSync('EXTRA_PRICING').forEach(ext => {
+            if (!ext.getContent) { return; }
+            availableFeatures.push(ext.getContent(groupItem));
+        });
 
         return h('div#cp-main', [
             Pages.infopageTopbar(),

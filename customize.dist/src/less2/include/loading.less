@@ -110,6 +110,7 @@
         overflow-y: auto;
         a {
             color: @cp_loading-link;
+            border-radius: @variables_radius;
         }
         p:last-child {
             margin-bottom: 0;
@@ -126,17 +127,25 @@
         .cp-password-form {
             display: flex;
             flex-wrap: wrap;
+            gap:0.5rem;
             width: 100%;
             .cp-password-container {
                 flex-shrink: 1;
                 min-width: 0;
             }
             .cp-password-reveal {
-                padding: 0px 24px;
+                margin-left: 0.5rem;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
             }
         }
         .cp-password-input {
             font-size: 16px;
+            &:focus-visible {
+                outline: @variables_focus_style;
+            }
         }
         .tools_placeholder-color();
     }

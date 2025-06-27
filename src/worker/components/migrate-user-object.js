@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = (Feedback, Hash, Util,
-            Messaging, Crypt, Mailbox, Messages = {},
+            Messaging, Crypt, Mailbox,
             Realtime, nThen, Crypto) => {
 
+    let Messages = {};
     const setCustomize = data => {
         Messages = data.Messages;
     };
@@ -507,35 +507,14 @@ const factory = (Feedback, Hash, Util,
     return migrate;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    module.exports = factory(
-        require('../../common/common-feedback'),
-        require('../../common/common-hash'),
-        require('../../common/common-util'),
-        require('./messaging'),
-        require('../../common/cryptget'),
-        require('../modules/mailbox'),
-        undefined,
-        require('../../common/common-realtime'),
-        require('nthen'),
-        require('chainpad-crypto')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/common-feedback.js',
-        '/common/common-hash.js',
-        '/common/common-util.js',
-        '/common/outer/messaging.js',
-        '/common/cryptget.js',
-        '/common/outer/mailbox.js',
-        '/customize/messages.js',
-        '/common/common-realtime.js',
-        '/components/nthen/index.js',
-        '/components/chainpad-crypto/crypto.js',
-    ], factory);
-} else {
-    // unsupported initialization
-}
-
-})();
-
+module.exports = factory(
+    require('../../common/common-feedback'),
+    require('../../common/common-hash'),
+    require('../../common/common-util'),
+    require('./messaging'),
+    require('../../common/cryptget'),
+    require('../modules/mailbox'),
+    require('../../common/common-realtime'),
+    require('nthen'),
+    require('chainpad-crypto')
+);

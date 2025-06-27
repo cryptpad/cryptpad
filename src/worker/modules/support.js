@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
-const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
+const factory = (Util, Hash, Realtime, Pinpad, Crypt,
             nThen, Crypto, Listmap, ChainPad, CpNetflux) => {
-    var Support = {};
+    const Support = {};
+    let ApiConfig = {};
 
     Support.setCustomize = data => {
         ApiConfig = data.ApiConfig;
@@ -1420,37 +1420,15 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
     return Support;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        undefined,
-        require('../../common/common-util'),
-        require('../../common/common-hash'),
-        require('../../common/common-realtime'),
-        require('../../common/pinpad'),
-        require('../../common/cryptget'),
-        require('nthen'),
-        require('chainpad-crypto'),
-        require('chainpad-listmap'),
-        require('chainpad'),
-        require('chainpad-netflux')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/api/config',
-        '/common/common-util.js',
-        '/common/common-hash.js',
-        '/common/common-realtime.js',
-        '/common/pinpad.js',
-        '/common/cryptget.js',
-        '/components/nthen/index.js',
-        '/components/chainpad-crypto/crypto.js',
-        'chainpad-listmap',
-        '/components/chainpad/chainpad.dist.js',
-        'chainpad-netflux'
-    ], factory);
-} else {
-    // unsupported initialization
-}
-
-})();
+module.exports = factory(
+    require('../../common/common-util'),
+    require('../../common/common-hash'),
+    require('../../common/common-realtime'),
+    require('../../common/pinpad'),
+    require('../../common/cryptget'),
+    require('nthen'),
+    require('chainpad-crypto'),
+    require('chainpad-listmap'),
+    require('chainpad'),
+    require('chainpad-netflux')
+);

@@ -23,10 +23,14 @@ define([
         var getPropChannels = function () {
             return channels;
         };
-        var addData = function (meta, CryptPad, user, Utils) {
+        var addData = function (meta, CryptPad, user, Utils, parsedHash) {
             var keys = Utils.secret && Utils.secret.keys;
-
-            var parsed = Utils.Hash.parseTypeHash('pad', hash.slice(1));
+            var parsed;
+            if (parsedHash) {
+                parsed = parsedHash.hashData;
+            } else {
+                parsed = Utils.Hash.parseTypeHash('pad', hash.slice(1));
+            }
             if (parsed && parsed.auditorKey) {
                 meta.form_auditorKey = parsed.auditorKey;
                 meta.form_auditorHash = hash;

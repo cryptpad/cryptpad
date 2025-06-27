@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(function () {
 var factory = function (Util, Cred, Nacl, Crypto) {
     var Invite = {};
 
@@ -102,21 +101,9 @@ var factory = function (Util, Cred, Nacl, Crypto) {
 
     return Invite;
 };
-    if (typeof(module) !== 'undefined' && module.exports) {
-        module.exports = factory(
-            require("../../common/common-util"),
-            require("../../common/common-credential"),
-            require("tweetnacl/nacl-fast"),
-            require("chainpad-crypto")
-        );
-    } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-        define([
-            '/common/common-util.js',
-            '/common/common-credential.js',
-            '/components/chainpad-crypto/crypto.js',
-            '/components/tweetnacl/nacl-fast.min.js',
-        ], function (Util, Cred, Crypto) {
-            return factory(Util, Cred, window.nacl, Crypto);
-        });
-    }
-}());
+module.exports = factory(
+    require("../../common/common-util"),
+    require("../../common/common-credential"),
+    require("tweetnacl/nacl-fast"),
+    require("chainpad-crypto")
+);

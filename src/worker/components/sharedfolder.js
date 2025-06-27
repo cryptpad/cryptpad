@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = (Hash, Util, UserObject, Cache,
              nThen, Crypto, Listmap, ChainPad) => {
     var SF = {};
@@ -387,31 +386,14 @@ const factory = (Hash, Util, UserObject, Cache,
     return SF;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    module.exports = factory(
-        require('../../common/common-hash'),
-        require('../../common/common-util'),
-        require('../../common/user-object'),
-        require('../../common/cache-store'),
-        require('nthen'),
-        require('chainpad-crypto'),
-        require('chainpad-listmap'),
-        require('chainpad')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/common-hash.js',
-        '/common/common-util.js',
-        '/common/user-object.js',
-        '/common/outer/cache-store.js',
+module.exports = factory(
+    require('../../common/common-hash'),
+    require('../../common/common-util'),
+    require('../../common/user-object'),
+    require('../../common/cache-store'),
+    require('nthen'),
+    require('chainpad-crypto'),
+    require('chainpad-listmap'),
+    require('chainpad')
+);
 
-        '/components/nthen/index.js',
-        '/components/chainpad-crypto/crypto.js',
-        'chainpad-listmap',
-        '/components/chainpad/chainpad.dist.js',
-    ], factory);
-} else {
-    // unsupported initialization
-}
-
-})();
