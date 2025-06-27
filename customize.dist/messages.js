@@ -155,8 +155,6 @@ define(req, function(AppConfig, Default, Language) {
     Messages.settings_profileAvatarLabel = "Avatar";
     Messages.settings_profileHeaderTitle = "Edit your profile";
     Messages.settings_profileHeaderHint = "Edit your public profile...";
-    Messages.next_templateList = "Next template list";
-    Messages.previous_templateList = "Previous template list";
     Messages.fc_open_formaud = 'Open (as auditor)';
     return Messages;
 
