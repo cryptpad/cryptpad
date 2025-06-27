@@ -162,7 +162,7 @@ define([
                 $('.cp-app-notification-archived[data-hash="' + data.hash + '"]').css('display', 'flex');
             }
         });
-        const handler = function (e) {
+        const handler = function () {
             if (!notifsData) {
                 return;
             }
