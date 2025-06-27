@@ -1869,7 +1869,9 @@ define([
     makeBlock('profile-link', function(cb) {
         if (!common.isLoggedIn()) { return cb(false); }
 
-        const input = APP.blocks.input();
+        const input = APP.blocks.input({
+            type: 'url'
+        });
         const button = APP.blocks.button('primary', '',
                         Messages.settings_save);
         const inputButton = APP.blocks.inputButton(input, button, {
@@ -1881,7 +1883,8 @@ define([
         const $input = $(input).val(APP.profileData?.url || '');
 
         Util.onClickEnter($(button), () => {
-            const value = $(input).val();
+            if ($input.is(':invalid')) { return; }
+            const value = $input.val();
             APP.profile.execCommand('SET', {
                 key: 'url',
                 value

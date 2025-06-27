@@ -150,16 +150,18 @@ define([
             common.openUnsafeURL(href);
         });
 
-        APP.$linkEdit = $();
     };
     var refreshLink = function (data) {
-        APP.$linkEdit.removeClass('fa-pencil').removeClass('fa');
         if (!data.url) {
-            APP.$linkEdit.text(Messages.profile_addLink);
+            return void APP.$link.hide();
+        }
+        // Only show valid URLs
+        try {
+            new URL(data.url);
+        } catch (e) {
             return void APP.$link.hide();
         }
         APP.$link.attr('href', data.url).text(data.url).show();
-        APP.$linkEdit.text('').addClass('fa fa-pencil');
     };
 
     var addFriendRequest = function ($container) {
