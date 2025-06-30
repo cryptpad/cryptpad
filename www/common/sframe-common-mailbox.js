@@ -83,8 +83,8 @@ define([
             } else if (userData && typeof(userData) === "object" && userData.profile) {
                 avatar = h('span.cp-avatar',{
                     tabindex: 0,
-                    title: Messages.user_profile,
-                    'aria-label': Messages.user_profile,
+                    title: Messages.userlist_visitProfile,
+                    'aria-label': Messages.userlist_visitProfile,
                     role: 'button'
                 });
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
