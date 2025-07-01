@@ -1818,5 +1818,7 @@
     "admin_listHardcoded": "Administrator dodany do pliku config.js. Może być usunięty tylko poprzez edycję pliku.",
     "addItemBottom": "Dodaj kartę do spodu tablicy",
     "toggleArrows": "Przesuń elementy za pomocą strzałek",
-    "profile_remove_avatar": "Usuń ten awatar"
+    "profile_remove_avatar": "Usuń ten awatar",
+    "oo_couldNotConvertDocument": "Konwersja dokumentu nie powiodła się. Należy pamiętać, że formaty Microsoft Office (.docx, .xlsx, .pptx) obecnie dają najlepsze wyniki importu i eksportu.",
+    "oo_unstableMigrationWarning": "Import i eksport niektórych formatów OpenDocument (.odt, .odp) jest obecnie niestabilny. Zalecamy używanie innych formatów, jeśli to możliwe. CryptPad spróbuje teraz przeprowadzić konwersję."
 }
