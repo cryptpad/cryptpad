@@ -1312,14 +1312,14 @@ define([
 
         var toolbarVisibleOnSmallScreen = false;
 
-        const $toolbarToggleButton = $(h('button.btn.cp-markdown-toggle-button', {
+        const $toolbarToggleButton = $(h('button.cp-markdown-toggle-button', {
             'aria-label': Messages.toolbar_show_text_tools,
             'aria-pressed': 'false',
             'data-notippy': 1,
             'type': 'button',
             'title': Messages.toolbar_show_text_tools
         })).append([
-            h('i.fa.fa-wrench', { 'aria-hidden': 'true' }),
+            h('i.fa.fa-pencil', { 'aria-hidden': 'true' }),
             h('span.cp-toolbar-label', {}, Messages.toolbar_text_tools)
         ]).click(function () {
             var isExpanded = $toolbar.is(':visible');
