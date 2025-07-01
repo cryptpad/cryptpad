@@ -1500,6 +1500,7 @@ define([
 
             var urls = common.getMetadataMgr().getPrivateData().accounts;
             var makeDonateButton = function () {
+                if (plan) { return; }
                 var $a = $('<a>', {
                     'class': 'cp-limit-upgrade btn btn-primary',
                     href: urls.donateURL,
