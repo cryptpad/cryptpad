@@ -970,13 +970,14 @@ const factory = (Sortify, UserObject, ProxyManager,
                 console.error('DEPRECATED: use setAttribute with an array, not a string');
                 return {
                     path: ['settings'],
-                    obj: store.proxy.settings,
+                    obj: store.proxy?.settings,
                     key: attr
                 };
             }
             if (!Array.isArray(attr)) { return void console.error("Attribute must be string or array"); }
             if (attr.length === 0) { return void console.error("Attribute can't be empty"); }
-            var obj = store.proxy.settings;
+            var obj = store.proxy?.settings;
+            if (!obj) { return; }
             attr.forEach(function (el, i) {
                 if (i === attr.length-1) { return; }
                 if (!obj[el]) {
@@ -1006,7 +1007,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             try {
                 object = getAttributeObject(data.attr);
             } catch (e) { return void cb({error: e}); }
-            cb(object.obj[object.key]);
+            cb(object?.obj[object.key]);
         };
 
         // Tags

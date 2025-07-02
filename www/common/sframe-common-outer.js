@@ -763,7 +763,7 @@ define([
             if (isDeleted) {
                 Utils.Cache.clearChannel(secret.channel);
             }
-            let signature;
+            let signature, signed;
 
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
@@ -862,13 +862,14 @@ define([
                         }
                     }
 
-                    if (metaObj?.user?.edPublic) {
+                    if (metaObj?.user?.edPublic) { // logged in only
                         let str = metaObj?.user?.netfluxId;// + secret.channel;
-                        if (!signature && str) {
+                        if (str && signed !== str) {
                             let myIDu8 = Utils.Util.decodeUTF8(str);
                             let k = Utils.Util.decodeBase64(edPrivate);
                             let nacl = Utils.Crypto.Nacl;
                             let s = nacl.sign(myIDu8, k);
+                            signed = str;
                             signature = Utils.Util.encodeBase64(s);
                         }
                         metaObj.user.signature = signature;

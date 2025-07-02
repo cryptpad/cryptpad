@@ -371,18 +371,21 @@ MessengerUI, Messages, Pages, PadTypes) {
             }
             const spanAvatar = h('span.cp-avatar');
             const $avatar = $(spanAvatar).prependTo($span);;
+            const onAvatar = Util.mkEvent(true);
             Common.displayAvatar($avatar, data.avatar, name, function () {
                 $span.append($rightCol);
+                onAvatar.fire();
             }, data.uid);
             $span.data('uid', data.uid);
             if (data.badge && data.edPublic) {
                 const addBadge = (badge) => {
                     let i = Badges.render(badge);
                     if (!i) { return; }
-                    //$rightCol.append(h('div.cp-userlist-badge', i));
-                    $avatar.append(i);
+                    onAvatar.reg(() => {
+                        $avatar.append(i);
+                    });
                 };
-                const key = data.signature + '-' + data.badge;
+                const key = data.netfluxId + '-' + data.signature + '-' + data.badge;
                 const v = validatedBadges[key];
                 if (typeof (v) === "string") {
                     addBadge(v);
