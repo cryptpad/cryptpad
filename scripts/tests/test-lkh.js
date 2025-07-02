@@ -70,7 +70,7 @@ nThen(function (w) {
         //console.log(i);
         if (i-- <= 0) { return void done(); }
 
-        var ciphertext = Util.encodeBase64(Crypto.Random.bytes(256));
+        var ciphertext = Util.encodeBase64(Crypto.AbstractCall.bytes(256));
 
         client.anonRpc.send('WRITE_PRIVATE_MESSAGE', [
             client.channel,

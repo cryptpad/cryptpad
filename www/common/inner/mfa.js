@@ -212,7 +212,7 @@ define([
             }).nThen(function (waitFor) {
                 $content.empty();
                 var next = waitFor();
-                recoverySecret = Util.encodeBase64(Crypto.Random.bytes(24));
+                recoverySecret = Util.encodeBase64(Crypto.AbstractCall.bytes(24));
                 var button = h('button.btn.btn-primary', [
                     h('i.fa.fa-check'),
                     h('span', Messages.done)
@@ -241,7 +241,7 @@ define([
                 });
             }).nThen(function () {
                 var randomSecret = function () {
-                    var U8 = Crypto.Random.bytes(20);
+                    var U8 = Crypto.AbstractCall.bytes(20);
                     return Base32.encode(U8);
                 };
                 $content.empty();

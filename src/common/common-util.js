@@ -10,11 +10,11 @@ const factory = (Crypto) => {
     window.atob = window.atob || function (str) { return Buffer.from(str, 'base64').toString('binary'); };
     window.btoa = window.btoa || function (str) { return Buffer.from(str, 'binary').toString('base64'); };
 
-    Util.encodeBase64 = Crypto.Random.encodeBase64;
-    Util.decodeBase64 = Crypto.Random.decodeBase64;
+    Util.encodeBase64 = Crypto.AbstractCall.encodeBase64;
+    Util.decodeBase64 = Crypto.AbstractCall.decodeBase64;
 
-    Util.encodeUTF8 = Crypto.Random.encodeUTF8;
-    Util.decodeUTF8 = Crypto.Random.decodeUTF8;
+    Util.encodeUTF8 = Crypto.AbstractCall.encodeUTF8;
+    Util.decodeUTF8 = Crypto.AbstractCall.decodeUTF8;
 
     Util.slice = function (A, start, end) {
         return Array.prototype.slice.call(A, start, end);

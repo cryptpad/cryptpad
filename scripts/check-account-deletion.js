@@ -28,7 +28,7 @@ if (dataIdx === -1) {
     const ed = Util.decodeBase64(deleteData.toSign.edPublic);
     const signed = Util.decodeUTF8(JSON.stringify(deleteData.toSign));
     const proof = Util.decodeBase64(deleteData.proof);
-    if (!Crypto.Random.verifyDetached(signed, proof, ed)) { return void console.error("Invalid signature"); }
+    if (!Crypto.AbstractCall.verifyDetached(signed, proof, ed)) { return void console.error("Invalid signature"); }
     edPublic = escapeKeyCharacters(deleteData.toSign.edPublic);
 }
 

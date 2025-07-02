@@ -653,9 +653,9 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         var hash = Hash.createRandomHash('team', password);
         var secret = Hash.getSecrets('team', hash, password);
         var roHash = Hash.getViewHashFromKeys(secret);
-        var keyPair = Crypto.Random.signKeyPair(); // keyPair.secretKey , keyPair.publicKey
+        var keyPair = Crypto.AbstractCall.signKeyPair(); // keyPair.secretKey , keyPair.publicKey
 
-        var curvePair = Crypto.Random.curveKeyPair(); // curvePair.secretKey, curvePair.publicKey
+        var curvePair = Crypto.AbstractCall.curveKeyPair(); // curvePair.secretKey, curvePair.publicKey
 
         var rosterSeed = Crypto.Team.createSeed();
         var rosterKeys = Crypto.Team.deriveMemberKeys(rosterSeed, {
@@ -1866,10 +1866,10 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         if (team.keys && team.keys.mailbox) { return team.keys.mailbox; }
         var strSeed = Util.find(team, ['keys', 'roster', 'edit']);
         if (!strSeed) { return; }
-        var hash = Crypto.Random.createHash(Util.decodeUTF8(strSeed));
+        var hash = Crypto.AbstractCall.createHash(Util.decodeUTF8(strSeed));
         var seed = hash.slice(0,32);
         var mailboxChannel = Util.uint8ArrayToHex(hash.slice(32,48));
-        var curvePair = Crypto.Random.boxKeyPairFromSecretKey(seed);
+        var curvePair = Crypto.AbstractCall.boxKeyPairFromSecretKey(seed);
         return {
             channel: mailboxChannel,
             viewed: [],
@@ -1918,7 +1918,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
             if (!edPrivate || !edPublic) { return true; }
             try {
                 var secretKey = Util.decodeBase64(edPrivate);
-                var pair = Crypto.Random.signKeyPairFromSecretKey(secretKey);
+                var pair = Crypto.AbstractCall.signKeyPairFromSecretKey(secretKey);
                 return Util.encodeBase64(pair.publicKey) === edPublic;
             } catch (e) {
                 return false;

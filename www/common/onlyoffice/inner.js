@@ -2496,7 +2496,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }
                     try {
                         debug("Decrypt with key " + data.key);
-                        FileCrypto.decrypt(u8, Crypto.Random.decodeBase64(data.key), function (err, res) {
+                        FileCrypto.decrypt(u8, Crypto.AbstractCall.decodeBase64(data.key), function (err, res) {
                             APP.loadingImage--;
                             if (err || !res.content) {
                                 debug("Decrypting failed");

@@ -23,7 +23,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
     // [b64_public, b64_sig, b64_block [version, nonce, content]]
 
     Block.seed = function () {
-        return Crypto.Random.createHash(Util.decodeUTF8('pewpewpew'));
+        return Crypto.AbstractCall.createHash(Util.decodeUTF8('pewpewpew'));
     };
 
     // should be deterministic from a seed...
@@ -35,12 +35,12 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
             throw new Error('INVALID_SEED_LENGTH');
         }
 
-        var signSeed = seed.subarray(0, Crypto.Random.signSeedLength());
-        var symmetric = seed.subarray(Crypto.Random.signSeedLength(),
-            Crypto.Random.signSeedLength() + Crypto.Random.secretboxKeyLength());
+        var signSeed = seed.subarray(0, Crypto.AbstractCall.signSeedLength());
+        var symmetric = seed.subarray(Crypto.AbstractCall.signSeedLength(),
+            Crypto.AbstractCall.signSeedLength() + Crypto.AbstractCall.secretboxKeyLength());
 
         // Generate standard keys using the existing method
-        var sign = Crypto.Random.signKeyPairFromSeed(signSeed);
+        var sign = Crypto.AbstractCall.signKeyPairFromSeed(signSeed);
 
         // Store the post-quantum keys separately for future use (no server validation issues)
         var pqSignPair = null;
@@ -92,21 +92,21 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
     // (UTF8 content, keys object) => Uint8Array block
     Block.encrypt = function (version, content, keys) {
         var u8 = Util.decodeUTF8(content);
-        var nonce = Crypto.Random.bytes(Crypto.Random.secretboxNonceLength());
+        var nonce = Crypto.AbstractCall.bytes(Crypto.AbstractCall.secretboxNonceLength());
         return Block.join([
             [0],
             nonce,
-            Crypto.Random.secretbox(u8, nonce, keys.symmetric)
+            Crypto.AbstractCall.secretbox(u8, nonce, keys.symmetric)
         ]);
     };
 
     // (uint8Array block) => payload object
     Block.decrypt = function (u8_content, keys) {
         // version is currently ignored since there is only one
-        var nonce = u8_content.subarray(1, 1 + Crypto.Random.secretboxNonceLength());
-        var box = u8_content.subarray(1 + Crypto.Random.secretboxNonceLength());
+        var nonce = u8_content.subarray(1, 1 + Crypto.AbstractCall.secretboxNonceLength());
+        var box = u8_content.subarray(1 + Crypto.AbstractCall.secretboxNonceLength());
 
-        var plaintext = Crypto.Random.secretboxOpen(box, nonce, keys.symmetric);
+        var plaintext = Crypto.AbstractCall.secretboxOpen(box, nonce, keys.symmetric);
         try {
             return JSON.parse(Util.encodeUTF8(plaintext));
         } catch (e) {
@@ -117,13 +117,13 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
 
     // (Uint8Array block) => signature
     Block.sign = function (ciphertext, keys) {
-        var hash = Crypto.Random.createHash(ciphertext);
+        var hash = Crypto.AbstractCall.createHash(ciphertext);
 
         // Generate hybrid signature if post-quantum capabilities are available
         if (keys.hasPQ && keys.pqSignPair) {
             try {
                 // Generate classical signature (always required for server compatibility)
-                var classicalSig = Crypto.Random.signDetached(hash, keys.sign.secretKey);
+                var classicalSig = Crypto.AbstractCall.signDetached(hash, keys.sign.secretKey);
 
                 // Generate post-quantum signature
                 var pqSig = Crypto.PQC.ml_dsa.ml_dsa44.internal.sign(keys.pqSignPair.secretKey, hash);
@@ -149,7 +149,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
         }
 
         // Classical signature with a type marker
-        classicalSig = Crypto.Random.signDetached(hash, keys.sign.secretKey);
+        classicalSig = Crypto.AbstractCall.signDetached(hash, keys.sign.secretKey);
         var taggedSig = new Uint8Array(classicalSig.length + 1);
         taggedSig[0] = 0; // Type 0 indicates classical only
         taggedSig.set(classicalSig, 1);

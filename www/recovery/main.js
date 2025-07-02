@@ -79,7 +79,7 @@ define([
                 date: new Date().toISOString(),
                 blockId: Util.encodeBase64(pub),
             };
-            var proof = Crypto.Random.signDetached(Util.decodeUTF8(Sortify(toSign)), sec);
+            var proof = Crypto.AbstractCall.signDetached(Util.decodeUTF8(Sortify(toSign)), sec);
             toSign.proof = Util.encodeBase64(proof);
             proofStr = JSON.stringify(toSign, 0, 2);
             $mfaProof.html(proofStr);

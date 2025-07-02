@@ -221,7 +221,7 @@ Note: This must currently be reversed manually (by deleting the mfa config file)
     var $b32Secret = $('#base32-secret');
 
     var randomSecret = () => {
-        var U8 = Crypto.Random.bytes(20);
+        var U8 = Crypto.AbstractCall.bytes(20);
         return Base32.encode(U8);
     };
 

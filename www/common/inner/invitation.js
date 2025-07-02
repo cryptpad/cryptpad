@@ -9,12 +9,12 @@ var factory = function (Util, Nacl, Scrypt, Crypto) {
     Invite.deriveSeeds = function (safeSeed) {
         // take the hash of the provided seed
         var seed = safeSeed.replace(/\-/g, '/');
-        var u8_seed = Crypto.Random.createHash(Util.decodeBase64(seed));
+        var u8_seed = Crypto.AbstractCall.createHash(Util.decodeBase64(seed));
 
         // hash the first half again for scrypt's input
-        var subseed1 = Crypto.Random.createHash(u8_seed.subarray(0, 32));
+        var subseed1 = Crypto.AbstractCall.createHash(u8_seed.subarray(0, 32));
         // hash the remainder for the invite content
-        var subseed2 = Crypto.Random.createHash(u8_seed.subarray(32));
+        var subseed2 = Crypto.AbstractCall.createHash(u8_seed.subarray(32));
 
         return {
             scrypt: Util.encodeBase64(subseed1),

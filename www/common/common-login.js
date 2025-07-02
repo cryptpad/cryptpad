@@ -54,7 +54,7 @@ define([
             opt.kemPublic = undefined;
         }
 
-        var curvePair = Crypto.Random.boxKeyPairFromSecretKey(new Uint8Array(curveSeed));
+        var curvePair = Crypto.AbstractCall.boxKeyPairFromSecretKey(new Uint8Array(curveSeed));
         opt.curvePrivate = Util.encodeBase64(curvePair.secretKey);
         opt.curvePublic = Util.encodeBase64(curvePair.publicKey);
 
@@ -69,7 +69,7 @@ define([
         opt.blockHash = Block.getBlockHash(blockKeys);
 
         // derive a private key from the ed seed
-        var signingKeypair = Crypto.Random.signKeyPairFromSeed(new Uint8Array(edSeed));
+        var signingKeypair = Crypto.AbstractCall.signKeyPairFromSeed(new Uint8Array(edSeed));
 
         opt.edPrivate = Util.encodeBase64(signingKeypair.secretKey);
         opt.edPublic = Util.encodeBase64(signingKeypair.publicKey);
@@ -232,7 +232,7 @@ define([
             opt.userHash = blockInfo.User_hash;
         } else {
             console.log("allocating random bytes for a new user object");
-            opt = allocateBytes(Crypto.Random.bytes(Exports.requiredBytes));
+            opt = allocateBytes(Crypto.AbstractCall.bytes(Exports.requiredBytes));
             // create a random v2 hash, since we don't need backwards compatibility
             opt.userHash = Hash.createRandomHash('drive');
             var secret = Hash.getSecrets('drive', opt.userHash);

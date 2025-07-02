@@ -40,7 +40,7 @@ process.on('unhandledRejection', function (err) {
 });
 
 var makeCurveKeys = function () {
-    var pair = Crypto.Random.curveKeyPair();
+    var pair = Crypto.AbstractCall.curveKeyPair();
     return {
         curvePrivate: Util.encodeBase64(pair.secretKey),
         curvePublic: Util.encodeBase64(pair.publicKey),
@@ -48,7 +48,7 @@ var makeCurveKeys = function () {
 };
 
 var makeEdKeys = function () {
-    var keys = Crypto.Random.signKeyPairFromSeed(Crypto.Random.bytes(Crypto.Random.signSeedLength()));
+    var keys = Crypto.AbstractCall.signKeyPairFromSeed(Crypto.AbstractCall.bytes(Crypto.AbstractCall.signSeedLength()));
     return {
         edPrivate: Util.encodeBase64(keys.secretKey),
         edPublic: Util.encodeBase64(keys.publicKey),
