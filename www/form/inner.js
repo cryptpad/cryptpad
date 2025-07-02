@@ -3524,7 +3524,7 @@ define([
                 anonOffContent, false, {
                     input: { value: 0 },
                 });
-        var radioContainer = h('div.cp-form-required-radio', [
+        var radioContainer = h('fieldset.cp-form-required-radio', {'aria-label': Messages.form_answerChoice },[
             Messages.form_answerChoice,
             anonRadioOn,
             anonRadioOff,

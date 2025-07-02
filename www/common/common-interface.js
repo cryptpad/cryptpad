@@ -1416,7 +1416,14 @@ define([
             }
         });
 
-        $input.change(function () { $(mark).focus(); });
+        $input.change(function () {
+            $(mark).attr('aria-checked', $input.is(':checked') ? 'true' : 'false');
+            $('input[name="' + name + '"]').not($input).each(function() {
+                var otherRadio = $(this).closest('.cp-radio').find('.cp-radio-mark');
+                otherRadio.attr('aria-checked', false);
+            });
+            $(mark).focus();
+        });
 
         var radio =  h('label', labelOpts, [
             input,
