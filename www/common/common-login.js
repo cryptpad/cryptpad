@@ -28,7 +28,7 @@ define([
 
     var Exports = {
         // Increased required bytes to accommodate post-quantum keys
-        requiredBytes: 256, // Increased from original to accommodate post-quantum keys
+        requiredBytes: 288, // Increased from original to accommodate post-quantum keys
     };
 
     var allocateBytes = Exports.allocateBytes = function (bytes) {
@@ -42,6 +42,17 @@ define([
         var channelSeed = dispense(16);
         // 32 bytes for a curve key
         var curveSeed = dispense(32);
+
+        // KEM keys (post-quantum)
+        var kemSeed = dispense(64); // 64 bytes for post-quantum KEM keys
+        if (Crypto.PQC && Crypto.PQC.ml_kem && Crypto.PQC.ml_kem.ml_kem512) {
+            var pqKemPair = Crypto.PQC.ml_kem.ml_kem512.keygen(new Uint8Array(kemSeed));
+            opt.kemPrivate = Util.encodeBase64(pqKemPair.secretKey);
+            opt.kemPublic = Util.encodeBase64(pqKemPair.publicKey);
+        } else {
+            opt.kemPrivate = undefined;
+            opt.kemPublic = undefined;
+        }
 
         var curvePair = Crypto.Random.boxKeyPairFromSecretKey(new Uint8Array(curveSeed));
         opt.curvePrivate = Util.encodeBase64(curvePair.secretKey);
@@ -57,19 +68,17 @@ define([
         var blockKeys = opt.blockKeys = Block.genkeys(new Uint8Array(blockKeysSeed));
         opt.blockHash = Block.getBlockHash(blockKeys);
 
-        // Store post-quantum keys if they're available
-        if (blockKeys.hasPQ && blockKeys.pqKeypair) {
-            opt.pqKeys = {
-                publicKey: Util.encodeBase64(blockKeys.pqKeypair.publicKey),
-                secretKey: Util.encodeBase64(blockKeys.pqKeypair.secretKey)
-            };
-        }
-
         // derive a private key from the ed seed
         var signingKeypair = Crypto.Random.signKeyPairFromSeed(new Uint8Array(edSeed));
 
         opt.edPrivate = Util.encodeBase64(signingKeypair.secretKey);
         opt.edPublic = Util.encodeBase64(signingKeypair.publicKey);
+
+        // Store post-quantum keys if they're available
+        if (blockKeys.hasPQ && blockKeys.pqSignPair) {
+            opt.dsaPrivate = Util.encodeBase64(blockKeys.pqSignPair.secretKey);
+            opt.dsaPublic = Util.encodeBase64(blockKeys.pqSignPair.publicKey);
+        }
 
         var keys = opt.keys = Crypto.createEditCryptor(null, encryptionSeed);
 
@@ -98,11 +107,8 @@ define([
         opt.channelHex = parsed.channel;
         opt.keys = parsed.keys;
         opt.edPublic = blockInfo.edPublic;
+        opt.dsaPublic = blockInfo.dsaPublic;
 
-        // Include post-quantum keys if available in the block info
-        if (blockInfo.pqKeys) {
-            opt.pqKeys = blockInfo.pqKeys;
-        }
 
         return opt;
     };
@@ -189,9 +195,16 @@ define([
             res.edPrivate = opt.edPrivate;
             res.edPublic = opt.edPublic;
 
+            //export their post-quantum keys if available
+            res.dsaPrivate = opt.dsaPrivate;
+            res.dsaPublic = opt.dsaPublic;
+
             // export their encryption key
             res.curvePrivate = opt.curvePrivate;
             res.curvePublic = opt.curvePublic;
+
+            res.kemPrivate = opt.kemPrivate;
+            res.kemPublic = opt.kemPublic;
 
             // don't proceed past this async block.
 
@@ -241,7 +254,7 @@ define([
             var RT = rt;
 
             var proxy = rt.proxy;
-            if (isRegister && !isProxyEmpty(proxy) && (!proxy.edPublic || !proxy.edPrivate)) {
+            if (isRegister && !isProxyEmpty(proxy) && (!proxy.edPublic || !proxy.edPrivate || !proxy.dsaPublic || !proxy.dsaPrivate)){
                 console.error("INVALID KEYS");
                 console.log(JSON.stringify(proxy));
                 return void cb(void 0, void 0, RT);
@@ -286,8 +299,12 @@ define([
             if (isRegister && isProxyEmpty(rt.proxy)) {
                 proxy.edPublic = opt.edPublic;
                 proxy.edPrivate = opt.edPrivate;
+                proxy.dsaPublic = opt.dsaPublic;
+                proxy.dsaPrivate = opt.dsaPrivate;
                 proxy.curvePublic = opt.curvePublic;
                 proxy.curvePrivate = opt.curvePrivate;
+                proxy.kemPublic = opt.kemPublic;
+                proxy.kemPrivate = opt.kemPrivate;
                 proxy.login_name = res.uname;
                 proxy[Constants.displayNameKey] = res.uname;
                 proxy.version = 11;

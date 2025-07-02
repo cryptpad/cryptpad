@@ -43,7 +43,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
         var sign = Crypto.Random.signKeyPairFromSeed(signSeed);
 
         // Store the post-quantum keys separately for future use (no server validation issues)
-        var pqKeypair = null;
+        var pqSignPair = null;
         var hybridCapable = !!Crypto.PQC && !!Crypto.PQC.ml_dsa;
 
         if (hybridCapable) {
@@ -53,39 +53,34 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
                 var pqSeed = Nacl.hash(seed).subarray(0, 32);
 
                 // Generate post-quantum keypair using the 32-byte hash
-                pqKeypair = Crypto.PQC.ml_dsa.ml_dsa44.internal.keygen(pqSeed);
+                pqSignPair = Crypto.PQC.ml_dsa.ml_dsa44.internal.keygen(pqSeed);
             } catch (err) {
                 console.error("Failed to generate post-quantum keys:", err);
-                pqKeypair = null;
+                pqSignPair = null;
             }
         }
 
         return {
             sign: sign,
-            pqKeypair: pqKeypair,
+            pqSignPair: pqSignPair,
             symmetric: symmetric,
             // Store whether we have post-quantum capability
-            hasPQ: pqKeypair !== null
+            hasPQ: pqSignPair !== null
         };
     };
 
     Block.keysToRPCFormat = function (keys) {
         try {
             var sign = keys.sign;
+            var pqSignPair = keys.pqSignPair;
 
             // Basic format with classical keys
             var result = {
                 edPrivate: Util.encodeBase64(sign.secretKey),
                 edPublic: Util.encodeBase64(sign.publicKey),
+                dsaPrivate: Util.encodeBase64(pqSignPair.secretKey),
+                dsaPublic: Util.encodeBase64(pqSignPair.publicKey),
             };
-
-            // Add post-quantum keys if present
-            if (keys.pqKeypair) {
-                result.pqKeys = {
-                    publicKey: Util.encodeBase64(keys.pqKeypair.publicKey),
-                    secretKey: Util.encodeBase64(keys.pqKeypair.secretKey)
-                };
-            }
 
             return result;
         } catch (err) {
@@ -125,13 +120,13 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
         var hash = Crypto.Random.createHash(ciphertext);
 
         // Generate hybrid signature if post-quantum capabilities are available
-        if (keys.hasPQ && keys.pqKeypair) {
+        if (keys.hasPQ && keys.pqSignPair) {
             try {
                 // Generate classical signature (always required for server compatibility)
                 var classicalSig = Crypto.Random.signDetached(hash, keys.sign.secretKey);
 
                 // Generate post-quantum signature
-                var pqSig = Crypto.PQC.ml_dsa.ml_dsa44.internal.sign(keys.pqKeypair.secretKey, hash);
+                var pqSig = Crypto.PQC.ml_dsa.ml_dsa44.internal.sign(keys.pqSignPair.secretKey, hash);
 
                 console.log("Hybrid signature created successfully:");
                 // Create a hybrid signature with format:
@@ -171,14 +166,10 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
         // serialize {publickey, sig, ciphertext}
         var result = {
             publicKey: Util.encodeBase64(keys.sign.publicKey),
+            pqPublicKey: Util.encodeBase64(keys.pqSignPair.publicKey),
             signature: Util.encodeBase64(sig),
             ciphertext: Util.encodeBase64(ciphertext),
         };
-
-        // Add post-quantum public key separately if available
-        if (keys.hasPQ && keys.pqKeypair) {
-            result.pqPublicKey = Util.encodeBase64(keys.pqKeypair.publicKey);
-        }
 
         return result;
     };
@@ -190,8 +181,8 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
             var hybridSig = Block.sign(u8_pub, O);
             let result = [u8_pub, hybridSig].map(Util.encodeBase64);
 
-            if (O.pqKeypair && O.pqKeypair.publicKey) {
-                result.push(Util.encodeBase64(O.pqKeypair.publicKey));
+            if (O.pqSignPair && O.pqSignPair.publicKey) {
+                result.push(Util.encodeBase64(O.pqSignPair.publicKey));
             }
 
             // Return an array with the signature and the pubkey
