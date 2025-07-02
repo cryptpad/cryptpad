@@ -440,6 +440,7 @@ define([
         APP.getEdPublic = function () {
             var metadataMgr = APP.common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
+            const data = APP._lastUpdate;
             var url = Hash.getPublicSigningKeyString(privateData.origin, data.name, data.edPublic);
             Clipboard.copy(url, (err) => {
                 if (!err) { UI.log(Messages.genericCopySuccess); }
