@@ -3710,6 +3710,7 @@ define([
                         if (APP.refreshPage) { APP.refreshPage(pages, 'required'); }
                     }
                     $el[0].scrollIntoView();
+                    $el.find('input, textarea, select, button, [tabindex]:not([tabindex="-1"])').filter(':visible').first().focus();
                 });
                 return h('li', a);
             };
@@ -3770,7 +3771,7 @@ define([
                 });
                 var list = h('ul', lis);
                 var divContent = [
-                    h('div.alert.alert-danger', [
+                    h('fieldset.alert.alert-danger', {'aria-label': Messages.form_requiredWarning}, [
                         Messages.form_requiredWarning,
                         list
                     ])
