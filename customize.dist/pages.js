@@ -18,6 +18,7 @@ define([
 
     Pages.setHTML = function (e, html) {
         e.innerHTML = html;
+        setTimeout(() => lucide.createIcons(), 0);
         return e;
     };
 
@@ -89,8 +90,7 @@ define([
             text = Msg[loc];
         }
         if (icon) {
-            iconName = 'i.fa.fa-' + icon;
-            icon = h(iconName);
+            icon = h('i', {'data-lucide': icon, 'aria-hidden':'true'});
         }
         return h('a', attrs, [icon, text]);
     };
@@ -151,7 +151,7 @@ define([
     Pages.infopageFooter = function () {
         var donateButton;
         if (!ApiConfig.removeDonateButton) {
-            donateButton = footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'money'); // TODO migrate to forkawesome and use the OpenCollective icon
+            donateButton = footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'hand-coins'); // TODO migrate to forkawesome and use the OpenCollective icon
         }
 
         return h('footer.cp-footer', [
@@ -176,7 +176,7 @@ define([
             ]),
             h('div.cp-footer-right', [
                 h('div.cp-footer-language', [
-                    h('i.fa.fa-language', {'aria-hidden': 'true'}),
+                    h('i', {'data-lucide':'languages', 'aria-hidden':'true'}),
                     languageSelector()
                 ])
             ])
@@ -190,7 +190,7 @@ define([
 
         if (!ApiConfig.restrictRegistration) {
             registerLink = h('a.nav-item.nav-link.cp-register-btn', { href: '/register/', role: 'button'}, [
-                h('i.fa.fa-user', {'aria-hidden':'true'}),
+                h('i', {'data-lucide':'user', 'aria-hidden':'true'}),
                 Msg.login_register
             ]);
         }
@@ -198,14 +198,14 @@ define([
         if (username === null) {
             rightLinks = [
                 h('a.nav-item.nav-link.cp-login-btn', { href: '/login/', role: 'button'}, [
-                    h('i.fa.fa-sign-in', {'aria-hidden':'true'}),
+                    h('i', {'data-lucide':'log-in', 'aria-hidden':'true'}),
                     Msg.login_login
                 ]),
                 registerLink,
             ];
         } else {
             rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive/', role: 'button'}, [
-                h('i.fa.fa-user-circle', {'aria-hidden':'true'}),
+                h('i', {'data-lucide':'circle-user-round', 'aria-hidden':'true'}),
                 " ",
                 username
             ]);
@@ -233,11 +233,11 @@ define([
             [
                 !isHome? homeLink: undefined,
                 h('a.nav-item.nav-link', { href: '/features.html', role: 'button'}, [
-                    h('i.fa.fa-info-circle'),
+                    h('i', {'data-lucide':'info', 'aria-hidden':'true'}),
                     pricingName
                 ]),
                 h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.org'},
-                    [h('i.fa.fa-book', {'aria-hidden':'true'}),Msg.docs_link]),
+                    [h('i', {'data-lucide':'book-open-text', 'aria-hidden':'true'}),Msg.docs_link]),
             ].concat(rightLinks)
         );
     };

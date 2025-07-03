@@ -203,7 +203,7 @@ define([
                         h('div.cp-apps.col-lg-6', [
                             h('div.cp-app-grid', [
                                 h('span.cp-app-new', [
-                                    h('i.fa.fa-plus'),
+                                    h('i', {'data-lucide':'plus', 'aria-hidden':'true'}),
                                     Msg.fm_newFile
                                 ]),
                                 h('div.cp-app-grid-apps', [
