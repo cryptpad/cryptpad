@@ -11,6 +11,7 @@ define([
 ], function (h, UI, Msg, Pages, Config) {
     return function () {
         document.title = Msg.login_login;
+        setTimeout(() => lucide.createIcons(), 0);
 
         var ssoEnabled = (Config.sso && Config.sso.list && Config.sso.list.length) ?'': '.cp-hidden';
         var ssoEnforced = (Config.sso && Config.sso.force) ? '.cp-hidden' : '';

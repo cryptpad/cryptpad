@@ -213,7 +213,7 @@ define([
 
         var isHome = ['/', '/index.html'].includes(window.location.pathname);
         var homeLink = h('a.nav-item.nav-link.cp-back-home' /* .navbar-brand */, { href: '/index.html', role: 'button'}, [
-            h('i.fa.fa-arrow-left'),
+            h('i', {'data-lucide':'chevron-left', 'aria-hidden':'true'}),
             h('img', {
                 src: '/customize/CryptPad_logo.svg',
                 "aria-hidden": true,
