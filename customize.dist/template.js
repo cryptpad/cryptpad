@@ -16,7 +16,6 @@ define([
 
 $(function () {
     var $body = $('body');
-
     var pathname = location.pathname;
 
     // add class on info-pages
@@ -58,7 +57,7 @@ $(function () {
                 titleSuffix = window.location.hostname;
             }
             document.title = document.title + ' - ' + titleSuffix;
-
+            setTimeout(() => lucide.createIcons(), 0);
             $('#placeholder').remove();
 
             $body.append($main);

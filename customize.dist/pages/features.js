@@ -27,7 +27,7 @@ define([
 
         var groupItemTemplate = function (title, content) {
             return h('li.list-group-item', [
-                h('div.cp-check'),
+                h('i', {'data-lucide':'check', 'aria-hidden':'true'}),
                 h('div.cp-content', [
                     h('div.cp-feature', title),
                     h('div.cp-note', content),
