@@ -212,7 +212,7 @@ define([
                             ]),
                             h('div.cp-app-drive', [
                                 h('a.cp-drive-btn', {'href': '/drive/'}, [
-                                    h('i.fa.fa-hdd-o', {'aria-hidden': 'true'}),
+                                    h('i', {'data-lucide':'hard-drive', 'aria-hidden':'true'}),
                                     Msg.team_cat_drive
                                 ]),
                                 extraButtons
