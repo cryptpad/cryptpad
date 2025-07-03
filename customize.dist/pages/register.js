@@ -13,6 +13,7 @@ define([
     return function () {
         document.title = Msg.register_header;
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
+        setTimeout(() => lucide.createIcons(), 0);
 
         var ssoEnabled = (Config.sso && Config.sso.list && Config.sso.list.length) ?'': '.cp-hidden';
         var ssoEnforced = (Config.sso && Config.sso.force) ? '.cp-hidden' : '';
