@@ -80,7 +80,9 @@ define([
         var keys = [];
         nThen(function (waitFor) {
             // Not logged in? check for temp RPC keys
-            if (!LocalStore.isLoggedIn() && Env?.returned?.tempKeys) {
+            const anon = !LocalStore.isLoggedIn()
+                            || common.neverDrive;
+            if (anon && Env?.returned?.tempKeys) {
                 keys.push(Env.returned.tempKeys);
                 return;
             }
@@ -2672,6 +2674,7 @@ define([
                 Messages,
                 AppConfig
             };
+            common.neverDrive = rdyCfg.neverDrive;
             common.userHash = userHash || LocalStore.getUserHash();
 
             // FIXME Backward compatibility
