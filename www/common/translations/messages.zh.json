@@ -1837,5 +1837,9 @@
     "settings_profileAvatarLabel": "头像",
     "toolbar_text_tools": "文本工具",
     "toolbar_show_text_tools": "显示文本工具",
-    "toolbar_hide_text_tools": "隐藏文本工具"
+    "toolbar_hide_text_tools": "隐藏文本工具",
+    "fc_open_formaud": "打开（作为审计者）",
+    "help_close_button": "关闭帮助通知",
+    "admin_documentsDeletionTitle": "归档多个文档",
+    "admin_documentsDeletionHint": "使用文档 ID 归档文档列表（每行一个文档 ID）"
 }
