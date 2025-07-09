@@ -670,6 +670,10 @@ define([
 
                 UI.removeLoadingScreen(emitResize);
 
+                if (integrationChannel) {
+                    integrationChannel.event('EV_INTEGRATION_READY');
+                }
+
                 if (AppConfig.textAnalyzer && textContentGetter) {
                     AppConfig.textAnalyzer(textContentGetter, privateDat.channel);
                 }
@@ -776,8 +780,13 @@ define([
         };
 
         var setFileImporter = function (options, fi, async) {
-            if (readOnly) { return; }
+            const priv = cpNfInner.metadataMgr.getPrivateData();
+            const isReadOnlyIntegration = priv.isNewFile &&
+                Boolean(priv.integrationConfig) &&
+                priv.initialState;
+            if (readOnly && !isReadOnlyIntegration) { return; }
             fileImporter = function (c, f) {
+                console.error(state, STATE.READY, unsyncMode);
                 if (state !== STATE.READY || unsyncMode) {
                     return void UI.warn(Messages.disconnected);
                 }

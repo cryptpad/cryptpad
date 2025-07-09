@@ -306,6 +306,10 @@ define([
                 return;
             }
             delete hashes[lastIndex];
+            APP.onLocal();
+            APP.realtime.onSettle(function () {
+                UI.log(Messages.saved);
+            });
         };
 
         var rtChannel = {
@@ -641,20 +645,6 @@ define([
                     saveToServer();
                 });
             }
-        };
-        var deleteLastCp = function () {
-            var hashes = content.hashes;
-            if (!hashes || !Object.keys(hashes).length) { return; }
-            var i = 0;
-            var idx = Object.keys(hashes).map(Number).sort(function (a, b) {
-                return a-b;
-            });
-            var lastIndex = idx[idx.length - 1 - i];
-            delete content.hashes[lastIndex];
-            APP.onLocal();
-            APP.realtime.onSettle(function () {
-                UI.log(Messages.saved);
-            });
         };
         var restoreLastCp = function () {
             content.saveLock = myOOId;
@@ -1100,6 +1090,7 @@ define([
             if (content.version <= 2) {
                 setEditable(false, true);
             }
+            console.log("OO loading");
         };
 
 
@@ -2134,6 +2125,20 @@ define([
                 }];
                 common.checkTrimHistory(channels);
             }
+            console.log("OO ready");
+        };
+
+        const copy = (a, b) => {
+            Object.keys(b).forEach(k => {
+                if (k === "user") { return; } // Don't change user values
+                if (a[k]) {
+                    if (typeof(a[k]) === "object" && typeof(b[k]) === "object") {
+                        copy(a[k], b[k]);
+                    }
+                    return;
+                }
+                a[k] = b[k];
+            });
         };
 
         const createOOConfig = function(blob, file, lock, fromContent, lang, force) {
@@ -2154,7 +2159,7 @@ define([
                     url: url,
                     permissions: {
                         download: dc?.permissions?.download || false,
-                        print: dc?.permissions?.print || true,
+                        print: dc?.permissions?.print !== false,
                         protect: file.type === 'xlsx',
                     }
                 },
@@ -2185,18 +2190,6 @@ define([
                 }
             };
 
-            let copy = (a, b) => {
-                Object.keys(b).forEach(k => {
-                    if (k === "user") { return; } // Don't change user values
-                    if (a[k]) {
-                        if (typeof(a[k]) === "object" && typeof(b[k]) === "object") {
-                            copy(a[k], b[k]);
-                        }
-                        return;
-                    }
-                    a[k] = b[k];
-                });
-            };
             if (integrationConfig) {
                 let ec = integrationConfig.editorConfig;
                 let c = ooconfig.editorConfig.customization;
@@ -2356,6 +2349,21 @@ define([
                     }, void 0, common.getCache());
                 });
             };
+
+            let integrationConfig = privateData?.integrationConfig?._;
+            if (integrationConfig?.editorConfig) {
+                let ec = integrationConfig.editorConfig;
+                let c = APP.ooconfig.editorConfig.customization;
+                copy(APP.ooconfig.editorConfig, ec);
+                // Open "goback" in new tabs because of csp and
+                // iframes
+                if (ec.editorConfig?.customization?.goback) {
+                    c.goback.blank = true;
+                }
+                if (!privateData?.integrationConfig?.autosave) {
+                    c.forcesave = true;
+                }
+            }
 
             APP.AddImage = function(cb1, cb2) {
                 APP.AddImageSuccessCallback = cb1;

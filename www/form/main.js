@@ -7,8 +7,9 @@ define([
     '/components/nthen/index.js',
     '/api/config',
     '/common/dom-ready.js',
+    '/common/common-hash.js',
     '/common/sframe-common-outer.js',
-], function (nThen, ApiConfig, DomReady, SFCommonO) {
+], function (nThen, ApiConfig, DomReady, Hash, SFCommonO) {
 
     var href, hash;
     // Loaded in load #2
@@ -23,10 +24,14 @@ define([
         var getPropChannels = function () {
             return channels;
         };
-        var addData = function (meta, CryptPad, user, Utils) {
+        var addData = function (meta, CryptPad, user, Utils, parsedHash) {
             var keys = Utils.secret && Utils.secret.keys;
-
-            var parsed = Utils.Hash.parseTypeHash('pad', hash.slice(1));
+            var parsed;
+            if (parsedHash) {
+                parsed = parsedHash.hashData;
+            } else {
+                parsed = Utils.Hash.parseTypeHash('pad', hash.slice(1));
+            }
             if (parsed && parsed.auditorKey) {
                 meta.form_auditorKey = parsed.auditorKey;
                 meta.form_auditorHash = hash;
@@ -58,11 +63,12 @@ define([
                 });
             });
         };
+        const parsed = Hash.parsePadUrl(href);
         SFCommonO.start({
             addData: addData,
             addRpc: addRpc,
             //cache: true,
-            noDrive: true,
+            noDrive: parsed?.hashData?.mode !== "view",
             hash: hash,
             href: href,
             useCreationScreen: true,

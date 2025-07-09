@@ -46,6 +46,7 @@ define([
         var x2js = new X2JS();
         var lastContent = x2js.xml2js(EMPTY_DRAWIO);
         var drawIoInitalized = false;
+        $('#cp-app-diagram-editor').show();
 
         var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
         if (!privateData.isEmbed) {
@@ -62,6 +63,11 @@ define([
 
         var onDrawioInit = function() {
             drawIoInitalized = true;
+            if (lastContent?.mxfile?.diagram?.mxGraphModel) {
+                let readOnly = framework.isReadOnly() || framework.isLocked();
+                let grid = readOnly ? 0 : 1;
+                lastContent.mxfile.diagram.mxGraphModel._grid = grid;
+            }
             var xmlStr = DiagramUtil.jsonContentAsXML(lastContent);
             postMessageToDrawio({
                 action: 'load',
@@ -146,20 +152,25 @@ define([
             }, true
         );
 
+        var parameters;
+
         framework.onEditableChange(function () {
-            const editable = !framework.isLocked() && !framework.isReadOnly();
-            postMessageToDrawio({
-                action: 'spinner',
-                message: Messages.reconnecting,
-                show: !editable
-            });
+            var readOnly = framework.isReadOnly() || framework.isLocked();
+            if (readOnly) {
+                parameters.set('chrome', '0'); 
+                parameters.set('grid', '0');
+            } else {
+                parameters.set('chrome', '1');
+                parameters.set('grid', '1');
+            }
+            drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
+            + parameters;
         });
 
         // starting the CryptPad framework
         framework.start();
 
-        drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
-            + new URLSearchParams({
+        parameters = new URLSearchParams({
                 test: 1,
                 stealth: 1,
                 embed: 1,
@@ -185,6 +196,9 @@ define([
                 lang: Messages._languageUsed
             });
 
+        drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
+            + parameters;
+
         window.addEventListener("message", (event) => {
             if (event.source === drawioFrame.contentWindow) {
                 var data = JSON.parse(event.data);
@@ -197,6 +211,7 @@ define([
         }, false);
     };
 
+    $('#cp-app-diagram-editor').hide();
     // Framework initialization
     Framework.create({
         toolbarContainer: '#cme_toolbox',

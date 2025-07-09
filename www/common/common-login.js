@@ -6,7 +6,7 @@ define([
     'chainpad-listmap',
     '/components/chainpad-crypto/crypto.js',
     '/common/common-util.js',
-    '/common/outer/network-config.js',
+    '/common/network-config.js',
     '/common/common-credential.js',
     '/components/chainpad/chainpad.dist.js',
     '/common/common-realtime.js',

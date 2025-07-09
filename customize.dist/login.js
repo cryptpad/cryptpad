@@ -7,7 +7,7 @@ define([
     'chainpad-listmap',
     '/components/chainpad-crypto/crypto.js',
     '/common/common-util.js',
-    '/common/outer/network-config.js',
+    '/common/network-config.js',
     '/common/common-login.js',
     '/common/common-credential.js',
     '/components/chainpad/chainpad.dist.js',
@@ -104,9 +104,9 @@ define([
 
         var proceed = function (result) {
             hashing = false;
-            if (cb && typeof cb === "function" && cb(result)) { return; }
-            LocalStore.clearLoginToken();
             Realtime.whenRealtimeSyncs(result.realtime, function () {
+                if (cb && typeof cb === "function" && cb(result)) { return; }
+                LocalStore.clearLoginToken();
                 Exports.redirect();
             });
         };

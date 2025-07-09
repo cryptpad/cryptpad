@@ -127,9 +127,9 @@ define([
                 content : [
                     'account-metadata',
                     'document-metadata',
+                    'documents-deletion',
                     'block-metadata',
                     'totp-recovery',
-
                 ]
             },
             'support' : { // Msg.admin_cat_support
@@ -733,20 +733,6 @@ define([
 
             return tableObj.table;
         };
-
-        // Msg.admin_updateLimitHint, .admin_updateLimitTitle, .admin_updateLimitButton
-        sidebar.addItem('update-limit', function (cb) {
-            var button = blocks.activeButton('primary', '',
-                    Messages.admin_updateLimitButton, done => {
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'Q_UPDATE_LIMIT',
-                }, function (e, data) {
-                    done(!!data);
-                    UI.alert(data ? Messages.admin_updateLimitDone  || 'done' : 'error' + e);
-                });
-            });
-            cb(button);
-        });
 
         // Msg.admin_enableembedsHint, .admin_enableembedsTitle
         sidebar.addCheckboxItem({
@@ -2404,6 +2390,48 @@ define([
             return tableObj.table;
         };
 
+        // Msg.admin_documentsDeletionHint.admin_documentsDeletionTitle
+        sidebar.addItem('documents-deletion', cb => {
+            const textarea = blocks.textarea({
+                'aria-labelledby': 'cp-admin-documents-deletion'
+            });
+            const $textarea = $(textarea);
+            const archiveButton = blocks.activeButton('danger', '',
+                    Messages.admin_archiveButton, () => {
+                const $btn = $(archiveButton);
+                justifyArchivalDialog('', result => {
+                    const val = $textarea.val().trim();
+                    const all = val.split('\n').filter(str => {
+                        let type = DOCUMENT_TYPES[str.length];
+                        return ['channel', 'file'].includes(type);
+                    });
+                    console.error(val);
+                    console.error(result);
+                    disable($btn);
+                    sframeCommand('ARCHIVE_DOCUMENTS', {
+                        list: all,
+                        reason: result,
+                    }, (err, arr) => {
+                        const res = Array.isArray(arr) && arr[0];
+                        enable($btn);
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
+                        }
+                        if (Array.isArray(res?.failed)
+                            && res?.failed.length) {
+                            console.error("Failed deletion:");
+                            console.error(res?.failed);
+                        }
+                        $textarea.val('');
+                        UI.log(Messages.archivedFromServer);
+                    });
+                });
+            }, true);
+            const nav = blocks.nav([archiveButton]);
+            const div = blocks.form([textarea], nav);
+            cb(div);
+        });
 
         // Msg.admin_documentMetadataHint.admin_documentMetadataTitle
         sidebar.addItem('document-metadata', function(cb){

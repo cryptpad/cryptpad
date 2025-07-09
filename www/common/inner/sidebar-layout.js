@@ -189,8 +189,7 @@ define([
             const table = h('table.cp-sidebar-table');
             if (header) {
                 const headerValues = header.map(value => {
-                    const lastWord = value.split(' ').pop(); // Extracting the last word
-                    return h('th', { class: lastWord.toLowerCase() }, value); // Modified to use the last word
+                    return h('th', value);
                 });
                 const headerRow = h('thead', h('tr', headerValues));
                 table.appendChild(headerRow);

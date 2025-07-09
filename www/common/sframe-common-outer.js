@@ -123,6 +123,7 @@ define([
         var password, newPadPassword, newPadPasswordForce;
         var initialPathInDrive;
         var burnAfterReading;
+        var parsedUnsafeLink;
         var Handler;
 
         var currentPad = window.CryptPad_location = {
@@ -138,7 +139,7 @@ define([
                 '/common/cryptpad-common.js',
                 '/components/chainpad-crypto/crypto.js',
                 '/common/cryptget.js',
-                '/common/outer/worker-channel.js',
+                '/common/events-channel.js',
                 '/secureiframe/main.js',
                 '/unsafeiframe/main.js',
                 '/common/onlyoffice/ooiframe.js',
@@ -151,7 +152,7 @@ define([
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
                 '/common/outer/login-block.js',
-                '/common/outer/cache-store.js',
+                '/common/cache-store.js',
                 '/customize/application_config.js',
                 //'/common/test.js',
                 '/common/user-object.js',
@@ -631,6 +632,7 @@ define([
                         // Use the same options in the full hash
                         var opts = parsed.getOptions();
                         parsed = Utils.Hash.parsePadUrl(newHref);
+                        parsedUnsafeLink = Utils.Hash.parsePadUrl(newHref);
                         currentPad.href = parsed.getUrl(opts);
                         currentPad.hash = parsed.hashData && parsed.hashData.getHash(opts);
                     }
@@ -761,7 +763,7 @@ define([
             if (isDeleted) {
                 Utils.Cache.clearChannel(secret.channel);
             }
-            let signature;
+            let signature, signed;
 
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
@@ -799,7 +801,7 @@ define([
                         origin: window.location.origin,
                         pathname: window.location.pathname,
                         fileHost: ApiConfig.fileHost,
-                        readOnly: readOnly,
+                        readOnly: cfg?.integrationConfig?.readOnly || readOnly,
                         isTemplate: isTemplate,
                         newTemplate: Array.isArray(Cryptpad.initialPath)
                                         && Cryptpad.initialPath[0] === "template",
@@ -813,8 +815,7 @@ define([
                         isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
                         notifications: notifs,
                         accounts: {
-                            donateURL: Cryptpad.donateURL,
-                            upgradeURL: Cryptpad.upgradeURL
+                            donateURL: Cryptpad.donateURL
                         },
                         isNewFile: isNewFile,
                         isDeleted: isDeleted,
@@ -861,13 +862,14 @@ define([
                         }
                     }
 
-                    if (metaObj?.user?.edPublic) {
+                    if (metaObj?.user?.edPublic) { // logged in only
                         let str = metaObj?.user?.netfluxId;// + secret.channel;
-                        if (!signature && str) {
+                        if (str && signed !== str) {
                             let myIDu8 = Utils.Util.decodeUTF8(str);
                             let k = Utils.Util.decodeBase64(edPrivate);
                             let nacl = Utils.Crypto.Nacl;
                             let s = nacl.sign(myIDu8, k);
+                            signed = str;
                             signature = Utils.Util.encodeBase64(s);
                         }
                         metaObj.user.signature = signature;
@@ -894,7 +896,7 @@ define([
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
                     if (cfg.addData) {
-                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user, Utils);
+                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user, Utils, parsedUnsafeLink);
                     }
 
                     if (metaObj && metaObj.priv && typeof(metaObj.priv.plan) === "string") {
@@ -2074,7 +2076,6 @@ define([
 
             sframeChan.on('Q_ASK_NOTIFICATION', function (data, cb) {
                 if (!Utils.Notify.isSupported()) { return void cb(false); }
-                // eslint-disable-next-line compat/compat
                 Notification.requestPermission(function (s) {
                     cb(s === "granted");
                 });

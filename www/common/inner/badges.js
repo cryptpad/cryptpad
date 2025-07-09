@@ -11,9 +11,13 @@ define([
     const badges = {
         admin: 'fa-star',
         moderator: 'fa-life-ring',
-        premium: 'fa-check-circle',
+        premium: 'fa-ticket',
         error: 'fa-exclamation-circle'
     };
+
+    // safeBadges won't show an error when they aren't active anymore
+    //   --> we just hide them
+    Badges.safeBadges = ["premium"];
 
     Badges.render = id => {
         let icon = badges[id];
@@ -21,6 +25,7 @@ define([
         let cls = icon.indexOf('cptools') === 0 ? 'cptools '+icon : 'fa '+icon;
         if (id === 'error') { cls += ' cp-badge-error'; }
         return h('i', {
+            'data-badge': id,
             'class': `cp-badge ${cls}`,
             'title': Messages[`badges_${id}`] || id
         });

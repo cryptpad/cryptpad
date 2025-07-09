@@ -19,10 +19,38 @@ define([
         ].indexOf(Config.adminEmail) === -1;
         var adminMailbox = Config.supportMailbox && LocalStore.isLoggedIn();
 
+        let contacts = [
+            {
+                name: Msg.contact_chat || "Chat",
+                image: "/customize/images/sayhi.svg",
+                href: "https://matrix.to/#/#cryptpad:matrix.xwiki.com",
+            },
+            {
+                name: Msg.contact_mastodon || "Mastodon",
+                image: "/customize/images/mastodon.svg",
+                href: "https://social.xwiki.com/@CryptPad",
+            },
+            {
+                name: Msg.contact_bug || "Bug report",
+                image: "/customize/images/github.svg",
+                href: "https://github.com/cryptpad/cryptpad/issues/",
+            },
+            {
+                name: Msg.contact_forum || "Forum",
+                image: "/customize/images/forum.svg",
+                href: "https://forum.cryptpad.org/",
+            },
+            {
+                name: Msg.contact_email || "Email",
+                image: "/customize/images/email.svg",
+                href: 'mailto:' + developerEmail,
+            },
+        ];
+
         return h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [
-                h('div.row.cp-page-title',[
+                h('div.row.cp-page-title', [
                     h('div.col-12.text-center', h('h1', Msg.contact)),
                 ]),
                 (adminEmail || adminMailbox) ? h('div.row.cp-iconCont.align-items-center', [
@@ -64,76 +92,22 @@ define([
                         Pages.setHTML(h('h2.text-center'), Msg.contact_dev),
                         h('p.center', Msg.contact_devHint)
                     ),
+                ].concat(contacts.map(item =>
                     h('div',
-                        h('a.card-small', {href : "https://matrix.to/#/#cryptpad:matrix.xwiki.com"},
+                        h('a.card-small', { href: item.href },
                             h('div.card-body',
                                 h('p', [
                                     h('img', {
-                                        src: '/customize/images/sayhi.svg',
+                                        src: item.image,
                                         alt: '',
                                         'aria-hidden': 'true'
                                     }),
-                                    Msg.contact_chat || 'Chat'
+                                    item.name
                                 ])
                             )
                         )
-                    ),
-                    h('div',
-                        h('a.card-small', {href : "https://fosstodon.org/@cryptpad"},
-                            h('div.card-body',
-                                h('p', [
-                                    h('img', {
-                                        src: '/customize/images/mastodon.svg',
-                                        alt: '',
-                                        'aria-hidden': 'true'
-                                    }),
-                                    'Mastodon'
-                                ])
-                            )
-                        )
-                    ),
-                    h('div',
-                        h('a.card-small', {href : "https://twitter.com/cryptpad"},
-                            h('div.card-body',
-                                h('p', [
-                                    // this is not a typo. adblock plus blocks images with src *twitter* apparently
-                                    h('img', {
-                                        src: '/customize/images/twiitter.svg',
-                                        alt: '',
-                                        'aria-hidden': 'true'}),
-                                    'Twitter'
-                                ])
-                            )
-                        )
-                    ),
-                    h('div',
-                        h('a.card-small', {href : "https://github.com/cryptpad/cryptpad/issues/"},
-                            h('div.card-body',
-                                h('p', [
-                                    h('img', {
-                                        src: '/customize/images/github.svg',
-                                        alt: '',
-                                        'aria-hidden': 'true'}),
-                                    Msg.contact_bug || 'Bug report'
-                                ])
-                            )
-                        )
-                    ),
-                    h('div',
-                        h('a.card-small', {href : "mailto:" + developerEmail},
-                            h('div.card-body',
-                                h('p', [
-                                    h('img', {
-                                        src: '/customize/images/email.svg',
-                                        alt: '',
-                                        'aria-hidden': 'true'
-                                    }),
-                                    Msg.contact_email || 'Email'
-                                ])
-                            )
-                        )
-                    ),
-                ]),
+                    )
+                ))),
             ]),
             Pages.infopageFooter(),
         ]);

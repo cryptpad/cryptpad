@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = (Util, Hash, Constants, Realtime, Cache, Rec,
             nThen, Listmap, FP, Crypto, ChainPad) => {
     var Calendar = {};
@@ -100,7 +99,7 @@ const factory = (Util, Hash, Constants, Realtime, Cache, Rec,
 
         var all = [ev];
         Array.prototype.push.apply(all, toAdd);
-        return Rec.applyUpdates(all);
+        return all;
     };
     var clearDismissed = function (ctx, uid) {
         var h = Util.find(ctx, ['store', 'proxy', 'hideReminders']) || {};
@@ -1208,38 +1207,16 @@ const factory = (Util, Hash, Constants, Realtime, Cache, Rec,
     return Calendar;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        require('../../common/common-util'),
-        require('../../common/common-hash'),
-        require('../../common/common-constants'),
-        require('../../common/common-realtime'),
-        require('../../common/cache-store'),
-        require('../../common/recurrence'),
-        require('nthen'),
-        require('chainpad-listmap'),
-        require('../../../www/lib/datepicker/flatpickr'),
-        require('chainpad-crypto'),
-        require('chainpad'),
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/common-util.js',
-        '/common/common-hash.js',
-        '/common/common-constants.js',
-        '/common/common-realtime.js',
-        '/common/outer/cache-store.js',
-        '/calendar/recurrence.js',
-        '/components/nthen/index.js',
-        'chainpad-listmap',
-        '/lib/datepicker/flatpickr.js',
-        '/components/chainpad-crypto/crypto.js',
-        '/components/chainpad/chainpad.dist.js',
-    ], factory);
-} else {
-    // unsupported initialization
-}
-
-})();
-
+module.exports = factory(
+    require('../../common/common-util'),
+    require('../../common/common-hash'),
+    require('../../common/common-constants'),
+    require('../../common/common-realtime'),
+    require('../../common/cache-store'),
+    require('../../common/recurrence'),
+    require('nthen'),
+    require('chainpad-listmap'),
+    require('../../../www/lib/datepicker/flatpickr'),
+    require('chainpad-crypto'),
+    require('chainpad'),
+);

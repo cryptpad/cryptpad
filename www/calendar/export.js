@@ -7,7 +7,7 @@
 define([
     '/customize/pages.js',
     '/common/common-util.js',
-    '/calendar/recurrence.js',
+    '/common/recurrence.js',
 
     '/lib/ical.min.js'
 ], function (Pages, Util, Rec) {
@@ -95,6 +95,10 @@ define([
                         Object.keys(r.by).forEach(function (_k) {
                             rrule += ";BY"+_k.toUpperCase()+"="+r.by[_k];
                         });
+                        return;
+                    }
+                    if (k === "until") {
+                        rrule += ";"+k.toUpperCase()+"="+getICSDate(r[k]);
                         return;
                     }
                     rrule += ";"+k.toUpperCase()+"="+r[k];

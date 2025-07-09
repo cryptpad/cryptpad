@@ -21,7 +21,7 @@ define([
     '/customize/application_config.js',
     '/lib/calendar/tui-calendar.min.js',
     '/calendar/export.js',
-    '/calendar/recurrence.js',
+    '/common/recurrence.js',
     '/lib/datepicker/flatpickr.js',
     'tui-date-picker',
 
@@ -408,13 +408,16 @@ define([
                 str = `<a href="${l}" id="${uid}">${str}</a>`;
                 APP.nextLocationUid = uid;
             }
-            let location_icon = h('i.fa.fa-map-marker.tui-full-calendar-icon', { 'aria-label': Messages.calendar_loc }, []);
-            return location_icon.outerHTML + str;
+            let location_icon = h('i.fa.fa-map-marker.tui-full-calendar-icon', { 'aria-hidden': true }, []);
+            return `<div class="event-location"> ${location_icon.outerHTML} ${str} </div>`;
         },
         popupDetailBody: function(schedule) {
             var str = schedule.body;
             delete APP.eventBody;
-            return diffMk.render(str, true);
+
+            let description_icon = h('i.fa.fa-align-left.tui-full-calendar-icon', { 'aria-hidden': true }, []);
+            let description = diffMk.render(str, true);
+            return `${description_icon.outerHTML}<div class="event-description">${description}</div>`;
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
         titlePlaceholder: function() { return Messages.calendar_title; },
@@ -997,7 +1000,8 @@ define([
         // Mark selected months as done
         todo.forEach(function (monthId) { APP.recurringDone.push(monthId); });
 
-        cal.createSchedules(applyUpdates(toAdd));
+        //cal.createSchedules(applyUpdates(toAdd));
+        cal.createSchedules(toAdd);
     };
     updateRecurring = function () {
         try {
@@ -2354,6 +2358,14 @@ APP.recurrenceRule = {
         };
         var onCalendarEditPopup = function (el) {
             var $el = $(el);
+
+            const $header = $el.find('.tui-full-calendar-section-header');
+            $header.attr('id', 'tui-full-calendar-section-header');
+            $el.attr('aria-labelledby', 'tui-full-calendar-section-header');
+            const $desc = $el.find('.tui-full-calendar-section-detail');
+            $desc.attr('id', 'tui-full-calendar-section-detail');
+            $el.attr('aria-describedby', 'tui-full-calendar-section-detail');
+
             $el.find('.tui-full-calendar-popup-edit').addClass('btn btn-primary');
             $el.find('.tui-full-calendar-popup-edit .tui-full-calendar-icon').addClass('fa fa-pencil').removeClass('tui-full-calendar-icon');
             $el.find('.tui-full-calendar-content').removeClass('tui-full-calendar-content');
@@ -2380,6 +2392,23 @@ APP.recurrenceRule = {
                     common.openUnsafeURL($a.attr('href'));
                 });
             }
+
+            var privateData = metadataMgr.getPrivateData();
+            $el.find('.event-description').click(e => {
+                if (!e.target) { return; }
+                var $t = $(e.target);
+                if (!$t.is('a') && !$t.parents('a').length) { return; }
+                e.preventDefault();
+                var $a = $t.is('a') ? $t : $t.parents('a').first();
+                var href = $a.attr('href');
+                if (/^#/.test(href)) { return; }
+                if (/^\/[^\/]/.test(href)) {
+                    href = privateData.origin + href;
+                    return void common.openURL(href);
+                }
+                common.openUnsafeURL(href);
+            });
+            console.error($el.find('.event-description'), $el);
 
             var $section = $el.find('.tui-full-calendar-section-button');
             var ev = APP.editModalData;

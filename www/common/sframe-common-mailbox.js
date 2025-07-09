@@ -81,17 +81,22 @@ define([
                     Common.openURL(Hash.hashToHref('', 'calendar'));
                 });
             } else if (userData && typeof(userData) === "object" && userData.profile) {
-                avatar = h('span.cp-avatar');
+                avatar = h('span.cp-avatar',{
+                    tabindex: 0,
+                    title: Messages.userlist_visitProfile,
+                    'aria-label': Messages.userlist_visitProfile,
+                    role: 'button'
+                });
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
-                $(avatar).click(function (e) {
+                const handler = function (e) {
                     e.stopPropagation();
                     Common.openURL(Hash.hashToHref(userData.profile, 'profile'));
-                });
+                };
+                Util.onClickEnter($(avatar), handler, { space: true });
             } else if (userData && userData.supportTeam) {
                 avatar = h('span.cp-avatar-image', h('img', { src:'/customize/CryptPad_logo.svg' }));
             }
             var order = -Math.floor((Util.find(data, ['content', 'msg', 'ctime']) || 0) / 1000);
-            const tabIndexValue = undefined;//data.content.isDismissible ? undefined : '0';
             notif = h('li.cp-notification', {
                 role: 'menuitem',
                 tabindex: '0',
@@ -100,7 +105,7 @@ define([
             }, [
                 avatar,
                 h('div.cp-notification-content', {
-                    tabindex: tabIndexValue
+                    tabindex: 0
                 }, [
                     h('p', data.content.msg.type + ' - ' +formatData(data))
                 ])
@@ -119,15 +124,19 @@ define([
                         $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
                     }, 60000);
                 }
+                const label = $(notif).find('.cp-notification-content p').text();
+                $(notif).find('.cp-notification-content').attr('aria-label', label);
             }
 
             $(notif).mouseenter((e) => {
                 e.stopPropagation();
-                $(notif).focus();
+                if($(notif).find('li[tabindex="0"]').length) {
+                    $(notif).focus();
+                };
             });
 
             if (data.content.isClickable) {
-                $(notif).find('.cp-notification-content').addClass("cp-clickable").on('click keypress', function (event) {
+                $(notif).find('.cp-notification-content').addClass("cp-clickable").attr('role', 'link').on('click keypress', function (event) {
                     if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
                         data.content.handler();
                     }
@@ -136,7 +145,10 @@ define([
             if (data.content.isDismissible) {
                 var dismissIcon = h('span.fa.fa-times');
                 var dismiss = h('div.cp-notification-dismiss', {
+                    tabindex: 0,
                     title: Messages.notifications_dismiss,
+                    'aria-label': Messages.notifications_dismiss,
+                    role: 'button'
                 }, dismissIcon);
                 $(dismiss).addClass("cp-clickable")
                     .on('click keypress', function (event) {

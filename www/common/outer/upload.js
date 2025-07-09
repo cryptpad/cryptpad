@@ -3,15 +3,19 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
+    '/api/config',
     '/file/file-crypto.js',
     '/common/common-hash.js',
     '/common/common-util.js',
-    '/common/outer/cache-store.js',
+    '/common/cache-store.js',
+    '/common/outer/http-command.js',
+    '/components/chainpad-crypto/crypto.js',
     '/components/nthen/index.js',
-], function (FileCrypto, Hash, Util, Cache, nThen) {
+], function (ApiConfig, FileCrypto, Hash, Util, Cache, ServerCommand, Crypto, nThen) {
     var module = {};
+    const USE_WS = false;
 
-    module.uploadU8 =function (common, data, cb) {
+    module.uploadU8 = function (common, data, cb) {
         var teamId = data.teamId;
         var u8 = data.u8;
         var metadata = data.metadata;
@@ -27,11 +31,49 @@ define([
 
         var estimate = FileCrypto.computeEncryptedSize(u8.length, metadata);
 
-        var sendChunk = function (box, cb) {
+
+
+        var sendChunkWs = function (box, cb) {
             var enc = Util.encodeBase64(box);
             common.uploadChunk(teamId, enc, function (e, msg) {
                 cb(e, msg);
             });
+        };
+
+
+        let uploadUrl = '/upload-blob';
+        let keys, cookie;
+        if (ApiConfig.fileHost) {
+            const origin = new URL(ApiConfig.fileHost).origin;
+            uploadUrl = origin + uploadUrl;
+        }
+        var sendChunk = function (box, cb) {
+            const enc = Util.encodeBase64(box);
+
+            const c = Util.decodeUTF8(cookie);
+            const sig_str = window.nacl.sign(c, keys.secretKey);
+            const sig = Util.encodeBase64(sig_str);
+
+            const body = {
+                chunk: enc,
+                sig: sig,
+                edPublic: keys.edPublic
+            };
+
+            fetch(uploadUrl, {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            }).then(res => res.json())
+              .then(json => {
+                if (json?.error) {
+                    return cb(json.error);
+                }
+                cookie = json.cookie;
+                cb();
+            }).catch(cb);
         };
 
         var actual = 0;
@@ -45,7 +87,11 @@ define([
                 progressValue = Math.min(progressValue, 100);
                 updateProgress(progressValue);
 
-                return void sendChunk(box, function (e) {
+                let send = sendChunk;
+                if (USE_WS) {
+                    send = sendChunkWs;
+                }
+                return void send(box, function (e) {
                     if (e) { return console.error(e); }
                     next(again);
                 });
@@ -69,6 +115,30 @@ define([
             });
         };
 
+        const startUpload = () => {
+            if (USE_WS) {
+                return void next(again);
+            }
+            common.getAccessKeys(arr => {
+                const myKeys = arr.find(obj => {
+                    return (!obj.id && !teamId) || +obj.id === +teamId;
+                });
+                if (!myKeys) { return void onError('NO_KEYS'); }
+                keys = {
+                    edPublic: myKeys.edPublic,
+                    publicKey: Util.decodeBase64(myKeys.edPublic),
+                    secretKey: Util.decodeBase64(myKeys.edPrivate)
+                };
+                ServerCommand(keys, {
+                    command: 'UPLOAD_COOKIE',
+                }, (err, data) => {
+                    cookie = data?.cookie;
+                    if (err || !cookie) { return void onError(err || 'NOCOOKIE'); }
+                    next(again);
+                });
+            });
+        };
+
         common.uploadStatus(teamId, estimate, function (e, pending) {
             if (e) {
                 console.error(e);
@@ -83,11 +153,11 @@ define([
                         if (e) {
                             return void console.error(e);
                         }
-                        next(again);
+                        startUpload();
                     });
                 });
             }
-            next(again);
+            startUpload();
         });
     };
 

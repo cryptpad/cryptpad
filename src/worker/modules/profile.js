@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = (Util, Hash, Constants, Realtime,
-                Listmap, Crypto, ChainPad) => {
+                Messaging, Listmap, Crypto, ChainPad) => {
     var Profile = {};
+
+    const onReady = Util.mkEvent(true);
 
     var initializeProfile = function (ctx, cb) {
         var profile = ctx.profile;
@@ -55,6 +56,15 @@ const factory = (Util, Hash, Constants, Realtime,
             if (!lm.proxy.edPublic) {
                 lm.proxy.edPublic = ctx.store.proxy.edPublic;
             }
+            if (!lm.proxy.proof) {
+                let str = secret.channel;
+                let myIDu8 = Util.decodeUTF8(str);
+                let k = Util.decodeBase64(ctx.store.proxy.edPrivate);
+                let nacl = Crypto.Nacl;
+                let s = nacl.sign(myIDu8, k);
+                let signature = Util.encodeBase64(s);
+                lm.proxy.proof = signature;
+            }
             if (ctx.onReadyHandlers.length) {
                 ctx.onReadyHandlers.forEach(function (f) {
                     try {
@@ -63,6 +73,7 @@ const factory = (Util, Hash, Constants, Realtime,
                 });
                 ctx.onReadyHandlers = [];
             }
+            onReady.fire();
         }).on('change', [], function () {
             ctx.emit('UPDATE', lm.proxy, ctx.clients);
         });
@@ -91,21 +102,26 @@ const factory = (Util, Hash, Constants, Realtime,
     };
 
     var setValue = function (ctx, data, cId, cb) {
-        var key = data.key;
-        var value = data.value;
-        if (!key) { return; }
-        ctx.listmap.proxy[key] = value;
-        Realtime.whenRealtimeSyncs(ctx.listmap.realtime, function () {
-            ctx.emit('UPDATE', ctx.listmap.proxy, ctx.clients.filter(function (clientId) {
-                return clientId !== cId;
-            }));
-            if (key === 'badge') {
-                ctx.Store.set(null, {
-                    key: ['profile', 'badge'],
-                    value: value || undefined
-                }, () => {});
-            }
-            cb(ctx.listmap.proxy);
+        onReady.reg(() => {
+            var key = data.key;
+            var value = data.value;
+            if (!key) { return; }
+            ctx.listmap.proxy[key] = value;
+            Realtime.whenRealtimeSyncs(ctx.listmap.realtime, function () {
+                ctx.emit('UPDATE', ctx.listmap.proxy, ctx.clients.filter(function (clientId) {
+                    return clientId !== cId;
+                }));
+                if (key === 'badge') {
+                    ctx.Store.set(null, {
+                        key: ['profile', 'badge'],
+                        value: value || undefined
+                    }, () => {
+                        Messaging.updateMyData(ctx.store);
+                        ctx.updateMetadata();
+                    });
+                }
+                cb(ctx.listmap.proxy);
+            });
         });
     };
 
@@ -163,29 +179,13 @@ const factory = (Util, Hash, Constants, Realtime,
     return Profile;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        require('../../common/common-util'),
-        require('../../common/common-hash'),
-        require('../../common/common-constants'),
-        require('../../common/common-realtime'),
-        require('chainpad-listmap'),
-        require('chainpad-crypto'),
-        require('chainpad')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/common-util.js',
-        '/common/common-hash.js',
-        '/common/common-constants.js',
-        '/common/common-realtime.js',
-        'chainpad-listmap',
-        '/components/chainpad-crypto/crypto.js',
-        '/components/chainpad/chainpad.dist.js',
-        ], factory);
-} else {
-    // unsupported initialization
-}
-
-})();
+module.exports = factory(
+    require('../../common/common-util'),
+    require('../../common/common-hash'),
+    require('../../common/common-constants'),
+    require('../../common/common-realtime'),
+    require('../components/messaging'),
+    require('chainpad-listmap'),
+    require('chainpad-crypto'),
+    require('chainpad')
+);

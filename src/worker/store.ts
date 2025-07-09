@@ -23,7 +23,7 @@ import * as UOSetter from '../common/user-object-setter.js';
 import * as Pinpad from '../common/pinpad.js';
 import * as PadTypes from '../common/pad-types.js';
 import * as NetworkConfig from '../common/network-config.js';
-import * as LoginBlock from '../common/login-block.js';
+import * as LoginBlock from '../common/outer/login-block.js';
 
 // Core
 import * as Store from './async-store.js';
@@ -78,6 +78,7 @@ let start = (cfg: StoreConfig):void => {
         Store,
         Account,
         Mailbox,
+        Messenger,
         Badge
     ].forEach(dep => {
         if (typeof(dep.setCustomize) === "function") {

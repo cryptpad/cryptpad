@@ -2,29 +2,29 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = (Sortify, UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
-                Realtime, Messaging, Pinpad, Rpc, Merge, Cache,
-                SF, AccountTS, DriveTS, Cursor,
+                Realtime, Messaging, Pinpad, Rpc, Cache,
+                SF, AccountTS, DriveTS, PadTS, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
                 Calendar, BadgeTS, Block, NetConfig,
                 Crypto, ChainPad, CpNetflux, Listmap,
                 Netflux, nThen) => {
 
-    let ApiConfig = {};
-    let AppConfig = {};
     const Account = AccountTS.Account;
     const Drive = DriveTS.Drive;
+    const Pad = PadTS.Pad;
     const Badge = BadgeTS.Badge;
     const window = globalThis;
     globalThis.nacl = globalThis.nacl || Crypto.Nacl;
 
+    let ApiConfig = {};
+    let AppConfig = {};
+
     const Saferphore = Util.Saferphore;
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
-    var onJoinedEvt = Util.mkEvent(true);
     var onPadRejectedEvt = Util.mkEvent(true);
 
     const setCustomize = data => {
@@ -63,16 +63,23 @@ const factory = (Sortify, UserObject, ProxyManager,
 
         Store.onReadyEvt = onReadyEvt;
 
+        Store.pad = Pad.init({
+            Store, store, postMessage, broadcast
+        });
+        Store.drive = Drive.initAPI({
+            Store, store, postMessage, broadcast
+        });
+
         // Drive clients
         var driveEventClients = [];
-        var sendDriveEvent = function (q, data, sender) {
+        var sendDriveEvent = store.sendDriveEvent = function (q, data, sender) {
             driveEventClients.forEach(function (cId) {
                 if (cId === sender) { return; }
                 postMessage(cId, q, data);
             });
         };
 
-        var getStore = function (teamId) {
+        var getStore = Store.getStore = function (teamId) {
             if (!teamId) { return store; }
             try {
                 var teams = store.modules['team'];
@@ -136,37 +143,6 @@ const factory = (Sortify, UserObject, ProxyManager,
             onSync(data.teamId, cb);
         };
 
-        const copyObject = (src, target) => {
-            Object.keys(src).forEach(k => {
-                delete src[k];
-            });
-            Object.keys(target).forEach(k => {
-                src[k] = Util.clone(target[k]);
-            });
-        };
-        const getProxy = teamId => {
-            let proxy;
-            if (!teamId) {
-                proxy = store.drive?.proxy;
-            } else {
-                const s = getStore(teamId);
-                proxy = s?.drive?.proxy;
-            }
-            return proxy;
-        };
-        Store.drive = {
-            get: (clientId, data, cb) => {
-                let proxy = getProxy(data.teamId);
-                if (!proxy) { return void cb({error: 'ENOTFOUND'}); }
-                cb(proxy);
-            },
-            set: (clientId, data, cb) => {
-                let proxy = getProxy(data.teamId);
-                if (!proxy) { return void cb({error: 'ENOTFOUND'}); }
-                copyObject(proxy, data.value);
-                onSync(data.teamId, cb);
-            }
-        };
 
         Store.getSharedFolder = function (clientId, data, cb) {
             var s = getStore(data.teamId);
@@ -351,17 +327,6 @@ const factory = (Sortify, UserObject, ProxyManager,
             });
         };
 
-        // Update for all users from accounts and return current user limits
-        Store.updatePinLimit = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            store.rpc.updatePinLimits(function (e, limit, plan, note) {
-                if (e) { return void cb({error: e}); }
-                account.limit = limit;
-                account.plan = plan;
-                account.note = note;
-                cb(account);
-            });
-        };
         // Get current user limits
         Store.getPinLimit = function (clientId, data, cb) {
             var s = getStore(data && data.teamId);
@@ -381,47 +346,6 @@ const factory = (Sortify, UserObject, ProxyManager,
                 });
             }
             cb(account);
-        };
-
-        // clearOwnedChannel is only used for private chat and forms
-        Store.clearOwnedChannel = function (clientId, data, cb) {
-            var s = getStore(data && data.teamId);
-            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            s.rpc.clearOwnedChannel(data.channel, function (err) {
-                cb({error:err});
-            });
-        };
-
-        var myDeletions = {};
-        Store.removeOwnedChannel = function (clientId, data, cb) {
-            // "data" used to be a string (channelID), now it can also be an object
-            // data.force tells us we can safely remove the drive ID
-            var channel = data;
-            var force = false;
-            var teamId;
-            var reason;
-            if (data && typeof(data) === "object") {
-                channel = data.channel;
-                force = data.force;
-                teamId = data.teamId;
-                reason = data.reason;
-            }
-
-            if (channel === store.driveChannel && !force) {
-                return void cb({error: 'User drive removal blocked!'});
-            }
-
-            var s = getStore(teamId);
-            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
-            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-
-            // If this channel is loaded, remember that we deleted it ourselves
-            if (Store.channels[channel]) { myDeletions[channel] = true; }
-
-            s.rpc.removeOwnedChannel(channel, function (err) {
-                if (err) { delete myDeletions[channel]; }
-                cb({error:err});
-            }, reason);
         };
 
         var arePinsSynced = function (cb) {
@@ -499,7 +423,7 @@ const factory = (Sortify, UserObject, ProxyManager,
         var initTempRpc = (clientId, cb) => {
             if (store.rpc) { return void cb(store.rpc); }
             var kp = Crypto.Nacl.sign.keyPair();
-            var keys = {
+            var keys = store.tempKeys = {
                 edPublic: Util.encodeBase64(kp.publicKey),
                 edPrivate: Util.encodeBase64(kp.secretKey)
             };
@@ -859,7 +783,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                         }));
                     }).nThen(function (_w) {
                         if (otherOwners) {
-                            Store.setPadMetadata(null, {
+                            Store.pad.setMetadata(null, {
                                 channel: c,
                                 command: 'RM_OWNERS',
                                 value: [edPublic],
@@ -922,7 +846,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                     }).nThen(function (waitFor) {
                         // Delete Drive
                         store.ownDeletion = true;
-                        Store.removeOwnedChannel(clientId, {
+                        Store.pad.destroy(clientId, {
                             channel: store.driveChannel,
                             force: true
                         }, waitFor());
@@ -973,15 +897,6 @@ const factory = (Sortify, UserObject, ProxyManager,
             });
         };
 
-        /**
-         * Merge the anonymous drive into the user drive at registration
-         * data
-         *   - anonHash
-         */
-        Store.migrateAnonDrive = function (clientId, data, cb) {
-            var hash = data.anonHash;
-            Merge.anonDriveIntoUser(store, hash, cb);
-        };
 
         // Set the display name (username) in the proxy
         Store.setDisplayName = function (clientId, value, cb) {
@@ -1055,13 +970,14 @@ const factory = (Sortify, UserObject, ProxyManager,
                 console.error('DEPRECATED: use setAttribute with an array, not a string');
                 return {
                     path: ['settings'],
-                    obj: store.proxy.settings,
+                    obj: store.proxy?.settings,
                     key: attr
                 };
             }
             if (!Array.isArray(attr)) { return void console.error("Attribute must be string or array"); }
             if (attr.length === 0) { return void console.error("Attribute can't be empty"); }
-            var obj = store.proxy.settings;
+            var obj = store.proxy?.settings;
+            if (!obj) { return; }
             attr.forEach(function (el, i) {
                 if (i === attr.length-1) { return; }
                 if (!obj[el]) {
@@ -1091,7 +1007,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             try {
                 object = getAttributeObject(data.attr);
             } catch (e) { return void cb({error: e}); }
-            cb(object.obj[object.key]);
+            cb(object?.obj[object.key]);
         };
 
         // Tags
@@ -1204,7 +1120,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                 return void cb({ notStored: true });
             }
 
-            var channelData = Store.channels && Store.channels[channel];
+            var channelData = Store.pad.getChannels()[channel];
 
             var owners;
             if (channelData && channelData.wc && channel === channelData.wc.id) {
@@ -1679,63 +1595,12 @@ const factory = (Sortify, UserObject, ProxyManager,
         /////////////////////// PAD //////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
-        var channels = Store.channels = store.channels = {};
-
         Store.getSnapshot = function (clientId, data, cb) {
             Store.getHistoryRange(clientId, {
                 cpCount: 1,
                 channel: data.channel,
                 lastKnownHash: data.hash
             }, cb);
-        };
-
-        var getVersionHash = function (clientId, data) {
-            var validateKey;
-            var fakeNetflux = Hash.createChannelId();
-            nThen(function (waitFor) {
-                Store.getPadMetadata(null, {
-                    channel: data.channel
-                }, waitFor(function (md) {
-                    if (md && md.rejected) {
-                        postMessage(clientId, "PAD_ERROR", {type: "ERESTRICTED"});
-                        waitFor.abort();
-                        return;
-                    }
-                    validateKey = md.validateKey;
-                }));
-            }).nThen(function () {
-                Store.getHistoryRange(clientId, {
-                    cpCount: 1,
-                    channel: data.channel,
-                    lastKnownHash: data.versionHash
-                }, function (obj) {
-                    if (obj && obj.error) {
-                        postMessage(clientId, "PAD_ERROR", obj.error);
-                        return;
-                    }
-                    var msgs = obj.messages || [];
-                    if (msgs.length && msgs[msgs.length - 1].serverHash !== data.versionHash) {
-                        postMessage(clientId, "PAD_ERROR", {type: "HASH_NOT_FOUND"});
-                        return;
-                    }
-                    postMessage(clientId, "PAD_CONNECT", {
-                        myID: fakeNetflux,
-                        id: data.channel,
-                        members: [fakeNetflux]
-                    });
-                    (obj.messages || []).forEach(function (data) {
-                        postMessage(clientId, "PAD_MESSAGE", {
-                            msg: data.msg,
-                            time: data.time,
-                            user: fakeNetflux.slice(0,16), // fake history keeper to avoid validate
-                        });
-                    });
-                    if (validateKey && store.messenger) {
-                        store.messenger.storeValidateKey(data.channel, validateKey);
-                    }
-                    postMessage(clientId, "PAD_READY");
-                });
-            });
         };
 
         Store.onRejected = function (allowed, _cb) {
@@ -1786,226 +1651,6 @@ const factory = (Sortify, UserObject, ProxyManager,
                 // Fall back to the old system in case onRpcReadyEvt doesn't exist (shouldn't happen)
                 auth();
             });
-        };
-
-        Store.joinPad = function (clientId, data) {
-            if (data.versionHash) {
-                return void getVersionHash(clientId, data);
-            }
-            if (!Hash.isValidChannel(data.channel)) {
-                return void postMessage(clientId, "PAD_ERROR", 'INVALID_CHAN');
-            }
-            var isNew = typeof channels[data.channel] === "undefined";
-            var channel = channels[data.channel] = channels[data.channel] || {
-                queue: [],
-                data: {},
-                clients: [],
-                bcast: function (cmd, data, notMe) {
-                    channel.clients.forEach(function (cId) {
-                        if (cId === notMe) { return; }
-                        postMessage(cId, cmd, data);
-                    });
-                },
-                history: [],
-                pushHistory: function (msg, isCp) {
-                    if (isCp) {
-                        // the current message is a checkpoint.
-                        // push it to your worker's history, prepending it with cp|
-                        // cp| and anything else related to checkpoints has already
-                        // been stripped by chainpad-netflux-worker or within async store
-                        // when the message was outgoing.
-                        channel.history.push('cp|' + msg);
-                        // since the latest message is a checkpoint, we are able to drop
-                        // some of the older history, but we can't rely on checkpoints being
-                        // correct, as they might be checkpoints from different forks
-                        var i;
-                        for (i = channel.history.length - 101; i > 0; i--) {
-                            if (/^cp\|/.test(channel.history[i])) { break; }
-                        }
-                        channel.history = channel.history.slice(Math.max(i, 0));
-                        return;
-                    }
-                    channel.history.push(msg);
-                }
-            };
-            if (channel.clients.indexOf(clientId) === -1) {
-                channel.clients.push(clientId);
-            }
-
-            if (!isNew && channel.wc) {
-                postMessage(clientId, "PAD_CONNECT", {
-                    myID: channel.wc.myID,
-                    id: channel.wc.id,
-                    members: channel.wc.members
-                });
-                channel.wc.members.forEach(function (m) {
-                    postMessage(clientId, "PAD_JOIN", m);
-                });
-                channel.history.forEach(function (msg) {
-                    postMessage(clientId, "PAD_MESSAGE", {
-                        msg: CpNetflux.removeCp(msg),
-                        user: channel.wc.myID,
-                        validateKey: channel.data.validateKey
-                    });
-                });
-                postMessage(clientId, "PAD_READY");
-
-                return;
-            }
-            var onError = function (err) {
-                // If it's a deletion started from this worker, different UI message
-                if (err && err.type === "EDELETED" && myDeletions[data.channel]) {
-                    delete myDeletions[channel];
-                    err.ownDeletion = true;
-                }
-                channel.bcast("PAD_ERROR", err);
-
-                if (err && err.type === "EDELETED" && Cache && Cache.clearChannel) {
-                    Cache.clearChannel(data.channel);
-                }
-
-                // If this is a DELETED, EXPIRED or RESTRICTED pad, leave the channel
-                if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
-                Store.leavePad(null, data, function () {});
-            };
-            var conf = {
-                Cache: store.neverCache ? undefined : Cache,
-                priority: 1,
-                onCacheStart: function () {
-                    postMessage(clientId, "PAD_CACHE");
-                },
-                onCacheReady: function () {
-                    postMessage(clientId, "PAD_CACHE_READY");
-                },
-                onReady: function (pad) {
-                    var padData = pad.metadata || {};
-                    channel.data = padData;
-                    if (padData && padData.validateKey && store.messenger) {
-                        store.messenger.storeValidateKey(data.channel, padData.validateKey);
-                    }
-                    postMessage(clientId, "PAD_READY", pad.noCache);
-                    /*
-                    if (!store.proxy) {
-                        postMessage(clientId, "PAD_READY", pad.noCache);
-                        return;
-                    }
-                    onReadyEvt.reg(function () {
-                        postMessage(clientId, "PAD_READY", pad.noCache);
-                    });
-                    */
-                },
-                onMessage: function (m, user, validateKey, isCp, hash) {
-                    channel.lastHash = hash;
-                    channel.pushHistory(m, isCp);
-                    channel.bcast("PAD_MESSAGE", {
-                        user: user,
-                        msg: m,
-                        validateKey: validateKey
-                    });
-                },
-                onJoin: function (m) {
-                    channel.bcast("PAD_JOIN", m);
-                },
-                onLeave: function (m) {
-                    channel.bcast("PAD_LEAVE", m);
-                },
-                onError: onError,
-                onChannelError: onError,
-                onRejected: Store.onRejected,
-                onConnectionChange: function (info) {
-                    if (!info.state) {
-                        channel.bcast("PAD_DISCONNECT");
-                    }
-                },
-                onMetadataUpdate: function (metadata) {
-                    channel.data = metadata || {};
-                    getAllStores().forEach(function (s) {
-                        var allData = s.manager.findChannel(data.channel, true);
-                        allData.forEach(function (obj) {
-                            obj.data.owners = metadata.owners;
-                            obj.data.atime = +new Date();
-                            if (metadata.expire) {
-                                obj.data.expire = +metadata.expire;
-                            }
-                        });
-                        var send = s.sendEvent || sendDriveEvent;
-                        send('DRIVE_CHANGE', {
-                            path: ['drive', UserObject.FILES_DATA]
-                        });
-                    });
-                    channel.bcast("PAD_METADATA", metadata);
-                },
-                crypto: {
-                    // The encryption and decryption is done in the outer window.
-                    // This async-store only deals with already encrypted messages.
-                    encrypt: function (m) { return m; },
-                    decrypt: function (m) { return m; }
-                },
-                noChainPad: true,
-                channel: data.channel,
-                metadata: data.metadata,
-                network: store.network || store.networkPromise,
-                websocketURL: NetConfig.getWebsocketURL(),
-                onInit: function () {
-                    onJoinedEvt.fire();
-                },
-                //readOnly: data.readOnly,
-                onConnect: function (wc, sendMessage) {
-                    channel.sendMessage = function (msg, cId, cb) {
-                        // Send to server
-                        sendMessage(msg, function (err) {
-                            if (err) {
-                                return void cb({ error: err });
-                            }
-                            // Broadcast to other tabs
-                            channel.lastHash = msg.slice(0,64);
-                            channel.pushHistory(CpNetflux.removeCp(msg), /^cp\|/.test(msg));
-                            channel.bcast("PAD_MESSAGE", {
-                                user: wc.myID,
-                                msg: CpNetflux.removeCp(msg),
-                                validateKey: channel.data.validateKey
-                            }, cId);
-                            cb();
-                        });
-                    };
-                    channel.wc = wc;
-                    channel.queue.forEach(function (data) {
-                        channel.sendMessage(data.message, clientId);
-                    });
-                    channel.queue = [];
-                    channel.bcast("PAD_CONNECT", {
-                        myID: wc.myID,
-                        id: wc.id,
-                        members: wc.members
-                    });
-                }
-            };
-            channel.cpNf = CpNetflux.start(conf);
-        };
-        Store.leavePad = function (clientId, data, cb) {
-            var channel = channels[data.channel];
-            if (!channel || !channel.cpNf) { return void cb ({error: 'EINVAL'}); }
-            Store.dropChannel(data.channel);
-            cb();
-        };
-        Store.sendPadMsg = function (clientId, data, cb) {
-            var msg = data.msg;
-            var channel = channels[data.channel];
-            if (!channel) {
-                return; }
-            if (!channel.wc) {
-                channel.queue.push(msg);
-                return void cb();
-            }
-            channel.sendMessage(msg, clientId, cb);
-        };
-
-        Store.corruptedCache = function (clientId, channel) {
-            var chan = channels[channel];
-            if (!chan || !chan.cpNf) { return; }
-            Cache.clearChannel(channel);
-            if (!chan.cpNf.resetCache) { return; }
-            chan.cpNf.resetCache();
         };
 
         // Unpin and pin the new channel in all team when changing a pad password
@@ -2084,15 +1729,6 @@ const factory = (Sortify, UserObject, ProxyManager,
             cb();
         };
 
-        Store.getLastHash = function (clientId, data, cb) {
-            var chan = channels[data.channel];
-            if (!chan) { return void cb({error: 'ENOCHAN'}); }
-            if (!chan.lastHash) { return void cb({error: 'EINVAL'}); }
-            cb({
-                hash: chan.lastHash
-            });
-        };
-
         // Delete a pad received with a burn after reading URL
 
         var notifyOwnerPadRemoved = function (data, obj) {
@@ -2152,7 +1788,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                     edPrivate: Hash.encodeBase64(pair.secretKey)
                 }, function (e, rpc) {
                     if (e) { return void console.error(e); }
-                    Store.getPadMetadata(null, {
+                    Store.pad.getMetadata(null, {
                         channel: channel
                     }, function (md) {
                         rpc.removeOwnedChannel(channel, function (err) {
@@ -2164,75 +1800,6 @@ const factory = (Sortify, UserObject, ProxyManager,
                 });
             } catch (e) {
                 console.error(e);
-            }
-        };
-
-        // Fetch the latest version of the metadata on the server and return it.
-        // If the pad is stored in our drive, update the local values of "owners" and "expire"
-        Store.getPadMetadata = function (clientId, data, _cb) {
-            var cb = Util.once(Util.mkAsync(_cb));
-
-            if (store.offline || !store.anon_rpc) { return void cb({ error: 'OFFLINE' }); }
-            if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
-            if (data.channel.length !== 32) { return void cb({ error: 'EINVAL'}); }
-            if (!Hash.isValidChannel(data.channel)) {
-                Feedback.send('METADATA_INVALID_CHAN');
-                return void cb({ error: 'EINVAL' });
-            }
-            store.anon_rpc.send('GET_METADATA', data.channel, function (err, obj) {
-                if (err) { return void cb({error: err}); }
-                var metadata = (obj && obj[0]) || {};
-                cb(metadata);
-
-                // If you don't have access to the metadata, stop here
-                // (we can't update the local data)
-                if (metadata.rejected) { return; }
-
-                // Update owners and expire time in the drive
-                getAllStores().forEach(function (s) {
-                    var allData = s.manager.findChannel(data.channel, true);
-                    var changed = false;
-                    allData.forEach(function (obj) {
-                        if (Sortify(obj.data.owners) !== Sortify(metadata.owners)) {
-                            changed = true;
-                        }
-                        obj.data.owners = metadata.owners;
-                        obj.data.atime = +new Date();
-                        if (metadata.expire) {
-                            obj.data.expire = +metadata.expire;
-                        }
-                    });
-                    // If we had to change the "owners" field, redraw the drive UI
-                    if (!changed) { return; }
-                    var send = s.sendEvent || sendDriveEvent;
-                    send('DRIVE_CHANGE', {
-                        path: ['drive', UserObject.FILES_DATA]
-                    });
-                });
-            });
-        };
-        Store.setPadMetadata = function (clientId, data, cb) {
-            if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
-            if (!data.command) { return void cb({ error: 'EINVAL' }); }
-            var s = getStore(data.teamId);
-            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
-
-            var otherChannels = data.channels;
-            delete data.channels;
-            s.rpc.setMetadata(data, function (err, res) {
-                if (err) { return void cb({ error: err }); }
-                if (!Array.isArray(res) || !res.length) { return void cb({}); }
-                cb(res[0]);
-            });
-            // If we have other related channels, send the command for them too
-            if (Array.isArray(otherChannels)) {
-                otherChannels.forEach(function (chan) {
-                    var _d = Util.clone(data);
-                    _d.channel = chan;
-                    Store.setPadMetadata(clientId, _d, function () {
-
-                    });
-                });
             }
         };
 
@@ -2598,114 +2165,21 @@ const factory = (Sortify, UserObject, ProxyManager,
             s.manager.command(cmdData, cb2);
         };
 
-
         // Check if this is a channel that we shouldn't leave when closing the debug app
-        var alwaysOnline = function (chanId) {
-            if (!store) { return; }
-            // Drive
-            if (store.driveChannel === chanId) { return true; }
-            // Shared folders
-            if (SF.isSharedFolderChannel(chanId)) { return true; }
-            // Teams
-            if (Util.find(store, ['proxy', 'teams'])) {
-                var t = Util.find(store, ['proxy', 'teams']) || {};
-                return Object.keys(t).some(function (id) {
-                    return t[id].channel === chanId;
-                });
-            }
-            // Profile
-            if (Util.find(store, ['proxy', 'profile', 'href'])) {
-                return Hash.hrefToHexChannelId(Util.find(store, ['proxy', 'profile', 'href']))
-                        === chanId;
-            }
-        };
-
-        var dropChannel = Store.dropChannel = function (chanId) {
-            console.error('Drop channel', chanId);
-
-            try {
-                store.messenger.leavePad(chanId);
-            } catch (e) { console.error(e); }
-            try {
-                store.modules['cursor'].leavePad(chanId);
-            } catch (e) { console.error(e); }
-            try {
-                store.modules['integration'].leavePad(chanId);
-            } catch (e) { console.error(e); }
-            try {
-                store.onlyoffice.leavePad(chanId);
-            } catch (e) { console.error(e); }
-
-            try {
-                if (alwaysOnline(chanId)) {
-                    delete Store.channels[chanId];
-                    return;
-                }
-            } catch (e) { console.error(e); }
-
-            try {
-                Cache.leaveChannel(chanId);
-            } catch (e) { console.error(e); }
-
-            if (!Store.channels[chanId]) { return; }
-
-            if (Store.channels[chanId].cpNf) {
-                Store.channels[chanId].cpNf.stop();
-            }
-
-            delete Store.channels[chanId];
-        };
         Store._removeClient = function (clientId) {
             var driveIdx = driveEventClients.indexOf(clientId);
             if (driveIdx !== -1) {
                 driveEventClients.splice(driveIdx, 1);
             }
-            try {
-                store.onlyoffice?.removeClient(clientId);
-            } catch (e) { console.error(e); }
-            try {
-                store.mailbox?.removeClient(clientId);
-            } catch (e) { console.error(e); }
+            store.onlyoffice?.removeClient?.(clientId);
+            store.mailbox?.removeClient?.(clientId);
             Object.keys(store.modules).forEach(function (key) {
-                if (!store.modules[key]) { return; }
-                if (!store.modules[key].removeClient) { return; }
-                try {
-                    store.modules[key].removeClient(clientId);
-                } catch (e) { console.error(e); }
+                store.modules[key]?.removeClient?.(clientId);
             });
 
-            Object.keys(Store.channels).forEach(function (chanId) {
-                var chanIdx = Store.channels[chanId].clients.indexOf(clientId);
-                if (chanIdx !== -1) {
-                    Store.channels[chanId].clients.splice(chanIdx, 1);
-                }
-                if (Store.channels[chanId].clients.length === 0) {
-                    dropChannel(chanId);
-                }
-            });
+            Store.pad?.removeClient?.(clientId);
         };
 
-
-
-
-/*
-        var loadProfile = function (waitFor) {
-            store.profile = Profile.init({
-                store: store,
-                updateMetadata: function () {
-                    broadcast([], "UPDATE_METADATA");
-                },
-                pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
-            }, waitFor, function (ev, data, clients) {
-                clients.forEach(function (cId) {
-                    postMessage(cId, 'PROFILE_EVENT', {
-                        ev: ev,
-                        data: data
-                    });
-                });
-            });
-        };
-*/
         var loadOnlyOffice = function () {
             if (store.onlyoffice) { return; }
             store.onlyoffice = OnlyOffice.init(store, function (ev, data, clients) {
@@ -2776,7 +2250,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                 loadSharedFolder: loadSharedFolder,
                 settings: proxy.settings,
                 removeOwnedChannel: function (channel, cb) {
-                    Store.removeOwnedChannel('', channel, cb);
+                    Store.pad.destroy('', channel, cb);
                 },
                 store: store,
                 Store: Store
@@ -3028,7 +2502,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             // don't always call onCacheReady and onReady?
             // it depends on what was required by the first tab
             onAccountCacheReady(returned => {
-                store.returned ||= returned;
+                store.cacheReturned ||= returned;
                 cacheCb(returned);
             });
             onAccountReady(returned => {
@@ -3051,8 +2525,9 @@ const factory = (Sortify, UserObject, ProxyManager,
 
             setInterval(function () {
                 var clients = [];
-                Object.keys(Store.channels).forEach(function (chanId) {
-                    var c = Store.channels[chanId].clients;
+                const channels = Store.pad.getChannels();
+                Object.keys(channels).forEach(function (chanId) {
+                    var c = channels[chanId].clients;
                     Array.prototype.push.apply(clients, c);
                 });
                 clients = Util.deduplicateString(clients);
@@ -3092,7 +2567,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                 } = drive;
 
                 onDriveCacheReady(() => {
-                    cacheCb(store.returned);
+                    cacheCb(store.cacheReturned || store.returned);
                 });
                 onDriveReady(() => {
                     cb(store.returned);
@@ -3134,13 +2609,6 @@ const factory = (Sortify, UserObject, ProxyManager,
          */
         var initialized = false;
 
-        // Are we still in noDrive mode?
-        Store.hasDrive = function (clientId, data, cb) {
-            cb({
-                state: Boolean(store.proxy)
-            });
-        };
-
         const loadHK = (cb) => {
             if (store?.network?.historyKeeper) {
                 return setTimeout(cb);
@@ -3170,7 +2638,8 @@ const factory = (Sortify, UserObject, ProxyManager,
         };
         // If we load CryptPad for the first time from an existing pad, don't create a
         // drive automatically.
-        var onNoDrive = function (clientId, cb, initRpc) {
+        var onNoDrive = function (clientId, _cb, initRpc) {
+            const cb = Util.once(_cb);
             var andThen = function () {
                 // Initialize modules that can be used by pads
                 // and don't require account data
@@ -3182,30 +2651,37 @@ const factory = (Sortify, UserObject, ProxyManager,
                         cb({});
                     });
                 };
-                if (initRpc) {
-                    // In integration mode, we may need an RPC
-                    return initTempRpc(clientId, getAnon);
-                }
-                getAnon();
+                // We need to know the HistoryKeeper ID
+                // to initialize the anon RPC
+                loadHK(err => {
+                    if (err) { return; }
+                    if (initRpc) {
+                        // In integration mode, we may need
+                        // an authenticated RPC
+                        return initTempRpc(clientId, getAnon);
+                    }
+                    getAnon();
+                });
+                // If initRpc is true, we need to wait for a network
+                // before calling back
+                if (!store.network && !initRpc) { cb({}); }
             };
 
             // We need an anonymous RPC to be able to check if the pad exists and to get
             // its metadata, so we have to create a network first.
             if (!store.network) {
                 var wsUrl = NetConfig.getWebsocketURL();
-                return void Netflux.connect(wsUrl).then(function (network) {
-                    // If we already haave a network (race condition), use the
-                    // existing one and forget this one
+                store.networkPromise = Netflux.connect(wsUrl);
+                andThen();
+                return store.networkPromise.then((network) => {
+                    if (store.network === network) { return; }
+                    // If we already haave a network (race condition)
+                    // use the existing one and forget this one
                     if (!store.network) { store.network = network; }
                     else {
                         network.disconnect();
                         network = store.network;
                     }
-                    // We need to know the HistoryKeeper ID to initialize the anon RPC
-                    loadHK(err => {
-                        if (err) { return void cb(err); }
-                        andThen();
-                    });
                 }, function (err) {
                     console.error(err);
                     cb({error: 'OFFLINE'});
@@ -3239,6 +2715,10 @@ const factory = (Sortify, UserObject, ProxyManager,
                 return void onNoDrive(clientId, obj => {
                     if (obj?.error) {
                         Feedback.send("NO_DRIVE_ERROR", true);
+                    }
+                    if (!!data.neverDrive) {
+                        // Send temp RPC keys to the browser to allow upload
+                        obj.tempKeys = store?.tempKeys;
                     }
                     cb(obj);
                 }, !!data.neverDrive);
@@ -3285,7 +2765,13 @@ const factory = (Sortify, UserObject, ProxyManager,
                             startModules(clientId, ret, onInit);
                         });
                     });
-                    onJoinedEvt.reg(next);
+                    Store.pad.onCacheReady(() => {
+                        // If we're online, wait for onJoined
+                        if (store.network) { return; }
+                        // Otherwise, continue with cached drive
+                        next();
+                    });
+                    Store.pad.onJoined(next);
                     onPadRejectedEvt.reg(next);
                 });
             }
@@ -3402,8 +2888,9 @@ const factory = (Sortify, UserObject, ProxyManager,
                 });
             }
 
-            // If this is not the first tab (initialized is true), it means either we don't
-            // support offline or we're already online
+            // If this is not the first tab (initialized is true),
+            // it means either we don't support offline or we're
+            // already online
             if (initialized) {
                 if (store.networkTimeout) {
                     postMessage(clientId, "LOADING_DRIVE", {
@@ -3471,48 +2958,41 @@ const factory = (Sortify, UserObject, ProxyManager,
     };
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        require('json.sortify'),
-        require('../common/user-object'),
-        require('../common/proxy-manager'),
-        require('./components/migrate-user-object'),
-        require('../common/common-hash'),
-        require('../common/common-util'),
-        require('../common/common-constants'),
-        require('../common/common-feedback'),
-        require('../common/common-realtime'),
-        require('./components/messaging'),
-        require('../common/pinpad'),
-        require('../common/rpc'),
-        require('./components/merge-drive'),
-        require('../common/cache-store'),
-        require('./components/sharedfolder'),
-        require('./components/account'), // .ts
-        require('./components/drive'), // .ts
-        require('./modules/cursor'),
-        require('./modules/support'),
-        require('./modules/integration'),
-        require('./modules/onlyoffice'),
-        require('./modules/mailbox'),
-        require('./modules/profile'),
-        require('./modules/team'),
-        require('./modules/messenger'),
-        require('./modules/history'),
-        require('./modules/calendar'),
-        require('./modules/badge'),
-        require('../common/login-block'),
-        require('../common/network-config'),
-        require('chainpad-crypto'),
-        require('chainpad'),
-        require('chainpad-netflux'),
-        require('chainpad-listmap'),
-        require('netflux-websocket'),
-        require('nthen')
-    );
-} else {
-    // unsupported initialization
-}
-
-})();
+module.exports = factory(
+    require('json.sortify'),
+    require('../common/user-object'),
+    require('../common/proxy-manager'),
+    require('./components/migrate-user-object'),
+    require('../common/common-hash'),
+    require('../common/common-util'),
+    require('../common/common-constants'),
+    require('../common/common-feedback'),
+    require('../common/common-realtime'),
+    require('./components/messaging'),
+    require('../common/pinpad'),
+    require('../common/rpc'),
+    require('../common/cache-store'),
+    require('./components/sharedfolder'),
+    require('./components/account'), // .ts
+    require('./components/drive'), // .ts
+    require('./components/pad'), // .ts
+    require('./modules/cursor'),
+    require('./modules/support'),
+    require('./modules/integration'),
+    require('./modules/onlyoffice'),
+    require('./modules/mailbox'),
+    require('./modules/profile'),
+    require('./modules/team'),
+    require('./modules/messenger'),
+    require('./modules/history'),
+    require('./modules/calendar'),
+    require('./modules/badge'), // .ts
+    require('../common/outer/login-block'),
+    require('../common/network-config'),
+    require('chainpad-crypto'),
+    require('chainpad'),
+    require('chainpad-netflux'),
+    require('chainpad-listmap'),
+    require('netflux-websocket'),
+    require('nthen')
+);

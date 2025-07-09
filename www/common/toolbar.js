@@ -65,60 +65,6 @@ MessengerUI, Messages, Pages, PadTypes) {
         return 'cp-toolbar-uid-' + String(Math.random()).substring(2);
     };
 
-    var observeChildren = function ($content, isDrawer) {
-        var reorderDOM = Util.throttle(function ($content, observer) {
-            if (!$content.length) { return; }
-
-            // List all children based on their "order" property
-            var map = {};
-            $content[0].childNodes.forEach((node) => {
-                try {
-                    if (!node.attributes) { return; }
-                    let nodeWithOrder;
-                    if (isDrawer) { // HACK: the order is set on their inner "a" tag
-                        let $n = $(node);
-                        if (!$n.attr('class') &&
-                            ($n.find('.fa').length || $n.find('.cptools').length)) {
-                            nodeWithOrder = $n.find('.fa')[0] || $n.find('.cptools')[0];
-                        }
-                    }
-                    var order = getComputedStyle(nodeWithOrder || node).getPropertyValue("order");
-                    var a = map[order] = map[order] || [];
-                    a.push(node);
-                } catch (e) { console.error(e, node); }
-            });
-
-            // Disconnect the observer while we're reordering to avoid infinite loop
-            observer.disconnect();
-            Object.keys(map).sort(function (a, b) {
-                return Number(a) - Number(b);
-            }).forEach(function (k) {
-                var arr = map[k];
-                if (!Number(k)) { return; } // No need to "append" if order is 0
-                // Reorder
-                arr.forEach(function (node) {
-                    $content.append(node);
-                });
-            });
-            observer.start();
-        }, 100);
-
-        let observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.addedNodes.length) {
-                    reorderDOM($content, observer);
-                }
-            });
-        });
-        observer.start = function () {
-            if (!$content.length) { return; }
-            observer.observe($content[0], {
-                childList: true
-            });
-        };
-        observer.start();
-    };
-
     var createRealtimeToolbar = function (config) {
         if (!config.$container) { return; }
         var $container = config.$container;
@@ -309,7 +255,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var safeName = Util.fixHTML(name);
-            var $span = $('<span>', {'class': 'cp-avatar'});
+            var $span = $('<span>', {'class': 'cp-userlist-entry'});
             if (data.color && showColors) {
                 $span.css('border-color', data.color);
             }
@@ -423,22 +369,30 @@ MessengerUI, Messages, Pages, PadTypes) {
                     Common.openURL(origin+'/profile/#' + data.profile);
                 });
             }
-            Common.displayAvatar($span, data.avatar, name, function () {
+            const spanAvatar = h('span.cp-avatar');
+            const $avatar = $(spanAvatar).prependTo($span);;
+            const onAvatar = Util.mkEvent(true);
+            Common.displayAvatar($avatar, data.avatar, name, function () {
                 $span.append($rightCol);
+                onAvatar.fire();
             }, data.uid);
             $span.data('uid', data.uid);
-            if (false && data.badge && data.edPublic) { // XXX 2025.6
+            if (data.badge && data.edPublic) {
                 const addBadge = (badge) => {
                     let i = Badges.render(badge);
                     if (!i) { return; }
-                    $rightCol.append(h('div.cp-userlist-badge', i));
+                    onAvatar.reg(() => {
+                        $avatar.append(i);
+                    });
                 };
-                const key = data.signature + '-' + data.badge;
+                const key = data.netfluxId + '-' + data.signature + '-' + data.badge;
                 const v = validatedBadges[key];
                 if (typeof (v) === "string") {
                     addBadge(v);
                 } else if (v === false) {
-                    addBadge('error');
+                    if (!Badges.safeBadges.includes(data.badge)) {
+                        addBadge('error');
+                    }
                 } else {
                     let ev = validatedBadges[key] ||= Util.mkEvent(true);
                     ev.reg(badge => { addBadge(badge); });
@@ -451,6 +405,7 @@ MessengerUI, Messages, Pages, PadTypes) {
                     }, res => {
                         if (!res?.verified) {
                             validatedBadges[key] = false;
+                            if (Badges.safeBadges.includes(data.badge)) { return; }
                             return void addBadge('error');
                         }
                         validatedBadges[key] = res.badge;
@@ -1053,17 +1008,16 @@ MessengerUI, Messages, Pages, PadTypes) {
             if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
                 $limit.show().click(function () {
-                    if (ApiConfig.allowSubscriptions && Config.upgradeURL) {
-                        var msg = Pages.setHTML(h('span'), Messages.pinLimitReachedAlert);
-                        $(msg).find('a').attr({
-                            target: '_blank',
-                            href: Config.upgradeURL,
-                        });
+                    let handled = false;
+                    // Msg.pinLimitReachedAlert
+                    Common.getExtensionsSync('QUOTA_REACHED').forEach(ext => {
+                        if (!ext.getAlert) { return; }
+                        handled = true;
+                        ext.getAlert();
+                    });
+                    if (handled) { return; }
 
-                        UI.alert(msg);
-                    } else {
-                        UI.alert(Messages.pinLimitReachedAlertNoAccounts);
-                    }
+                    UI.alert(Messages.pinLimitReachedAlertNoAccounts);
                 });
             }
         };
@@ -1226,7 +1180,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         $button.attr('aria-label', Messages.notificationsPage);
         var $n = $button.find('.cp-dropdown-button-title').hide();
         var $empty = $(div).find('.cp-notifications-empty');
-        observeChildren($(div));
+        UIElements.reorderDOM($(div));
 
         var refresh = function () {
             updateUserList(toolbar, config);
@@ -1452,14 +1406,14 @@ MessengerUI, Messages, Pages, PadTypes) {
         toolbar.$history = $toolbar.find('.'+Bar.constants.history);
         toolbar.$user = $toolbar.find('.'+Bar.constants.userAdmin);
 
-        observeChildren(toolbar.$drawer, true);
-        observeChildren(toolbar.$bottomL);
-        observeChildren(toolbar.$bottomM);
-        observeChildren(toolbar.$bottomR);
-        observeChildren(toolbar.$top);
-        observeChildren(toolbar.$user);
+        UIElements.reorderDOM(toolbar.$drawer, true);
+        UIElements.reorderDOM(toolbar.$bottomL);
+        UIElements.reorderDOM(toolbar.$bottomM);
+        UIElements.reorderDOM(toolbar.$bottomR);
+        UIElements.reorderDOM(toolbar.$top);
+        UIElements.reorderDOM(toolbar.$user);
         if (config.$contentContainer) {
-            observeChildren(config.$contentContainer);
+            UIElements.reorderDOM(config.$contentContainer);
         }
 
         toolbar.$userAdmin = $toolbar.find('.'+Bar.constants.userAdmin);

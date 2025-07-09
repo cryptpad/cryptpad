@@ -171,17 +171,57 @@
             color: @cryptpad_text_col;
             border-radius: @variables_radius_L;
             font-weight: normal;
-            .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox):not(.fa-map-marker) {
+            .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox):not(.fa-map-marker):not(.fa-align-left) {
                 display: none;
             }
             .tui-full-calendar-icon {
                 text-align:center;
                 flex-shrink: 0;
             }
+            .tui-full-calendar-calendar-dot {
+                margin-right: 10px;
+                top: 0;
+            }
             .tui-full-calendar-popup-detail-item {
+                display: flex;
+                margin-bottom: 0.3rem;
+                align-items: center;
+                .event-location {
+                    display: flex;
+                    align-items: center;
+                }
+                .fa-align-left {
+                    margin-top: 4px;
+                }
+                &.tui-full-calendar-popup-detail-item-separate {
+                    &>span {
+                        display: flex;
+                        width: 100%;
+                    }
+                    .event-description {
+                        display: block;
+                        line-height: 1.1em;
+                        p, ul {
+                            margin:0.1rem;
+                        }
+                    }
+                }
                 a {
+                    border-radius: @variables_radius;
                     color: @cryptpad_color_link;
                     text-decoration: underline;
+                    &:focus-visible{
+                        outline: @variables_focus_style;
+                    }
+                }
+                span {
+                    overflow: hidden;
+                    word-break: break-word;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    .event-description{
+                        white-space: normal;
+                    }
                 }
             }
             .tui-full-calendar-section-button-save {
@@ -283,6 +323,9 @@
                         font-family: inherit;
                         font-size: inherit;
                         line-height: inherit;
+                    }
+                    * {
+                        box-sizing: content-box;
                     }
                 }
                 .CodeMirror-placeholder {

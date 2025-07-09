@@ -3,13 +3,61 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (() => {
-const factory = function () {
+const factory = function (Channel, NodeWS) {
     let USE_MIN = true;
     if (typeof(localStorage) !== "undefined" &&
-        localStorage.CryptPad_dev === "1") { USE_MIN = false; }
+        localStorage.CryptPad_noMin === "1") { USE_MIN = false; }
 
     let path = '/common/worker.bundle.js?';
     if (USE_MIN) { path = '/common/worker.bundle.min.js?'; }
+
+
+    const commands = {
+        account: {
+            load: 'CONNECT'
+        },
+        drive: {
+            migrateAnon: 'MIGRATE_ANON_DRIVE'
+        },
+        pad: {
+            join: 'JOIN_PAD',
+            leave: 'LEAVE_PAD',
+            sendMsg: 'SEND_PAD_MSG',
+            destroy: 'REMOVE_OWNED_CHANNEL',
+            clear: 'CLEAR_OWNED_CHANNEL',
+            setMetadata: 'SET_PAD_METADATA',
+            getMetadata: 'GET_PAD_METADATA'
+        }
+    };
+
+    const makeApi = (postMsg, msgEv, cb) => {
+        Channel.create(msgEv, postMsg, chan => {
+            const postMessage = (cmd, data, cb, opts) => {
+                cb ||= () => {};
+                chan.query(cmd, data, (err, res) => {
+                    if (err) { return void cb ({error: err}); }
+                    cb(res);
+                }, opts);
+            };
+            const api = {};
+            const make = (base, cmd) => {
+                Object.keys(cmd).forEach(k => {
+                    const v = cmd[k];
+                    if (!v) { return; }
+                    if (typeof(v) === "string") {
+                        base[k] = (data, cb, opts) => {
+                            postMessage(v, data, cb, opts);
+                        };
+                        return;
+                    }
+                    base[k] = {};
+                    make(base[k], v);
+                });
+            };
+            make(api, commands);
+            cb(api);
+        });
+    };
 
     let create = function (cfg = {}) {
         let { noWorker, noSharedWorker, AppConfig,
@@ -140,7 +188,12 @@ const factory = function () {
                 Messages,
                 Broadcast
             });
-            resolve({postMsg, msgEv});
+
+            globalThis.WebSocket = NodeWS.WebSocket;
+
+            makeApi(postMsg, msgEv, api => {
+                resolve({api});
+            });
         };
 
         return new Promise((resolve, reject) => {
@@ -184,8 +237,11 @@ const factory = function () {
 
 
 if (typeof(module) !== 'undefined' && module.exports) {
-    module.exports = factory();
+    module.exports = factory(
+        require('../../src/common/events-channel'),
+        require('ws')
+    );
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([], factory);
+    define(['/common/events-channel.js'], factory);
 }
 })();

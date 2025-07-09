@@ -174,7 +174,6 @@ define([
         }
         _updateBoardsThrottle(framework, kanban, boards);
     };
-
     var editModal;
     var PROPERTIES = ['title', 'body', 'tags', 'color'];
     var BOARD_PROPERTIES = ['title', 'color'];
@@ -200,6 +199,10 @@ define([
             commit();
         });
 
+        var markdownEditorWrapper = h('div.cp-markdown-label-row', [
+            h('label', { for: 'cp-kanban-edit-body' }, Messages.kanban_body)
+        ]);
+
         var conflicts, conflictContainer, titleInput, tagsDiv, text;
         var content = h('div', [
             conflictContainer = h('div#cp-kanban-edit-conflicts', [
@@ -208,7 +211,7 @@ define([
             ]),
             h('label', {for:'cp-kanban-edit-title'}, Messages.kanban_title),
             titleInput = h('input#cp-kanban-edit-title'),
-            h('label', {for:'cp-kanban-edit-body'}, Messages.kanban_body),
+            markdownEditorWrapper,
             h('div#cp-kanban-edit-body', [
                 text = h('textarea')
             ]),
@@ -280,10 +283,21 @@ define([
             embed: function (mt) {
                 editor.focus();
                 editor.replaceSelection($(mt)[0].outerHTML);
+            },
+            toggleBar: true
+        });
+        $(markdownEditorWrapper).append(markdownTb.toggleButton);
+        $(markdownTb.toolbar).on('keydown', function (e) {
+            if (e.which === 27) { // Escape key
+                e.preventDefault();
+                e.stopPropagation();
+                editor.focus(); // Focus the editor instead of closing the modal
+            }
+            else if (e.which === 13 || e.which === 9) { // "Enter" or "Tab" key should not close modal
+                e.stopPropagation();
             }
         });
         $(text).before(markdownTb.toolbar);
-        $(markdownTb.toolbar).show();
         editor.refresh();
         var body = {
             getValue: function () {
@@ -1150,15 +1164,24 @@ define([
                 allTags.forEach(function (t) {
                     var tag;
                     $list.append(tag = h('span', {
-                        'data-tag': t
+                        'data-tag': t,
+                        'tabindex': 0,
+                        'role': 'button',
+                        'aria-pressed': 'false'
                     }, t));
                     var $tag = $(tag).click(function () {
                         if ($tag.hasClass('active')) {
                             $tag.removeClass('active');
+                            $tag.attr('aria-pressed', 'false');
                         } else {
                             $tag.addClass('active');
+                            $tag.attr('aria-pressed', 'true');
                         }
                         commitTags();
+                    }).keydown(function (e) {
+                        if (e.which === 13 || e.which === 32) {
+                            $tag.click();
+                        }
                     });
                 });
             };
@@ -1186,7 +1209,7 @@ define([
                 commitTags();
             });
 
-            let toggleTagsButton = h('button.btn.btn-toolbar-alt.cp-kanban-toggle-tags', [
+            let toggleTagsButton = h('button.btn.btn-toolbar-alt.cp-kanban-toggle-tags', {'aria-expanded': 'true'}, [
                 h('i.fa.fa-tags'),
                 h('span', Messages.fm_tagsName)
             ]);
@@ -1198,6 +1221,7 @@ define([
             let toggle = () => {
                 $tags.toggle();
                 let visible = $tags.is(':visible');
+                $toggleBtn.attr('aria-expanded', visible.toString());
                 $(toggleContainer).toggleClass('cp-kanban-container-flex', !visible);
                 $toggleBtn.toggleClass('btn-toolbar-alt', visible);
                 $toggleBtn.toggleClass('btn-toolbar', !visible);

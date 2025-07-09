@@ -8,13 +8,13 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/common/outer/cache-store.js',
+    '/common/cache-store.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/visible.js',
     '/common/user-object.js',
     '/common/outer/local-store.js',
-    '/common/outer/worker-channel.js',
+    '/common/events-channel.js',
     '/common/outer/login-block.js',
     '/common/common-credential.js',
     '/customize/login.js',
@@ -48,12 +48,12 @@ define([
         }
     };
 
+    const Env = {};
+
     // Upgrade and donate URLs duplicated in pages.js
-    var origin = encodeURIComponent(window.location.hostname);
     var common = window.Cryptpad = {
         Messages: Messages,
         donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
-        upgradeURL: AppConfig.upgradeURL || 'https://accounts.cryptpad.fr/#/?on=' + origin,
         account: {},
     };
 
@@ -79,6 +79,14 @@ define([
     common.getAccessKeys = function (cb) {
         var keys = [];
         nThen(function (waitFor) {
+            // Not logged in? check for temp RPC keys
+            const anon = !LocalStore.isLoggedIn()
+                            || common.neverDrive;
+            if (anon && Env?.returned?.tempKeys) {
+                keys.push(Env.returned.tempKeys);
+                return;
+            }
+
             // Push account keys
             postMessage("GET", {
                 key: ['edPrivate'],
@@ -310,7 +318,7 @@ define([
     common.makeNetwork = function (cb) {
         require([
             'netflux-client',
-            '/common/outer/network-config.js'
+            '/common/network-config.js'
         ], function (Netflux, NetConfig) {
             var wsUrl = NetConfig.getWebsocketURL();
             Netflux.connect(wsUrl).then(function (network) {
@@ -409,19 +417,19 @@ define([
     };
     // Settings and drive and auth
     common.getUserObject = function (teamId, cb) {
+        /*
         postMessage("GET", {
             teamId: teamId,
             key: []
         }, function (obj) {
             cb(obj);
         });
-        /*
+        */
         postMessage("GET_DRIVE", {
             teamId: teamId,
         }, function (obj) {
             cb(obj);
         });
-        */
     };
     common.getSharedFolder = function (data, cb) {
         postMessage("GET_SHARED_FOLDER", data, function (obj) {
@@ -459,7 +467,6 @@ define([
             });
             return;
         }
-        /*
         postMessage("SET_DRIVE", {
             teamId: data.teamId,
             value: data.drive
@@ -468,7 +475,7 @@ define([
         }, {
             timeout: 5 * 60 * 1000
         });
-        */
+        /*
         postMessage("SET", {
             teamId: data.teamId,
             key: ['drive'],
@@ -478,6 +485,7 @@ define([
         }, {
             timeout: 5 * 60 * 1000
         });
+        */
     };
     common.addSharedFolder = function (teamId, secret, cb) {
         var href = (secret.keys && secret.keys.editKeyStr) ? '/drive/#' + Hash.getEditHashFromKeys(secret) : undefined;
@@ -499,8 +507,8 @@ define([
     common.drive.onRemove = Util.mkEvent();
     common.drive.onDeleted = Util.mkEvent();
     // Profile
-    common.getProfileEditUrl = function (cb) {
-        postMessage("GET", { key: ['profile', 'edit'] }, function (obj) {
+    common.getProfileViewUrl = function (cb) {
+        postMessage("GET", { key: ['profile', 'view'] }, function (obj) {
             cb(obj);
         });
     };
@@ -560,13 +568,6 @@ define([
         postMessage("GET_PINNED_USAGE", data, function (obj) {
             if (obj.error) { return void cb(obj.error); }
             cb(null, obj.bytes);
-        });
-    };
-
-    common.updatePinLimit = function (cb) {
-        postMessage("UPDATE_PIN_LIMIT", null, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb(undefined, obj.limit, obj.plan, obj.note);
         });
     };
 
@@ -638,7 +639,7 @@ define([
 
     common.uploadChunk = function (teamId, data, cb) {
         postMessage("UPLOAD_CHUNK", {teamId: teamId, chunk: data}, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
+            if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
     };
@@ -1188,7 +1189,6 @@ define([
             return;
         }
 
-        let rtChannel, lastVersion, answersChannel;
         let attributes = {};
         nThen(function (waitFor) {
             if (parsed.hashData.type !== 'pad') { return; }
@@ -1921,6 +1921,7 @@ define([
             // delete the old pad
             common.removeOwnedChannel({
                 channel: oldSecret.channel,
+                reason: 'PASSWORD_CHANGE',
                 teamId: teamId
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
@@ -1930,6 +1931,7 @@ define([
                 }
                 common.removeOwnedChannel({
                     channel: oldRtChannel,
+                    reason: 'PASSWORD_CHANGE',
                     teamId: teamId
                 }, waitFor());
             }));
@@ -2672,6 +2674,7 @@ define([
                 Messages,
                 AppConfig
             };
+            common.neverDrive = rdyCfg.neverDrive;
             common.userHash = userHash || LocalStore.getUserHash();
 
             // FIXME Backward compatibility
@@ -2743,6 +2746,7 @@ define([
 
                     console.log('Posting CONNECT');
                     postMessage('CONNECT', cfg, function (data) {
+                        Env.returned = data;
                         // FIXME data should always exist
                         // this indicates a false condition in sharedWorker
                         // got here via a reference error:

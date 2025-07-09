@@ -2,12 +2,11 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 UserObject, SF, Roster, Messaging, Feedback,
                 Invite, Crypt, Cache, Pinpad, Listmap, Crypto,
                 CpNetflux, ChainPad, nThen, Nacl) => {
-    var Team = {};
+    const Team = {};
 
     Nacl = Nacl || (typeof(window) !== "undefined" && window.nacl);
     var onStoreReady = Util.mkEvent(true);
@@ -298,7 +297,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                         teamId: id
                     };
                 }
-                ctx.Store.removeOwnedChannel('', data, cb);
+                ctx.Store.pad.destroy('', data, cb);
             },
             Store: ctx.Store,
             store: ctx.store
@@ -880,7 +879,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                         }));
                     }).nThen(function (_w) {
                         if (otherOwners) {
-                            ctx.Store.setPadMetadata(null, {
+                            ctx.Store.pad.setMetadata(null, {
                                 channel: c,
                                 command: 'RM_OWNERS',
                                 value: [teamEdPublic],
@@ -984,7 +983,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         var md;
         nThen(function (waitFor) {
             // Get pending owners
-            ctx.Store.getPadMetadata(null, {
+            ctx.Store.pad.getMetadata(null, {
                 channel: teamData.channel
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
@@ -1007,7 +1006,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                     });
                     if (!member && teamData.owner) {
                         var removeOwnership = function (chan) {
-                            ctx.Store.setPadMetadata(null, {
+                            ctx.Store.pad.setMetadata(null, {
                                 channel: chan,
                                 command: 'RM_PENDING_OWNERS',
                                 value: [ed],
@@ -1120,7 +1119,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 }
             };
             var addPendingOwner = function (chan) {
-                ctx.Store.setPadMetadata(null, {
+                ctx.Store.pad.setMetadata(null, {
                     channel: chan,
                     command: 'ADD_PENDING_OWNERS',
                     value: [user.edPublic],
@@ -1176,7 +1175,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 }
             };
             var removeOwnership = function (chan) {
-                ctx.Store.setPadMetadata(null, {
+                ctx.Store.pad.setMetadata(null, {
                     channel: chan,
                     command: cmd,
                     value: [user.edPublic],
@@ -1393,7 +1392,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         var md;
         nThen(function (waitFor) {
             // Get pending owners
-            ctx.Store.getPadMetadata(null, {
+            ctx.Store.pad.getMetadata(null, {
                 channel: teamData.channel
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
@@ -2241,59 +2240,27 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
     return Team;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        require('../../common/common-util'),
-        require('../../common/common-hash'),
-        require('../../common/common-constants'),
-        require('../../common/common-realtime'),
+module.exports = factory(
+    require('../../common/common-util'),
+    require('../../common/common-hash'),
+    require('../../common/common-constants'),
+    require('../../common/common-realtime'),
 
-        require('../../common/proxy-manager'),
-        require('../../common/user-object'),
-        require('../components/sharedfolder'),
-        require('../components/roster'),
-        require('../components/messaging'),
-        require('../../common/common-feedback'),
-        require('../components/invitation'),
-        require('../../common/cryptget'),
-        require('../../common/cache-store'),
-        require('../../common/pinpad'),
+    require('../../common/proxy-manager'),
+    require('../../common/user-object'),
+    require('../components/sharedfolder'),
+    require('../components/roster'),
+    require('../components/messaging'),
+    require('../../common/common-feedback'),
+    require('../components/invitation'),
+    require('../../common/cryptget'),
+    require('../../common/cache-store'),
+    require('../../common/pinpad'),
 
-        require('chainpad-listmap'),
-        require('chainpad-crypto'),
-        require('chainpad-netflux'),
-        require('chainpad'),
-        require('nthen'),
-        require('tweetnacl/nacl-fast'),
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/common-util.js',
-        '/common/common-hash.js',
-        '/common/common-constants.js',
-        '/common/common-realtime.js',
-
-        '/common/proxy-manager.js',
-        '/common/user-object.js',
-        '/common/outer/sharedfolder.js',
-        '/common/outer/roster.js',
-        '/common/outer/messaging.js',
-        '/common/common-feedback.js',
-        '/common/outer/invitation.js',
-        '/common/cryptget.js',
-        '/common/outer/cache-store.js',
-        '/common/pinpad.js',
-
-        'chainpad-listmap',
-        '/components/chainpad-crypto/crypto.js',
-        'chainpad-netflux',
-        '/components/chainpad/chainpad.dist.js',
-        '/components/nthen/index.js',
-        '/components/tweetnacl/nacl-fast.min.js',
-    ], factory);
-} else {
-    // unsupported initialization
-}
-
-})();
+    require('chainpad-listmap'),
+    require('chainpad-crypto'),
+    require('chainpad-netflux'),
+    require('chainpad'),
+    require('nthen'),
+    require('tweetnacl/nacl-fast'),
+);

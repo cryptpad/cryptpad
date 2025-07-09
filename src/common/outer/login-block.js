@@ -224,7 +224,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
 
 if (typeof(module) !== 'undefined' && module.exports) {
     module.exports = factory(
-        require('./common-util'),
+        require('../common-util'),
         undefined,
         require('./http-command'),
         require('tweetnacl/nacl-fast')

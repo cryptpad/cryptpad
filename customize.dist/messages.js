@@ -134,12 +134,6 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    // XXX
-    Messages.badges_admin = "Instance administrator";
-    Messages.badges_moderator = "Instance moderator";
-    Messages.badges_premium = "Premium user";
-    Messages.badges_error = "Error while validating this user's data";
-    Messages.profile_badges = "Badges";
     return Messages;
 
 });
