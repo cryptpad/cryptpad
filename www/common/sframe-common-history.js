@@ -439,29 +439,29 @@ define([
                 h('i.fa.fa-users')
             ]);
             var userPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_userPrev }, [
-                h('i.fa.fa-step-backward'),
+                h('i.fa.fa-step-back'),
                 h('i.fa.fa-user')
             ]);
             var prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
-                h('i.fa.fa-step-backward')
+                h('i', {'data-lucide': 'arrow-left', 'aria-hidden': 'true'}),
             ]);
             var fastNext = h('button.cp-toolbar-history-next', { title: Messages.history_fastNext }, [
                 h('i.fa.fa-users'),
-                h('i.fa.fa-step-forward'),
+                h('i', {'data-lucide': 'arrow-right-to-line', 'aria-hidden': 'true'}),
             ]);
             var userNext = h('button.cp-toolbar-history-next', { title: Messages.history_userNext }, [
                 h('i.fa.fa-user'),
-                h('i.fa.fa-step-forward'),
+                h('i', {'data-lucide': 'arrow-right', 'aria-hidden': 'true'}),
             ]);
             var next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
-                h('i.fa.fa-step-forward')
+                h('i', {'data-lucide': 'arrow-right', 'aria-hidden': 'true'})
             ]);
             if (config.drive) {
                 fastNext = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
-                    h('i.fa.fa-fast-forward'),
+                    h('i', {'data-lucide': 'arrow-right-to-line', 'aria-hidden': 'true'}),
                 ]);
                 fastPrev = h('button.cp-toolbar-history-previous', {title: Messages.history_prev}, [
-                    h('i.fa.fa-fast-backward'),
+                    h('i', {'data-lucide': 'arrow-left-to-line', 'aria-hidden': 'true'}),
                 ]);
             }
 
@@ -473,11 +473,11 @@ define([
             var $next = $(next);
 
             var _loadMore = h('button.cp-toolbar-history-loadmore', { title: Messages.history_loadMore }, [
-                h('i.fa.fa-ellipsis-h'),
+                h('i', {'data-lucide': 'ellipsis', 'aria-hidden': 'true'}),
                 h('i.fa.fa-refresh.fa-spin.fa-3x.fa-fw', { style: 'display: none;' })
             ]);
 
-            var pos = h('span.cp-history-timeline-pos.fa.fa-caret-down');
+            var pos = h('span.cp-history-timeline-pos', [ h('i', {'data-lucide': 'flag-triangle-right', 'aria-hidden': 'true'})]);
             var time = h('div.cp-history-timeline-time');
             $time = $(time);
             var timeline = h('div.cp-toolbar-history-timeline', [
@@ -520,11 +520,11 @@ define([
             var restore = h('button', {
                 title: restoreTitle,
             }, [
-                h('i.fa.fa-check'),
+                h('i', {'data-lucide': 'archive-restore', 'aria-hidden': 'true'}),
                 h('span', Messages.history_restore)
             ]);
             var close = h('button', { title: Messages.history_closeTitle }, [
-                h('i.fa.fa-times'),
+                h('i', {'data-lucide': 'x', 'aria-hidden': 'true'}),
                 h('span', Messages.history_close)
             ]);
             var actions = h('div.cp-toolbar-history-actions', [

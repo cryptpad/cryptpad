@@ -687,7 +687,7 @@ define([
                 title: title,
                 'aria-label': ariaLabel
             }, [
-                iconClasses ? h('i', { class: iconClasses }) : null,
+                iconClasses ? h('i', { 'data-lucide': iconClasses }) : null,
                 text ? h('span', { class: 'cp-toolbar-drawer-element' }, text) : null
             ]));
         };
@@ -895,7 +895,7 @@ define([
                     button = $('<span>');
                     break;
                 }
-                button = makeButton('fa fa-history', 'cp-toolbar-icon-history', Messages.historyButton, Messages.historyText, Messages.historyButton);
+                button = makeButton('history', 'cp-toolbar-icon-history', Messages.historyButton, Messages.historyText, Messages.historyButton);
                 if (data.histConfig) {
                     button.click(common.prepareFeedback(type)).on('click', function () {
                         common.getHistory(data.histConfig);
