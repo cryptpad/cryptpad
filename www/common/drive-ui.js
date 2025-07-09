@@ -2765,17 +2765,17 @@ define([
         // Create the button allowing the user to switch from list to icons modes
         var createViewModeButton = function ($container) {
             var viewMode = getViewMode();
-            var gridIcon = h('i.fa.fa-th-large', { title: Messages.fm_viewGridButton });
-            var listIcon = h('i.fa.fa-list', { title: Messages.fm_viewListButton });
+            var gridIcon = h('i', { 'data-lucide': 'layout-grid', title: Messages.fm_viewGridButton });
+            var listIcon = h('i', {'data-lucide': 'list', title: Messages.fm_viewListButton });
 
             var $button = $(h('button.cp-app-drive-viewmode-button', [
                 gridIcon,
                 listIcon
             ]));
             $button.attr('aria-label', Messages.label_viewMode);
-            var $gridIcon = $(gridIcon);
-            var $listIcon = $(listIcon);
             var showMode = function (mode) {
+                var $gridIcon = $button.find('svg.lucide-layout-grid');
+                var $listIcon = $button.find('svg.lucide-list');
                 if (mode === 'grid') {
                     $gridIcon.hide();
                     $listIcon.show();
@@ -2785,7 +2785,7 @@ define([
                 }
             };
             setViewMode(viewMode || 'grid');
-            showMode(viewMode);
+            setTimeout(() => showMode(viewMode),0);
 
             $button.click(function () {
                 var viewMode = getViewMode();
