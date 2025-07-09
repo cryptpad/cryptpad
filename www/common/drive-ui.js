@@ -26,6 +26,7 @@ define([
     '/customize/pages.js',
     '/common/pad-types.js',
     '/common/onlyoffice/broken-formats.js',
+    '/customize/fonts/lucide.js'
 ], function (
     $,
     ApiConfig,
@@ -47,7 +48,8 @@ define([
     Messages,
     Pages,
     PadTypes,
-    BrokenFormats)
+    BrokenFormats,
+    Lucide)
 {
 
     var APP = window.APP = {
@@ -735,6 +737,7 @@ define([
             },
             ready: function (state) {
                 appStatus.isReady = state;
+                Lucide.createIcons();
                 if (state) {
                     appStatus._onReady.forEach(function (h) {
                         h();
@@ -3165,7 +3168,7 @@ define([
 
             var dropdownConfig = {
                 buttonContent: [
-                    h('i.fa.fa-plus'),
+                    h('i', {'data-lucide':'plus', 'aria-hidden':'true'}),
                     h('span.cp-button-name', Messages.fm_newButton),
                 ],
                 buttonCls: 'cp-toolbar-dropdown-nowrap',
@@ -3250,7 +3253,7 @@ define([
             }
             var dropdownConfig = {
                 buttonContent: [
-                    h('i.fa.fa-filter'),
+                    h('i', {'data-lucide': 'filter', 'aria-hidden':'true'}),
                     h('span.cp-button-name', Messages.fm_filterBy),
                 ],
                 buttonCls: 'cp-toolbar-dropdown-nowrap',
