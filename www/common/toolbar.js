@@ -1161,7 +1161,8 @@ MessengerUI, Messages, Pages, PadTypes) {
             options: options, // Entries displayed in the menu
             container: $notif,
             left: true,
-            common: Common
+            common: Common,
+            iconCls: 'bell'
         };
         var $newPadBlock = UIElements.createDropdown(dropdownConfig);
         var $button = $newPadBlock.find('button');
@@ -1175,8 +1176,7 @@ MessengerUI, Messages, Pages, PadTypes) {
                 $button.attr("aria-expanded", "true");
             }
         });
-        $button.addClass('fa fa-bell-o cp-notifications-bell');
-        $button.addClass('fa fa-bell-o cp-notifications-bell');
+        $button.addClass('cp-notifications-bell');
         $button.attr('aria-label', Messages.notificationsPage);
         var $n = $button.find('.cp-dropdown-button-title').hide();
         var $empty = $(div).find('.cp-notifications-empty');
@@ -1185,12 +1185,13 @@ MessengerUI, Messages, Pages, PadTypes) {
         var refresh = function () {
             updateUserList(toolbar, config);
             var n = $(div).find('.cp-notification').length;
-            $button.removeClass('fa-bell-o').removeClass('fa-bell');
+            let $icon = $button.find('svg');
             $n.removeClass('cp-notifications-small');
             if (n === 0) {
                 $empty.show();
                 $n.hide();
-                return void $button.addClass('fa-bell-o');
+                $icon.css('fill', 'none');
+                return;
             }
             if (n > 99) {
                 n = '99+';
@@ -1198,7 +1199,7 @@ MessengerUI, Messages, Pages, PadTypes) {
             }
             $empty.hide();
             $n.text(n).show();
-            $button.addClass('fa-bell');
+            $icon.css('fill', 'currentColor');
         };
 
         Common.mailbox.subscribe(['notifications', 'team', 'broadcast', 'reminders', 'supportteam'], {
