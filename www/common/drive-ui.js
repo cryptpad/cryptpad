@@ -144,7 +144,7 @@ define([
     var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
     var $readonlyIcon = $('<span>', {"class": "fa " + faReadOnly});
     var $ownedIcon = $('<i>', {'data-lucide': 'id-card', 'aria-hidden': 'true' });
-    var $sharedIcon = $('<span>', {"class": "fa " + faShared});
+    var $sharedIcon = $('<i>', {'data-lucide': 'share-2', 'aria-hidden': 'true' });
     //var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
     var $tagsIcon = $('<span>', {"class": "fa " + faTags});
     var $passwordIcon = $('<i>', {'data-lucide': 'file-lock', 'aria-hidden': 'true' });
