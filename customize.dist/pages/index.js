@@ -15,8 +15,9 @@ define([
     '/common/outer/local-store.js',
     '/customize/pages.js',
     '/common/pad-types.js',
-    '/common/extensions.js'
-], function ($, Config, h, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages, PadTypes, Extensions) {
+    '/common/extensions.js',
+    '/common/common-icons.js'
+], function ($, Config, h, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages, PadTypes, Extensions, Icons) {
     var urlArgs = Config.requireConf.urlArgs;
 
     var checkEarlyAccess = function (x) {
@@ -203,7 +204,7 @@ define([
                         h('div.cp-apps.col-lg-6', [
                             h('div.cp-app-grid', [
                                 h('span.cp-app-new', [
-                                    h('i', {'data-lucide':'plus', 'aria-hidden':'true'}),
+                                    Icons.get('add'),
                                     Msg.fm_newFile
                                 ]),
                                 h('div.cp-app-grid-apps', [

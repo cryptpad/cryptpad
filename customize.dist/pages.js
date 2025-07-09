@@ -12,9 +12,10 @@ define([
     '/api/config',
     '/common/extensions.js',
     'optional!/api/instance',
-    '/customize/fonts/lucide.js'
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 ], function (h, Language, Util, AppConfig, Msg, $, ApiConfig,
-            Extensions, Instance, Lucide) {
+            Extensions, Instance, Lucide, Icons) {
     var Pages = {};
 
     Pages.setHTML = function (e, html) {
@@ -91,7 +92,7 @@ define([
             text = Msg[loc];
         }
         if (icon) {
-            icon = h('i', {'data-lucide': icon, 'aria-hidden':'true'});
+            icon = Icons.get(icon);
         }
         return h('a', attrs, [icon, text]);
     };
@@ -152,7 +153,7 @@ define([
     Pages.infopageFooter = function () {
         var donateButton;
         if (!ApiConfig.removeDonateButton) {
-            donateButton = footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'hand-coins'); // TODO migrate to forkawesome and use the OpenCollective icon
+            donateButton = footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate', null, 'donate'); // TODO migrate to forkawesome and use the OpenCollective icon
         }
 
         return h('footer.cp-footer', [
@@ -177,7 +178,7 @@ define([
             ]),
             h('div.cp-footer-right', [
                 h('div.cp-footer-language', [
-                    h('i', {'data-lucide':'languages', 'aria-hidden':'true'}),
+                    Icons.get('language'),
                     languageSelector()
                 ])
             ])
@@ -191,7 +192,7 @@ define([
 
         if (!ApiConfig.restrictRegistration) {
             registerLink = h('a.nav-item.nav-link.cp-register-btn', { href: '/register/', role: 'button'}, [
-                h('i', {'data-lucide':'user', 'aria-hidden':'true'}),
+                Icons.get('register'),
                 Msg.login_register
             ]);
         }
@@ -199,14 +200,14 @@ define([
         if (username === null) {
             rightLinks = [
                 h('a.nav-item.nav-link.cp-login-btn', { href: '/login/', role: 'button'}, [
-                    h('i', {'data-lucide':'log-in', 'aria-hidden':'true'}),
+                    Icons.get('login'),
                     Msg.login_login
                 ]),
                 registerLink,
             ];
         } else {
             rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive/', role: 'button'}, [
-                h('i', {'data-lucide':'circle-user-round', 'aria-hidden':'true'}),
+                Icons.get('user-profile'),
                 " ",
                 username
             ]);
@@ -214,7 +215,7 @@ define([
 
         var isHome = ['/', '/index.html'].includes(window.location.pathname);
         var homeLink = h('a.nav-item.nav-link.cp-back-home' /* .navbar-brand */, { href: '/index.html', role: 'button'}, [
-            h('i', {'data-lucide':'chevron-left', 'aria-hidden':'true'}),
+            Icons.get('chevron-left'),
             h('img', {
                 src: '/customize/CryptPad_logo.svg',
                 "aria-hidden": true,
@@ -234,11 +235,12 @@ define([
             [
                 !isHome? homeLink: undefined,
                 h('a.nav-item.nav-link', { href: '/features.html', role: 'button'}, [
-                    h('i', {'data-lucide':'info', 'aria-hidden':'true'}),
+                    Icons.get('features'),
                     pricingName
                 ]),
-                h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.org'},
-                    [h('i', {'data-lucide':'book-open-text', 'aria-hidden':'true'}),Msg.docs_link]),
+                h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.org'}, [
+                    Icons.get('documentation'),
+                    Msg.docs_link]),
             ].concat(rightLinks)
         );
     };
