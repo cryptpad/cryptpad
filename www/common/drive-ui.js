@@ -140,7 +140,7 @@ define([
     var $closeIcon = $('<span>', {"class": "fa fa-times"});
     //var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
     var $searchIcon = $('<span>', {"class": "fa fa-search cp-app-drive-tree-search-icon"});
-    var $addIcon = $('<span>', {"class": "fa fa-plus"});
+    var $addIcon = $('<i>', {'data-lucide': 'plus', 'aria-hidden': 'true' });
     var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
     var $readonlyIcon = $('<span>', {"class": "fa " + faReadOnly});
     var $ownedIcon = $('<i>', {'data-lucide': 'id-card', 'aria-hidden': 'true' });
@@ -664,7 +664,7 @@ define([
         $content.attr("tabindex", "0");
         if (APP.loggedIn) {
             var splitter = h('div.cp-splitter', [
-                h('i.fa.fa-ellipsis-v')
+                h('i',{'data-lucide': 'ellipsis-vertical','aria-hidden':'true'})
             ]);
             $contentContainer.append(splitter);
             APP.$splitter = $(splitter).on('mousedown touchstart', function (e) {

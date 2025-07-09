@@ -516,7 +516,7 @@
         .cp-splitter {
             position: absolute;
             height: 100%;
-            width: 8px;
+            width: 1rem;
             top: 0;
             left: 0;
             cursor: col-resize;
@@ -533,9 +533,9 @@
             &:hover {
                 border-left: 1px solid @cryptpad_text_col;
             }
-            i {
+            svg {
                 color: @cryptpad_text_col;
-                font-size: 1.6rem;
+                margin:0;
             }
         }
         &.cp-app-drive-readonly { // applied to offline drive (not read-only shared folders)
@@ -663,7 +663,7 @@
             &:hover {
                 opacity: 0.7;
             }
-            .fa, .cptools {
+            .fa, .cptools, svg {
                 cursor: pointer;
             }
         }
@@ -734,10 +734,9 @@
             }
             .cp-app-drive-new-ghost {
                 flex-flow: column;
-                .fa, .cptools {
+                .fa, .cptools, svg {
                     font-size: 90px;
-                    margin-top: 5px;
-                    margin-bottom: 0;
+                    margin: 0;
                 }
             }
             .cp-app-drive-element-list {
