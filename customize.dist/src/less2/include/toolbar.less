@@ -65,7 +65,7 @@
 
     .cp-markdown-toolbar {
         min-height: @toolbar_line-height;
-        padding: 0.1rem 0;
+        padding: 0.15rem 0.20rem;
         height: auto;
         flex-wrap: wrap;
         background-color: @cp_toolbar-bg;
@@ -77,15 +77,13 @@
             border-radius: @variables_radius;
             color: @toolbar-color;
             .toolbar_button;
+            padding: 3px 9px;
             &:hover {
                 background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
             }
             &:focus-visible {
                 outline: @variables_focus_style;
             }
-        }
-        button:nth-of-type(1) {
-            margin-left: 0.3rem;
         }
         @media screen and (max-width: @browser_media-medium-screen) {
             button:nth-of-type(1) {
