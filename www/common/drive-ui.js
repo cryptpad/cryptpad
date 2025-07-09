@@ -143,11 +143,11 @@ define([
     var $addIcon = $('<span>', {"class": "fa fa-plus"});
     var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
     var $readonlyIcon = $('<span>', {"class": "fa " + faReadOnly});
-    var $ownedIcon = $('<span>', {"class": "fa fa-id-badge"});
+    var $ownedIcon = $('<i>', {'data-lucide': 'id-card', 'aria-hidden': 'true' });
     var $sharedIcon = $('<span>', {"class": "fa " + faShared});
     //var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
     var $tagsIcon = $('<span>', {"class": "fa " + faTags});
-    var $passwordIcon = $('<span>', {"class": "fa fa-lock"});
+    var $passwordIcon = $('<i>', {'data-lucide': 'file-lock', 'aria-hidden': 'true' });
     var $restrictedIcon = $('<span>', {"class": "fa fa-ban"});
     var $expirableIcon = $('<span>', {"class": "fa fa-clock-o"});
     var $separator = $('<div>', {"class": "dropdown-divider"});
@@ -3253,7 +3253,7 @@ define([
             }
             var dropdownConfig = {
                 buttonContent: [
-                    h('i', {'data-lucide': 'filter', 'aria-hidden':'true'}),
+                    h('i', {'data-lucide': 'list-filter-plus', 'aria-hidden':'true'}),
                     h('span.cp-button-name', Messages.fm_filterBy),
                 ],
                 buttonCls: 'cp-toolbar-dropdown-nowrap',

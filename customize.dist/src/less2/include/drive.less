@@ -27,6 +27,11 @@
     max-height: 100%;
     min-height: auto;
 
+    .lucide {
+        width: 1.2em;
+        height: 1.2em;
+        margin-right: 0.2rem;
+    }
     .cp-unselectable {
         .tools_unselectable();
     }
@@ -691,7 +696,7 @@
                 .cp-app-drive-element-state, .cp-app-drive-element-menu {
                     position: absolute;
                     top: 3px;
-                    .fa, .cptools {
+                    .fa, .cptools, svg {
                         margin: 0;
                         font-size: 18px;
                     }
@@ -793,7 +798,7 @@
                         align-items: center;
                         justify-content: end;
                         height: @variables_bar-height;
-                        .fa, .cptools {
+                        .fa, .cptools, svg {
                             &:not(:last-child) {
                                 margin-right: 2px;
                             }
