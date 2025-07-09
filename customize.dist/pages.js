@@ -12,13 +12,14 @@ define([
     '/api/config',
     '/common/extensions.js',
     'optional!/api/instance',
+    '/customize/fonts/lucide.js'
 ], function (h, Language, Util, AppConfig, Msg, $, ApiConfig,
-            Extensions, Instance) {
+            Extensions, Instance, Lucide) {
     var Pages = {};
 
     Pages.setHTML = function (e, html) {
         e.innerHTML = html;
-        setTimeout(() => lucide.createIcons(), 0);
+        setTimeout(() => Lucide.createIcons(), 0);
         return e;
     };
 
