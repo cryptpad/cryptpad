@@ -907,7 +907,7 @@ define([
                 button = $(h('button.cp-toolbar-mediatag', {
                     //title: Messages.filePickerButton, // TODO display if the label text is collapsed
                 }, [
-                    h('i.fa.fa-picture-o'),
+                    h('i', {'data-lucide': 'file-image', 'aria-hidden':'true'}),
                     h('span.cp-toolbar-name', Messages.toolbar_insert)
                 ])).click(common.prepareFeedback(type));
                 break;
