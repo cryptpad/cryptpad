@@ -415,7 +415,7 @@ define([
             var str = schedule.body;
             delete APP.eventBody;
 
-            let description_icon = h('i.fa.fa-align-justify.tui-full-calendar-icon', { 'aria-hidden': true }, []);
+            let description_icon = h('i.fa.fa-align-left.tui-full-calendar-icon', { 'aria-hidden': true }, []);
             let description = diffMk.render(str, true);
             return `${description_icon.outerHTML}<div class="event-description">${description}</div>`;
         },
@@ -2392,6 +2392,23 @@ APP.recurrenceRule = {
                     common.openUnsafeURL($a.attr('href'));
                 });
             }
+
+            var privateData = metadataMgr.getPrivateData();
+            $el.find('.event-description').click(e => {
+                if (!e.target) { return; }
+                var $t = $(e.target);
+                if (!$t.is('a') && !$t.parents('a').length) { return; }
+                e.preventDefault();
+                var $a = $t.is('a') ? $t : $t.parents('a').first();
+                var href = $a.attr('href');
+                if (/^#/.test(href)) { return; }
+                if (/^\/[^\/]/.test(href)) {
+                    href = privateData.origin + href;
+                    return void common.openURL(href);
+                }
+                common.openUnsafeURL(href);
+            });
+            console.error($el.find('.event-description'), $el);
 
             var $section = $el.find('.tui-full-calendar-section-button');
             var ev = APP.editModalData;
