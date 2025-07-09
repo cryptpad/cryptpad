@@ -171,12 +171,16 @@
             color: @cryptpad_text_col;
             border-radius: @variables_radius_L;
             font-weight: normal;
-            .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox):not(.fa-map-marker):not(.fa-align-justify) {
+            .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox):not(.fa-map-marker):not(.fa-align-left) {
                 display: none;
             }
             .tui-full-calendar-icon {
                 text-align:center;
                 flex-shrink: 0;
+            }
+            .tui-full-calendar-calendar-dot {
+                margin-right: 10px;
+                top: 0;
             }
             .tui-full-calendar-popup-detail-item {
                 display: flex;
@@ -186,8 +190,8 @@
                     display: flex;
                     align-items: center;
                 }
-                .fa-align-justify {
-                    margin-top: 3px;
+                .fa-align-left {
+                    margin-top: 4px;
                 }
                 &.tui-full-calendar-popup-detail-item-separate {
                     &>span {
@@ -203,7 +207,6 @@
                     }
                 }
                 a {
-                    margin:0.1rem;
                     border-radius: @variables_radius;
                     color: @cryptpad_color_link;
                     text-decoration: underline;
@@ -320,6 +323,9 @@
                         font-family: inherit;
                         font-size: inherit;
                         line-height: inherit;
+                    }
+                    * {
+                        box-sizing: content-box;
                     }
                 }
                 .CodeMirror-placeholder {
