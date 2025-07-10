@@ -3085,13 +3085,13 @@ define([
                 options.push({ separator: true });
                 options.push({
                     class: 'cp-app-drive-new-fileupload',
-                    icon: getIcon('fileupload')[0],
+                    icon: Icons.get('drive-upload-file',{'class': 'cp-icon-color-file'}),
                     name: Messages.uploadButton,
                 });
                 if (APP.allowFolderUpload) {
                     options.push({
                         class: 'cp-app-drive-new-folderupload',
-                        icon: getIcon('folderupload')[0],
+                        icon: Icons.get('drive-upload-folder',{'class': 'cp-icon-color-file'}),
                         name: Messages.uploadFolderButton,
                     });
                 }

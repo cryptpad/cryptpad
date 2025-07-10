@@ -40,6 +40,7 @@ define([
         "drive-folder": "folder",
         "drive-shared-folder": "folder-git-2",
         "drive-upload-file": "file-up",
+        "drive-upload-folder": "folder-up"
     };
 
     Icons.get = (name, attrs = {}) => {
