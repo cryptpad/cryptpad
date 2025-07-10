@@ -21,10 +21,11 @@ define([
     '/common/inner/invitation.js',
     '/common/visible.js',
     '/common/pad-types.js',
+    '/common/common-icons.js',
 
     'css!/customize/fonts/cptools/style.css',
 ], function ($, Config, Broadcast, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
-             Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes) {
+             Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes, Icons) {
     var UIElements = {};
     var urlArgs = Config.requireConf.urlArgs;
 
@@ -907,7 +908,7 @@ define([
                 button = $(h('button.cp-toolbar-mediatag', {
                     //title: Messages.filePickerButton, // TODO display if the label text is collapsed
                 }, [
-                    h('i', {'data-lucide': 'file-image', 'aria-hidden':'true'}),
+                    Icons.get('toolbar-insert'),
                     h('span.cp-toolbar-name', Messages.toolbar_insert)
                 ])).click(common.prepareFeedback(type));
                 break;

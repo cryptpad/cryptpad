@@ -26,7 +26,8 @@ define([
     '/customize/pages.js',
     '/common/pad-types.js',
     '/common/onlyoffice/broken-formats.js',
-    '/customize/fonts/lucide.js'
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js'
 ], function (
     $,
     ApiConfig,
@@ -49,7 +50,8 @@ define([
     Pages,
     PadTypes,
     BrokenFormats,
-    Lucide)
+    Lucide,
+    Icons)
 {
 
     var APP = window.APP = {
@@ -120,7 +122,7 @@ define([
     var $fileMenuIcon = $('<span>', {"class": "fa fa-ellipsis-h"});
     //var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
     var $folderEmptyIcon = $folderIcon.clone();
-    var $folderOpenedIcon = $('<i>', {'data-lucide': 'folder-open', 'aria-hidden': 'true', "class": "cp-app-drive-icon-folder"});
+    var $folderOpenedIcon = $(Icons.get('folder-open'));
     //var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
     var $sharedFolderIcon = $('<span>', {"class": faSharedFolder + " cptools cp-app-drive-icon-folder"});
@@ -128,26 +130,26 @@ define([
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "cptools cptools-template"});
-    var $recentIcon = $('<i>', {'data-lucide': 'clock', 'aria-hidden': 'true' });
+    var $recentIcon = $(Icons.get('drive-recent'));
     var $trashIcon = $('<span>', {"class": "fa " + faTrash});
-    var $trashEmptyIcon = $('<i>', {"data-lucide": "trash-2", 'aria-hidden': 'true' });
+    var $trashEmptyIcon = $(Icons.get('drive-trash'));
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o cp-app-drive-icon-expcol"});
-    var $expandIcon = $('<i>', {'data-lucide': 'square-plus','class':'cp-app-drive-icon-expcol', 'aria-hidden': 'true' });
+    var $expandIcon = $(Icons.get('drive-expand', {'class': 'cp-app-drive-icon-expcol'}));
     //var $listIcon = $('<button>', {"class": "fa fa-list"});
     //var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
     var $closeIcon = $('<span>', {"class": "fa fa-times"});
     //var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
-    var $searchIcon = $('<i>', {'data-lucide': 'search','class':'cp-app-drive-tree-search-icon', 'aria-hidden': 'true' });
-    var $addIcon = $('<i>', {'data-lucide': 'plus', 'aria-hidden': 'true' });
+    var $searchIcon = $($(Icons.get('drive-search', {'class': 'cp-app-drive-tree-search-icon'})));
+    var $addIcon = $(Icons.get('add'));
     var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
     var $readonlyIcon = $('<span>', {"class": "fa " + faReadOnly});
-    var $ownedIcon = $('<i>', {'data-lucide': 'id-card', 'aria-hidden': 'true' });
-    var $sharedIcon = $('<i>', {'data-lucide': 'share-2', 'aria-hidden': 'true' });
+    var $ownedIcon = $(Icons.get('drive-owned-document'));
+    var $sharedIcon = $(Icons.get('share'));
     //var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
     var $tagsIcon = $('<span>', {"class": "fa " + faTags});
-    var $passwordIcon = $('<i>', {'data-lucide': 'file-lock', 'aria-hidden': 'true' });
+    var $passwordIcon = $(Icons.get('drive-password-document'));
     var $restrictedIcon = $('<span>', {"class": "fa fa-ban"});
     var $expirableIcon = $('<span>', {"class": "fa fa-clock-o"});
     var $separator = $('<div>', {"class": "dropdown-divider"});
@@ -664,7 +666,7 @@ define([
         $content.attr("tabindex", "0");
         if (APP.loggedIn) {
             var splitter = h('div.cp-splitter', [
-                h('i',{'data-lucide': 'ellipsis-vertical','aria-hidden':'true'})
+                Icons.get('ellipsis-vertical')
             ]);
             $contentContainer.append(splitter);
             APP.$splitter = $(splitter).on('mousedown touchstart', function (e) {
@@ -2765,8 +2767,8 @@ define([
         // Create the button allowing the user to switch from list to icons modes
         var createViewModeButton = function ($container) {
             var viewMode = getViewMode();
-            var gridIcon = h('i', { 'data-lucide': 'layout-grid', title: Messages.fm_viewGridButton });
-            var listIcon = h('i', {'data-lucide': 'list', title: Messages.fm_viewListButton });
+            var gridIcon = Icons.get('grid', {title:  Messages.fm_viewGridButton});
+            var listIcon = Icons.get('list', {title:  Messages.fm_viewListButton});
 
             var $button = $(h('button.cp-app-drive-viewmode-button', [
                 gridIcon,
@@ -3168,7 +3170,7 @@ define([
 
             var dropdownConfig = {
                 buttonContent: [
-                    h('i', {'data-lucide':'plus', 'aria-hidden':'true'}),
+                    Icons.get('add'),
                     h('span.cp-button-name', Messages.fm_newButton),
                 ],
                 buttonCls: 'cp-toolbar-dropdown-nowrap',
@@ -3253,7 +3255,7 @@ define([
             }
             var dropdownConfig = {
                 buttonContent: [
-                    h('i', {'data-lucide': 'list-filter-plus', 'aria-hidden':'true'}),
+                    Icons.get('filter'),
                     h('span.cp-button-name', Messages.fm_filterBy),
                 ],
                 buttonCls: 'cp-toolbar-dropdown-nowrap',

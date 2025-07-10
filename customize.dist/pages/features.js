@@ -13,8 +13,9 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-constants.js',
     '/common/pad-types.js',
-    '/common/extensions.js'
-], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements, Constants, PadTypes, Extensions) {
+    '/common/extensions.js',
+    '/common/common-icons.js'
+], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements, Constants, PadTypes, Extensions, Icons) {
     return function () {
         document.title = Msg.features;
         Msg.features_f_apps_note = PadTypes.availableTypes.map(function (app) {
@@ -27,7 +28,7 @@ define([
 
         var groupItemTemplate = function (title, content) {
             return h('li.list-group-item', [
-                h('i', {'data-lucide':'check', 'aria-hidden':'true'}),
+                Icons.get('check'),
                 h('div.cp-content', [
                     h('div.cp-feature', title),
                     h('div.cp-note', content),
