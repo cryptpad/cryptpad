@@ -3235,7 +3235,7 @@ define([
                         'data-type': 'link',
                     },
                     content: [
-                        getIcon('link')[0],
+                        Icons.get('link', {'class': 'cp-icon-color-drive'}),
                         Messages.fm_link_type
                     ],
                 });
@@ -3246,7 +3246,7 @@ define([
                         'data-type': 'file',
                     },
                     content: [
-                        getIcon('file')[0],
+                        Icons.get('drive-file', {'class': 'cp-icon-color-file'}),
                         Messages.type['file']
                     ],
                 });
@@ -3691,7 +3691,7 @@ define([
             APP.$collapseButton = APP.$collapseButton || common.createButton('', true, {
                 text: Messages.drive_treeButton,
                 name: 'files',
-                icon: 'fa-hdd-o',
+                icon: 'drive',
                 drawer: false,
             });
             checkCollapseButton();

@@ -1047,7 +1047,7 @@ define([
                     title: data.tippy || ''
                     //title: data.title || '',
                 }, [
-                    h('i.fa.' + icon),
+                    Icons.get('drive'),
                     h('span.cp-toolbar-name'+drawerCls, data.text)
                 ]));
                 var feedbackHandler = common.prepareFeedback(data.name || 'DEFAULT');

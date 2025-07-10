@@ -17,7 +17,7 @@ define([
         "register": "user",
         "chevron-left": "chevron-left",
         "check": "check",
-        "hdd": "hard-drive",
+        "drive": "hard-drive",
         "grid": "layout-grid",
         "list": "list",
         "filter": "list-filter-plus",
@@ -40,7 +40,8 @@ define([
         "drive-folder": "folder",
         "drive-shared-folder": "folder-git-2",
         "drive-upload-file": "file-up",
-        "drive-upload-folder": "folder-up"
+        "drive-upload-folder": "folder-up",
+        "drive-file": "file"
     };
 
     Icons.get = (name, attrs = {}) => {
