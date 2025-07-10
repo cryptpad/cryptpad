@@ -4,7 +4,8 @@ define([
     const Icons = {};
 
     const map = {
-        "drive-trash": "trash-2",
+        "drive-trash-empty": "trash",
+        "drive-trash-full": "trash-2",
         "drive-search": "search",
         "add": "plus",
         "features": "info",
@@ -52,7 +53,8 @@ define([
         "administration": "monitor-cog",
         "support": "life-buoy",
         "support-mailbox": "ambulance",
-        "homepage": "house"
+        "homepage": "house",
+        "file-template": "file-type",
     };
 
     Icons.get = (name, attrs = {}) => {

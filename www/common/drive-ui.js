@@ -127,10 +127,10 @@ define([
     var $sharedFolderOpenedIcon = $('<span>', {"class": faSharedFolderOpen + " cptools cp-app-drive-icon-folder"});
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
-    var $templateIcon = $('<span>', {"class": "cptools cptools-template"});
+    var $templateIcon = $(Icons.get('file-template'));
     var $recentIcon = $(Icons.get('drive-recent'));
-    var $trashIcon = $('<span>', {"class": "fa " + faTrash});
-    var $trashEmptyIcon = $(Icons.get('drive-trash'));
+    var $trashIcon = $(Icons.get('drive-trash-full'));;
+    var $trashEmptyIcon = $(Icons.get('drive-trash-empty'));
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o cp-app-drive-icon-expcol"});
     var $expandIcon = $(Icons.get('drive-expand', {'class': 'cp-app-drive-icon-expcol'}));
     //var $listIcon = $('<button>', {"class": "fa fa-list"});
