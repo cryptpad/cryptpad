@@ -26,6 +26,8 @@ define([
     '/customize/pages.js',
     '/common/pad-types.js',
     '/common/onlyoffice/broken-formats.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js'
 ], function (
     $,
     ApiConfig,
@@ -47,7 +49,9 @@ define([
     Messages,
     Pages,
     PadTypes,
-    BrokenFormats)
+    BrokenFormats,
+    Lucide,
+    Icons)
 {
 
     var APP = window.APP = {
@@ -89,9 +93,9 @@ define([
     var FILTER = "filter";
 
     // Icons
-    var faFolder = 'cptools-folder';
+    var faFolder = 'drive-folder';
     var faFolderOpen = 'cptools-folder-open';
-    var faSharedFolder = 'cptools-shared-folder';
+    var faSharedFolder = 'drive-shared-folder';
     var faSharedFolderOpen = 'cptools-shared-folder-open';
     var faExpandAll = 'fa-plus-square-o';
     var faCollapseAll = 'fa-minus-square-o';
@@ -112,40 +116,38 @@ define([
     var faRestore = 'fa-repeat';
     var faShowParent = 'fa-location-arrow';
     var faDownload = 'fa-download';
-    var $folderIcon = $('<span>', {
-        "class": faFolder + " cptools cp-app-drive-icon-folder cp-app-drive-content-icon"
-    });
+    var $folderIcon = $(Icons.get(faFolder,{"class": "cp-app-drive-icon-folder cp-app-drive-content-icon"}));
     var $fileMenuIcon = $('<span>', {"class": "fa fa-ellipsis-h"});
     //var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
     var $folderEmptyIcon = $folderIcon.clone();
-    var $folderOpenedIcon = $('<span>', {"class": faFolderOpen + " cptools cp-app-drive-icon-folder"});
+    var $folderOpenedIcon = $(Icons.get('folder-open'));
     //var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
-    var $sharedFolderIcon = $('<span>', {"class": faSharedFolder + " cptools cp-app-drive-icon-folder"});
+    var $sharedFolderIcon = $(Icons.get('drive-shared-folder', {"class": "cp-app-drive-icon-folder"}));
     var $sharedFolderOpenedIcon = $('<span>', {"class": faSharedFolderOpen + " cptools cp-app-drive-icon-folder"});
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
-    var $templateIcon = $('<span>', {"class": "cptools cptools-template"});
-    var $recentIcon = $('<span>', {"class": "fa fa-clock-o"});
-    var $trashIcon = $('<span>', {"class": "fa " + faTrash});
-    var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
+    var $templateIcon = $(Icons.get('file-template'));
+    var $recentIcon = $(Icons.get('drive-recent'));
+    var $trashIcon = $(Icons.get('drive-trash-full'));;
+    var $trashEmptyIcon = $(Icons.get('drive-trash-empty'));
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o cp-app-drive-icon-expcol"});
-    var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o cp-app-drive-icon-expcol"});
+    var $expandIcon = $(Icons.get('drive-expand', {'class': 'cp-app-drive-icon-expcol'}));
     //var $listIcon = $('<button>', {"class": "fa fa-list"});
     //var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
-    var $closeIcon = $('<span>', {"class": "fa fa-times"});
+    var $closeIcon = $(Icons.get('close'));
     //var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
-    var $searchIcon = $('<span>', {"class": "fa fa-search cp-app-drive-tree-search-icon"});
-    var $addIcon = $('<span>', {"class": "fa fa-plus"});
+    var $searchIcon = $($(Icons.get('drive-search', {'class': 'cp-app-drive-tree-search-icon'})));
+    var $addIcon = $(Icons.get('add'));
     var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
     var $readonlyIcon = $('<span>', {"class": "fa " + faReadOnly});
-    var $ownedIcon = $('<span>', {"class": "fa fa-id-badge"});
-    var $sharedIcon = $('<span>', {"class": "fa " + faShared});
+    var $ownedIcon = $(Icons.get('drive-owned-document'));
+    var $sharedIcon = $(Icons.get('share'));
     //var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
     var $tagsIcon = $('<span>', {"class": "fa " + faTags});
-    var $passwordIcon = $('<span>', {"class": "fa fa-lock"});
+    var $passwordIcon = $(Icons.get('drive-password-document'));
     var $restrictedIcon = $('<span>', {"class": "fa fa-ban"});
     var $expirableIcon = $('<span>', {"class": "fa fa-clock-o"});
     var $separator = $('<div>', {"class": "dropdown-divider"});
@@ -662,7 +664,7 @@ define([
         $content.attr("tabindex", "0");
         if (APP.loggedIn) {
             var splitter = h('div.cp-splitter', [
-                h('i.fa.fa-ellipsis-v')
+                Icons.get('ellipsis-vertical')
             ]);
             $contentContainer.append(splitter);
             APP.$splitter = $(splitter).on('mousedown touchstart', function (e) {
@@ -735,6 +737,7 @@ define([
             },
             ready: function (state) {
                 appStatus.isReady = state;
+                Lucide.createIcons();
                 if (state) {
                     appStatus._onReady.forEach(function (h) {
                         h();
@@ -2762,17 +2765,17 @@ define([
         // Create the button allowing the user to switch from list to icons modes
         var createViewModeButton = function ($container) {
             var viewMode = getViewMode();
-            var gridIcon = h('i.fa.fa-th-large', { title: Messages.fm_viewGridButton });
-            var listIcon = h('i.fa.fa-list', { title: Messages.fm_viewListButton });
+            var gridIcon = Icons.get('grid', {title:  Messages.fm_viewGridButton});
+            var listIcon = Icons.get('list', {title:  Messages.fm_viewListButton});
 
             var $button = $(h('button.cp-app-drive-viewmode-button', [
                 gridIcon,
                 listIcon
             ]));
             $button.attr('aria-label', Messages.label_viewMode);
-            var $gridIcon = $(gridIcon);
-            var $listIcon = $(listIcon);
             var showMode = function (mode) {
+                var $gridIcon = $button.find('svg.lucide-layout-grid');
+                var $listIcon = $button.find('svg.lucide-list');
                 if (mode === 'grid') {
                     $gridIcon.hide();
                     $listIcon.show();
@@ -2782,7 +2785,7 @@ define([
                 }
             };
             setViewMode(viewMode || 'grid');
-            showMode(viewMode);
+            setTimeout(() => showMode(viewMode),0);
 
             $button.click(function () {
                 var viewMode = getViewMode();
@@ -3082,20 +3085,20 @@ define([
                 options.push({ separator: true });
                 options.push({
                     class: 'cp-app-drive-new-fileupload',
-                    icon: getIcon('fileupload')[0],
+                    icon: Icons.get('drive-upload-file',{'class': 'cp-icon-color-file'}),
                     name: Messages.uploadButton,
                 });
                 if (APP.allowFolderUpload) {
                     options.push({
                         class: 'cp-app-drive-new-folderupload',
-                        icon: getIcon('folderupload')[0],
+                        icon: Icons.get('drive-upload-folder',{'class': 'cp-icon-color-file'}),
                         name: Messages.uploadFolderButton,
                     });
                 }
                 options.push({ separator: true });
                 options.push({
                     class: 'cp-app-drive-new-link',
-                    icon: getIcon('link')[0],
+                    icon: Icons.get('link', {class:'cp-icon-color-drive'}),
                     name: Messages.fm_link_new,
                 });
                 options.push({ separator: true });
@@ -3165,7 +3168,7 @@ define([
 
             var dropdownConfig = {
                 buttonContent: [
-                    h('i.fa.fa-plus'),
+                    Icons.get('add'),
                     h('span.cp-button-name', Messages.fm_newButton),
                 ],
                 buttonCls: 'cp-toolbar-dropdown-nowrap',
@@ -3232,7 +3235,7 @@ define([
                         'data-type': 'link',
                     },
                     content: [
-                        getIcon('link')[0],
+                        Icons.get('link', {'class': 'cp-icon-color-drive'}),
                         Messages.fm_link_type
                     ],
                 });
@@ -3243,14 +3246,14 @@ define([
                         'data-type': 'file',
                     },
                     content: [
-                        getIcon('file')[0],
+                        Icons.get('drive-file', {'class': 'cp-icon-color-file'}),
                         Messages.type['file']
                     ],
                 });
             }
             var dropdownConfig = {
                 buttonContent: [
-                    h('i.fa.fa-filter'),
+                    Icons.get('filter'),
                     h('span.cp-button-name', Messages.fm_filterBy),
                 ],
                 buttonCls: 'cp-toolbar-dropdown-nowrap',
@@ -3660,7 +3663,7 @@ define([
                     $body: $('body')
                 });
                 var $modal = modal.$modal;
-                var $title = $(h('h3', [ h('i.fa.fa-plus'), ' ', Messages.fm_newButton ]));
+                var $title = $(h('h3', [ Icons.get('add'), ' ', Messages.fm_newButton ]));
                 var $description = $('<p>').text(Messages.fm_newButtonTitle);
                 $modal.find('.cp-modal').append($title);
                 $modal.find('.cp-modal').append($description);
@@ -3688,7 +3691,7 @@ define([
             APP.$collapseButton = APP.$collapseButton || common.createButton('', true, {
                 text: Messages.drive_treeButton,
                 name: 'files',
-                icon: 'fa-hdd-o',
+                icon: 'drive',
                 drawer: false,
             });
             checkCollapseButton();

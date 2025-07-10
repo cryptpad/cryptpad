@@ -27,6 +27,11 @@
     max-height: 100%;
     min-height: auto;
 
+    .lucide {
+        width: 1.2em;
+        height: 1.2em;
+        margin-right: 0.2rem;
+    }
     .cp-unselectable {
         .tools_unselectable();
     }
@@ -83,15 +88,17 @@
                 max-width: none;
                 margin: 8px 0;
             }
-            .fa, .cptools {
-                display: block;
-                margin: auto;
+            .fa, .cptools, svg {
                 font-size: 64px;
+                margin: auto;
                 margin: 18px 0;
                 text-align: center;
                 &.listonly {
                     display: none;
                 }
+            }
+            svg {
+                font-size: 55px; //temporary XXX
             }
 
             &.cp-app-hidden {
@@ -345,7 +352,7 @@
                     cursor: pointer;
                     margin: 0 0 2px -5px;
                     padding-left: 5px;
-                    .fa, .cptools {
+                    .fa, .cptools, svg {
                         display: inline-block;
                         min-width: 0;
                         width: 20px;
@@ -382,7 +389,8 @@
             li {
                 padding: 0;
                 .cp-app-drive-element-row {
-                    display: block;
+                    display: inline-flex;
+                    align-items: center;
                     padding-left: 20px;
                     .leftside-menu-category_main();
                     margin: 0;
@@ -511,7 +519,7 @@
         .cp-splitter {
             position: absolute;
             height: 100%;
-            width: 8px;
+            width: 1rem;
             top: 0;
             left: 0;
             cursor: col-resize;
@@ -528,9 +536,9 @@
             &:hover {
                 border-left: 1px solid @cryptpad_text_col;
             }
-            i {
+            svg {
                 color: @cryptpad_text_col;
-                font-size: 1.6rem;
+                margin:0;
             }
         }
         &.cp-app-drive-readonly { // applied to offline drive (not read-only shared folders)
@@ -577,7 +585,7 @@
                 color: @cryptpad_color_link;
                 text-decoration: underline;
             }
-            span {
+            svg {
                 cursor: pointer;
                 float: right;
                 margin-top: 0.5em;
@@ -658,7 +666,7 @@
             &:hover {
                 opacity: 0.7;
             }
-            .fa, .cptools {
+            .fa, .cptools, svg {
                 cursor: pointer;
             }
         }
@@ -691,7 +699,9 @@
                 .cp-app-drive-element-state, .cp-app-drive-element-menu {
                     position: absolute;
                     top: 3px;
-                    .fa, .cptools {
+                    display: flex;
+                    flex-direction: column;
+                    .fa, .cptools, svg {
                         margin: 0;
                         font-size: 18px;
                     }
@@ -729,10 +739,9 @@
             }
             .cp-app-drive-new-ghost {
                 flex-flow: column;
-                .fa, .cptools {
+                .fa, .cptools, svg {
                     font-size: 90px;
-                    margin-top: 5px;
-                    margin-bottom: 0;
+                    margin: 0;
                 }
             }
             .cp-app-drive-element-list {
@@ -793,7 +802,7 @@
                         align-items: center;
                         justify-content: end;
                         height: @variables_bar-height;
-                        .fa, .cptools {
+                        .fa, .cptools, svg {
                             &:not(:last-child) {
                                 margin-right: 2px;
                             }
@@ -984,6 +993,23 @@
                     outline: @cryptpad_color_brand solid 2px;
                 }
             }
+            ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            li {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                text-align: center;
+            }
+            h3 {
+                display:inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
             &> p {
                 display: flex;
                 align-items: center;
@@ -1050,13 +1076,13 @@
             }
         }
         .cp-toolbar-bottom-right {
-            .fa-history { order: 50; }
+            .lucide-history { order: 50; }
             // .fa-list, .fa-th-large,
             .cp-app-drive-viewmode-button {
                 order: 25;
-                i {
-                    margin-right: 0;
-                }
+            }
+            svg {
+                margin-right: 0;
             }
             #cp-app-drive-toolbar-context-mobile, #cp-app-drive-toolbar-contextbuttons { order: 0; }
             #cp-app-drive-toolbar-context-mobile {
