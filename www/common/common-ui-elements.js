@@ -2158,8 +2158,8 @@ define([
         if (accountName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
-                content: h('span', Messages.profileButton),
+                attributes: {'class': 'cp-toolbar-menu-profile'},
+                content: h('span',[Icons.get('user-profile')], Messages.profileButton),
                 action: function () {
                     if (padType) {
                         Common.openURL(origin+'/profile/');
@@ -2184,10 +2184,7 @@ define([
         if (padType !== 'teams' && accountName) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-users',
-                },
-                content: h('span', Messages.type.teams),
+                content: h('span', [Icons.get('teams')], Messages.type.teams),
                 action: function () {
                     Common.openURL('/teams/');
                 },
@@ -2196,10 +2193,7 @@ define([
         if (padType !== 'calendar' && accountName) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-calendar',
-                },
-                content: h('span', Messages.calendar),
+                content: h('span', [Icons.get('calendar')], Messages.calendar),
                 action: function () {
                     Common.openURL('/calendar/');
                 },
@@ -2208,10 +2202,7 @@ define([
         if (padType !== 'contacts' && accountName) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-address-book',
-                },
-                content: h('span', Messages.type.contacts),
+                content: h('span', [Icons.get('contacts')], Messages.type.contacts),
                 action: function () {
                     Common.openURL('/contacts/');
                 },
@@ -2220,8 +2211,8 @@ define([
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog'},
-                content: h('span', Messages.settingsButton),
+                attributes: {'class': 'cp-toolbar-menu-settings'},
+                content: h('span', [Icons.get('settings')], Messages.settingsButton),
                 action: function () {
                     if (padType) {
                         Common.openURL(origin+'/settings/');
@@ -2237,8 +2228,8 @@ define([
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.includes(priv.edPublic)) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs'},
-                content: h('span', Messages.adminPage || 'Admin'),
+                attributes: {'class': 'cp-toolbar-menu-admin'},
+                content: h('span', [Icons.get('administration')], Messages.adminPage || 'Admin'),
                 action: function () {
                     if (padType) {
                         Common.openURL(origin+'/admin/');
@@ -2252,8 +2243,8 @@ define([
         if (priv.edPublic && Config.supportMailboxKey && Array.isArray(Config.moderatorKeys) && Config.moderatorKeys.includes(priv.edPublic)) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-admin fa  fa-ambulance'},
-                content: h('span', Messages.moderationPage || 'Support mailbox'),
+                attributes: {'class': 'cp-toolbar-menu-admin'},
+                content: h('span', [Icons.get('support-mailbox')], Messages.moderationPage || 'Support mailbox'),
                 action: function () {
                     Common.openURL(origin+'/moderation/');
                     return true;
@@ -2266,15 +2257,14 @@ define([
                 'target': '_blank',
                 'rel': 'noopener',
                 'href': 'https://docs.cryptpad.org',
-                'class': 'fa fa-book',
             },
-            content: h('span', Messages.docs_link)
+            content: h('span', [Icons.get('documentation')], Messages.docs_link)
         });
         if (padType !== 'support' && accountName && Config.supportMailboxKey) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
-                content: h('span', Messages.supportPage || 'Support'),
+                attributes: {'class': 'cp-toolbar-menu-support'},
+                content: h('span', [Icons.get('support')], Messages.supportPage || 'Support'),
                 action: function () {
                     if (padType) {
                         Common.openURL(origin+'/support/');
@@ -2288,9 +2278,9 @@ define([
         options.push({
             tag: 'a',
             attributes: {
-                'class': 'cp-toolbar-about fa fa-info',
+                'class': 'cp-toolbar-about',
             },
-            content: h('span', Messages.user_about),
+            content: h('span', [Icons.get('features')], Messages.user_about),
             action: function () {
                 UIElements.displayInfoMenu(Common, metadataMgr);
             },
@@ -2298,10 +2288,7 @@ define([
 
         options.push({
             tag: 'a',
-            attributes: {
-                'class': 'fa fa-home',
-            },
-            content: h('span', Messages.homePage),
+            content: h('span',[Icons.get('homepage')], Messages.homePage),
             action: function () {
                 Common.openURL('/index.html');
             },
@@ -2336,10 +2323,7 @@ define([
             surveyAlone = false;
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-gift',
-                },
-                content: h('span', Messages.crowdfunding_button2),
+                content: h('span',[Icons.get('donate')], Messages.crowdfunding_button2),
                 action: function () {
                     Common.openUnsafeURL(priv.accounts.donateURL);
                 },
@@ -2367,9 +2351,9 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'class': 'cp-toolbar-menu-logout-everywhere fa fa-plug',
+                    'class': 'cp-toolbar-menu-logout-everywhere',
                 },
-                content: h('span', Messages.logoutEverywhere),
+                content: h('span',[Icons.get('logout-everywhere')], Messages.logoutEverywhere),
                 action: function () {
                     UI.confirm(Messages.settings_logoutEverywhereConfirm, function (yes) {
                         if (!yes) { return; }
@@ -2381,8 +2365,8 @@ define([
             });
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out'},
-                content: h('span', Messages.logoutButton),
+                attributes: {'class': 'cp-toolbar-menu-logout'},
+                content: h('span',[Icons.get('logout')], Messages.logoutButton),
                 action: function () {
                     Common.logout(function () {
                         Common.gotoURL(origin+'/');
@@ -2392,8 +2376,8 @@ define([
         } else {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in'},
-                content: h('span', Messages.login_login),
+                attributes: {'class': 'cp-toolbar-menu-login'},
+                content: h('span', [Icons.get('login')], Messages.login_login),
                 action: function () {
                     Common.setLoginRedirect('login');
                 },
@@ -2401,8 +2385,8 @@ define([
             if (!Config.restrictRegistration) {
                 options.push({
                     tag: 'a',
-                    attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
-                    content: h('span', Messages.login_register),
+                    attributes: {'class': 'cp-toolbar-menu-register'},
+                    content: h('span',[Icons.get('register')], Messages.login_register),
                     action: function () {
                         Common.setLoginRedirect('register');
                     },

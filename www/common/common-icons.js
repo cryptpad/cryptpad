@@ -14,7 +14,10 @@ define([
         "link": "link",
         "donate": "hand-coins",
         "login": "log-in",
-        "register": "user",
+        "logout": "log-out",
+        "logout-everywhere": "unplug",
+        "register-homepage": "user",
+        "register": "user-round-plus",
         "chevron-left": "chevron-left",
         "check": "check",
         "drive": "hard-drive",
@@ -41,7 +44,15 @@ define([
         "drive-shared-folder": "folder-git-2",
         "drive-upload-file": "file-up",
         "drive-upload-folder": "folder-up",
-        "drive-file": "file"
+        "drive-file": "file",
+        "teams": "users-round",
+        "calendar": "calendar-days",
+        "contacts": "contact-round",
+        "settings": "settings",
+        "administration": "monitor-cog",
+        "support": "life-buoy",
+        "support-mailbox": "ambulance",
+        "homepage": "house"
     };
 
     Icons.get = (name, attrs = {}) => {
