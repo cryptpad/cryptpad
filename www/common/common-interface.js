@@ -663,9 +663,12 @@ define([
         };
         $blockContainer.html('').appendTo($body);
         var $block = $(h('div.cp-modal')).appendTo($blockContainer);
-        $(h('span.cp-modal-close.fa.fa-times', {
-            title: Messages.filePicker_close
-        })).click(hide).appendTo($block);
+        $(h('span',[
+            Icons.get('close', {
+                'class': 'cp-modal-close',
+                'title': Messages.filePicker_close
+            }),
+        ])).click(hide).appendTo($block);
         $body.click(hide);
         $block.click(function (e) {
             e.stopPropagation();
