@@ -213,7 +213,7 @@ define([
                             ]),
                             h('div.cp-app-drive', [
                                 h('a.cp-drive-btn', {'href': '/drive/'}, [
-                                    Icons.get('hdd'),
+                                    Icons.get('drive'),
                                     Msg.team_cat_drive
                                 ]),
                                 extraButtons

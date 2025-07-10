@@ -1413,7 +1413,9 @@ define([
 
         common.fixLinks(text);
 
-        var closeButton = h('button.cp-help-close.fa.fa-times', {
+        var closeButton = h('button.cp-help-close',[
+            Icons.get('close')
+        ], {
             title: Messages.help_close_button
         });
         var $toolbarButton = common.createButton('', true, {

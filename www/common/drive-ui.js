@@ -137,7 +137,7 @@ define([
     //var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
-    var $closeIcon = $('<span>', {"class": "fa fa-times"});
+    var $closeIcon = $(Icons.get('close'));
     //var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
     var $searchIcon = $($(Icons.get('drive-search', {'class': 'cp-app-drive-tree-search-icon'})));
     var $addIcon = $(Icons.get('add'));
