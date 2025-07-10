@@ -22,6 +22,8 @@ define([
     '/lib/tippy/tippy.min.js',
     '/common/hyperscript.js',
     '/customize/loading.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
     //'/common/test.js',
 
     '/lib/jquery-ui/jquery-ui.min.js', // autocomplete widget
@@ -29,7 +31,7 @@ define([
     'css!/lib/tippy/tippy.css',
     'css!/lib/jquery-ui/jquery-ui.min.css'
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
-            Alertify, Tippy, h, Loading/*, Test */) {
+            Alertify, Tippy, h, Loading, Lucide, Icons /*, Test */) {
     var UI = {};
 
     /*
@@ -673,11 +675,13 @@ define([
                 hide();
             }
         });
+
         return {
             $modal: $blockContainer,
             show: function () {
                 $blockContainer.css('display', 'flex');
                 addTabListener($blockContainer);
+                Lucide.createIcons();
             },
             hide: hide
         };

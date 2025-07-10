@@ -36,7 +36,10 @@ define([
         "history-fast-prev": "arrow-left-to-line",
         "history-timeline-position": "flag-triangle-right",
         "history-restore": "archive-restore",
-        "close": "x"
+        "close": "x",
+        "drive-folder": "folder",
+        "drive-shared-folder": "folder-git-2",
+        "drive-upload-file": "file-up",
     };
 
     Icons.get = (name, attrs = {}) => {

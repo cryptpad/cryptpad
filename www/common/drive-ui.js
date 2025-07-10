@@ -93,9 +93,9 @@ define([
     var FILTER = "filter";
 
     // Icons
-    var faFolder = 'cptools-folder';
+    var faFolder = 'drive-folder';
     var faFolderOpen = 'cptools-folder-open';
-    var faSharedFolder = 'cptools-shared-folder';
+    var faSharedFolder = 'drive-shared-folder';
     var faSharedFolderOpen = 'cptools-shared-folder-open';
     var faExpandAll = 'fa-plus-square-o';
     var faCollapseAll = 'fa-minus-square-o';
@@ -116,16 +116,14 @@ define([
     var faRestore = 'fa-repeat';
     var faShowParent = 'fa-location-arrow';
     var faDownload = 'fa-download';
-    var $folderIcon = $('<span>', {
-        "class": faFolder + " cptools cp-app-drive-icon-folder cp-app-drive-content-icon"
-    });
+    var $folderIcon = $(Icons.get(faFolder,{"class": "cp-app-drive-icon-folder cp-app-drive-content-icon"}));
     var $fileMenuIcon = $('<span>', {"class": "fa fa-ellipsis-h"});
     //var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
     var $folderEmptyIcon = $folderIcon.clone();
     var $folderOpenedIcon = $(Icons.get('folder-open'));
     //var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
-    var $sharedFolderIcon = $('<span>', {"class": faSharedFolder + " cptools cp-app-drive-icon-folder"});
+    var $sharedFolderIcon = $(Icons.get('drive-shared-folder', {"class": "cp-app-drive-icon-folder"}));
     var $sharedFolderOpenedIcon = $('<span>', {"class": faSharedFolderOpen + " cptools cp-app-drive-icon-folder"});
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
@@ -3100,7 +3098,7 @@ define([
                 options.push({ separator: true });
                 options.push({
                     class: 'cp-app-drive-new-link',
-                    icon: getIcon('link')[0],
+                    icon: Icons.get('link', {class:'cp-icon-color-drive'}),
                     name: Messages.fm_link_new,
                 });
                 options.push({ separator: true });
@@ -3665,7 +3663,7 @@ define([
                     $body: $('body')
                 });
                 var $modal = modal.$modal;
-                var $title = $(h('h3', [ h('i.fa.fa-plus'), ' ', Messages.fm_newButton ]));
+                var $title = $(h('h3', [ Icons.get('add'), ' ', Messages.fm_newButton ]));
                 var $description = $('<p>').text(Messages.fm_newButtonTitle);
                 $modal.find('.cp-modal').append($title);
                 $modal.find('.cp-modal').append($description);

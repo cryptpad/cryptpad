@@ -88,15 +88,17 @@
                 max-width: none;
                 margin: 8px 0;
             }
-            .fa, .cptools {
-                display: block;
-                margin: auto;
+            .fa, .cptools, svg {
                 font-size: 64px;
+                margin: auto;
                 margin: 18px 0;
                 text-align: center;
                 &.listonly {
                     display: none;
                 }
+            }
+            svg {
+                font-size: 55px; //temporary XXX
             }
 
             &.cp-app-hidden {
@@ -990,6 +992,23 @@
                 &:focus {
                     outline: @cryptpad_color_brand solid 2px;
                 }
+            }
+            ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            li {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                text-align: center;
+            }
+            h3 {
+                display:inline-flex;
+                align-items: center;
+                justify-content: center;
             }
             &> p {
                 display: flex;
