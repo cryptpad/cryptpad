@@ -55,6 +55,7 @@ define([
         "support-mailbox": "ambulance",
         "homepage": "house",
         "file-template": "file-type",
+        "drive-expanded": "square-minus",
     };
 
     Icons.get = (name, attrs = {}) => {

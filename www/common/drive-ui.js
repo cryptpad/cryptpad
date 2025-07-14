@@ -132,7 +132,8 @@ define([
     var $trashIcon = $(Icons.get('drive-trash-full'));;
     var $trashEmptyIcon = $(Icons.get('drive-trash-empty'));
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o cp-app-drive-icon-expcol"});
-    var $expandIcon = $(Icons.get('drive-expand', {'class': 'cp-app-drive-icon-expcol'}));
+    var $expandIcon = $(Icons.get('drive-expand'));
+    var $expandedIcon = $(Icons.get('drive-expanded'));
     //var $listIcon = $('<button>', {"class": "fa fa-list"});
     //var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
@@ -4497,7 +4498,7 @@ define([
             $icon.css("color", isSharedFolder ? getFolderColor(path.slice(0, -1)) : getFolderColor(path));
             var $collapse;
             if (collapsable) {
-                $collapse = $expandIcon.clone().attr('tabindex', 0);
+                $collapse = $('<span>').attr('tabindex', 0).attr('class', 'cp-app-drive-icon-expcol').append($expandIcon.clone());
             }
             var $elementRow = $('<span>', {
                 'class': 'cp-app-drive-element-row cp-app-drive-element-folder',
@@ -4537,19 +4538,18 @@ define([
                         // It is closed, open it
                         $element.removeClass('cp-app-drive-element-collapsed');
                         LS.setFolderOpened(path, true);
-                        $collapse.removeClass('fa-plus-square-o');
-                        $collapse.addClass('fa-minus-square-o');
+                        $collapse.empty().append($expandedIcon.clone());
                     } else {
                         // Collapse the folder
                         $element.addClass('cp-app-drive-element-collapsed');
                         LS.setFolderOpened(path, false);
-                        $collapse.removeClass('fa-minus-square-o');
-                        $collapse.addClass('fa-plus-square-o');
+                        $collapse.empty().append($expandIcon.clone());
                         // Change the current opened folder if it was collapsed
                         if (manager.isSubpath(currentPath, path)) {
                             displayDirectory(path);
                         }
                     }
+                    Lucide.createIcons();
                 });
                 if (LS.wasFolderOpened(path) ||
                         (manager.isSubpath(currentPath, path) && path.length < currentPath.length)) {
