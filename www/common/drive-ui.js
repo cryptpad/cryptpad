@@ -3437,7 +3437,7 @@ define([
             if (APP.store[SORT_FILE_BY] === '') { classSorted = 'cp-app-drive-sort-filename'; }
             else if (APP.store[SORT_FILE_BY]) { classSorted = 'cp-app-drive-element-' + APP.store[SORT_FILE_BY]; }
             if (classSorted) {
-                $list.find('.' + classSorted).addClass('cp-app-drive-sort-active').prepend($icon).find('i').hide();
+                $list.find('.' + classSorted).addClass('cp-app-drive-sort-active').prepend($icon).find('svg').hide();
             }
         };
         var getFileListHeader = function (clickable) {
