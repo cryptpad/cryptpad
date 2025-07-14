@@ -94,27 +94,27 @@ define([
 
     // Icons
     var faFolder = 'drive-folder';
-    var faFolderOpen = 'cptools-folder-open';
+    var faFolderOpen = 'folder-open';
     var faSharedFolder = 'drive-shared-folder';
     var faExpandAll = 'fa-plus-square-o';
     var faCollapseAll = 'fa-minus-square-o';
     var faShared = 'fa-shhare-alt';
-    var faReadOnly = 'fa-eye';
-    var faPreview = 'fa-eye';
-    var faRename = 'fa-pencil';
-    var faColor = 'cptools-palette';
-    var faTrash = 'fa-trash';
-    var faCopy = 'fa-files-o';
-    var faDelete = 'cptools-destroy';
-    var faAccess = 'fa-unlock-alt';
-    var faProperties = 'fa-info-circle';
-    var faTags = 'fa-hashtag';
+    var faReadOnly = 'read-only';
+    var faPreview = 'preview';
+    var faRename = 'rename';
+    var faColor = 'color-palette';
+    var faTrash = 'drive-trash-full';
+    var faCopy = 'copy';
+    var faDelete = 'destroy';
+    var faAccess = 'access';
+    var faProperties = 'features';
+    var faTags = 'tag';
     var faUploadFiles = 'drive-upload-file';
     var faUploadFolder = 'drive-upload-folder';
-    var faEmpty = 'fa-trash-o';
+    var faEmpty = 'drive-trash-empty';
     var faRestore = 'fa-repeat';
     var faShowParent = 'fa-location-arrow';
-    var faDownload = 'fa-download';
+    var faDownload = 'download';
     var $folderIcon = $(Icons.get(faFolder,{"class": "cp-app-drive-icon-folder cp-app-drive-content-icon"}));
     var $fileMenuIcon = $('<span>', {"class": "fa fa-ellipsis-h"});
     //var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
@@ -142,11 +142,11 @@ define([
     var $searchIcon = $($(Icons.get('drive-search', {'class': 'cp-app-drive-tree-search-icon'})));
     var $addIcon = $(Icons.get('add'));
     var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
-    var $readonlyIcon = $('<span>', {"class": "fa " + faReadOnly});
+    var $readonlyIcon = $(Icons.get(faReadOnly));
     var $ownedIcon = $(Icons.get('drive-owned-document'));
     var $sharedIcon = $(Icons.get('share'));
     //var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
-    var $tagsIcon = $('<span>', {"class": "fa " + faTags});
+    var $tagsIcon = $(Icons.get(faTags));
     var $passwordIcon = $(Icons.get('drive-password-document'));
     var $restrictedIcon = $('<span>', {"class": "fa fa-ban"});
     var $expirableIcon = $('<span>', {"class": "fa fa-clock-o"});
@@ -401,15 +401,25 @@ define([
                 h('li', h('a.cp-app-drive-context-open.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faFolderOpen,
-                }, Messages.fc_open)),
+                }, [
+                    Icons.get(faFolderOpen),
+                    Messages.fc_open
+                ]
+                )),
                 h('li', h('a.cp-app-drive-context-openfolder.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faFolderOpen,
-                }, Messages.fc_open)),
+                }, [
+                    Icons.get(faFolderOpen),
+                    Messages.fc_open
+                ])),
                 h('li', h('a.cp-app-drive-context-openro.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
-                }, h('span.cp-text', Messages.fc_open_ro))),
+                }, [
+                    Icons.get(faReadOnly),
+                    h('span.cp-text', Messages.fc_open_ro)
+                ])),
                 isAppEnabled('code') ? h('li', UI.setHTML(h('a.cp-app-drive-context-openincode.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': 'fa-arrows',
@@ -447,12 +457,18 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-share.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': 'fa-shhare-alt',
-                }, Messages.shareButton)),
+                    'data-icon': 'share',
+                }, [
+                    Icons.get('share'),
+                    Messages.shareButton
+                ])),
                 h('li', h('a.cp-app-drive-context-access.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faAccess,
-                }, Messages.accessButton)),
+                }, [
+                    Icons.get(faAccess),
+                    Messages.accessButton
+                ])),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newfolder.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -512,7 +528,10 @@ define([
                 h('li', h('a.cp-app-drive-context-empty.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faEmpty,
-                }, Messages.fc_empty)),
+                }, [
+                    Icons.get(faEmpty),
+                    Messages.fc_empty
+                ])),
                 h('li', h('a.cp-app-drive-context-restore.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faRestore,
@@ -521,45 +540,75 @@ define([
                 h('li', h('a.cp-app-drive-context-rename.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faRename,
-                }, Messages.fc_rename)),
+                }, [
+                    Icons.get(faRename),
+                    Messages.fc_rename
+                ])),
                 h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faColor,
-                }, Messages.fc_color)),
+                }, [
+                    Icons.get(faColor),
+                    Messages.fc_color
+                ])),
                 h('li', h('a.cp-app-drive-context-hashtag.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTags,
-                }, Messages.fc_hashtag)),
+                }, [
+                    Icons.get(faTags),
+                    Messages.fc_hashtag
+                ])),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-makeacopy.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faCopy,
-                }, Messages.makeACopy)),
+                }, [
+                    Icons.get(faCopy),
+                    Messages.makeACopy
+                ])),
                 h('li', h('a.cp-app-drive-context-download.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faDownload,
-                }, Messages.download_mt_button)),
+                }, [
+                    Icons.get(faDownload),
+                    Messages.download_mt_button
+                ])),
                 h('li', h('a.cp-app-drive-context-delete.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
-                }, Messages.fc_delete)), // "Move to trash"
+                }, [
+                    Icons.get(faTrash),
+                    Messages.fc_delete
+                ])), // "Move to trash"
                 h('li', h('a.cp-app-drive-context-deleteowned.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faDelete,
-                }, Messages.fc_delete_owned)),
+                }, [
+                    Icons.get(faDelete),
+                    Messages.fc_delete_owned
+                ])),
                 h('li', h('a.cp-app-drive-context-remove.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
-                }, Messages.fc_remove)),
+                }, [
+                    Icons.get(faTrash),
+                    Messages.fc_remove
+                ] )),
                 h('li', h('a.cp-app-drive-context-removesf.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
-                }, Messages.fc_remove_sharedfolder)),
+                }, [
+                    Icons.get(faTrash),
+                    Messages.fc_remove_sharedfolder
+                ])),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faProperties,
-                }, Messages.fc_prop))
+                },[
+                    Icons.get(faProperties),
+                    Messages.fc_prop
+                ]))
             ])
         ]);
         // add icons to the contextmenu options
@@ -2866,7 +2915,7 @@ define([
         };
         var createEmptyTrashButton = function () {
             var button = h('button.btn.btn-danger', [
-                h('i.fa.'+faTrash),
+                Icons.get(faTrash),
                 h('span', Messages.fc_empty)
             ]);
             $(button).click(function () {
