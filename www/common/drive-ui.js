@@ -136,8 +136,8 @@ define([
     var $expandedIcon = $(Icons.get('drive-expanded'));
     //var $listIcon = $('<button>', {"class": "fa fa-list"});
     //var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
-    var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
-    var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
+    var $sortAscIcon = $(Icons.get('sort-asc', {'class': 'sortasc'}));
+    var $sortDescIcon = $(Icons.get('sort-desc', {'class': 'sortdesc'}));
     var $closeIcon = $(Icons.get('close'));
     //var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
     var $searchIcon = $($(Icons.get('drive-search', {'class': 'cp-app-drive-tree-search-icon'})));

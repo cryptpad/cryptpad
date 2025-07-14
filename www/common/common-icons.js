@@ -56,6 +56,8 @@ define([
         "homepage": "house",
         "file-template": "file-type",
         "drive-expanded": "square-minus",
+        "sort-asc": "arrow-down-0-1",
+        "sort-desc": "arrow-up-1-0",
     };
 
     Icons.get = (name, attrs = {}) => {
