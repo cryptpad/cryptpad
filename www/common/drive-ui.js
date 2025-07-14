@@ -2742,15 +2742,18 @@ define([
                 $box.hide();
             } else {
                 $box.text(msg);
-                var $close = $closeIcon.clone().css({
-                    'cursor': 'pointer',
-                    'margin-left': '10px',
-                    title: Messages.fm_closeInfoBox
-                }).on('click', function () {
-                    $box.hide();
-                    APP.store['hide-info-' + path[0]] = '1';
-                    localStore.put('hide-info-' + path[0], '1');
-                });
+                var $close = $('<span>').css({
+                        'cursor': 'pointer',
+                        'margin-left': '10px'
+                    })
+                    .attr('title', Messages.fm_closeInfoBox)
+                    .attr('role', 'button')
+                    .append($closeIcon.clone())
+                    .on('click', function () {
+                        $box.hide();
+                        APP.store['hide-info-' + path[0]] = '1';
+                        localStore.put('hide-info-' + path[0], '1');
+                    });
                 $box.prepend($close);
             }
             return $box;
