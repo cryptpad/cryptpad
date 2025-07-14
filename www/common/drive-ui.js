@@ -96,7 +96,6 @@ define([
     var faFolder = 'drive-folder';
     var faFolderOpen = 'cptools-folder-open';
     var faSharedFolder = 'drive-shared-folder';
-    var faSharedFolderOpen = 'cptools-shared-folder-open';
     var faExpandAll = 'fa-plus-square-o';
     var faCollapseAll = 'fa-minus-square-o';
     var faShared = 'fa-shhare-alt';
@@ -124,7 +123,7 @@ define([
     //var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
     var $sharedFolderIcon = $(Icons.get('drive-shared-folder', {"class": "cp-app-drive-icon-folder"}));
-    var $sharedFolderOpenedIcon = $('<span>', {"class": faSharedFolderOpen + " cptools cp-app-drive-icon-folder"});
+    var $sharedFolderOpenedIcon = $(Icons.get('drive-shared-folder-open', {"class": "cp-app-drive-icon-folder"}));
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $(Icons.get('file-template'));

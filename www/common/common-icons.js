@@ -42,7 +42,8 @@ define([
         "history-restore": "archive-restore",
         "close": "x",
         "drive-folder": "folder",
-        "drive-shared-folder": "folder-git-2",
+        "drive-shared-folder": "folder-git-2", // XXX
+        "drive-shared-folder-open": "folder-open-dot", // XXX
         "drive-upload-file": "file-up",
         "drive-upload-folder": "folder-up",
         "drive-file": "file",
