@@ -16,11 +16,12 @@ define([
     '/customize/messages.js',
     '/components/nthen/index.js',
     '/customize/pages.js',
+    '/common/common-icons.js',
 
     '/components/file-saver/FileSaver.min.js',
     '/lib/qrcode.min.js',
 ], function ($, ApiConfig, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
-             Messages, nThen, Pages) {
+             Messages, nThen, Pages, Icons) {
     var Share = {};
 
     var embeddableApps = [
@@ -304,7 +305,7 @@ define([
 
     var makeFaqLink = function (opts) {
         var link = h('span', [
-            h('i.fa.fa-question-circle'),
+            Icons.get('help'),
             h('a', {href: '#'}, Messages.passwordFaqLink)
         ]);
         $(link).click(function () {
@@ -355,7 +356,7 @@ define([
         // Show alert if the pad is password protected
         if (opts.hasPassword) {
             $contactsContent.append(h('div.alert.alert-primary', [
-                h('i.fa.fa-unlock'),
+                Icons.get('access'),
                 Messages.share_contactPasswordAlert, h('br'),
                 makeFaqLink(opts)
             ]));
@@ -396,7 +397,7 @@ define([
         // Show alert if the pad is password protected
         if (opts.hasPassword) {
             linkContent.push(h('div.alert.alert-primary', [
-                h('i.fa.fa-lock'),
+                Icons.get('lock'),
                 Messages.share_linkPasswordAlert, h('br'),
                 makeFaqLink(opts)
             ]));
@@ -460,7 +461,7 @@ define([
             }, {
                 className: 'primary cp-nobar',
                 name: Messages.share_linkCopy,
-                iconClass: '.fa.fa-link',
+                iconClass: 'link',
                 onClick: function () {
                     opts.saveValue();
                     var v = opts.getLinkValue({
@@ -860,25 +861,25 @@ define([
         var tabs = [{
             getTab: getContactsTab,
             title: Messages.share_contactCategory,
-            icon: "fa fa-address-book",
+            icon: "contacts",
             active: contactsActive,
             onShow: onShowContacts,
             onHide: resetTab
         }, {
             getTab: getLinkTab,
             title: Messages.share_linkCategory,
-            icon: "fa fa-link",
+            icon: "link",
             active: !contactsActive,
         }, window.CP_DEV_MODE ? { // NEXT enable for all
             getTab: getQRTab,
             title: Messages.share_QRCategory,
-            icon: 'fa fa-qrcode',
+            icon: 'qr-code',
         } : undefined].filter(Boolean);
         if (!opts.static && ApiConfig.enableEmbedding && embeddableApps.includes(pathname)) {
             tabs.push({
                 getTab: getEmbedTab,
                 title: Messages.share_embedCategory,
-                icon: "fa fa-code",
+                icon: "code",
                 onShow: onShowEmbed,
                 onHide: resetTab
             });
@@ -1062,12 +1063,12 @@ define([
         var tabs = [{
             getTab: getFileContactsTab,
             title: Messages.share_contactCategory,
-            icon: "fa fa-address-book",
+            icon: "contacts",
             active: hasFriends,
         }, {
             getTab: getFileLinkTab,
             title: Messages.share_linkCategory,
-            icon: "fa fa-link",
+            icon: "link",
             active: !hasFriends,
         }];
 
@@ -1076,7 +1077,7 @@ define([
             tabs.push({
                 getTab: getFileEmbedTab,
                 title: Messages.share_embedCategory,
-                icon: "fa fa-code",
+                icon: "code",
             });
         }
 

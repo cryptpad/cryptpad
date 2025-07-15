@@ -74,6 +74,10 @@ define([
         "password-hide": "eye-closed",
         "arrow-left": "arrow-left",
         "arrow-up": "arrow-up",
+        "code": "code-xml",
+        "qr-code": "qr-code",
+        "lock": "lock",
+        "help": "info"
     };
 
     Icons.get = (name, attrs = {}) => {
