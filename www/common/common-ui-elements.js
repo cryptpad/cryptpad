@@ -173,8 +173,8 @@ define([
             common.displayAvatar($(avatar), data.avatar, name, Util.noop, data.uid);
             var removeBtn, el;
             if (config.remove) {
-                removeBtn = h('span.fa.fa-times');
-                $(removeBtn).attr('tabindex', '0');
+                removeBtn = h('span',[Icons.get('close')]);
+                $(removeBtn).attr('tabindex', '0').attr('role', 'button');
                 $(removeBtn).on('click keydown', function(event) {
                     if (event.type === 'click' || (event.type === 'keydown' && event.key === 'Enter')) {
                         event.preventDefault();

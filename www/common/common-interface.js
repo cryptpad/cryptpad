@@ -250,7 +250,7 @@ define([
             var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), h('span.tab-title-text',{id: 'cp-tab-' + tab.title.toLowerCase(), 'aria-hidden':"true"}, tab.title));
             $(title).attr('tabindex', '0');
             if (tab.icon) {
-                var icon = h('i', {class: tab.icon, 'aria-labelledby': 'cp-tab-' + tab.title.toLowerCase()});
+                var icon = Icons.get(tab.icon, {'aria-labelledby': 'cp-tab-' + tab.title.toLowerCase()});
                 $(title).prepend(' ').prepend(icon);
             }
 
@@ -1003,12 +1003,16 @@ define([
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
-        var eye = h('span.fa.fa-eye.cp-password-reveal', {
+        let passwordReveal = Icons.get('password-reveal');
+        let passwordHide = Icons.get('password-hide');
+        var eye = h('span.cp-password-reveal', {
             tabindex: 0,
             role: 'button',
             'aria-label': Messages.show_password,
             'aria-pressed': 'false'
-        });
+        },[
+            passwordReveal
+        ]);
 
         var $eye = $(eye);
         var $input = $(input);
@@ -1027,15 +1031,16 @@ define([
         } else {
             Util.onClickEnter($eye, function (e) {
                 e.stopPropagation();
-                if ($eye.hasClass('fa-eye')) {
-                    $input.prop('type', 'text');
-                    $input.focus();
-                    $eye.removeClass('fa-eye').addClass('fa-eye-slash').attr('aria-label', Messages.hide_password).attr('aria-pressed', 'true');
-                    return;
+                if ($input.prop('type') === 'password') {
+                    $input.prop('type', 'text').focus();
+                    $eye.empty().append(passwordHide);
+                    $eye.attr('aria-label', Messages.hide_password).attr('aria-pressed', 'true');
+                } else {
+                    $input.prop('type', 'password').focus();
+                    $eye.empty().append(passwordReveal);
+                    $eye.attr('aria-label', Messages.show_password).attr('aria-pressed', 'false');
                 }
-                $input.prop('type', 'password');
-                $input.focus();
-                $eye.removeClass('fa-eye-slash').addClass('fa-eye').attr('aria-label', Messages.show_password).attr('aria-pressed', 'false');
+                Lucide.createIcons();
             });
         }
 
