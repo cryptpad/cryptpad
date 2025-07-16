@@ -2172,10 +2172,7 @@ define([
         if (padType !== 'drive' || (!accountName && priv.newSharedFolder)) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-hdd-o',
-                },
-                content: h('span', Messages.type.drive),
+                content: h('span', [Icons.get('drive')], Messages.type.drive),
                 action: function () {
                     Common.openURL(origin+'/drive/');
                 },
