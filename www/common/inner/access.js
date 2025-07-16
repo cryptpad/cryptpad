@@ -13,8 +13,10 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/components/nthen/index.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 ], function ($, Util, Hash, UI, UIElements, Types, Modal, h,
-             Messages, nThen) {
+             Messages, nThen, Lucide, Icons) {
     var Access = {};
 
     var getOwnersTab = function (Env, data, opts, _cb) {
@@ -45,7 +47,7 @@ define([
         opts = opts || {};
         var redrawAll = function () {};
 
-        var addBtn = h('button.btn.btn-primary.cp-access-add', [h('i.fa.fa-arrow-left'), h('i.fa.fa-arrow-up')]);
+        var addBtn = h('button.btn.btn-primary.cp-access-add', [Icons.get('arrow-left'), Icons.get('arrow-up')]);
 
         var div1 = h('div.cp-share-column.cp-ownership');
         var divMid = h('div.cp-share-column-mid', addBtn);
@@ -368,7 +370,7 @@ define([
                 UI.log(Messages.saved);
             });
         });
-        $(addBtn).on('keydown', function () {
+        $(addBtn).on('keydown', function (event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -398,6 +400,7 @@ define([
                 $div1.append(drawRemove(false)).append(drawRemove(true));
                 $div2.append(drawAdd());
                 called = false;
+                setTimeout(() => Lucide.createIcons(),0);
             });
         };
         redrawAll();
@@ -447,7 +450,7 @@ define([
 
         var redrawAll = function () {};
 
-        var addBtn = h('button.btn.btn-primary.cp-access-add', [h('i.fa.fa-arrow-left'), h('i.fa.fa-arrow-up')]);
+        var addBtn = h('button.btn.btn-primary.cp-access-add', [[Icons.get('arrow-left'), Icons.get('arrow-up')]]);
 
         var div1 = h('div.cp-share-column.cp-allowlist');
         var divMid = h('div.cp-share-column-mid.cp-overlay-container', [
@@ -725,7 +728,7 @@ define([
                 UI.log(Messages.saved);
             });
         });
-        $(addBtn).on('keydown', function () {
+        $(addBtn).on('keydown', function (event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -1053,7 +1056,7 @@ define([
                 $d.append(changePass);
             }
             if (owned) {
-                var deleteOwned = h('button.btn.btn-danger', [h('i.cptools.cptools-destroy'), Messages.fc_delete_owned]);
+                var deleteOwned = h('button.btn.btn-danger', [Icons.get('destroy'), Messages.fc_delete_owned]);
                 var spinner = UI.makeSpinner();
                 UI.confirmButton(deleteOwned, {
                     classes: 'btn-danger'
@@ -1208,7 +1211,6 @@ define([
                 redraw(ownersOrAllow);
             });
         });
-
         cb(void 0, $div);
     };
 
@@ -1230,16 +1232,16 @@ define([
         var tabs = [{
             getTab: getAccessTab,
             title: Messages.access_main,
-            icon: "fa fa-unlock-alt",
+            icon: "access",
         }, {
             getTab: getAllowTab,
             title: Messages.access_allow,
-            icon: "fa fa-list",
+            icon: "list",
             buttons: buttons,
         }, {
             getTab: getOwnersTab,
             title: Messages.creation_owners,
-            icon: "fa fa-id-badge",
+            icon: "owner",
             buttons: buttons,
         }];
         Modal.getModal(common, opts, tabs, cb);

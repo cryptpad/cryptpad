@@ -10,7 +10,8 @@ define([
     '/common/common-ui-elements.js',
     '/customize/messages.js',
     '/components/nthen/index.js',
-], function ($, Util, Hash, UI, UIElements, Messages, nThen) {
+    '/customize/fonts/lucide.js'
+], function ($, Util, Hash, UI, UIElements, Messages, nThen, Lucide) {
     var Modal = {};
 
     Modal.override = function (data, obj) {
@@ -181,6 +182,7 @@ define([
                 Env.evRedrawAll.fire();
             };
             metadataMgr.onChange(f);
+            setTimeout(() => Lucide.createIcons(),0);
         });
     };
 

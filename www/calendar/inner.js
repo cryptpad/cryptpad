@@ -33,6 +33,9 @@ define([
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
 
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
+
     'cm/addon/display/autorefresh',
     'cm/addon/display/placeholder',
     'cm/mode/gfm/gfm',
@@ -69,7 +72,9 @@ define([
     Share, Access, Properties,
     diffMk,
     SFCodeMirror,
-    CodeMirror
+    CodeMirror,
+    Lucide,
+    Icons
     )
 {
 
@@ -536,10 +541,7 @@ define([
         if (!data.readOnly) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-pencil',
-                },
-                content: h('span', Messages.tag_edit),
+                content: h('span',[Icons.get('rename'), Messages.tag_edit]),
                 action: function (e) {
                     e.stopPropagation();
                     editCalendar(id);
@@ -572,10 +574,7 @@ define([
         if (!data.restricted) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-shhare-alt',
-                },
-                content: h('span', Messages.shareButton),
+                content: h('span', [ Icons.get('share'), Messages.shareButton]),
                 action: function (e) {
                     e.stopPropagation();
                     var friends = common.getFriends();
@@ -602,10 +601,7 @@ define([
             });
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-lock',
-                },
-                content: h('span', Messages.accessButton),
+                content: h('span',[ Icons.get('lock'), Messages.accessButton]),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
@@ -634,10 +630,7 @@ define([
             if (!data.readOnly) {
                 options.push({
                     tag: 'a',
-                    attributes: {
-                        'class': 'fa fa-upload',
-                    },
-                    content: h('span', Messages.importButton),
+                    content: h('span', Icons.get('upload'), Messages.importButton),
                     action: function () {
                         UIElements.importContent('text/calendar', function (res) {
                             Export.import(res, id, function (err, json) {
@@ -660,10 +653,7 @@ define([
             }
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-download',
-                },
-                content: h('span', Messages.exportButton),
+                content: h('span', Icons.get('download'), Messages.exportButton),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
@@ -705,10 +695,7 @@ define([
 
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-info-circle',
-                },
-                content: h('span', Messages.propertiesButton),
+                content: h('span', Icons.get('features'), Messages.propertiesButton),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
@@ -733,10 +720,7 @@ define([
         if (!cantRemove) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-trash-o',
-                },
-                content: h('span', Messages.poll_remove),
+                content: h('span', Icons.get('trash-full'), Messages.poll_remove),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
@@ -768,7 +752,8 @@ define([
             text: '',
             options: options, // Entries displayed in the menu
             common: common,
-            buttonCls: 'btn btn-default fa fa-gear small cp-calendar-actions',
+            buttonCls: 'btn btn-default small cp-calendar-actions',
+            iconCls: 'settings',
             buttonTitle: Messages.calendar_settings,
         };
         return UIElements.createDropdown(dropdownConfig)[0];
@@ -792,10 +777,13 @@ define([
             h('span.cp-calendar-icon', {
                 style: 'background-color: '+md.color+';'
             }, [
-                h('i.cp-calendar-active.fa.fa-calendar', {
+                Icons.get('calendar', {
+                    class: 'cp-calendar-active',
                     style: 'color: '+getContrast(md.color)+';'
                 }),
-                h('i.cp-calendar-inactive.fa.fa-calendar-o')
+                Icons.get('calendar-inactive',{
+                    class: 'cp-calendar-inactive'
+                })
             ]),
             h('span.cp-calendar-title', md.title),
             data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted, 'aria-hidden': 'true'}) :
@@ -820,6 +808,7 @@ define([
             });
         }
         if (APP.$calendars) { APP.$calendars.append(calendar); }
+        Lucide.createIcons();
         return calendar;
     };
 
@@ -858,7 +847,7 @@ define([
                 ]));
                 makeCalendarEntry(tempCalendars[0], 0);
                 var importTemp = h('button', [
-                    h('i.fa.fa-calendar-plus-o'),
+                    Icons.get('calendar-add'),
                     h('span', Messages.calendar_import_temp),
                     h('span')
                 ]);
@@ -904,7 +893,7 @@ define([
             // Add the new calendar button
             var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($contentContainer);
             var newButton = h('button', [
-                h('i.fa.fa-calendar-plus-o', {'aria-hidden': 'true'}),
+                Icons.get('calendar-add'),
                 h('span', Messages.calendar_new),
                 h('span')
             ]);
@@ -970,6 +959,7 @@ define([
                     onCalendarsUpdate.fire();
                 }
             });
+            Lucide.createIcons();
         });
         onCalendarsUpdate.fire();
     };
@@ -1332,7 +1322,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         APP.toolbar.$bottomR.append($block);
         // New event button
         var newEventBtn = h('button.cp-calendar-newevent', [
-            h('i.fa.fa-plus', {'aria-hidden': 'true'}),
+            Icons.get('add'),
             h('span', Messages.calendar_newEvent)
         ]);
         $(newEventBtn).click(function (e) {
@@ -1340,10 +1330,10 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             cal.openCreationPopup({isAllDay:false});
         }).appendTo(APP.toolbar.$bottomL);
         // Change page
-        var goLeft = h('button.fa.fa-chevron-left',{'aria-label': Messages.goLeft});
-        var goRight = h('button.fa.fa-chevron-right', {'aria-label': Messages.goRight});
+        var goLeft = h('button',{'aria-label': Messages.goLeft}, [Icons.get('chevron-left')]);
+        var goRight = h('button', {'aria-label': Messages.goRight}, [Icons.get('chevron-right')]);
         var goToday = h('button', Messages.calendar_today);
-        var goDate = h('button.fa.fa-calendar',{'aria-label': Messages.date});
+        var goDate = h('button',{'aria-label': Messages.date}, Icons.get('calendar'));
         $(goLeft).click(function () {
             cal.prev();
             updateDateRange();
@@ -1378,7 +1368,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         APP.toolbar.$bottomL.append(h('div.cp-calendar-browse', [
             goLeft, goToday, goRight, goDate
         ]));
-
+        Lucide.createIcons();
     };
 
 
@@ -2529,6 +2519,7 @@ APP.recurrenceRule = {
                 APP.initTime = privateData.calendarOpts.time;
             }
             store.get('calendarView', makeCalendar);
+            Lucide.createIcons();
             UI.removeLoadingScreen();
         });
 

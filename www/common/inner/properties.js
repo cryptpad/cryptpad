@@ -199,7 +199,7 @@ define([
         var tabs = [{
             getTab: getPadProperties,
             title: Messages.fc_prop,
-            icon: "fa fa-info-circle",
+            icon: "features",
         }];
         Modal.getModal(common, opts, tabs, cb);
     };

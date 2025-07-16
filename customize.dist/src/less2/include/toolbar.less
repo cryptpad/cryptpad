@@ -436,6 +436,11 @@
             .toolbar_button;
             &.cp-notifications-bell, &.cp-maintenance-wrench {
                 color: @cryptpad_text_col;
+                svg {
+                    margin:0;
+                    height: 2.5rem;
+                    width: 2.5rem;
+                }
             }
         }
 
@@ -780,7 +785,7 @@
                 .cp-dropdown-button-title {
                     position: absolute;
                     bottom: 10px;
-                    right: 16px;
+                    right: 10px;
                     font-size: 14px;
                     border: 1px solid;
                     border-radius: 50%;
@@ -994,6 +999,8 @@
     }
     .cp-toolbar-dropdown-nowrap {
         white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
     }
     .cp-toolbar-bottom {
         color: @cp_toolbar-bottom-fg;
@@ -1104,7 +1111,7 @@
                 .cp-toolbar-name, .cp-button-name, .cp-dropdown-button-title {
                     display: none;
                 }
-                i, span {
+                i, span, svg {
                     margin-right: 0;
                 }
             }

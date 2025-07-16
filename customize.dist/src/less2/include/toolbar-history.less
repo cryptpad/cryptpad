@@ -104,6 +104,10 @@
             }
             .cp-toolbar-history-loadmore {
                 font-size: 10px !important;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
             }
             .cp-history-timeline-actions {
                 margin-left: 21px !important;
@@ -123,9 +127,6 @@
                 border-left: none;
                 width: 2px !important;
                 background: @pos-color;
-                &:before {
-                    left: -6px;
-                }
             }
         }
         &.cp-history-oo {
@@ -222,8 +223,8 @@
                 width: 50px;
                 color: @cp_toolbar-fg;
                 border-radius: @variables_radius;
-                .fa:first-child:not(:last-child) {
-                    margin-right: 5px;
+                svg {
+                    margin: 0;
                 }
                 &:disabled {
                     cursor: not-allowed !important;
@@ -257,9 +258,8 @@
             height: 37px;
             //background: @pos-color;
             position: absolute;
-            &:before {
-                top: -17px;
-                font-size: 24px;
+            svg {
+                top: -13px;
                 position: absolute;
                 left: ~"calc(50% - 6px)";
             }
@@ -272,6 +272,9 @@
                 height: auto;
                 .cp-history-actions-first {
                     margin-right: 0 !important;
+                }
+                .cp-history-actions-last {
+                    margin-right: 0.5rem;
                 }
                 button {
                     margin: 0.1rem;

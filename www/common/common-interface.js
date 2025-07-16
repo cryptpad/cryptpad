@@ -22,6 +22,8 @@ define([
     '/lib/tippy/tippy.min.js',
     '/common/hyperscript.js',
     '/customize/loading.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
     //'/common/test.js',
 
     '/lib/jquery-ui/jquery-ui.min.js', // autocomplete widget
@@ -29,7 +31,7 @@ define([
     'css!/lib/tippy/tippy.css',
     'css!/lib/jquery-ui/jquery-ui.min.css'
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
-            Alertify, Tippy, h, Loading/*, Test */) {
+            Alertify, Tippy, h, Loading, Lucide, Icons /*, Test */) {
     var UI = {};
 
     /*
@@ -248,7 +250,7 @@ define([
             var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), h('span.tab-title-text',{id: 'cp-tab-' + tab.title.toLowerCase(), 'aria-hidden':"true"}, tab.title));
             $(title).attr('tabindex', '0');
             if (tab.icon) {
-                var icon = h('i', {class: tab.icon, 'aria-labelledby': 'cp-tab-' + tab.title.toLowerCase()});
+                var icon = Icons.get(tab.icon, {'aria-labelledby': 'cp-tab-' + tab.title.toLowerCase()});
                 $(title).prepend(' ').prepend(icon);
             }
 
@@ -661,9 +663,12 @@ define([
         };
         $blockContainer.html('').appendTo($body);
         var $block = $(h('div.cp-modal')).appendTo($blockContainer);
-        $(h('span.cp-modal-close.fa.fa-times', {
-            title: Messages.filePicker_close
-        })).click(hide).appendTo($block);
+        $(h('span',[
+            Icons.get('close', {
+                'class': 'cp-modal-close',
+                'title': Messages.filePicker_close
+            }),
+        ])).click(hide).appendTo($block);
         $body.click(hide);
         $block.click(function (e) {
             e.stopPropagation();
@@ -673,11 +678,13 @@ define([
                 hide();
             }
         });
+
         return {
             $modal: $blockContainer,
             show: function () {
                 $blockContainer.css('display', 'flex');
                 addTabListener($blockContainer);
+                Lucide.createIcons();
             },
             hide: hide
         };
@@ -996,12 +1003,16 @@ define([
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
-        var eye = h('span.fa.fa-eye.cp-password-reveal', {
+        let passwordReveal = Icons.get('password-reveal');
+        let passwordHide = Icons.get('password-hide');
+        var eye = h('span.cp-password-reveal', {
             tabindex: 0,
             role: 'button',
             'aria-label': Messages.show_password,
             'aria-pressed': 'false'
-        });
+        },[
+            passwordReveal
+        ]);
 
         var $eye = $(eye);
         var $input = $(input);
@@ -1020,15 +1031,16 @@ define([
         } else {
             Util.onClickEnter($eye, function (e) {
                 e.stopPropagation();
-                if ($eye.hasClass('fa-eye')) {
-                    $input.prop('type', 'text');
-                    $input.focus();
-                    $eye.removeClass('fa-eye').addClass('fa-eye-slash').attr('aria-label', Messages.hide_password).attr('aria-pressed', 'true');
-                    return;
+                if ($input.prop('type') === 'password') {
+                    $input.prop('type', 'text').focus();
+                    $eye.empty().append(passwordHide);
+                    $eye.attr('aria-label', Messages.hide_password).attr('aria-pressed', 'true');
+                } else {
+                    $input.prop('type', 'password').focus();
+                    $eye.empty().append(passwordReveal);
+                    $eye.attr('aria-label', Messages.show_password).attr('aria-pressed', 'false');
                 }
-                $input.prop('type', 'password');
-                $input.focus();
-                $eye.removeClass('fa-eye-slash').addClass('fa-eye').attr('aria-label', Messages.show_password).attr('aria-pressed', 'false');
+                Lucide.createIcons();
             });
         }
 

@@ -21,10 +21,11 @@ define([
     '/common/inner/invitation.js',
     '/common/visible.js',
     '/common/pad-types.js',
+    '/common/common-icons.js',
 
     'css!/customize/fonts/cptools/style.css',
 ], function ($, Config, Broadcast, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
-             Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes) {
+             Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes, Icons) {
     var UIElements = {};
     var urlArgs = Config.requireConf.urlArgs;
 
@@ -172,8 +173,8 @@ define([
             common.displayAvatar($(avatar), data.avatar, name, Util.noop, data.uid);
             var removeBtn, el;
             if (config.remove) {
-                removeBtn = h('span.fa.fa-times');
-                $(removeBtn).attr('tabindex', '0');
+                removeBtn = h('span',[Icons.get('close')]);
+                $(removeBtn).attr('tabindex', '0').attr('role', 'button');
                 $(removeBtn).on('click keydown', function(event) {
                     if (event.type === 'click' || (event.type === 'keydown' && event.key === 'Enter')) {
                         event.preventDefault();
@@ -687,7 +688,7 @@ define([
                 title: title,
                 'aria-label': ariaLabel
             }, [
-                iconClasses ? h('i', { class: iconClasses }) : null,
+                iconClasses ? h('i', { 'data-lucide': iconClasses }) : null,
                 text ? h('span', { class: 'cp-toolbar-drawer-element' }, text) : null
             ]));
         };
@@ -895,7 +896,7 @@ define([
                     button = $('<span>');
                     break;
                 }
-                button = makeButton('fa fa-history', 'cp-toolbar-icon-history', Messages.historyButton, Messages.historyText, Messages.historyButton);
+                button = makeButton('history', 'cp-toolbar-icon-history', Messages.historyButton, Messages.historyText, Messages.historyButton);
                 if (data.histConfig) {
                     button.click(common.prepareFeedback(type)).on('click', function () {
                         common.getHistory(data.histConfig);
@@ -907,7 +908,7 @@ define([
                 button = $(h('button.cp-toolbar-mediatag', {
                     //title: Messages.filePickerButton, // TODO display if the label text is collapsed
                 }, [
-                    h('i.fa.fa-picture-o'),
+                    Icons.get('toolbar-insert'),
                     h('span.cp-toolbar-name', Messages.toolbar_insert)
                 ])).click(common.prepareFeedback(type));
                 break;
@@ -1046,7 +1047,7 @@ define([
                     title: data.tippy || ''
                     //title: data.title || '',
                 }, [
-                    h('i.fa.' + icon),
+                    Icons.get('drive'),
                     h('span.cp-toolbar-name'+drawerCls, data.text)
                 ]));
                 var feedbackHandler = common.prepareFeedback(data.name || 'DEFAULT');
@@ -1412,7 +1413,9 @@ define([
 
         common.fixLinks(text);
 
-        var closeButton = h('button.cp-help-close.fa.fa-times', {
+        var closeButton = h('button.cp-help-close',[
+            Icons.get('close')
+        ], {
             title: Messages.help_close_button
         });
         var $toolbarButton = common.createButton('', true, {
@@ -1693,7 +1696,7 @@ define([
 
 
         // Button
-        let icon = config.iconCls ? h('i', {class:config.iconCls}) : undefined;
+        let icon = config.iconCls ? h('i', {'data-lucide':config.iconCls}) : undefined;
         var $button = $(h('button', {
             class: config.buttonCls || '',
             'aria-haspopup': 'menu',
@@ -1706,7 +1709,7 @@ define([
         ]));
 
         if (config.caretDown) {
-            $button.prepend(h('i.fa.fa-caret-down'));
+            $button.prepend(Icons.get('chevron-down')); // XXX
         }
         if (config.angleDown) {
             $button.prepend(h('i.fa.fa-angle-down'));
@@ -2155,8 +2158,8 @@ define([
         if (accountName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
-                content: h('span', Messages.profileButton),
+                attributes: {'class': 'cp-toolbar-menu-profile'},
+                content: h('span',[Icons.get('user-profile')], Messages.profileButton),
                 action: function () {
                     if (padType) {
                         Common.openURL(origin+'/profile/');
@@ -2169,10 +2172,7 @@ define([
         if (padType !== 'drive' || (!accountName && priv.newSharedFolder)) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-hdd-o',
-                },
-                content: h('span', Messages.type.drive),
+                content: h('span', [Icons.get('drive')], Messages.type.drive),
                 action: function () {
                     Common.openURL(origin+'/drive/');
                 },
@@ -2181,10 +2181,7 @@ define([
         if (padType !== 'teams' && accountName) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-users',
-                },
-                content: h('span', Messages.type.teams),
+                content: h('span', [Icons.get('teams')], Messages.type.teams),
                 action: function () {
                     Common.openURL('/teams/');
                 },
@@ -2193,10 +2190,7 @@ define([
         if (padType !== 'calendar' && accountName) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-calendar',
-                },
-                content: h('span', Messages.calendar),
+                content: h('span', [Icons.get('calendar')], Messages.calendar),
                 action: function () {
                     Common.openURL('/calendar/');
                 },
@@ -2205,10 +2199,7 @@ define([
         if (padType !== 'contacts' && accountName) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-address-book',
-                },
-                content: h('span', Messages.type.contacts),
+                content: h('span', [Icons.get('contacts')], Messages.type.contacts),
                 action: function () {
                     Common.openURL('/contacts/');
                 },
@@ -2217,8 +2208,8 @@ define([
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog'},
-                content: h('span', Messages.settingsButton),
+                attributes: {'class': 'cp-toolbar-menu-settings'},
+                content: h('span', [Icons.get('settings')], Messages.settingsButton),
                 action: function () {
                     if (padType) {
                         Common.openURL(origin+'/settings/');
@@ -2234,8 +2225,8 @@ define([
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.includes(priv.edPublic)) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs'},
-                content: h('span', Messages.adminPage || 'Admin'),
+                attributes: {'class': 'cp-toolbar-menu-admin'},
+                content: h('span', [Icons.get('administration')], Messages.adminPage || 'Admin'),
                 action: function () {
                     if (padType) {
                         Common.openURL(origin+'/admin/');
@@ -2249,8 +2240,8 @@ define([
         if (priv.edPublic && Config.supportMailboxKey && Array.isArray(Config.moderatorKeys) && Config.moderatorKeys.includes(priv.edPublic)) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-admin fa  fa-ambulance'},
-                content: h('span', Messages.moderationPage || 'Support mailbox'),
+                attributes: {'class': 'cp-toolbar-menu-admin'},
+                content: h('span', [Icons.get('support-mailbox')], Messages.moderationPage || 'Support mailbox'),
                 action: function () {
                     Common.openURL(origin+'/moderation/');
                     return true;
@@ -2263,15 +2254,14 @@ define([
                 'target': '_blank',
                 'rel': 'noopener',
                 'href': 'https://docs.cryptpad.org',
-                'class': 'fa fa-book',
             },
-            content: h('span', Messages.docs_link)
+            content: h('span', [Icons.get('documentation')], Messages.docs_link)
         });
         if (padType !== 'support' && accountName && Config.supportMailboxKey) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
-                content: h('span', Messages.supportPage || 'Support'),
+                attributes: {'class': 'cp-toolbar-menu-support'},
+                content: h('span', [Icons.get('support')], Messages.supportPage || 'Support'),
                 action: function () {
                     if (padType) {
                         Common.openURL(origin+'/support/');
@@ -2285,9 +2275,9 @@ define([
         options.push({
             tag: 'a',
             attributes: {
-                'class': 'cp-toolbar-about fa fa-info',
+                'class': 'cp-toolbar-about',
             },
-            content: h('span', Messages.user_about),
+            content: h('span', [Icons.get('features')], Messages.user_about),
             action: function () {
                 UIElements.displayInfoMenu(Common, metadataMgr);
             },
@@ -2295,10 +2285,7 @@ define([
 
         options.push({
             tag: 'a',
-            attributes: {
-                'class': 'fa fa-home',
-            },
-            content: h('span', Messages.homePage),
+            content: h('span',[Icons.get('homepage')], Messages.homePage),
             action: function () {
                 Common.openURL('/index.html');
             },
@@ -2333,10 +2320,7 @@ define([
             surveyAlone = false;
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-gift',
-                },
-                content: h('span', Messages.crowdfunding_button2),
+                content: h('span',[Icons.get('donate')], Messages.crowdfunding_button2),
                 action: function () {
                     Common.openUnsafeURL(priv.accounts.donateURL);
                 },
@@ -2364,9 +2348,9 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'class': 'cp-toolbar-menu-logout-everywhere fa fa-plug',
+                    'class': 'cp-toolbar-menu-logout-everywhere',
                 },
-                content: h('span', Messages.logoutEverywhere),
+                content: h('span',[Icons.get('logout-everywhere')], Messages.logoutEverywhere),
                 action: function () {
                     UI.confirm(Messages.settings_logoutEverywhereConfirm, function (yes) {
                         if (!yes) { return; }
@@ -2378,8 +2362,8 @@ define([
             });
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out'},
-                content: h('span', Messages.logoutButton),
+                attributes: {'class': 'cp-toolbar-menu-logout'},
+                content: h('span',[Icons.get('logout')], Messages.logoutButton),
                 action: function () {
                     Common.logout(function () {
                         Common.gotoURL(origin+'/');
@@ -2389,8 +2373,8 @@ define([
         } else {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in'},
-                content: h('span', Messages.login_login),
+                attributes: {'class': 'cp-toolbar-menu-login'},
+                content: h('span', [Icons.get('login')], Messages.login_login),
                 action: function () {
                     Common.setLoginRedirect('login');
                 },
@@ -2398,8 +2382,8 @@ define([
             if (!Config.restrictRegistration) {
                 options.push({
                     tag: 'a',
-                    attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
-                    content: h('span', Messages.login_register),
+                    attributes: {'class': 'cp-toolbar-menu-register'},
+                    content: h('span',[Icons.get('register')], Messages.login_register),
                     action: function () {
                         Common.setLoginRedirect('register');
                     },

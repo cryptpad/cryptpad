@@ -76,22 +76,15 @@
         .list-group {
             li {
                 display: flex;
+                align-items: center;
                 padding-left: 0;
                 padding-right: 5px;
+                svg {
+                    width: 30px;
+                    color: @cryptpad_color_brand;
+                }
             }
             div {
-                &.cp-check {
-                    width: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    &:before {
-                        content: "\f00c";
-                        font-family: "FontAwesome";
-                        font-size: 14px;
-                        color: @cryptpad_color_brand;
-                    }
-                }
                 &.cp-content {
                     flex: 1;
                     display: flex;

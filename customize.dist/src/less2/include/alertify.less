@@ -204,6 +204,19 @@
                         outline: @variables_focus_style;
                     }
                 }
+                .cp-usergrid-user {
+                    span {
+                        margin-left: 0.3rem;
+                        margin-right: 0.3rem;
+                        &:focus-visible {
+                            outline: @variables_focus_style;
+                            border-radius: @variables_radius;
+                        }
+                    }
+                    svg {
+                        margin: 0;
+                    }
+                }
             }
             .cp-alertify-type-container {
                 overflow: visible !important;
@@ -221,6 +234,8 @@
                     box-sizing: content-box;
                     .alertify-tabs-title {
                         .tools_unselectable();
+                        display: inline-flex;
+                        align-items: center;
                         font-size: 20px;
                         height: 40px;
                         line-height: 40px;
@@ -289,6 +304,13 @@
                 }
                 button {
                     margin: 0 !important;
+                }
+                svg {
+                   margin: 0;
+                }
+                .cp-password-reveal {
+                    margin-left: 0.5rem;
+                    margin-right: 0.5rem;
                 }
             }
 
