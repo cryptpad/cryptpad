@@ -24,6 +24,8 @@ define([
     '/common/clipboard.js',
     '/common/make-backup.js',
     '/customize/messages.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     '/components/file-saver/FileSaver.min.js',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -50,7 +52,9 @@ define([
     InviteInner,
     Clipboard,
     Backup,
-    Messages)
+    Messages,
+    Lucide,
+    Icons)
 {
     var APP = {
         teams: {}
@@ -243,15 +247,15 @@ define([
             if (key === 'admin' && !teamAdmin) { return; }
 
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-'+key, 'tabindex': 0}).appendTo($categories);
-            if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-info-circle'})); }
-            if (key === 'list') { $category.append($('<span>', {'class': 'fa fa-list cp-team-cat-list'})); }
-            if (key === 'create') { $category.append($('<span>', {'class': 'fa fa-plus-circle'})); }
-            if (key === 'back') { $category.append($('<span>', {'class': 'fa fa-arrow-left'})); }
-            if (key === 'members') { $category.append($('<span>', {'class': 'fa fa-users'})); }
-            if (key === 'chat') { $category.append($('<span>', {'class': 'fa fa-comments'})); }
-            if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
-            if (key === 'admin') { $category.append($('<span>', {'class': 'fa fa-cogs'})); }
-            if (key === 'link') { $category.append($('<span>', {'class': 'fa fa-envelope'})); }
+            if (key === 'general') { $category.append($(Icons.get('features'))); }
+            if (key === 'list') { $category.append($(Icons.get('list',{class: 'cp-team-cat-list'}))); }
+            if (key === 'create') { $category.append($(Icons.get('add'))); } // XXX icon to be changed
+            if (key === 'back') { $category.append($(Icons.get('chevron-left'))); }
+            if (key === 'members') { $category.append($(Icons.get('teams'))); }
+            if (key === 'chat') { $category.append($(Icons.get('chat'))); }
+            if (key === 'drive') { $category.append($(Icons.get('drive'))); }
+            if (key === 'admin') { $category.append($((Icons.get('administration')))); }
+            if (key === 'link') { $category.append($(Icons.get('mail'))); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
@@ -369,6 +373,7 @@ define([
 
     var loadMain = function (common) {
         buildUI(common);
+        Lucide.createIcons();
         UI.removeLoadingScreen();
     };
 
@@ -509,7 +514,7 @@ define([
                 var createCls = '';
                 if (team.empty && created < createSlots) {
                     createBtn = h('div.cp-team-list-team-create', [
-                        h('i.fa.fa-plus-circle'),
+                        Icons.get('add'), // XXX to be updated
                         h('span', Messages.team_cat_create)
                     ]);
                     createCls = '.create';
@@ -559,6 +564,7 @@ define([
             });
             content.push(h('ul.cp-team-list-container', list));
             cb(content);
+            Lucide.createIcons();
         });
         return content;
     };

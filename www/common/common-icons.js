@@ -88,6 +88,8 @@ define([
         "restore": "restore", // XXX
         "all": "menu",
         "history": "archive",
+        "chat": "message-circle-more",
+        "mail": "mail", // XXX
     };
 
     Icons.get = (name, attrs = {}) => {
