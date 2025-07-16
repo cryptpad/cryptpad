@@ -541,10 +541,7 @@ define([
         if (!data.readOnly) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-pencil',
-                },
-                content: h('span', Messages.tag_edit),
+                content: h('span',[Icons.get('rename'), Messages.tag_edit]),
                 action: function (e) {
                     e.stopPropagation();
                     editCalendar(id);
@@ -577,10 +574,7 @@ define([
         if (!data.restricted) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-shhare-alt',
-                },
-                content: h('span', Messages.shareButton),
+                content: h('span', [ Icons.get('share'), Messages.shareButton]),
                 action: function (e) {
                     e.stopPropagation();
                     var friends = common.getFriends();
@@ -607,10 +601,7 @@ define([
             });
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-lock',
-                },
-                content: h('span', Messages.accessButton),
+                content: h('span',[ Icons.get('lock'), Messages.accessButton]),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
@@ -639,10 +630,7 @@ define([
             if (!data.readOnly) {
                 options.push({
                     tag: 'a',
-                    attributes: {
-                        'class': 'fa fa-upload',
-                    },
-                    content: h('span', Messages.importButton),
+                    content: h('span', Icons.get('upload'), Messages.importButton),
                     action: function () {
                         UIElements.importContent('text/calendar', function (res) {
                             Export.import(res, id, function (err, json) {
@@ -665,10 +653,7 @@ define([
             }
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-download',
-                },
-                content: h('span', Messages.exportButton),
+                content: h('span', Icons.get('download'), Messages.exportButton),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
@@ -710,10 +695,7 @@ define([
 
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-info-circle',
-                },
-                content: h('span', Messages.propertiesButton),
+                content: h('span', Icons.get('features'), Messages.propertiesButton),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
@@ -738,10 +720,7 @@ define([
         if (!cantRemove) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-trash-o',
-                },
-                content: h('span', Messages.poll_remove),
+                content: h('span', Icons.get('trash-full'), Messages.poll_remove),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];

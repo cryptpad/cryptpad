@@ -66,6 +66,7 @@ define([
         "access": "lock-open",
         "rename": "pen-line",
         "color-palette": "palette",
+        "upload": "hard-drive-upload",
         "download": "hard-drive-download",
         "destroy": "shredder",
         "read-only": "pen-off",
