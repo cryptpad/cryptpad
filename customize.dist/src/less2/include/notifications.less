@@ -11,6 +11,11 @@
     --LessLoader_require: LessLoader_currentFile();
 }
 & {
+    .lucide {
+        width: 1.2rem;
+        height: 1.2rem;
+        margin-right: 0.2rem;
+    }
     @notif-height: 50px;
     .cp-notifications-container {
         max-width: 300px;
@@ -29,9 +34,10 @@
             }
             .cp-broadcast {
                 display: flex;
-                font-size: 40px;
                 align-items: center;
-                padding: 0 5px;
+                margin: 0 0.5rem;
+                width: 2rem;
+                height: 2rem;
                 color: @cp_dropdown-fg;
                 &.preview:not(.lucide-calendar-days) {
                     color: @cryptpad_color_red;

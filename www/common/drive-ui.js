@@ -102,7 +102,7 @@ define([
     var preview = 'preview';
     var rename = 'rename';
     var palette = 'color-palette';
-    var trashFull = 'drive-trash-full';
+    var trashFull = 'trash-full';
     var copy = 'copy';
     var destroy = 'destroy';
     var access = 'access';
@@ -110,7 +110,7 @@ define([
     var tags = 'tag';
     var uploadFile = 'drive-upload-file';
     var uploadFolder = 'drive-upload-folder';
-    var trashEmpty = 'drive-trash-empty';
+    var trashEmpty = 'trash-empty';
     var restore = 'restore'; // XXX
     var showParent = 'location';
     var download = 'download';
@@ -124,8 +124,8 @@ define([
     var $unsortedIcon = $(Icons.get('copy')); // XXX
     var $templateIcon = $(Icons.get('file-template'));
     var $recentIcon = $(Icons.get('drive-recent'));
-    var $trashIcon = $(Icons.get('drive-trash-full'));
-    var $trashEmptyIcon = $(Icons.get('drive-trash-empty'));
+    var $trashIcon = $(Icons.get('trash-full'));
+    var $trashEmptyIcon = $(Icons.get('trash-empty'));
     var $expandIcon = $(Icons.get('expand'));
     var $expandedIcon = $(Icons.get('collapse'));
     var $sortAscIcon = $(Icons.get('sort-asc', {'class': 'sortasc'}));

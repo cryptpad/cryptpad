@@ -4,8 +4,8 @@ define([
     const Icons = {};
 
     const map = {
-        "drive-trash-empty": "trash", // XXX change name
-        "drive-trash-full": "trash-2", // XXX
+        "trash-empty": "trash", // XXX change name
+        "trash-full": "trash-2", // XXX
         "drive-search": "search",
         "add": "plus",
         "features": "info", // XXX
@@ -49,12 +49,14 @@ define([
         "teams": "users-round",
         "calendar": "calendar-days",
         "contacts": "contact-round",
+        "contact-request": "book-user",
         "settings": "settings",
         "administration": "monitor-cog",
         "support": "life-buoy",
         "support-mailbox": "ambulance",
         "homepage": "house",
-        "file-template": "file-type",
+        "file-template": "file-type", // XXX
+        "file-pad": "file-text",
         "sort-asc": "chevron-down",
         "sort-desc": "chevron-up",
         "access": "lock-open",
@@ -84,6 +86,8 @@ define([
         "restricted": "ban",
         "renamed": "flag", // XXX
         "restore": "restore", // XXX
+        "all": "menu",
+        "history": "archive",
     };
 
     Icons.get = (name, attrs = {}) => {
