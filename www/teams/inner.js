@@ -1196,7 +1196,7 @@ define([
         $upButton.addClass('cp-online');
         $upButton.removeProp('title');
         $upButton.text(Messages.profile_upload);
-        $upButton.prepend($('<span>', {'class': 'fa fa-upload'}));
+        $upButton.prepend($(Icons.get('upload-avatar')));
 
         APP.module.execCommand('GET_TEAM_METADATA', {
             teamId: APP.team
@@ -1250,6 +1250,7 @@ define([
             });
         };
         var button = h('button.btn.btn-primary', Messages.team_exportButton);
+        button.prepend(Icons.get('download'));
         UI.confirmButton(button, {
             classes: 'btn-primary',
             multiple: true

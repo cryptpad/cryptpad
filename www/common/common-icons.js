@@ -90,6 +90,7 @@ define([
         "history": "archive",
         "chat": "message-circle-more",
         "mail": "mail", // XXX
+        "upload-avatar": "image-up",
     };
 
     Icons.get = (name, attrs = {}) => {
