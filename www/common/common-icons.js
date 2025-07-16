@@ -79,7 +79,11 @@ define([
         "expand-menu": "chevron-right",
         "location": "navigation",
         "collapse": "square-minus",
-        "expand": "square-plus"
+        "expand": "square-plus",
+        "expire": "clock-alert",
+        "restricted": "ban",
+        "renamed": "flag", // XXX
+        "restore": "restore", // XXX
     };
 
     Icons.get = (name, attrs = {}) => {
