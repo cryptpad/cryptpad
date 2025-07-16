@@ -96,8 +96,8 @@ define([
     var faFolder = 'drive-folder';
     var faFolderOpen = 'folder-open';
     var faSharedFolder = 'drive-shared-folder';
-    var faExpandAll = 'fa-plus-square-o';
-    var faCollapseAll = 'fa-minus-square-o';
+    var faExpandAll = 'expand';
+    var faCollapseAll = 'collapse-all';
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'read-only';
     var faPreview = 'preview';
@@ -113,7 +113,7 @@ define([
     var faUploadFolder = 'drive-upload-folder';
     var faEmpty = 'drive-trash-empty';
     var faRestore = 'fa-repeat';
-    var faShowParent = 'fa-location-arrow';
+    var faShowParent = 'location';
     var faDownload = 'download';
     var $folderIcon = $(Icons.get(faFolder,{"class": "cp-app-drive-icon-folder cp-app-drive-content-icon"}));
     var $fileMenuIcon = $('<span>', {"class": "fa fa-ellipsis-h"});
@@ -131,8 +131,8 @@ define([
     var $trashIcon = $(Icons.get('drive-trash-full'));;
     var $trashEmptyIcon = $(Icons.get('drive-trash-empty'));
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o cp-app-drive-icon-expcol"});
-    var $expandIcon = $(Icons.get('drive-expand'));
-    var $expandedIcon = $(Icons.get('drive-expanded'));
+    var $expandIcon = $(Icons.get('expand'));
+    var $expandedIcon = $(Icons.get('collapse'));
     //var $listIcon = $('<button>', {"class": "fa fa-list"});
     //var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $(Icons.get('sort-asc', {'class': 'sortasc'}));
@@ -396,8 +396,10 @@ define([
                 h('span.cp-app-drive-context-noAction.dropdown-item.disabled', Messages.fc_noAction || "No action possible"),
                 h('li', h('a.cp-app-drive-context-preview.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faPreview,
-                }, Messages.pad_mediatagPreview)),
+                }, [
+                    Icons.get(faPreview),
+                    Messages.pad_mediatagPreview
+                ])),
                 h('li', h('a.cp-app-drive-context-open.dropdown-item', {
                     'tabindex': '-1',
                 }, [
@@ -440,17 +442,23 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faExpandAll,
-                }, Messages.fc_expandAll)),
+                }, [
+                    Icons.get(faExpandAll),
+                    Messages.fc_expandAll
+                ])),
                 h('li', h('a.cp-app-drive-context-collapseall.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faCollapseAll,
-                }, Messages.fc_collapseAll)),
+                }, [
+                    Icons.get(faCollapseAll),
+                    Messages.fc_collapseAll
+                ])),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-openparent.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faShowParent,
-                }, Messages.fm_openParent)),
+                }, [
+                    Icons.get(faShowParent),
+                    Messages.fm_openParent
+                ])),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-share.dropdown-item', {
                     'tabindex': '-1',

@@ -27,7 +27,6 @@ define([
         "filter": "list-filter-plus",
         "folder-open": "folder-open",
         "drive-recent": "clock",
-        "drive-expand": "square-plus",
         "drive-owned-document": "id-card",
         "share": "share-2",
         "drive-password-document": "file-lock",
@@ -56,7 +55,6 @@ define([
         "support-mailbox": "ambulance",
         "homepage": "house",
         "file-template": "file-type",
-        "drive-expanded": "square-minus",
         "sort-asc": "chevron-down",
         "sort-desc": "chevron-up",
         "access": "lock-open",
@@ -78,7 +76,10 @@ define([
         "qr-code": "qr-code",
         "lock": "lock",
         "help": "info",
-        "expand-menu": "chevron-right"
+        "expand-menu": "chevron-right",
+        "location": "navigation",
+        "collapse": "square-minus",
+        "expand": "square-plus"
     };
 
     Icons.get = (name, attrs = {}) => {
