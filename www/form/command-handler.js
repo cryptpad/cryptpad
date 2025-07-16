@@ -34,8 +34,8 @@ define([
         };
         var anonProof = function (channel, theirPub, anonKeys) {
             var u8_plain = Util.decodeUTF8(channel);
-            var u8_nonce = Crypto.AbstractCall.bytes(Crypto.AbstractCall.boxNonceLength());
-            var u8_cipher = Crypto.AbstractCall.box(
+            var u8_nonce = Crypto.CryptoAgility.bytes(Crypto.CryptoAgility.boxNonceLength());
+            var u8_cipher = Crypto.CryptoAgility.box(
                 u8_plain,
                 u8_nonce,
                 Util.decodeBase64(theirPub),
@@ -144,9 +144,9 @@ define([
             var proofTxt = proofObj.proof;
             try {
                 var u8_bundle = Util.decodeBase64(proofTxt);
-                var u8_nonce = u8_slice(u8_bundle, 0, Crypto.AbstractCall.boxNonceLength());
-                var u8_cipher = u8_slice(u8_bundle, Crypto.AbstractCall.boxNonceLength());
-                var u8_plain = Crypto.AbstractCall.boxOpen(
+                var u8_nonce = u8_slice(u8_bundle, 0, Crypto.CryptoAgility.boxNonceLength());
+                var u8_cipher = u8_slice(u8_bundle, Crypto.CryptoAgility.boxNonceLength());
+                var u8_plain = Crypto.CryptoAgility.boxOpen(
                     u8_cipher,
                     u8_nonce,
                     Util.decodeBase64(pub),
@@ -328,7 +328,7 @@ define([
                 var keys = Utils.secret && Utils.secret.keys;
                 myKeys.signingKey = keys.secondarySignKey;
 
-                var ephemeral_keypair = Crypto.AbstractCall.curveKeyPair();
+                var ephemeral_keypair = Crypto.CryptoAgility.curveKeyPair();
                 var ephemeral_private = Util.encodeBase64(ephemeral_keypair.secretKey);
                 myKeys.ephemeral_keypair = ephemeral_keypair;
 

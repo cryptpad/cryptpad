@@ -10,21 +10,30 @@ var factory = function (Util, Cred, Nacl, Crypto) {
 
     // ed and curve keys can be random...
     Invite.generateKeys = function () {
-        var ed = Crypto.AbstractCall.signKeyPair();
-        var curve = Crypto.AbstractCall.curveKeyPair();
+        var ed = Crypto.CryptoAgility.signKeyPair();
+        var curve = Crypto.CryptoAgility.curveKeyPair();
+        var kem = Crypto.PQC.ml_dsa.ml_kem512().keygen();
+        var dsa = Crypto.PQC.ml_dsa.ml_dsa44.keygen();
         return {
             edPublic: encode64(ed.publicKey),
             edPrivate: encode64(ed.secretKey),
             curvePublic: encode64(curve.publicKey),
             curvePrivate: encode64(curve.secretKey),
+            kemPublic: encode64(kem.publicKey),
+            kemPrivate: encode64(kem.secretKey),
+            dsaPublic: encode64(dsa.publicKey),
+            dsaPrivate: encode64(dsa.secretKey),
         };
     };
 
     Invite.generateSignPair = function () {
-        var ed = Crypto.AbstractCall.signKeyPair();
+        var ed = Crypto.CryptoAgility.signKeyPair();
+        var dsa = Crypto.PQC.ml_dsa.ml_dsa44.keygen();
         return {
             validateKey: encode64(ed.publicKey),
             signKey: encode64(ed.secretKey),
+            dsaPublic: encode64(dsa.publicKey),
+            dsaPrivate: encode64(dsa.secretKey),
         };
     };
 
@@ -32,7 +41,7 @@ var factory = function (Util, Cred, Nacl, Crypto) {
         var dispense = Cred.dispenser(decode64(b64));
         return {
             channel: Util.uint8ArrayToHex(dispense(16)),
-            cryptKey: dispense(Crypto.AbstractCall.secretboxKeyLength()),
+            cryptKey: dispense(Crypto.CryptoAgility.secretboxKeyLength()),
         };
     };
 
@@ -58,13 +67,13 @@ var factory = function (Util, Cred, Nacl, Crypto) {
     var decodeUTF8 = Util.decodeUTF8;
     Invite.encryptHash = function (data, seedStr) {
         var array = decodeUTF8(seedStr);
-        var bytes = Crypto.AbstractCall.createHash(array);
+        var bytes = Crypto.CryptoAgility.createHash(array);
         var cryptKey = bytes.subarray(0, 32);
         return Crypto.encrypt(data, cryptKey);
     };
     Invite.decryptHash = function (encryptedStr, seedStr) {
         var array = decodeUTF8(seedStr);
-        var bytes = Crypto.AbstractCall.createHash(array);
+        var bytes = Crypto.CryptoAgility.createHash(array);
         var cryptKey = bytes.subarray(0, 32);
         return Crypto.decrypt(encryptedStr, cryptKey);
     };

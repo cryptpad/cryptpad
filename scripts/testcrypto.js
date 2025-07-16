@@ -9,11 +9,11 @@ let Util = require('../lib/common-util');
 
 
 let msgStr = "This is a test";
-let keys = Crypto.AbstractCall.signKeyPair();
+let keys = Crypto.CryptoAgility.signKeyPair();
 let pub = keys.publicKey;
 
 let msg = Util.decodeUTF8(msgStr);
-let signedMsg = Crypto.AbstractCall.sign(msg, keys.secretKey);
+let signedMsg = Crypto.CryptoAgility.sign(msg, keys.secretKey);
 let sig = signedMsg.subarray(0, 64);
 
 LibSodium.ready.then(() => {
@@ -57,8 +57,8 @@ console.log(LibSodium.crypto_sign_verify_detached(sig, msg, pub));
     console.log('start tweetnacl');
     a = +new Date();
     for (let i = 0; i < n; i++) {
-        Crypto.AbstractCall.signOpen(signedMsg, pub);
-        Crypto.AbstractCall.verifyDetached(msg, sig, pub);
+        Crypto.CryptoAgility.signOpen(signedMsg, pub);
+        Crypto.CryptoAgility.verifyDetached(msg, sig, pub);
     }
 
     console.log('end tweetnacl ', (+new Date() - a), ' ms');

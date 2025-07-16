@@ -244,8 +244,8 @@ define([
                     // Make proof
                     var curve = answer.curvePrivate;
                     var mySecret = Util.decodeBase64(curve);
-                    var nonce = Crypto.AbstractCall.bytes(24);
-                    var proofBytes = Crypto.AbstractCall.box(h, nonce, theirs, mySecret);
+                    var nonce = Crypto.CryptoAgility.bytes(24);
+                    var proofBytes = Crypto.CryptoAgility.box(h, nonce, theirs, mySecret);
                     var proof = Util.encodeBase64(nonce) +'|'+ Util.encodeBase64(proofBytes);
                     var lineData = {
                         channel: data.channel,

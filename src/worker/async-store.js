@@ -422,7 +422,7 @@ const factory = (Sortify, UserObject, ProxyManager,
 
         var initTempRpc = (clientId, cb) => {
             if (store.rpc) { return void cb(store.rpc); }
-            var kp = Crypto.AbstractCall.signKeyPair();
+            var kp = Crypto.CryptoAgility.signKeyPair();
             var keys = {
                 edPublic: Util.encodeBase64(kp.publicKey),
                 edPrivate: Util.encodeBase64(kp.secretKey)
@@ -881,9 +881,9 @@ const factory = (Sortify, UserObject, ProxyManager,
                 toSign.drive = store.driveChannel;
                 toSign.edPublic = edPublic;
                 var signKey = Util.decodeBase64(store.proxy.edPrivate);
-                var proof = Crypto.AbstractCall.signDetached(Util.decodeUTF8(Sortify(toSign)), signKey);
+                var proof = Crypto.CryptoAgility.signDetached(Util.decodeUTF8(Sortify(toSign)), signKey);
 
-                var check = Crypto.AbstractCall.verifyDetached(Util.decodeUTF8(Sortify(toSign)),
+                var check = Crypto.CryptoAgility.verifyDetached(Util.decodeUTF8(Sortify(toSign)),
                     proof,
                     Util.decodeBase64(edPublic));
 
@@ -1781,7 +1781,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             if (!channel || !ownerKey) { return void console.error("Can't delete BAR pad"); }
             try {
                 var signKey = Hash.decodeBase64(ownerKey);
-                var pair = Crypto.AbstractCall.signKeyPairFromSecretKey(signKey);
+                var pair = Crypto.CryptoAgility.signKeyPairFromSecretKey(signKey);
                 Pinpad.create(store.network, {
                     edPublic: Hash.encodeBase64(pair.publicKey),
                     edPrivate: Hash.encodeBase64(pair.secretKey)

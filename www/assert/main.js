@@ -315,7 +315,7 @@ define([
     }, "test that protocol relative URLs are rejected");
 
     assert(function (cb) {
-        var keys = Block.genkeys(Crypto.AbstractCall.bytes(64));
+        var keys = Block.genkeys(Crypto.CryptoAgility.bytes(64));
         var hash = Block.getBlockHash(keys);
         var parsed = Block.parseBlockHash(hash);
 

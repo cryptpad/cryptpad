@@ -15,12 +15,12 @@ var factory = function (Util, Crypto, Keys) {
     // This implementation must match that on the server
     // it's used for a checksum
     Hash.hashChannelList = function (list) {
-        return Util.encodeBase64(Crypto.AbstractCall.createHash(Util
+        return Util.encodeBase64(Crypto.CryptoAgility.createHash(Util
             .decodeUTF8(JSON.stringify(list))));
     };
 
     Hash.generateSignPair = function () {
-        var ed = Crypto.AbstractCall.signKeyPair();
+        var ed = Crypto.CryptoAgility.signKeyPair();
         var makeSafe = function (key) {
             return Crypto.b64RemoveSlashes(key).replace(/=+$/g, '');
         };
@@ -35,13 +35,13 @@ var factory = function (Util, Crypto, Keys) {
     Hash.getSignPublicFromPrivate = function (edPrivateSafeStr) {
         var edPrivateStr = Crypto.b64AddSlashes(edPrivateSafeStr);
         var privateKey = Util.decodeBase64(edPrivateStr);
-        var keyPair = Crypto.AbstractCall.signKeyPairFromSecretKey(privateKey);
+        var keyPair = Crypto.CryptoAgility.signKeyPairFromSecretKey(privateKey);
         return Util.encodeBase64(keyPair.publicKey);
     };
     Hash.getCurvePublicFromPrivate = function (curvePrivateSafeStr) {
         var curvePrivateStr = Crypto.b64AddSlashes(curvePrivateSafeStr);
         var privateKey = Util.decodeBase64(curvePrivateStr);
-        var keyPair = Crypto.AbstractCall.boxKeyPairFromSecretKey(privateKey);
+        var keyPair = Crypto.CryptoAgility.boxKeyPairFromSecretKey(privateKey);
         return Util.encodeBase64(keyPair.publicKey);
     };
 
@@ -117,7 +117,7 @@ var factory = function (Util, Crypto, Keys) {
 
     Hash.ephemeralChannelLength = 34;
     Hash.createChannelId = function (ephemeral) {
-        var id = uint8ArrayToHex(Crypto.AbstractCall.bytes(ephemeral? 17: 16));
+        var id = uint8ArrayToHex(Crypto.CryptoAgility.bytes(ephemeral? 17: 16));
         if ([32, 34].indexOf(id.length) === -1 || /[^a-f0-9]/.test(id)) {
             throw new Error('channel ids must consist of 32 hex characters');
         }
@@ -138,7 +138,7 @@ var factory = function (Util, Crypto, Keys) {
     Hash.getBoxPublicFromSecret = function (priv) {
         if (!priv) { return; }
         var u8_priv = Hash.decodeBase64(priv);
-        var pair = Crypto.AbstractCall.boxKeyPairFromSecretKey(u8_priv);
+        var pair = Crypto.CryptoAgility.boxKeyPairFromSecretKey(u8_priv);
         return Hash.encodeBase64(pair.publicKey);
     };
 
@@ -148,7 +148,7 @@ var factory = function (Util, Crypto, Keys) {
     Hash.checkBoxKeyPair = function (priv, pub) {
         if (!pub || !priv) { return false; }
         var u8_priv = Hash.decodeBase64(priv);
-        var pair = Crypto.AbstractCall.boxKeyPairFromSecretKey(u8_priv);
+        var pair = Crypto.CryptoAgility.boxKeyPairFromSecretKey(u8_priv);
         return pub === Hash.encodeBase64(pair.publicKey);
     };
 
@@ -653,7 +653,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
         var keys = secret && secret.keys;
         var secondary = keys && keys.secondaryKey;
         if (!secondary) { return; }
-        var curvePair = Crypto.AbstractCall.boxKeyPairFromSecretKey(Util.decodeUTF8(secondary).slice(0,32));
+        var curvePair = Crypto.CryptoAgility.boxKeyPairFromSecretKey(Util.decodeUTF8(secondary).slice(0,32));
         var ret = {};
         ret.form_public = Util.encodeBase64(curvePair.publicKey);
         var privateKey = ret.form_private = Util.encodeBase64(curvePair.secretKey);

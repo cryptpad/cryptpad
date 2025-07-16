@@ -456,7 +456,7 @@ var factory = function (Util, Crypto) {
         var metadataLength = Decrypt.decodePrefix(prefix);
 
         var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
-        var metaChunk = Crypto.AbstractCall.secretboxOpen(metaBox, Decrypt.createNonce(), key);
+        var metaChunk = Crypto.CryptoAgility.secretboxOpen(metaBox, Decrypt.createNonce(), key);
 
         try {
             return JSON.parse(Util.encodeUTF8(metaChunk));
@@ -494,7 +494,7 @@ var factory = function (Util, Crypto) {
 
         // Get metadata
         var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
-        var metaChunk = Crypto.AbstractCall.secretboxOpen(metaBox, nonce, key);
+        var metaChunk = Crypto.CryptoAgility.secretboxOpen(metaBox, nonce, key);
 
         Decrypt.increment(nonce);
 
@@ -513,7 +513,7 @@ var factory = function (Util, Crypto) {
                 var box = new Uint8Array(u8.subarray(start, end));
 
                 // Decrypt the chunk
-                var plaintext = Crypto.AbstractCall.secretboxOpen(box, nonce, key);
+                var plaintext = Crypto.CryptoAgility.secretboxOpen(box, nonce, key);
                 Decrypt.increment(nonce);
 
                 if (!plaintext) { return void cb('DECRYPTION_FAILURE'); }

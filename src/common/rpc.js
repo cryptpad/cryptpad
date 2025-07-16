@@ -15,7 +15,7 @@ var factory = function (Util, Nacl, Crypto) {
     // this handles that in a generic way
     var signMsg = function (data, signKey) {
         var buffer = Util.decodeUTF8(JSON.stringify(data));
-        return Util.encodeBase64(Crypto.AbstractCall.signDetached(buffer, signKey));
+        return Util.encodeBase64(Crypto.CryptoAgility.signDetached(buffer, signKey));
     };
 
     // sendMsg takes a pre-formed message, does a little validation

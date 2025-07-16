@@ -2758,7 +2758,7 @@ define([
             var msg = Util.decodeUTF8(Sortify(clone));
             var sig = Util.decodeBase64(json.proof);
             var pub = Util.decodeBase64(json.blockId);
-            return Crypto.AbstractCall.verifyDetached(msg, sig, pub);
+            return Crypto.CryptoAgility.verifyDetached(msg, sig, pub);
         };
 
         // Msg.admin_totpRecoveryHint.admin_totpRecoveryTitle

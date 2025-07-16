@@ -12,6 +12,8 @@ const factory = (Crypto, Hash, Util, Constants, Realtime) => {
             profile: proxy.profile && proxy.profile.view,
             edPublic: proxy.edPublic,
             curvePublic: proxy.curvePublic,
+            dsaPublic: proxy.dsaPublic,
+            kemPublic: proxy.kemPublic,
             notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
             avatar: proxy.profile && proxy.profile.avatar,
             badge: proxy.profile && proxy.profile.badge,

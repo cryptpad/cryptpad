@@ -26,7 +26,7 @@ const factory = (nThen, Util, ApiConfig = {}, Nacl, Crypto) => {
     };
 
     var clone = o => JSON.parse(JSON.stringify(o));
-    var randomToken = () => Util.encodeBase64(Crypto.AbstractCall.bytes(24));
+    var randomToken = () => Util.encodeBase64(Crypto.CryptoAgility.bytes(24));
     var postData = function (url, data, cb) {
         var CB = Util.once(Util.mkAsync(cb));
         fetch(url, {
@@ -83,7 +83,7 @@ const factory = (nThen, Util, ApiConfig = {}, Nacl, Crypto) => {
             copy.txid = txid;
             copy.date = date;
             var toSign = Util.decodeUTF8(JSON.stringify(copy));
-            var sig = Crypto.AbstractCall.signDetached(toSign, keypair.secretKey);
+            var sig = Crypto.CryptoAgility.signDetached(toSign, keypair.secretKey);
             var encoded = Util.encodeBase64(sig);
             var obj2 = {
                 sig: encoded,

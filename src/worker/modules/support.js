@@ -301,7 +301,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
         if (!curvePrivate) { return void cb('EFORBIDDEN'); }
         let edPrivate, edPublic;
         try {
-            let pair = Crypto.AbstractCall.signKeyPairFromSeed(Util.decodeBase64(curvePrivate));
+            let pair = Crypto.CryptoAgility.signKeyPairFromSeed(Util.decodeBase64(curvePrivate));
             edPrivate = Util.encodeBase64(pair.secretKey);
             edPublic = Util.encodeBase64(pair.publicKey);
         } catch (e) {
@@ -998,7 +998,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
     let updateServerKey = (ctx, curvePublic, curvePrivate, cb) => {
         let edPublic;
         try {
-            let pair = Crypto.AbstractCall.signKeyPairFromSeed(Util.decodeBase64(curvePrivate));
+            let pair = Crypto.CryptoAgility.signKeyPairFromSeed(Util.decodeBase64(curvePrivate));
             edPublic = Util.encodeBase64(pair.publicKey);
         } catch (e) {
             return void cb(e);
@@ -1020,7 +1020,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
         let proxy = ctx.store.proxy;
         let edPublic = proxy.edPublic;
 
-        const keyPair = Crypto.AbstractCall.curveKeyPair();
+        const keyPair = Crypto.CryptoAgility.curveKeyPair();
         const newKeyPub = Util.encodeBase64(keyPair.publicKey);
         const newKey = Util.encodeBase64(keyPair.secretKey);
 

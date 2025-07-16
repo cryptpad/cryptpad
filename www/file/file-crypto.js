@@ -92,7 +92,7 @@ define([
 
         var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
 
-        var metaChunk = Crypto.AbstractCall.secretboxOpen(metaBox, nonce, key);
+        var metaChunk = Crypto.CryptoAgility.secretboxOpen(metaBox, nonce, key);
         increment(nonce);
 
         try {
@@ -117,7 +117,7 @@ define([
                 var box = new Uint8Array(u8.subarray(start, end));
 
                 // decrypt the chunk
-                var plaintext = Crypto.AbstractCall.secretboxOpen(box, nonce, key);
+                var plaintext = Crypto.CryptoAgility.secretboxOpen(box, nonce, key);
                 increment(nonce);
 
                 if (!plaintext) { return cb('DECRYPTION_ERROR'); }
@@ -185,7 +185,7 @@ define([
 
             if (state === 0) { // metadata...
                 part = new Uint8Array(plaintext);
-                box = Crypto.AbstractCall.secretbox(part, nonce, key);
+                box = Crypto.CryptoAgility.secretbox(part, nonce, key);
                 increment(nonce);
 
                 if (box.length > 65535) {
@@ -205,7 +205,7 @@ define([
             end = start + plainChunkLength;
 
             part = u8.subarray(start, end);
-            box = Crypto.AbstractCall.secretbox(part, nonce, key);
+            box = Crypto.CryptoAgility.secretbox(part, nonce, key);
             increment(nonce);
             i++;
 
