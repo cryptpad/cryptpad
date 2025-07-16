@@ -24,13 +24,16 @@
         .cp-notification {
             min-height: @notif-height;
             display: flex;
+            svg {
+                margin: 0;
+            }
             .cp-broadcast {
                 display: flex;
-                font-size: 30px;
+                font-size: 40px;
                 align-items: center;
                 padding: 0 5px;
                 color: @cp_dropdown-fg;
-                &.preview:not(.fa-calendar) {
+                &.preview:not(.lucide-calendar-days) {
                     color: @cryptpad_color_red;
                 }
             }
