@@ -77,7 +77,8 @@ define([
         "code": "code-xml",
         "qr-code": "qr-code",
         "lock": "lock",
-        "help": "info"
+        "help": "info",
+        "expand-menu": "chevron-right"
     };
 
     Icons.get = (name, attrs = {}) => {

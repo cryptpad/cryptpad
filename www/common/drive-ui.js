@@ -400,7 +400,6 @@ define([
                 }, Messages.pad_mediatagPreview)),
                 h('li', h('a.cp-app-drive-context-open.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faFolderOpen,
                 }, [
                     Icons.get(faFolderOpen),
                     Messages.fc_open
@@ -408,14 +407,12 @@ define([
                 )),
                 h('li', h('a.cp-app-drive-context-openfolder.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faFolderOpen,
                 }, [
                     Icons.get(faFolderOpen),
                     Messages.fc_open
                 ])),
                 h('li', h('a.cp-app-drive-context-openro.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faReadOnly,
                 }, [
                     Icons.get(faReadOnly),
                     h('span.cp-text', Messages.fc_open_ro)
@@ -457,14 +454,12 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-share.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': 'share',
                 }, [
                     Icons.get('share'),
                     Messages.shareButton
                 ])),
                 h('li', h('a.cp-app-drive-context-access.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faAccess,
                 }, [
                     Icons.get(faAccess),
                     Messages.accessButton
@@ -472,14 +467,12 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newfolder.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faFolder,
                 },[
                     Icons.get(faFolder),
                     Messages.fc_newfolder
                 ])),
                 h('li', h('a.cp-app-drive-context-newsharedfolder.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faSharedFolder,
                 },[
                     Icons.get(faSharedFolder),
                     Messages.fc_newsharedfolder
@@ -487,14 +480,12 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-uploadfiles.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faUploadFiles,
                 },[
                     Icons.get(faUploadFiles),
                     Messages.uploadButton
                 ])),
                 h('li', h('a.cp-app-drive-context-uploadfolder.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faUploadFolder,
                 }, [
                     Icons.get(faUploadFolder),
                     Messages.uploadFolderButton
@@ -502,8 +493,6 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': AppConfig.applicationsIcon.link,
-                    'data-type': 'link'
                 },[
                     Icons.get('link'),
                     Messages.fm_link_new
@@ -511,7 +500,6 @@ define([
                 h('li.dropdown-submenu', [
                     h('a.cp-app-drive-context-newdocmenu.dropdown-item', {
                         'tabindex': '-1',
-                        'data-icon': "fa-plus",
                     },[
                         Icons.get('add'),
                         Messages.fm_newFile
@@ -527,7 +515,6 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-empty.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faEmpty,
                 }, [
                     Icons.get(faEmpty),
                     Messages.fc_empty
@@ -539,21 +526,18 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-rename.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faRename,
                 }, [
                     Icons.get(faRename),
                     Messages.fc_rename
                 ])),
                 h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faColor,
                 }, [
                     Icons.get(faColor),
                     Messages.fc_color
                 ])),
                 h('li', h('a.cp-app-drive-context-hashtag.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faTags,
                 }, [
                     Icons.get(faTags),
                     Messages.fc_hashtag
@@ -561,42 +545,36 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-makeacopy.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faCopy,
                 }, [
                     Icons.get(faCopy),
                     Messages.makeACopy
                 ])),
                 h('li', h('a.cp-app-drive-context-download.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faDownload,
                 }, [
                     Icons.get(faDownload),
                     Messages.download_mt_button
                 ])),
                 h('li', h('a.cp-app-drive-context-delete.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faTrash,
                 }, [
                     Icons.get(faTrash),
                     Messages.fc_delete
                 ])), // "Move to trash"
                 h('li', h('a.cp-app-drive-context-deleteowned.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faDelete,
                 }, [
                     Icons.get(faDelete),
                     Messages.fc_delete_owned
                 ])),
                 h('li', h('a.cp-app-drive-context-remove.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faTrash,
                 }, [
                     Icons.get(faTrash),
                     Messages.fc_remove
                 ] )),
                 h('li', h('a.cp-app-drive-context-removesf.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faTrash,
                 }, [
                     Icons.get(faTrash),
                     Messages.fc_remove_sharedfolder
@@ -604,7 +582,6 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faProperties,
                 },[
                     Icons.get(faProperties),
                     Messages.fc_prop
@@ -612,15 +589,13 @@ define([
             ])
         ]);
         // add icons to the contextmenu options
-        $(menu).find("li a.dropdown-item").each(function (i, el) {
+        $(menu).find("li a.dropdown-item").each(function (i, el) { // XXX will be removed after updating custom icons
             var $icon = $("<span>");
             if ($(el).attr('data-icon')) {
                 var font = $(el).attr('data-icon').indexOf('cptools') === 0 ? 'cptools' : 'fa';
                 $icon.addClass(font).addClass($(el).attr('data-icon'));
-            } else {
-                $icon.text($(el).text());
+                $(el).prepend($icon);
             }
-            $(el).prepend($icon);
         });
         // add events handlers for the contextmenu submenus
         $(menu).find(".dropdown-submenu").each(function (i, el) {
@@ -649,7 +624,7 @@ define([
                 timeoutId = setTimeout(hideSubmenu, 100);
             };
             // Add submenu expand icon
-            $a.append(h("span.dropdown-toggle"));
+            $a.append(h("span", [Icons.get('expand-menu')]));
             // Show / hide submenu
             $el.hover(function () {
                 showSubmenu();
