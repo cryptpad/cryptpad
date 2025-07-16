@@ -1709,7 +1709,7 @@ define([
         ]));
 
         if (config.caretDown) {
-            $button.prepend(h('i.fa.fa-caret-down'));
+            $button.prepend(Icons.get('chevron-down')); // XXX
         }
         if (config.angleDown) {
             $button.prepend(h('i.fa.fa-angle-down'));
