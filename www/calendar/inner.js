@@ -762,7 +762,7 @@ define([
         var data = APP.calendars[id];
         var edit;
         if (data.loading) {
-            edit = h('i.fa.fa-spinner.fa-spin', {'aria-hidden': 'true'});
+            edit = Icons.get('loading');
         } else {
             edit = makeEditDropdown(id, teamId);
         }
@@ -923,10 +923,10 @@ define([
                 // hide the calendars list and display a "show" button
                 if (APP.numberCalendars > 2 || totalCalendars > 2) {
                     var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
-                    var iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
+                    var iconClass = visible ? 'password-hide' : 'password-reveal';
                     var buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
                     var showCalendarsBtn = h('button', [
-                        h('i.fa.' + iconClass, {'aria-hidden': "true"}),
+                        Icons.get(iconClass),
                         h('span.cp-calendar-title', buttonText),
                         h('span')
                     ]);
@@ -934,10 +934,13 @@ define([
                     $(showCalendarsBtn).click(() => {
                         visible = !visible;
                         $contentContainer.toggle(visible);
-                        iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
+                        iconClass = visible ? 'password-hide' : 'password-reveal';
                         buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
-                        $(showCalendarsBtn).find('i').attr('class', 'fa ' + iconClass).attr('aria-hidden', "true");
-                        $(showCalendarsBtn).find('span').first().text(visible ? Messages.calendar_hide : Messages.calendar_show);
+                        $(showCalendarsBtn).empty();
+                        $(showCalendarsBtn).append(Icons.get(iconClass));
+                        $(showCalendarsBtn).append(h('span.cp-calendar-title', visible ? Messages.calendar_hide : Messages.calendar_show));
+                        $(showCalendarsBtn).append(h('span'));
+                        Lucide.createIcons();
                     }).appendTo($showContainer);
                 }
                 else {visible = true;}

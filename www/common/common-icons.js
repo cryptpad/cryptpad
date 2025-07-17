@@ -101,7 +101,8 @@ define([
         "calendar-reminder": "bell-ring",
         "calendar-location": "map-pin",
         "calendar-description": "align-justify",
-        "save": "save"
+        "save": "save",
+        "loading": "loader", // XXX
     };
 
     Icons.get = (name, attrs = {}) => {
