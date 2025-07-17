@@ -413,14 +413,14 @@ define([
                 str = `<a href="${l}" id="${uid}">${str}</a>`;
                 APP.nextLocationUid = uid;
             }
-            let location_icon = h('i.fa.fa-map-marker.tui-full-calendar-icon', { 'aria-hidden': true }, []);
+            let location_icon = Icons.get('calendar-location', { class: 'tui-full-calendar-icon'});
             return `<div class="event-location"> ${location_icon.outerHTML} ${str} </div>`;
         },
         popupDetailBody: function(schedule) {
             var str = schedule.body;
             delete APP.eventBody;
 
-            let description_icon = h('i.fa.fa-align-justify.tui-full-calendar-icon', { 'aria-hidden': true }, []);
+            let description_icon = Icons.get('calendar-description', { class: 'tui-full-calendar-icon'});
             let description = diffMk.render(str, true);
             return `${description_icon.outerHTML}<div class="event-description">${description}</div>`;
         },
@@ -1941,7 +1941,7 @@ APP.recurrenceRule = {
 
         return h('div.cp-calendar-recurrence-container', [
             h('span.cp-recurrence-label', [
-                h('i.fa.fa-repeat', {'aria-hidden':'true'}),
+                Icons.get('calendar-repeat'),
                 Messages.calendar_rec]),
             $block[0],
             translated
@@ -2010,11 +2010,11 @@ APP.recurrenceRule = {
             $number.attr('max', max);
             if ($number.val() > max) { $number.val(max); }
         });
-        var addNotif = h('button.btn.btn-primary-outline.fa.fa-plus');
+        var addNotif = h('button.btn.btn-primary-outline', Icons.get('add'));
         var $list = $(h('div.cp-calendar-notif-list'));
         var listContainer = h('div.cp-calendar-notif-list-container', [
             h('span.cp-notif-label', [
-                h('i.fa.fa-bell', {'aria-hidden':'true'}),
+                Icons.get('calendar-reminder'),
                 Messages.calendar_notifications
             ]),
             $list[0],
@@ -2023,8 +2023,9 @@ APP.recurrenceRule = {
 
         var addNotification = function (unit, value) {
             var unitValue = (unit === "minutes") ? 1 : (unit === "hours" ? 60 : (60*24));
-            var del = h('button.btn.btn-danger-outline.small.fa.fa-times',
-                {'title': Messages.calendar_removeNotification}
+            var del = h('button.btn.btn-danger-outline.small',
+                {'title': Messages.calendar_removeNotification},
+                Icons.get('close')
             );
             var minutes = value * unitValue;
             if ($list.find('[data-minutes="'+minutes+'"]').length) { return; }
@@ -2190,10 +2191,11 @@ APP.recurrenceRule = {
         // Customize creation/update popup
         var onCalendarPopup = function (el) {
             var $el = $(el);
-            $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(h('i.fa.fa-floppy-o', {'aria-hidden': 'true'}));
+            $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(Icons.get('save'));
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
-            $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
+            $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel cp-calendar-close').empty();
+            $el.find('.tui-full-calendar-popup-close').append(Icons.get('close'));
             $el.find('.tui-full-calendar-section-allday').attr('tabindex', 0);
             $el.find('.cp-calendar-close').attr('tabindex',-1);
             $el.find('.tui-full-calendar-section-allday').keydown(function (e) {
@@ -2357,11 +2359,12 @@ APP.recurrenceRule = {
             $el.attr('aria-describedby', 'tui-full-calendar-section-detail');
 
             $el.find('.tui-full-calendar-popup-edit').addClass('btn btn-primary');
-            $el.find('.tui-full-calendar-popup-edit .tui-full-calendar-icon').addClass('fa fa-pencil').removeClass('tui-full-calendar-icon');
+            $el.find('.tui-full-calendar-popup-edit .tui-full-calendar-icon').append(Icons.get('edit'));
+            $el.find('.tui-full-calendar-popup-edit .tui-full-calendar-icon').removeClass('tui-full-calendar-icon');
             $el.find('.tui-full-calendar-content').removeClass('tui-full-calendar-content');
 
             var delButton = h('button.btn.btn-danger', [
-                h('i.fa.fa-trash', {'aria-hidden': 'true'}),
+                Icons.get('trash-full'),
                 h('span', Messages.kanban_delete)
             ]);
             var $del = $el.find('.tui-full-calendar-popup-delete').hide();
@@ -2394,7 +2397,7 @@ APP.recurrenceRule = {
 
             // This is a recurring event, add button to stop recurrence now
             var $b = $(h('button.btn.btn-default', [
-                h('i.fa.fa-times', {'aria-hidden': 'true'}),
+                Icons.get('close'),
                 h('span', Messages.calendar_rec_stop)
             ])).insertBefore($section);
             UI.confirmButton($b[0], { classes: 'btn-default' }, function () {
@@ -2440,10 +2443,12 @@ APP.recurrenceRule = {
                         if (node.classList && node.classList.contains('tui-full-calendar-popup')
                                 && !node.classList.contains('tui-full-calendar-popup-detail')) {
                             onCalendarPopup(node);
+                            Lucide.createIcons();
                         }
                         if (node.classList && node.classList.contains('tui-full-calendar-popup')
                                 && node.classList.contains('tui-full-calendar-popup-detail')) {
                             onCalendarEditPopup(node);
+                            Lucide.createIcons();
                         }
                     } catch (e) {}
                 }

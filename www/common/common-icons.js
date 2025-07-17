@@ -96,6 +96,12 @@ define([
         "chat": "message-circle-more",
         "mail": "mail", // XXX
         "upload-avatar": "image-up",
+        "edit": "pencil",
+        "calendar-repeat": "calendar-sync",
+        "calendar-reminder": "bell-ring",
+        "calendar-location": "map-pin",
+        "calendar-description": "align-justify",
+        "save": "save"
     };
 
     Icons.get = (name, attrs = {}) => {
