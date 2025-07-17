@@ -26,6 +26,8 @@ define([
 
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
     'cm/mode/gfm/gfm',
 
     '/common/jscolor.js',
@@ -59,7 +61,9 @@ define([
     Constants,
     Login,
     SFCodeMirror,
-    CodeMirror
+    CodeMirror,
+    Lucide,
+    Icons
 ) {
     var saveAs = window.saveAs;
     var APP = window.APP = {};
@@ -2267,6 +2271,7 @@ define([
         createUsageButton();
 
         common.setTabTitle(Messages.settings_title);
+        Lucide.createIcons();
         UI.removeLoadingScreen();
     });
 });
