@@ -69,7 +69,7 @@ define([
         "upload": "hard-drive-upload",
         "download": "hard-drive-download",
         "destroy": "shredder",
-        "read-only": "pen-off",
+        "read-only": "pen-off", // XXX
         "preview": "eye",
         "tag": "hash",
         "copy": "files",

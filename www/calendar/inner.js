@@ -786,8 +786,8 @@ define([
                 })
             ]),
             h('span.cp-calendar-title', md.title),
-            data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted, 'aria-hidden': 'true'}) :
-                (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly, 'aria-hidden': 'true'}) : undefined),
+            data.restricted ? Icons.get('restricted', {title: Messages.fm_restricte}) :
+                (isReadOnly(id, teamId) ? Icons.get('read-only', {title: Messages.readonly}) : undefined),
             edit
         ]);
         var $calendar = $(calendar).click(function () {
