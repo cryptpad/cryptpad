@@ -698,8 +698,12 @@ define([
                     hash += '/p';
                 }
             }
-            var href = burnAfterReading ? opts.burnAfterReadingUrl
-                                             : (origin + pathname + '#' + hash);
+            var href;
+            if (burnAfterReading) {
+                href = opts.burnAfterReadingUrl;
+            } else {
+                href = (!opts.hashes.editHash && opts.path === '/form') ? (origin + pathname + hash)  : (origin + pathname + '#' + hash);
+            }
             var parsed = Hash.parsePadUrl(href);
             return origin + parsed.getUrl({embed: embed, present: present, versionHash: versionHash});
         };
