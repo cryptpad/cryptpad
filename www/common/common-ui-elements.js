@@ -3394,7 +3394,7 @@ define([
     UIElements.displayCrowdfunding = function (common, force) {
         if (crowdfundingState) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
-
+        if (priv.app === 'form' && !priv.canEdit && !priv.form_auditorKey) {return; }
 
         var todo = function () {
             crowdfundingState = true;
@@ -3464,7 +3464,7 @@ define([
         // This pad will be deleted automatically, it shouldn't be stored
         if (priv.burnAfterReading) { return; }
 
-
+        if (priv.app === 'form' && !priv.canEdit && !priv.form_auditorKey) {return; }
         var typeMsg = priv.pathname.indexOf('/file/') !== -1 ? Messages.autostore_file :
                         priv.pathname.indexOf('/drive/') !== -1 ? Messages.autostore_sf :
                           Messages.autostore_pad;
