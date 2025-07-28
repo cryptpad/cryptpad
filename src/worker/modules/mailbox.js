@@ -132,7 +132,10 @@ proxy.mailboxes = {
         }
 
         var text = JSON.stringify(obj);
-        var ciphertext = crypto.encrypt(text, user.curvePublic);
+        var ciphertext = crypto.encrypt(text, user.curvePublic, user.kemPublic);
+
+        // const bytes = Crypto.CryptoAgility.decodeBase64(ciphertext);
+        // if (bytes[0] !== 1) throw new Error("PQC not used for encryption");
 
         // If we've sent this message to one of our teams' mailbox, we may want to "dismiss" it
         // automatically

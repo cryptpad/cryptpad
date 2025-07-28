@@ -74,7 +74,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
             var sign = keys.sign;
             var pqSignPair = keys.pqSignPair;
 
-            // Basic format with classical keys
+            // Basic format with classical and pqc keys
             var result = {
                 edPrivate: Util.encodeBase64(sign.secretKey),
                 edPublic: Util.encodeBase64(sign.publicKey),
@@ -101,10 +101,12 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
     };
 
     // (uint8Array block) => payload object
+    // src/common/outer/login-block.js
     Block.decrypt = function (u8_content, keys) {
         // version is currently ignored since there is only one
-        var nonce = u8_content.subarray(1, 1 + Crypto.CryptoAgility.secretboxNonceLength());
-        var box = u8_content.subarray(1 + Crypto.CryptoAgility.secretboxNonceLength());
+        var nonceLength = Crypto.CryptoAgility.secretboxNonceLength();
+        var nonce = u8_content.subarray(1, 1 + nonceLength);
+        var box = u8_content.subarray(1 + nonceLength);
 
         var plaintext = Crypto.CryptoAgility.secretboxOpen(box, nonce, keys.symmetric);
         try {

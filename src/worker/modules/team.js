@@ -448,7 +448,9 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         // Roster keys
         var myKeys = {
             curvePublic: ctx.store.proxy.curvePublic,
-            curvePrivate: ctx.store.proxy.curvePrivate
+            curvePrivate: ctx.store.proxy.curvePrivate,
+            kemPublic: ctx.store.proxy.kemPublic,
+            kemPrivate: ctx.store.proxy.kemPrivate,
         };
         var rosterData = keys.roster || {};
         var rosterKeys = rosterData.edit ? Crypto.Team.deriveMemberKeys(rosterData.edit, myKeys)
@@ -469,6 +471,11 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                     var k = obj && obj.k;
                     if (k && !rosterKeys.teamEdPublic) {
                         rosterKeys.teamEdPublic = k;
+                    }
+                    // Also get DSA public key from cache if available
+                    var dsaPublic = obj && obj.dsaPublic;
+                    if (dsaPublic && !rosterKeys.teamDsaPublic) {
+                        rosterKeys.teamDsaPublic = dsaPublic;
                     }
                     if (!c) {
                         waitFor.abort();
@@ -653,14 +660,18 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         var hash = Hash.createRandomHash('team', password);
         var secret = Hash.getSecrets('team', hash, password);
         var roHash = Hash.getViewHashFromKeys(secret);
-        var keyPair = Crypto.CryptoAgility.signKeyPair(); // keyPair.secretKey , keyPair.publicKey
+        var keyPair = Crypto.CryptoAgility.signKeyPair(); // ed25519
+        var curvePair = Crypto.CryptoAgility.curveKeyPair(); // Curve25519
 
-        var curvePair = Crypto.CryptoAgility.curveKeyPair(); // curvePair.secretKey, curvePair.publicKey
+        var kemPair = Crypto.PQC.ml_kem.ml_kem512.keygen();
+        var dsaPair = Crypto.PQC.ml_dsa.ml_dsa44.keygen();
 
         var rosterSeed = Crypto.Team.createSeed();
         var rosterKeys = Crypto.Team.deriveMemberKeys(rosterSeed, {
             curvePublic: ctx.store.proxy.curvePublic,
-            curvePrivate: ctx.store.proxy.curvePrivate
+            curvePrivate: ctx.store.proxy.curvePrivate,
+            kemPublic: ctx.store.proxy.kemPublic,
+            kemPrivate: ctx.store.proxy.kemPrivate,
         });
         var roster;
 
@@ -680,7 +691,6 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
             owners: [ctx.store.proxy.edPublic]
         };
         nThen(function (waitFor) {
-            // Initialize the roster
             Roster.create({
                 network: ctx.store.network || ctx.store.networkPromise,
                 channel: rosterKeys.channel, //sharedConfig.rosterChannel,
@@ -693,7 +703,6 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
             }, waitFor(function (err, _roster) {
                 if (err) {
                     waitFor.abort();
-                    console.error(err);
                     return void cb({error: 'ROSTER_ERROR'});
                 }
                 roster = _roster;
@@ -707,7 +716,6 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 }));
             }));
 
-            // Add yourself as owner of the chat channel
             var crypto = Crypto.createEncryptor(chatSecret.keys);
             var chatCfg = {
                 network: ctx.store.network,
@@ -750,19 +758,22 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
             var proxy = lm.proxy;
             proxy.version = 2; // No migration needed
             proxy.on('ready', function () {
-                // Store keys in our drive
                 var keys = {
                     mailbox: {
                         channel: Hash.createChannelId(),
                         viewed: [],
                         keys: {
                             curvePrivate: Util.encodeBase64(curvePair.secretKey),
-                            curvePublic: Util.encodeBase64(curvePair.publicKey)
+                            curvePublic: Util.encodeBase64(curvePair.publicKey),
+                            kemPrivate: Util.encodeBase64(kemPair.secretKey),
+                            kemPublic: Util.encodeBase64(kemPair.publicKey),
                         }
                     },
                     drive: {
                         edPrivate: Util.encodeBase64(keyPair.secretKey),
-                        edPublic: Util.encodeBase64(keyPair.publicKey)
+                        edPublic: Util.encodeBase64(keyPair.publicKey),
+                        dsaPrivate: Util.encodeBase64(dsaPair.secretKey),
+                        dsaPublic: Util.encodeBase64(dsaPair.publicKey),
                     },
                     chat: {
                         edit: chatHashes.editHash,
@@ -783,7 +794,6 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                     roHash: roHash,
                     password: password,
                     keys: keys,
-                    //members: membersHashes.editHash,
                     metadata: {
                         name: data.name
                     }
@@ -802,13 +812,11 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                     cb();
                 });
             }).on('error', function (info) {
-                if (info && typeof (info.loaded) !== "undefined"  && !info.loaded) {
+                if (info && typeof (info.loaded) !== "undefined" && !info.loaded) {
                     cb({error:'ECONNECT'});
                 }
-                if (info && info.error) {
-                    if (info.error === "EDELETED") {
-                        closeTeam(ctx, id);
-                    }
+                if (info && info.error === "EDELETED") {
+                    closeTeam(ctx, id);
                 }
             });
         });

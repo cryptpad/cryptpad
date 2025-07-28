@@ -12,7 +12,7 @@ var factory = function (Util, Cred, Nacl, Crypto) {
     Invite.generateKeys = function () {
         var ed = Crypto.CryptoAgility.signKeyPair();
         var curve = Crypto.CryptoAgility.curveKeyPair();
-        var kem = Crypto.PQC.ml_dsa.ml_kem512().keygen();
+        var kem = Crypto.PQC.ml_kem.ml_kem512.keygen();
         var dsa = Crypto.PQC.ml_dsa.ml_dsa44.keygen();
         return {
             edPublic: encode64(ed.publicKey),

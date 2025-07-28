@@ -53,7 +53,7 @@ var factory = function (Util, Nacl, Scrypt, Crypto) {
             '/components/tweetnacl/nacl-fast.min.js',
             '/components/scrypt-async/scrypt-async.min.js',
             '/components/chainpad-crypto/crypto.js'
-        ], function (Util) {
+        ], function (Util, nacl, Scrypt, Crypto) {
             return factory(Util, window.nacl, window.scrypt, Crypto);
         });
     }

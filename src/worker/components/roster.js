@@ -730,10 +730,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             var ciphertext = crypto.encrypt(Sortify(msg));
 
             var id = getMessageId(ciphertext);
-
-            //console.log("Sending with id [%s]", id, msg);
-            //console.log();
-
             response.expect(id, function (err, state) {
                 if (err) { return void cb(err); }
                 cb(void 0, state, id);
@@ -879,8 +875,19 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 w.abort();
                 return void cb("NO_VALIDATE_KEY");
             }
+            if (!config.keys.teamKemPublic && metadata.kemPublic) {
+                config.keys.teamKemPublic = metadata.kemPublic;
+            }
 
+            if (!config.keys.teamDsaPublic && metadata.dsaPublic) {
+                config.keys.teamDsaPublic = metadata.dsaPublic;
+            }
+            if (!config.keys.teamKemPublic && !config.keys.teamDsaPublic) {
+                w.abort();
+                return void cb("NO_PQC_KEYS");
+            }
             try {
+                // Crypto.Team.createEncryptor now supports PQC keys
                 crypto = Crypto.Team.createEncryptor(config.keys);
             } catch (err) {
                 w.abort();
@@ -903,6 +910,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
                 crypto: crypto,
                 validateKey: config.keys.teamEdPublic,
+                dsaValidateKey: config.keys.teamDsaPublic, // PQC validation key for ML-DSA
 
                 owners: config.owners,
 

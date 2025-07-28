@@ -326,6 +326,7 @@ define([
                             channel: d.channel,
                             crypto: crypto,
                             validateKey: rosterKeys.teamEdPublic,
+                            dsaValidateKey: rosterKeys.teamDsaPublic, // Add PQC validation key for ML-DSA
                             Cache: Cache,
                             noChainPad: true,
                             onCacheReady: onCacheReady,

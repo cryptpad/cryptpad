@@ -114,6 +114,7 @@ define([
                                 var res = Utils.Crypto.Mailbox.openOwnSecretLetter(messages[0].msg, {
                                     validateKey: data.validateKey,
                                     ephemeral_private: Util.decodeBase64(answer.curvePrivate),
+                                    ephemeral_kem_private: Util.decodeBase64(answer.kemPrivate),
                                     my_private: Util.decodeBase64(finalKeys.curvePrivate),
                                     their_public: Util.decodeBase64(data.publicKey)
                                 });
