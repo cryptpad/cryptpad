@@ -352,8 +352,10 @@ define([
             cpIndex: 0
         };
 
-        var getContent = function () {
+        var getContent = function (title) {
             try {
+                getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['87'].title = title;
+                delete getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['87'].creator;
                 return getEditor().asc_nativeGetFile();
             } catch (e) {
                 console.error(e);
@@ -2569,6 +2571,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var blob = new Blob([xlsData], {type: "application/pdf"});
                 UI.removeModals();
                 cb();
+                console.log(blob)
                 saveAs(blob, APP.exportPdfName || title+'.pdf');
                 delete APP.exportPdfName;
             });
@@ -2593,7 +2596,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var exportXLSXFile = function() {
-            var text = getContent();
+            var md = common.getMetadataMgr().getMetadataLazy();
+            var title = md.title || md.defaultTitle || type;
+            var text = getContent(title);
             var suggestion = Title.suggestTitle(Title.defaultTitle);
             var ext = ['.xlsx', '.ods', '.bin', '.pdf'];
             var type = common.getMetadataMgr().getPrivateData().ooType;
