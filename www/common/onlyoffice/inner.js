@@ -354,6 +354,62 @@ define([
 
         var getContent = function () {
             try {
+                // 1. Create a safe stringify that handles circular references
+//                 function safeStringify(obj, space = 2) {
+//   const seen = new WeakSet();
+//   return JSON.stringify(obj, function (key, value) {
+//     if (typeof value === "object" && value !== null) {
+//       if (seen.has(value)) {
+//         return "[Circular]";
+//       }
+//       seen.add(value);
+//     }
+//     return value;
+//   }, space); // pretty-print
+// }
+
+// function downloadJson(obj, filename = 'data.json') {
+//   // Step 1: safely stringify the object
+//   const jsonStr = safeStringify(obj); // 👈 this is a regular JSON string
+
+//   // Step 2: create a Blob from the string (not double stringified!)
+//   const blob = new Blob([jsonStr], { type: 'application/json' });
+
+//   // Step 3: trigger download with correct filename
+//   const link = document.createElement("a");
+//   link.href = URL.createObjectURL(blob);
+//   link.download = filename;
+
+//   // Trigger download and clean up
+//   link.click();
+//   URL.revokeObjectURL(link.href);
+// }  
+
+// downloadJson(getEditor(), 'myfile.json');
+function checkElementPairs(elements) {
+  const results = [];
+
+  elements.forEach((el, index) => {
+    const word = el.Word;
+    const linkedValue = el?.startRun?.Parent?.Value;
+
+    results.push({
+      index,
+      hasWord: word !== undefined,
+      word,
+      hasLinkedValue: linkedValue !== undefined,
+      linkedValue
+    });
+  });
+
+  return results;
+}
+
+console.log(checkElementPairs(getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['1411'].cSld.spTree[0].txBody.content.Content[0].SpellChecker.Elements))
+// console.log(getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['1411'].cSld.spTree[0].txBody.content.Content[0].SpellChecker)
+
+// console.log(getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['1411'].cSld.spTree[0].txBody.content.Content[0].SpellChecker.Elements[0])
+
                 return getEditor().asc_nativeGetFile();
             } catch (e) {
                 console.error(e);
