@@ -33,6 +33,7 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
     "marked",
     "mathjax",
     "open-sans-fontface",
+    "pdf-lib",
     "tweetnacl",
     "tweetnacl-util",
     "require-css",

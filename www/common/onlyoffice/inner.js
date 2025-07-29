@@ -26,7 +26,8 @@ define([
 
     '/common/onlyoffice/current-version.js',
     '/common/onlyoffice/broken-formats.js',
-    '/components/file-saver/FileSaver.min.js',
+    '/components/pdf-lib/dist/pdf-lib.js',
+
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'less!/components/components-font-awesome/css/font-awesome.min.css',
@@ -53,7 +54,8 @@ define([
     EmptySlide,
     Channel,
     OOCurrentVersion,
-    BrokenFormats)
+    BrokenFormats,
+    PDFLib)
 {
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
@@ -352,10 +354,15 @@ define([
             cpIndex: 0
         };
 
+            // try {
+//                 // 1. Create a safe stringify that handles circular references
+
+
+// try {
+
         var getContent = function () {
-            try {
-                // 1. Create a safe stringify that handles circular references
-//                 function safeStringify(obj, space = 2) {
+            console.log('hi', PDFLib)
+//                             function safeStringify(obj, space = 2) {
 //   const seen = new WeakSet();
 //   return JSON.stringify(obj, function (key, value) {
 //     if (typeof value === "object" && value !== null) {
@@ -386,37 +393,90 @@ define([
 // }  
 
 // downloadJson(getEditor(), 'myfile.json');
-function checkElementPairs(elements) {
+
+
+function extractAllValuesFromPairs(rootNode) {
   const results = [];
+    console.log()
+  const m_aPairs = getEditor().WordControl.m_oDrawingDocument
+    ?.m_oLogicDocument?.
+    TableId?.m_aPairs;
 
-  elements.forEach((el, index) => {
-    const word = el.Word;
-    const linkedValue = el?.startRun?.Parent?.Value;
+  if (!m_aPairs || typeof m_aPairs !== 'object') {
+    console.error("m_aPairs missing or invalid");
+    return results;
+  }
 
-    results.push({
-      index,
-      hasWord: word !== undefined,
-      word,
-      hasLinkedValue: linkedValue !== undefined,
-      linkedValue
+  // 🔁 Recursively walk .Content[] arrays
+  function walkContent(contentArray, context = {}) {
+    if (!Array.isArray(contentArray)) return;
+
+    contentArray.forEach((contentItem, contentIndex) => {
+      const path = { ...context, contentIndex };
+
+      if (typeof contentItem?.Value === "string" && contentItem.Value.trim() !== "") {
+        results.push(
+          contentItem.Value
+        );
+      }
+
+      if (Array.isArray(contentItem?.Content)) {
+        walkContent(contentItem.Content, path);
+      }
     });
-  });
+  }
+
+  for (const pairKey in m_aPairs) {
+    const pair = m_aPairs[pairKey];
+    const spTreeArray = pair?.cSld?.spTree;
+
+    if (!Array.isArray(spTreeArray)) continue;
+
+    spTreeArray.forEach((spTreeItem, spTreeIndex) => {
+      const contentArray = spTreeItem?.txBody?.content?.Content;
+      const context = { pairKey, spTreeIndex };
+      walkContent(contentArray, context);
+    });
+  }
 
   return results;
 }
 
-console.log(checkElementPairs(getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['1411'].cSld.spTree[0].txBody.content.Content[0].SpellChecker.Elements))
-// console.log(getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['1411'].cSld.spTree[0].txBody.content.Content[0].SpellChecker)
 
-// console.log(getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['1411'].cSld.spTree[0].txBody.content.Content[0].SpellChecker.Elements[0])
+                var links = extractAllValuesFromPairs()
 
+                async function restoreHyperlinks(pdfBytes, links) {
+  const pdfDoc = await PDFDocument.load(pdfBytes);
+  const pages = pdfDoc.getPages();
+  let linkIndex = 0;
+
+  for (const page of pages) {
+    const annotations = page.node.Annots() || [];
+    for (const annotation of annotations) {
+      if (annotation instanceof PDFLinkAnnotation) {
+        const action = annotation.getAction();
+        if (action && action instanceof PDFURIAction) continue;
+        if (linkIndex < hyperlinksArray.length) {
+          const url = hyperlinksArray[linkIndex++];
+          const uriAction = pdfDoc.context.obj({
+            Type: 'Action',
+            S: 'URI',
+            URI: url,
+          });
+          annotation.dict.set(PDFName.of('A'), uriAction);
+        }
+      }
+    }
+  }
+  return await pdfDoc.save();
+}
                 return getEditor().asc_nativeGetFile();
-            } catch (e) {
-                console.error(e);
-                return;
-            }
+            // } catch (e) {
+            //     console.error(e);
+            //     return;
+            // }
         };
-
+    // }
         /*
         var checkDrawings = function () {
             var editor = getEditor();
@@ -2623,6 +2683,84 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var title = md.title || md.defaultTitle || type;
                 var blob = new Blob([xlsData], {type: "application/pdf"});
+
+                function extractAllValuesFromPairs(rootNode) {
+  const results = [];
+    console.log()
+  const m_aPairs = getEditor().WordControl.m_oDrawingDocument
+    ?.m_oLogicDocument?.
+    TableId?.m_aPairs;
+
+  if (!m_aPairs || typeof m_aPairs !== 'object') {
+    console.error("m_aPairs missing or invalid");
+    return results;
+  }
+
+  // 🔁 Recursively walk .Content[] arrays
+  function walkContent(contentArray, context = {}) {
+    if (!Array.isArray(contentArray)) return;
+
+    contentArray.forEach((contentItem, contentIndex) => {
+      const path = { ...context, contentIndex };
+
+      if (typeof contentItem?.Value === "string" && contentItem.Value.trim() !== "") {
+        results.push(
+          contentItem.Value
+        );
+      }
+
+      if (Array.isArray(contentItem?.Content)) {
+        walkContent(contentItem.Content, path);
+      }
+    });
+  }
+
+  for (const pairKey in m_aPairs) {
+    const pair = m_aPairs[pairKey];
+    const spTreeArray = pair?.cSld?.spTree;
+
+    if (!Array.isArray(spTreeArray)) continue;
+
+    spTreeArray.forEach((spTreeItem, spTreeIndex) => {
+      const contentArray = spTreeItem?.txBody?.content?.Content;
+      const context = { pairKey, spTreeIndex };
+      walkContent(contentArray, context);
+    });
+  }
+
+  return results;
+}
+                var links = extractAllValuesFromPairs()
+
+                async function restoreHyperlinks(pdfBytes, links) {
+  const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+  const pages = pdfDoc.getPages();
+  let linkIndex = 0;
+
+  for (const page of pages) {
+    console.log('znnots', page.node.Annots().asArray())
+    // const annotations = page.node.Annots() || [];
+    // for (const annotation of annotations) {
+    //   if (annotation instanceof PDFLinkAnnotation) {
+    //     const action = annotation.getAction();
+    //     if (action && action instanceof PDFURIAction) continue;
+    //     if (linkIndex < hyperlinksArray.length) {
+    //       const url = hyperlinksArray[linkIndex++];
+    //       const uriAction = pdfDoc.context.obj({
+    //         Type: 'Action',
+    //         S: 'URI',
+    //         URI: url,
+    //       });
+    //       annotation.dict.set(PDFName.of('A'), uriAction);
+    //     }
+    //   }
+    // }
+  }
+  const modifiedPdfBytes = await pdfDoc.save();
+  return new Blob([modifiedPdfBytes], { type: 'application/pdf' });
+}
+
+restoreHyperlinks(xlsData, links)
                 UI.removeModals();
                 cb();
                 saveAs(blob, APP.exportPdfName || title+'.pdf');
