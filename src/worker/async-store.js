@@ -25,6 +25,7 @@ const factory = (Sortify, UserObject, ProxyManager,
     const Saferphore = Util.Saferphore;
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
+    var onDriveReadyEvt = Util.mkEvent(true);
     var onPadRejectedEvt = Util.mkEvent(true);
 
     const setCustomize = data => {
@@ -1608,7 +1609,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             if (!Array.isArray(allowed)) { return void cb('ERESTRICTED'); }
 
             onPadRejectedEvt.fire();
-            onReadyEvt.reg(() => {
+            onDriveReadyEvt.reg(() => {
                 // There is an allow list: check if we can authenticate
                 if (!store.loggedIn || !store.proxy.edPublic) { return void cb('ERESTRICTED'); }
 
@@ -2570,6 +2571,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                     cacheCb(store.cacheReturned || store.returned);
                 });
                 onDriveReady(() => {
+                    onDriveReadyEvt.fire();
                     cb(store.returned);
                 });
 
