@@ -2571,7 +2571,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var blob = new Blob([xlsData], {type: "application/pdf"});
                 UI.removeModals();
                 cb();
-                console.log(blob)
                 saveAs(blob, APP.exportPdfName || title+'.pdf');
                 delete APP.exportPdfName;
             });
@@ -2596,12 +2595,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var exportXLSXFile = function() {
+
             var md = common.getMetadataMgr().getMetadataLazy();
-            var title = md.title || md.defaultTitle || type;
+            var type = md.getPrivateData().ooType;
+            var title = md.title || md.defaultTitle || type;
             var text = getContent(title);
             var suggestion = Title.suggestTitle(Title.defaultTitle);
             var ext = ['.xlsx', '.ods', '.bin', '.pdf'];
-            var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
             if (type==="presentation") {
                 ext = ['.pptx', '.odp', '.bin', '.pdf'];
