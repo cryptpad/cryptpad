@@ -3448,6 +3448,11 @@ define([
         };
     };
     var removeQuestion = function (content, uid) {
+        if (content.form[uid].type === 'section') {
+            content.form[uid].opts.questions.forEach(function(subQuestionUid) {
+                delete content.form[subQuestionUid];
+            })
+        }
         delete content.form[uid];
         var idx = content.order.indexOf(uid);
         if (idx !== -1) {
