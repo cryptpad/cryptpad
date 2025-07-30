@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-const factory = (Crypto) => {
+const factory = (Util, Crypto) => {
     var Integration = {};
 
     var convertToUint8 = function (obj) {
@@ -91,8 +91,11 @@ const factory = (Crypto) => {
                 });
             }
 
+            const key = Util.encodeBase64(secret.keys?.cryptKey);
 
-            if (!chan.encryptor) { chan.encryptor = Crypto.createEncryptor(secret.keys); }
+            if (!chan.encryptor) {
+                chan.encryptor = Crypto.createEncryptor(key);
+            }
 
             wc.on('message', function (cryptMsg) {
                 var msg = chan.encryptor.decrypt(cryptMsg, secret.keys && secret.keys.validateKey);
@@ -216,5 +219,6 @@ const factory = (Crypto) => {
 };
 
 module.exports = factory(
+    require('../../common/common-util'),
     require('chainpad-crypto')
 );

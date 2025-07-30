@@ -25,6 +25,8 @@ define([
             throw new Error("Incorrect unsaves changes handler");
         }
 
+        const isView = privateData.readOnly;
+
         var debug = console.warn;
         //debug = function () {};
         var execCommand = function () {}; // placeholder
@@ -47,6 +49,7 @@ define([
         var SAVE_TO = Math.min((BASE_TIMER / 2), 10000);
 
         const setStateChanged = function(newValue) {
+            if (isView) { return; }
             if (state.changed === newValue) {
                 return;
             }
@@ -57,6 +60,7 @@ define([
         var saved = function () {}; // placeholder;
         var save = function (id) {
             id = id || Util.uid();
+            if (isView) { return; }
             requestSave(id, function (allowed) {
                 if (!allowed) { return; }
 
@@ -210,6 +214,7 @@ define([
 
             // If someone is saving, nothing to do
             if (state.other || state.me) { return; }
+            if (isView) { return; }
 
             // We need a save: refresh TO
             addOnSettleTo();
