@@ -1,4 +1,4 @@
-!/bin/sh
+#!/bin/sh
 # $FreeBSD$
 # PROVIDE: cryptpad
 # REQUIRE: DAEMON nginx
