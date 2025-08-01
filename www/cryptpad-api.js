@@ -90,6 +90,8 @@
             setTimeout(function () {
                 var docID = config.document.key;
                 var key = config.document.key;
+                const isView = config.mode === 'view';
+                var viewKey = isView ? key : '';
                 var blob;
 
                 var getBlob = function (cb) {
@@ -135,7 +137,7 @@
                         document: blob,
                         ext: config.document.fileType,
                         autosave: config.events.onSave && (config.autosave || 10),
-                        readOnly: config.mode === 'view',
+                        readOnly: isView,
                         editorConfig: config.editorConfig || {},
                         _config: serializedConfig()
                     }, function (obj) {
@@ -171,14 +173,20 @@
                 var getSession = function (cb) {
                     chan.send('GET_SESSION', {
                         key: key,
+                        view: isView,
                         keepOld: !config.events.onNewKey
                     }, function (obj) {
+                        if (isView && obj.error === 'ENOENT') {
+                            key = obj.key;
+                            return void cb();
+                        }
+
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
 
                         // OnlyOffice
                         if (!config.events.onNewKey) {
                             key = obj.key;
-                            console.error(key, obj);
+                            viewKey = obj.viewKey;
                             return void cb();
                         }
 
@@ -188,11 +196,13 @@
                             // time and in this case, only the first user will be able to generate a key.
                             return config.events.onNewKey({
                                 old: key,
-                                new: obj.key
+                                new: obj.key,
+                                view: obj.viewKey,
                             }, function (_key) {
                                 // Delay reloading tabs with deprecated key
                                 var to = _key !== obj.key ? 1000 : 0;
                                 key = _key || obj.key;
+                                viewKey = isView ?  key : '';
                                 setTimeout(cb, to);
                             });
                         }
