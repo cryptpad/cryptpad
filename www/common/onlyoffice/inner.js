@@ -2682,88 +2682,125 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var md = common.getMetadataMgr().getMetadataLazy();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var title = md.title || md.defaultTitle || type;
-                var blob = new Blob([xlsData], {type: "application/pdf"});
 
-                function extractAllValuesFromPairs(rootNode) {
-  const results = [];
-    console.log()
-  const m_aPairs = getEditor().WordControl.m_oDrawingDocument
-    ?.m_oLogicDocument?.
-    TableId?.m_aPairs;
+                function extractAllValuesFromPairs() {
+                    const results = [];
+                    const m_aPairs = getEditor().WordControl.m_oDrawingDocument
+                        ?.m_oLogicDocument?.
+                        TableId?.m_aPairs;
 
-  if (!m_aPairs || typeof m_aPairs !== 'object') {
-    console.error("m_aPairs missing or invalid");
-    return results;
-  }
+                    if (!m_aPairs || typeof m_aPairs !== 'object') {
+                        return results;
+                    }
 
-  // 🔁 Recursively walk .Content[] arrays
-  function walkContent(contentArray, context = {}) {
-    if (!Array.isArray(contentArray)) return;
+                    function walkContent(contentArray, context = {}) {
+                        if (!Array.isArray(contentArray)) return;
 
-    contentArray.forEach((contentItem, contentIndex) => {
-      const path = { ...context, contentIndex };
+                        contentArray.forEach((contentItem, contentIndex) => {
+                            const path = { ...context, contentIndex };
 
-      if (typeof contentItem?.Value === "string" && contentItem.Value.trim() !== "") {
-        results.push(
-          contentItem.Value
-        );
-      }
+                            if (typeof contentItem?.Value === "string" && contentItem.Value.trim() !== "") {
+                                results.push(
+                                    contentItem.Value
+                                );
+                            }
 
-      if (Array.isArray(contentItem?.Content)) {
-        walkContent(contentItem.Content, path);
-      }
-    });
-  }
+                            if (Array.isArray(contentItem?.Content)) {
+                                walkContent(contentItem.Content, path);
+                            }
+                        });
+                    }
 
-  for (const pairKey in m_aPairs) {
-    const pair = m_aPairs[pairKey];
-    const spTreeArray = pair?.cSld?.spTree;
+                    for (const pairKey in m_aPairs) {
+                        const pair = m_aPairs[pairKey];
+                        const spTreeArray = pair?.cSld?.spTree;
 
-    if (!Array.isArray(spTreeArray)) continue;
+                        if (!Array.isArray(spTreeArray)) continue;
 
-    spTreeArray.forEach((spTreeItem, spTreeIndex) => {
-      const contentArray = spTreeItem?.txBody?.content?.Content;
-      const context = { pairKey, spTreeIndex };
-      walkContent(contentArray, context);
-    });
-  }
+                        spTreeArray.forEach((spTreeItem, spTreeIndex) => {
+                            const contentArray = spTreeItem?.txBody?.content?.Content;
+                            const context = { pairKey, spTreeIndex };
+                            walkContent(contentArray, context);
+                        });
+                    }
 
-  return results;
-}
+                    return results;
+                }
                 var links = extractAllValuesFromPairs()
 
-                async function restoreHyperlinks(pdfBytes, links) {
-  const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
-  const pages = pdfDoc.getPages();
-  let linkIndex = 0;
+                async function fixLinkAnnotations(pdfBytes) {
+                    const {
+                        PDFDocument,
+                        PDFName,
+                        PDFString,
+                        PDFNumber,
+                    } = PDFLib;
 
-  for (const page of pages) {
-    console.log('znnots', page.node.Annots().asArray())
-    // const annotations = page.node.Annots() || [];
-    // for (const annotation of annotations) {
-    //   if (annotation instanceof PDFLinkAnnotation) {
-    //     const action = annotation.getAction();
-    //     if (action && action instanceof PDFURIAction) continue;
-    //     if (linkIndex < hyperlinksArray.length) {
-    //       const url = hyperlinksArray[linkIndex++];
-    //       const uriAction = pdfDoc.context.obj({
-    //         Type: 'Action',
-    //         S: 'URI',
-    //         URI: url,
-    //       });
-    //       annotation.dict.set(PDFName.of('A'), uriAction);
-    //     }
-    //   }
-    // }
-  }
-  const modifiedPdfBytes = await pdfDoc.save();
-  return new Blob([modifiedPdfBytes], { type: 'application/pdf' });
-}
+                    const pdfDoc = await PDFDocument.load(pdfBytes);
+                    const pages = pdfDoc.getPages();
 
-restoreHyperlinks(xlsData, links)
+                    for (const page of pages) {
+                        const annotsRef = page.node.get(PDFName.of('Annots'));
+                        if (!annotsRef) continue;
+
+                        const annots = pdfDoc.context.lookup(annotsRef);
+                        if (!annots?.asArray) continue;
+
+                        for (const annotRef of annots.asArray()) {
+                            const annot = pdfDoc.context.lookup(annotRef);
+                            console.log(annots.asArray().indexOf(annotRef))
+
+                            const subtype = annot.get(PDFName.of('Subtype'));
+                            if (!subtype || subtype.value() !== '/Link') continue;
+
+                            let actionDict = annot.get(PDFName.of('A'));
+                            let uri = actionDict ? actionDict.get(PDFName.of('URI')) : undefined;
+                            let uriText = uri ? uri.decodeText() : '';
+                            if (!uriText) {
+                                actionDict = pdfDoc.context.obj({
+                                    S: PDFName.of('URI'),
+                                    URI: PDFString.of('https://example.com/updated'),
+                                });
+                                annot.set(PDFName.of('A'), actionDict);
+                            } else {
+                                return;
+                            }
+
+                            if (!annot.get(PDFName.of('Rect'))) {
+                                annot.set(
+                                PDFName.of('Rect'),
+                                    pdfDoc.context.obj([
+                                        PDFNumber.of(50),
+                                        PDFNumber.of(750),
+                                        PDFNumber.of(200),
+                                        PDFNumber.of(770),
+                                    ]),
+                                );
+                            }
+                            if (!annot.get(PDFName.of('Border'))) {
+                                annot.set(
+                                    PDFName.of('Border'),
+                                    pdfDoc.context.obj([PDFNumber.of(0), PDFNumber.of(0), PDFNumber.of(0)]),
+                                );
+                            }
+                        }
+                    }
+
+                    return await pdfDoc.save();
+                }       
+
+                async function run() {
+                    return updatedPdfBytes = await fixLinkAnnotations(xlsData);
+                }
+
+                var blob;
+                run().then(function (updatedPdfBytes) {
+                    blob = new Blob([updatedPdfBytes], { type: "application/pdf" });
+                    saveAs(blob, APP.exportPdfName || title+'.pdf');
+                });
+
                 UI.removeModals();
                 cb();
-                saveAs(blob, APP.exportPdfName || title+'.pdf');
                 delete APP.exportPdfName;
             });
         };
