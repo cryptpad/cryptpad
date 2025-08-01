@@ -2122,6 +2122,9 @@ define([
                         cfg.integrationUtils.onHasUnsavedChanges(obj, cb);
                     }
                 });
+                sframeChan.on('Q_INTEGRATION_USERLIST_CHANGE', function (obj, cb) {
+                    cfg?.integrationUtils?.onUserlistChange?.(obj, cb);
+                });
                 sframeChan.on('Q_INTEGRATION_ON_INSERT_IMAGE', function (data, cb) {
                     if (cfg.integrationUtils && cfg.integrationUtils.onInsertImage) {
                         cfg.integrationUtils.onInsertImage(data, cb);

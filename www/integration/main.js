@@ -182,6 +182,9 @@ define([
         var onHasUnsavedChanges = function (unsavedChanges, cb) {
             chan.send('HAS_UNSAVED_CHANGES', unsavedChanges, cb);
         };
+        var onUserlistChange = list => {
+            chan.send('USERLIST_CHANGE', list);
+        };
         var onInsertImage = function (data, cb) {
             chan.send('ON_INSERT_IMAGE', data, cb);
         };
@@ -301,6 +304,7 @@ define([
                         save: save,
                         reload: reload,
                         onHasUnsavedChanges: onHasUnsavedChanges,
+                        onUserlistChange,
                         onInsertImage: onInsertImage
                     }
                 };

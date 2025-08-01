@@ -255,6 +255,11 @@
                     }
                     cb();
                 });
+                chan.on('USERLIST_CHANGE', (list) => {
+                    if (config.events.onUserlistChange) {
+                        config.events.onUserlistChange(list);
+                    }
+                });
                 chan.on('ON_INSERT_IMAGE', function(data, cb) {
                     if (config.events.onInsertImage) {
                         config.events.onInsertImage(data, cb);
