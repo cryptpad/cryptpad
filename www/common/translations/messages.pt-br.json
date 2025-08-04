@@ -678,7 +678,7 @@
     "team_listTitle": "Suas equipes",
     "team_maxTeams": "Cada conta de usuário só pode ser membro de {0} equipes.",
     "team_infoContent": "Cada equipe tem seu próprio CryptDrive, cota de armazenamento, bate-papo e lista de membros. Os proprietários da equipe podem excluir toda a equipe, os administradores podem convidar ou expulsar membros, os membros podem deixar a equipe.",
-    "team_avatarHint": "500KB tamanho máximo (png, jpg, jpeg, gif)",
+    "team_avatarHint": "500kB tamanho máximo (png, jpg, jpeg, gif)",
     "team_avatarTitle": "Avatar da equipe",
     "team_nameHint": "Defina o nome da equipe",
     "team_nameTitle": "Nome do time",
@@ -786,7 +786,7 @@
     "profile_friendRequestSent": "Requisição de contato pendente...",
     "profile_info": "Outros usuários podem encontrar seu perfil por meio de seu avatar em listas de usuários de documentos.",
     "profile_addLink": "Adicione um link para o seu website",
-    "profile_editDescription": "Edite sua descrição",
+    "profile_editDescription": "Descrição do Perfil",
     "profile_addDescription": "Adicione uma descrição",
     "notifications_empty": "Nenhuma notificação disponível",
     "friendRequest_notification": "<b>{0}</b> enviou a você uma solicitação de contato",
@@ -1675,7 +1675,12 @@
     "ssoauth_header": "Cofre de Senhas CryptPad",
     "ssoauth_form_hint_login": "Por favor entre com sua senha CryptPad",
     "duplicate": "Duplicado",
-    "calendar_rec_change": "Mover um evento repetido para diferentes calendários. Você pode só pode aplicar essa alteração para esse evento ou para todos os eventos.",
+    "calendar_rec_change": "Mover um evento repetido para  a calendário diferente. Você pode aplicar essa alteração para esse evento ou para todos os eventos.",
     "ssoauth_form_hint_register": "Adicione uma senha para o CryptPad para aumentar a segurança ou deixe em branco e continue. Se uma senha não for adicionada, as chaves que protegem a sua conta ficaram disponíveis para os administradores da instância.",
-    "kanban_showTags": "Veja todas as tags"
+    "kanban_showTags": "Veja todas as tags",
+    "admin_cat_users": "Diretório de usuários",
+    "loading_mfa_required": "A autenticação de dois fatores é obrigatória nessa instância. Por favor, configure uma aplicação TOPT no formulário abaixo.",
+    "kanban_hideTags": "Veja menos tags",
+    "admin_forcemfaTitle": "Autenticação de dois fatores obrigatório",
+    "admin_forcemfaHint": "A configuração da autenticação de dois fatores será sugerida para todos os usuários dessa instância. Usuários existentes não poderão usar suas contas caso não configurem uma aplicação TOTP."
 }
