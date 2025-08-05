@@ -725,7 +725,7 @@
     "pinLimitNotPinned": "ストレージの最大容量に達しました。<br>このドキュメントはCryptDriveに保存されません。",
     "pinLimitReachedAlertNoAccounts": "ストレージの最大容量に達しました",
     "pinLimitReachedAlert": "使用できるストレージの最大容量に達しました。新しいドキュメントはCryptDriveに保存されません。<br>ドキュメントをCryptDriveから削除するか、<a>プレミアムユーザー</a>になると容量を増やすことができます。",
-    "userlist_offline": "現在オフラインのため、ユーザーリストは利用できません。",
+    "userlist_offline": "現在オフラインのため、ユーザーの一覧は利用できません。",
     "readonly": "読み取り専用",
     "errorState": "重大なエラー: {0}",
     "realtime_unrecoverableError": "回復不能なエラーが発生しました。OKをクリックして再読み込みを行ってください。",
@@ -1840,5 +1840,6 @@
     "toolbar_hide_text_tools": "テキストツールを表示しない",
     "help_close_button": "ヘルプの通知を閉じる",
     "admin_documentsDeletionTitle": "複数のドキュメントをアーカイブ",
-    "admin_documentsDeletionHint": "IDをリストの形式で指定してドキュメントをアーカイブ（1行に1つのドキュメントを指定してください）"
+    "admin_documentsDeletionHint": "IDをリストの形式で指定してドキュメントをアーカイブ（1行に1つのドキュメントを指定してください）",
+    "fc_open_formaud": "監査人として開く"
 }
