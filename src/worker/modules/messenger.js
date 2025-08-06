@@ -721,7 +721,7 @@ const factory = (Crypto, Hash, Util, Realtime, Messaging,
         }
 
         var proxy = ctx.store.proxy;
-        var keys = Curve.deriveKeys(friend.curvePublic, proxy.curvePrivate);
+        var keys = Curve.deriveKeys(friend.curvePublic, proxy.curvePrivate, friend.kemPublic, proxy.kemPublic);
         var data = {
             keys: keys,
             channel: friend.channel,

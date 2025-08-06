@@ -105,6 +105,7 @@ define([
                 APP.supportModule.execCommand('CLOSE_TICKET', {
                     channel: channel,
                     curvePublic: data.curvePublic, // Support curve public for this ticket
+                    kemPublic: data.kemPublic, // Support kem public for this ticket
                     ticket: APP.support.getDebuggingData({ close: true })
                 }, function (obj) {
                     if (obj && obj.error) { return void UI.warn(Messages.error); }
@@ -116,6 +117,7 @@ define([
                 APP.supportModule.execCommand('REPLY_TICKET', {
                     channel: channel,
                     curvePublic: data.curvePublic, // Support curve public for this ticket
+                    kemPublic: data.kemPublic, // Support kem public for this ticket
                     ticket: formData
                 }, function (obj) {
                     if (obj && obj.error) { return void UI.warn(Messages.error); }

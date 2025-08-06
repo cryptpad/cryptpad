@@ -297,7 +297,7 @@ const factory = (Feedback, Hash, Util,
                      *  3.b. No  ==> post our mailbox data to the messenger channel
                      */
                     network.join(friend.channel).then(function (wc) {
-                        var keys = Crypto.Curve.deriveKeys(friend.curvePublic, userObject.curvePrivate);
+                        var keys = Crypto.Curve.deriveKeys(friend.curvePublic, userObject.curvePrivate, friend.kemPublic, userObject.kemPublic);
                         var encryptor = Crypto.Curve.createEncryptor(keys);
                         channels[friend.channel] = {
                             wc: wc,

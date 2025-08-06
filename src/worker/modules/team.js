@@ -1681,6 +1681,10 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                         edPrivate: ephemeralKeys.edPrivate,
                         curvePublic: ephemeralKeys.curvePublic,
                         curvePrivate: ephemeralKeys.curvePrivate,
+                        kemPublic: ephemeralKeys.kemPublic,
+                        kemPrivate: ephemeralKeys.kemPrivate,
+                        dsaPublic: ephemeralKeys.dsaPublic,
+                        dsaPrivate: ephemeralKeys.dsaPrivate,
                     },
                 };
 
