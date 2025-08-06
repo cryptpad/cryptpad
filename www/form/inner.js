@@ -1098,6 +1098,7 @@ define([
                             editor.setOption("extraKeys", {
                                 "Esc": function () {
                                     editor.display.input.blur();
+                                    $(cancelBlock).focus();
                                 },
                             });
                             editor.setOption('lineNumbers', true);
@@ -1115,7 +1116,12 @@ define([
                             }
                             editor.refresh();
                             editor.save();
-                            editor.focus();
+                            var firstBtn = $(block).find('.cp-markdown-toolbar').find('button').get(0);
+                            if (firstBtn) {
+                                firstBtn.focus();
+                            } else {
+                                editor.focus(); // fallback
+                            }
                         });
 
                         if (APP.common && !(tmp && tmp.block) && cm) {
@@ -1123,10 +1129,12 @@ define([
                                 embed: function (mt) {
                                     editor.focus();
                                     editor.replaceSelection($(mt)[0].outerHTML);
-                                }
+                                },
+                                toggleBar: true
                             });
+                            var toggleRow = h('div.cp-markdown-toggle-row', markdownTb.toggleButton);
                             $(block).prepend(markdownTb.toolbar);
-                            $(markdownTb.toolbar).show();
+                            $(block).prepend(toggleRow);
                             cm.configureTheme(APP.common, function () {});
                         }
 
@@ -1159,8 +1167,13 @@ define([
                             };
                         };
 
+                        var outerWrapper = h('div.cp-editor-wrapper', [
+                            toggleRow,
+                            block
+                        ]);
+                        
                         return [
-                            block,
+                            outerWrapper,
                             cancelBlock
                         ];
                     },
@@ -1843,7 +1856,14 @@ define([
                         });
                         return res;
                     },
-                    reset: function () { $(tag).find('input').removeAttr('checked'); },
+                    reset: function () { 
+                        $(tag).find('input').each(function (i, input) {
+                            var $i = $(input);
+                            if (Util.isChecked($i)) { 
+                                $i.prop('checked', false);
+                            }
+                        });
+                    },
                     setEditable: function (state) {
                         if (state) { $(tag).find('input').removeAttr('disabled'); }
                         else { $(tag).find('input').attr('disabled', 'disabled'); }
@@ -1968,7 +1988,14 @@ define([
                         });
                         return res;
                     },
-                    reset: function () { $(tag).find('input').removeAttr('checked'); },
+                    reset: function () { 
+                        $(tag).find('input').each(function (i, input) {
+                            var $i = $(input);
+                            if (Util.isChecked($i)) { 
+                                $i.prop('checked', false);
+                            }
+                        });
+                    },
                     setEditable: function (state) {
                         if (state) { $tag.find('input').removeAttr('disabled'); }
                         else { $tag.find('input').attr('disabled', 'disabled'); }
@@ -2113,7 +2140,10 @@ define([
 
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
-                    var answer = Flatpickr.formatDate(new Date(obj.msg[uid]), dateFormat);
+                    var answer;
+                    if (obj.msg[uid]) {
+                      answer = Flatpickr.formatDate(new Date(obj.msg[uid]), dateFormat);
+                    }
                     if (isEmpty(answer)) { return empty++; }
                     results.push(h('div.cp-charts-row', h('span.cp-value', answer)));
                 });
@@ -2185,7 +2215,12 @@ define([
                         return res;
                     },
                     reset: function () {
-                        $(tag).find('input').removeAttr('checked');
+                        $(tag).find('input').each(function (i, input) {
+                            var $i = $(input);
+                            if (Util.isChecked($i)) { 
+                                $i.prop('checked', false);
+                            }
+                        });
                         checkDisabled();
                     },
                     setEditable: function (state) {
@@ -2328,8 +2363,13 @@ define([
                         return res;
                     },
                     reset: function () {
-                        $(tag).find('input').removeAttr('checked');
                         lines.forEach(checkDisabled);
+                        $(tag).find('input').each(function (i, input) {
+                            var $i = $(input);
+                            if (Util.isChecked($i)) { 
+                                $i.prop('checked', false);
+                            }
+                        });
                     },
                     setEditable: function (state) {
                         if (state) { lines.forEach(checkDisabled); }
@@ -5558,30 +5598,43 @@ define([
             ]);
             var editButtons = h('div.cp-form-edit-buttons-container', [ preview, edit, del ]);
 
+            var toggleRow = h('div.cp-markdown-toggle-row'); 
+            var markdownWrapper = h('div.cp-form-markdown-editor-wrapper', t);
             var editDiv, previewDiv;
             var div = h('div.cp-form-block.editable.nodrag.cp-form-submit-message', [
                 h('div.cp-form-block-content', [
                     p,
-                    editDiv = h('div.cp-form-response-modal', t),
+                    editDiv = h('div.cp-form-response-modal', [
+                        toggleRow,
+                        markdownWrapper
+                    ]),
                     previewDiv = h('div.cp-form-response-preview#cp-response-preview'),
                     editButtons
                 ]),
             ]);
             var cm = APP.responseCM = SFCodeMirror.create("gfm", CMeditor, t);
             var editor = APP.responseEditor = cm.editor;
-
+            editor.setOption("extraKeys", {
+                "Esc": function() {
+                    editor.display.input.blur();
+                    $(preview).focus();
+                }
+            });
             var markdownTb = APP.common.createMarkdownToolbar(editor, {
                 embed: function (mt) {
                     editor.focus();
                     editor.replaceSelection($(mt)[0].outerHTML);
-                }
+                },
+                toggleBar: true
             });
-            var $tb = $(markdownTb.toolbar).insertAfter($(p));
+            $(toggleRow).append(markdownTb.toggleButton);
+            $(markdownWrapper).prepend(markdownTb.toolbar);
 
             var $edit = $(editDiv);
             var $preview = $(previewDiv);
             var $p = $(preview);
             var $e = $(edit);
+            var $tb = $(markdownTb);
             var previewState = true;
 
             var updatePreview = function () {
@@ -5598,6 +5651,14 @@ define([
                 $preview.hide();
                 editor.refresh();
                 $tb.show();
+                setTimeout(function () {
+                    var firstBtn = $(markdownTb.toolbar).find('button').get(0);
+                    if (firstBtn) {
+                        firstBtn.focus();
+                    } else {
+                        editor.focus(); // fallback
+                    }
+                }, 0);
             });
             APP.$e = $e;
             APP.$p = $p;

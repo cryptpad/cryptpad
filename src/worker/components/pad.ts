@@ -21,6 +21,7 @@ import * as UserObject from '../../common/user-object.js';
 import * as SF from './sharedfolder.js';
 
 const onJoinedEvt: any = Util.mkEvent(true);
+const onCacheReadyEvt: any = Util.mkEvent(true);
 
 const _getMetadata: Callback = (ctx, clientId, data, _cb) => {
     const cb = Util.once(Util.mkAsync(_cb));
@@ -238,7 +239,7 @@ const _join: Callback = (ctx, clientId, data) => {
         if (!["EDELETED","EEXPIRED","ERESTRICTED"].includes(type)) {
             return;
         }
-        Store.leavePad(null, data, function () {});
+        ctx.leavePad(null, data, function () {});
     };
     const conf = {
         Cache: store.neverCache ? undefined : Cache,
@@ -248,6 +249,7 @@ const _join: Callback = (ctx, clientId, data) => {
         },
         onCacheReady: () => {
             postMessage(clientId, "PAD_CACHE_READY");
+            onCacheReadyEvt.fire();
         },
         onReady: pad => {
             const padData = pad.metadata || {};
@@ -465,7 +467,8 @@ const init = (config) => {
         postMessage,
         store,
         Store,
-        myDeletions: []
+        myDeletions: [],
+        leavePad: (clientId, data, cb) => {}
     };
 
     const join: RpcCall = (clientId, data, cb) => {
@@ -510,6 +513,7 @@ const init = (config) => {
         dropChannel(ctx, data.channel);
         cb();
     };
+    ctx.leavePad = leave;
 
     const getChannels = () => {
         return ctx.channels;
@@ -527,6 +531,7 @@ const init = (config) => {
         leave,
         removeClient,
         onJoined: onJoinedEvt.reg,
+        onCacheReady: onCacheReadyEvt.reg,
         getChannels
     };
 };

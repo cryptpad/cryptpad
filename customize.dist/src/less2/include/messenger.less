@@ -5,6 +5,7 @@
  */
 
 @import (reference) './avatar.less';
+@import (reference) './badges.less';
 @import (reference) "./colortheme-all.less";
 
 .messenger_vars (
@@ -12,12 +13,12 @@
 ) {
     @msg-color: @cryptpad_text_col;
     @msg-color-hover: contrast(@msg-color, lighten(@msg-color, 10%), darken(@msg-color, 10%));
-    @msg-bg-color: @bg-color;
-    @invert: @bg-color;
-    @msg-bg-color-light: contrast(@invert, lighten(@bg-color, 5%), darken(@bg-color, 5%));
-    @msg-bg-color-lighter: contrast(@invert, lighten(@bg-color, 10%), darken(@bg-color, 10%));
-    @msg-bg-color-dark: fade(@cp_messenger-fg, 10%);
-    @msg-bg-color-darker: contrast(@bg-color, lighten(@bg-color, 10%), darken(@bg-color, 10%));
+
+    @msg-bg-color: @cp_app-bg;
+    @msg-bg-color-dark: @cp_toolbar-bg2;
+    @msg-bg-color-darker: @cp_toolbar-bg3;
+    @msg-bg-color-light: @cp_toolbar-bg2;
+    @msg-bg-color-lighter: @cp_toolbar-bg3;
 };
 .messenger_main(
     @bg-color: @cp_messenger-bg,
@@ -116,9 +117,17 @@
                     }
                 }
             }
+            i.cp-badge {
+                color: var(--msg-bg-color-dark);
+                border-color: var(--msg-bg-color-dark);
+            }
             &:hover {
                 background-color: @msg-bg-color-darker;
                 background-color: var(--msg-bg-color-darker);
+                i.cp-badge {
+                    color: var(--msg-bg-color-darker);
+                    border-color: var(--msg-bg-color-darker);
+                }
             }
             &.cp-app-contacts-notify {
                 animation: notif 2s ease-in-out infinite;
@@ -163,7 +172,6 @@
             }
             .cp-app-contacts-muted-button {
                 margin: 10px;
-                border: 0;
                 display: none;
                 order: 3;
                 .fa-bell-slash {
@@ -192,7 +200,7 @@
     }
 
     #cp-app-contacts-friendlist .cp-app-contacts-friend, #cp-app-contacts-messaging .cp-avatar {
-        .avatar_main(30px);
+        .avatar_main(35px);
         &.cp-avatar {
             display: flex;
         }
@@ -207,7 +215,6 @@
             //margin-right: 5px;
             flex-shrink: 0;
             z-index: 1;
-            margin: 4px;
         }
         .cp-app-contacts-status {
             display: inline-block;
@@ -238,8 +245,12 @@
             padding: 20px;
         }
         .cp-app-contacts-header {
-            background-color: @msg-bg-color-dark;
-            background-color: var(--msg-bg-color-dark);
+            background-color: @msg-bg-color-lighter;
+            background-color: var(--msg-bg-color-lighter);
+            i.cp-badge {
+                color: var(--msg-bg-color-lighter);
+                border-color: var(--msg-bg-color-lighter);
+            }
             padding: 0;
             display: flex;
             justify-content: space-between;
@@ -256,15 +267,20 @@
                 }
             }
 
-            .cp-avatar,
+            .cp-avatar-container,
             .cp-app-contacts-right-col {
                  flex: 1 1 auto;
+                 text-align: center;
             }
             .cp-app-contacts-remove-history {
                 .hover;
             }
+            .cp-avatar-container {
+                display: flex;
+                align-items: center;
+            }
             .cp-avatar {
-                margin: 10px;
+                margin: 0 10px;
             }
             .cp-app-contacts-more-history {
                 //display: none;

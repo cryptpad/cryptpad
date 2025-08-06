@@ -14,6 +14,7 @@ define([
     '/common/common-hash.js',
     '/common/common-constants.js',
     '/common/hyperscript.js',
+    '/common/clipboard.js',
     '/api/config',
     '/common/common-realtime.js',
     '/customize/messages.js',
@@ -36,6 +37,7 @@ define([
     Hash,
     Constants,
     h,
+    Clipboard,
     ApiConfig,
     CommonRealtime,
     Messages,
@@ -707,15 +709,39 @@ define([
             toolbar.$drawer.append($histEntry);
 
             var $content = common.createButton(null, true, {
-                icon: 'fa-question',
+                icon: 'fa-clock-o',
                 title: 'Get debugging graph', // TODO
                 name: 'graph',
+                text: 'Replay',
                 id: 'cp-app-debug-get-content'
             });
             $content.click(getContent);
             var $contentEntry = UIElements.getEntryFromButton($content);
-            console.error($contentEntry);
             toolbar.$drawer.append($contentEntry);
+
+            var priv = metadataMgr.getPrivateData();
+            if (priv.debugDrive) {
+                var $drive = common.createButton(null, true, {
+                    icon: 'fa-hdd-o',
+                    title: 'Get Shared Folder content', // TODO
+                    text: 'SF channel list',
+                    id: 'cp-app-debug-get-channels'
+                });
+                $drive.click(() => {
+                    let p = JSON.parse(info.realtime.getUserDoc());
+                    const fd = p?.drive?.filesData || p?.filesData;
+                    let all = Object.keys(fd).map(id => {
+                        return fd[id]?.channel;
+                    });
+                    console.error(all);
+                    Clipboard.copy(all.join('\n'), (err) => {
+                        if (err) { return UI.warn(Messages.error); }
+                        UI.log(Messages.genericCopySuccess);
+                    });
+                });
+                var $driveEntry = UIElements.getEntryFromButton($drive);
+                toolbar.$drawer.append($driveEntry);
+            }
         };
 
         config.onReady = function (info) {

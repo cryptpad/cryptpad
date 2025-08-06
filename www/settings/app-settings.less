@@ -9,6 +9,9 @@
 @import (reference) "../../customize/src/less2/include/creation.less";
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/export.less';
+@import (reference) '../../customize/src/less2/include/badges.less';
+@import (reference) '../../customize/src/less2/include/avatar.less';
+@import (reference) "../../customize/src/less2/include/markdown.less";
 
 &.cp-app-settings {
     .framework_min_main();
@@ -227,6 +230,115 @@
                     width:1rem;
                     height:1rem;
                     margin: 0 2px 0 0;
+                }
+            }
+            .cp-settings-badges {
+                display: flex;
+                flex-flow: column;
+                align-items: flex-start;
+                .cp-settings-badges-list {
+                    display: flex;
+                    align-items: center;
+                    font-size: 24px;
+                    margin-top: 10px;
+                    .badges_main(40px);
+                    i {
+                        cursor: pointer;
+                        &:focus-visible {
+                            outline: @variables_focus_style;
+                        }
+                        &:not(:last-child) {
+                            margin-right: 0.5em;
+                        }
+                    }
+                }
+            }
+            .cp-settings-profile-avatar {
+                .cp-settings-avatar-container {
+                    width: 300px;
+                    margin-bottom: 1.5rem;
+                    border-radius: 10px;
+                }
+                .cp-avatar {
+                    box-sizing: content-box;
+                    .avatar_main(300px);
+                    display: flex;
+                    text-align: center;
+                    border-radius: 4px;
+                    overflow: visible;
+                    position: relative;
+                    i.cp-badge {
+                        border-width: 3px;
+                    }
+                    .cp-settings-avatar-delete {
+                        right: 0;
+                        top: 0;
+                        position: absolute;
+                        opacity: 1;
+                        &:hover {
+                            opacity: 0.7;
+                        }
+                    }
+                }
+                img {
+                    max-width: 100%;
+                    max-height: 100%;
+                    vertical-align: top;
+                    border-radius: @variables_radius_L;
+                }
+                .cp-avatar-default {
+                    border-radius: @variables_radius_L;
+                }
+                media-tag {
+                    height: 100%;
+                    width: 100%;
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+                    img {
+                        min-width: 100%;
+                        min-height: 100%;
+                        max-width: none;
+                        max-height: none;
+                        flex: 1;
+                    }
+                }
+                button {
+                    min-width: 40px;
+                    height: 40px;
+                    margin: 5px !important;
+                }
+            }
+            .cp-settings-profile-description {
+                width: 40rem;
+                max-width: 100%;
+                .cp-labelled-input {
+                    max-width: 100% !important;
+                    width: 100% !important;
+                }
+                textarea, .CodeMirror {
+                    height: 175px;
+                    border-radius: 10px;
+                }
+                .CodeMirror {
+                    font-family: monospace;
+                    font-size: 16px;
+                    line-height: initial;
+                    max-width: 40rem;
+                    border: 1px solid fade(@cryptpad_text_col, 50%);
+                    margin: 5px 0;
+                    pre {
+                        margin: 0;
+                        font-family: inherit;
+                        font-size: inherit;
+                        line-height: inherit;
+                    }
+                    * {
+                        box-sizing: content-box;
+                    }
+                }
+                .cp-markdown-toggle-button {
+                    .markdown-toolbar-button-style();
                 }
             }
         }

@@ -264,6 +264,8 @@ var factory = function (Util, Nacl, Crypto) {
                 clearTimeout(to);
             });
 
+            ctx.send('DESTROY', "", function () {});
+
             // remove the ctx from the network's stack
             var idx = networkContext.authenticated.indexOf(ctx);
             if (idx === -1) { return; }

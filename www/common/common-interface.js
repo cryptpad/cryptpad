@@ -212,6 +212,12 @@ define([
                 h('div'+cls, content),
             ])
         ]);
+
+        var dialogContent = frame.querySelector('div' + cls);
+        dialogContent.setAttribute('aria-live', 'assertive');
+        dialogContent.setAttribute('role', 'alertdialog');
+        dialogContent.setAttribute('aria-modal', 'true');
+
         var $frame = $(frame);
         frame.closeModal = function (cb) {
             frame.closeModal = function () {}; // Prevent further calls
@@ -578,6 +584,7 @@ define([
     };
 
     let addTabListener = UI.addTabListener = frame => {
+        $(frame).attr('role', 'dialog').attr('aria-modal', 'true');
         // find focusable elements
         let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)');
 
@@ -1080,6 +1087,7 @@ define([
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
             $loading.removeClass('cp-loading-transparent');
+            $loading.attr('aria-live','polite');
             if (config.newProgress) {
                 var progress = h('div.cp-loading-progress', [
                     h('p.cp-loading-progress-list'),
@@ -1126,6 +1134,13 @@ define([
         setTimeout(cb, 750);
         $('head > link[href^="/customize/src/pre-loading.css"]').remove();
         $('html').toggleClass('cp-loading-noscroll', false);
+    };
+    UI.emptyLoadingScreen = function (content) {
+        UI.addLoadingScreen();
+        var $loading = $('#' + LOADING);
+        $loading.find('.cp-loading-container').hide();
+        $loading.find('.cp-loading-logo').hide();
+        $loading.append(content);
     };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
         if (error === 'Error: XDR encoding failure') {
@@ -1256,6 +1271,10 @@ define([
         arrow: true,
         maxWidth: '200px',
         flip: true,
+        onShow: () => {
+            // Hide other tooltips
+            $('body').find('.tippy-popper').hide();
+        },
         popperOptions: {
             modifiers: {
                 preventOverflow: { boundariesElement: 'window' }

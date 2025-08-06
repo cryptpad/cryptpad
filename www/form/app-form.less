@@ -176,6 +176,13 @@
         flex: 1;
         justify-content: center;
         min-width: 300px;
+        .cp-markdown-toggle-row {
+            margin: 0.5rem 0;
+            position: relative;
+            .cp-markdown-toggle-button {
+                .markdown-toolbar-button-style();
+            }
+        }
 
         div.timeline-container {
             width: 100%;
@@ -381,6 +388,12 @@
                         }
                     }
                 }
+                div.cp-form-response-msg-container {
+                    .cp-markdown-toolbar {
+                        background-color: transparent;
+                        border-radius: @variables_radius @variables_radius 0 0;
+                    }
+                }
             }
             div.cp-form-creator-results {
                 .cp-form-block {
@@ -428,6 +441,14 @@
                         .cp-form-block-drag-handle {
                             display: none !important;
                         }
+                    }
+                }
+
+                .cp-editor-wrapper {
+                    .cp-form-edit-options-block {
+                        padding: 1px;
+                        overflow: hidden;
+                        border: 1px solid @cp_forms-border;
                     }
                 }
 
@@ -530,11 +551,6 @@
                 }
                 .cp-form-response-msg-container {
                     padding-bottom: 75px;
-                    button {
-                        white-space: initial;
-                        line-height: 25px;
-                        padding: 5.5px 6px;
-                    }
                     .cp-form-response-msg-hint {
                         color: @cryptpad_color_link;
                     }
@@ -819,6 +835,9 @@
                     display: flex;
                     flex-wrap: wrap;
                     align-items: baseline;
+                    border-radius: @variables_radius;
+                    margin-top: 0.5rem;
+                    padding: 1px; 
                     .CodeMirror {
                         cursor: default;
                         flex: 1;
@@ -827,13 +846,15 @@
                         width: 80%;
                         min-height: 200px;
                         height: 200px;
-                        border: 1px solid @cp_forms-border;
                         .CodeMirror-placeholder {
                             color: #777;
                         }
                     }
                     .cp-markdown-toolbar {
                         display: block;
+                        border-radius: @variables_radius 0;
+                        width: 100%;
+                        background-color: transparent;
                     }
                 }
                 .cp-form-edit-block {
@@ -1358,8 +1379,12 @@
         }
     }
     .cp-form-response-modal {
-        .CodeMirror {
+        .cp-form-markdown-editor-wrapper {
             border: 1px solid @cp_forms-border;
+            border-radius: @variables_radius; 
+        }
+        .CodeMirror {
+            border-radius: 0 0 @variables_radius @variables_radius; 
         }
     }
 

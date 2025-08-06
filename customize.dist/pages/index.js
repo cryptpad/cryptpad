@@ -149,20 +149,15 @@ define([
             locationBlock = h('div', h('br'));
         }
 
-        var subButton = function () {
-            if (Pages.areSubscriptionsAllowed() && !LocalStore.getPremium()) {
-                var sub = h('div.cp-sub-prompt', [
-                    h('span', Msg.home_morestorage),
-                    h('a', {href:"/accounts/", class:'subscribe-btn'},  [
-                        h('i.fa.fa-ticket'),
-                        Msg.features_f_subscribe
-                    ])
-                ]);
-                return sub;
-            } else {
-                return h('div');
-            }
-        };
+        let extraButtons = [];
+        // Messages.home_morestorage
+        // Messages.features_f_subscribe
+        Extensions.getExtensionsSync('HOMEPAGE_BUTTON').forEach(ext => {
+            if (!ext.getButton) { return; }
+            const b = ext.getButton();
+            if (!b) { return; }
+            extraButtons.push(b);
+        });
 
 
         let popup = h('div.cp-extensions-popups');
@@ -220,7 +215,7 @@ define([
                                     h('i.fa.fa-hdd-o', {'aria-hidden': 'true'}),
                                     Msg.team_cat_drive
                                 ]),
-                                subButton
+                                extraButtons
                             ])
                         ])
                     ]),
