@@ -702,7 +702,7 @@ define([
             if (burnAfterReading) {
                 href = opts.burnAfterReadingUrl;
             } else {
-                href = (!opts.hashes.editHash && opts.pathname === '/form/' && hash.startsWith('#')) ? (origin + pathname + hash)  : (origin + pathname + '#' + hash);
+                href = hash.startsWith('#') ? (origin + pathname + hash) : (origin + pathname + '#' + hash);
             }
             var parsed = Hash.parsePadUrl(href);
             return origin + parsed.getUrl({embed: embed, present: present, versionHash: versionHash});
