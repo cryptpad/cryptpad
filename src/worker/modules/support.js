@@ -62,7 +62,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                 myCurve: ctx.store.proxy.curvePrivate,
                 theirPublic: data.curvePublic || supportKey, // old tickets may use deprecated key
                 myKem: ctx.store.proxy.kemPublic,
-                theirKem: data.kemPublic, // || supportKemKey,    // Needed for PQC, currently making messages unreadable
+                theirKem: data.kemPublic || supportKemKey,    // Needed for PQC, currently making messages unreadable
                 notifKey: supportKey
             });
         });
@@ -1037,7 +1037,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
         let edPublic = proxy.edPublic;
 
         const keyPair = Crypto.CryptoAgility.curveKeyPair();
-        const kemPair = Crypto.PQC.ml_kem.ml_kem512.keygen();
+        const kemPair = Crypto.CryptoAgility.generateKemKeypair();
         const newKeyPub = Util.encodeBase64(keyPair.publicKey);
         const newKey = Util.encodeBase64(keyPair.secretKey);
         const newKemPublic = Util.encodeBase64(kemPair.publicKey);

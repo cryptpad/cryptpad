@@ -46,7 +46,7 @@ define([
         // KEM keys (post-quantum)
         var kemSeed = dispense(64); // 64 bytes for post-quantum KEM keys
         if (Crypto.PQC && Crypto.PQC.ml_kem && Crypto.PQC.ml_kem.ml_kem512) {
-            var pqKemPair = Crypto.PQC.ml_kem.ml_kem512.keygen(new Uint8Array(kemSeed));
+            var pqKemPair = Crypto.CryptoAgility.generateKemKeypair(new Uint8Array(kemSeed));
             opt.kemPrivate = Util.encodeBase64(pqKemPair.secretKey);
             opt.kemPublic = Util.encodeBase64(pqKemPair.publicKey);
         } else {

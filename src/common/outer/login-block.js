@@ -53,7 +53,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
                 var pqSeed = Nacl.hash(seed).subarray(0, 32);
 
                 // Generate post-quantum keypair using the 32-byte hash
-                pqSignPair = Crypto.PQC.ml_dsa.ml_dsa44.internal.keygen(pqSeed);
+                pqSignPair = Crypto.CryptoAgility.generateDsaKeypair(pqSeed);
             } catch (err) {
                 console.error("Failed to generate post-quantum keys:", err);
                 pqSignPair = null;

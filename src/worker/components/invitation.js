@@ -12,8 +12,8 @@ var factory = function (Util, Cred, Nacl, Crypto) {
     Invite.generateKeys = function () {
         var ed = Crypto.CryptoAgility.signKeyPair();
         var curve = Crypto.CryptoAgility.curveKeyPair();
-        var kem = Crypto.PQC.ml_kem.ml_kem512.keygen();
-        var dsa = Crypto.PQC.ml_dsa.ml_dsa44.keygen();
+        var kem = Crypto.CryptoAgility.generateKemKeypair();
+        var dsa = Crypto.CryptoAgility.generateDsaKeypair();
         return {
             edPublic: encode64(ed.publicKey),
             edPrivate: encode64(ed.secretKey),
@@ -28,7 +28,7 @@ var factory = function (Util, Cred, Nacl, Crypto) {
 
     Invite.generateSignPair = function () {
         var ed = Crypto.CryptoAgility.signKeyPair();
-        var dsa = Crypto.PQC.ml_dsa.ml_dsa44.keygen();
+        var dsa = Crypto.CryptoAgility.generateKemKeypair();
         return {
             validateKey: encode64(ed.publicKey),
             signKey: encode64(ed.secretKey),

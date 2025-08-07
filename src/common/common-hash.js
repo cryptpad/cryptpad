@@ -20,16 +20,35 @@ var factory = function (Util, Crypto, Keys) {
     };
 
     Hash.generateSignPair = function () {
+        // Generate classical Ed25519 keypair
         var ed = Crypto.CryptoAgility.signKeyPair();
         var makeSafe = function (key) {
             return Crypto.b64RemoveSlashes(key).replace(/=+$/g, '');
         };
-        return {
+        
+        var result = {
             validateKey: Hash.encodeBase64(ed.publicKey),
             signKey: Hash.encodeBase64(ed.secretKey),
             safeValidateKey: makeSafe(Hash.encodeBase64(ed.publicKey)),
             safeSignKey: makeSafe(Hash.encodeBase64(ed.secretKey)),
         };
+        
+        // Add post-quantum DSA keypair if available
+        if (Crypto.PQC && Crypto.PQC.ml_dsa && Crypto.PQC.ml_dsa.ml_dsa44) {
+            try {
+                // Derive a deterministic seed from the Ed25519 secret key
+                var dsaSeed = Crypto.Nacl.hash(ed.secretKey).subarray(0, 32);
+                var dsaPair = Crypto.CryptoAgility.generateDsaKeypair(dsaSeed);
+                result.dsaPublic = Hash.encodeBase64(dsaPair.publicKey);
+                result.dsaPrivate = Hash.encodeBase64(dsaPair.secretKey);
+                result.safeDsaPublic = makeSafe(Hash.encodeBase64(dsaPair.publicKey));
+                result.safeDsaPrivate = makeSafe(Hash.encodeBase64(dsaPair.secretKey));
+            } catch (err) {
+                console.error("Failed to generate post-quantum DSA keys:", err);
+            }
+        }
+        
+        return result;
     };
 
     Hash.getSignPublicFromPrivate = function (edPrivateSafeStr) {

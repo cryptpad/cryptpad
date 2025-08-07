@@ -664,8 +664,8 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         var keyPair = Crypto.CryptoAgility.signKeyPair(); // ed25519
         var curvePair = Crypto.CryptoAgility.curveKeyPair(); // Curve25519
 
-        var kemPair = Crypto.PQC.ml_kem.ml_kem512.keygen();
-        var dsaPair = Crypto.PQC.ml_dsa.ml_dsa44.keygen();
+        var kemPair = Crypto.CryptoAgility.generateKemKeypair();
+        var dsaPair = Crypto.CryptoAgility.generateKemKeypair();
 
         var rosterSeed = Crypto.Team.createSeed();
         var rosterKeys = Crypto.Team.deriveMemberKeys(rosterSeed, {
