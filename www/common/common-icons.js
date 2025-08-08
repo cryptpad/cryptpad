@@ -17,7 +17,7 @@ define([
         "login": "log-in",
         "logout": "log-out",
         "logout-everywhere": "unplug",
-        "register-homepage": "user",
+        "register-homepage": "user", // XXX
         "register": "user-round-plus",
         "chevron-left": "chevron-left",
         "chevron-right": "chevron-right",
@@ -48,7 +48,7 @@ define([
         "drive-upload-file": "file-up",
         "drive-upload-folder": "folder-up",
         "drive-file": "file",
-        "teams": "users-round",
+        "teams": "users-round", // XXX change name, multiple usages
         "calendar": "calendar-days",
         "calendar-inactive": "calendar",
         "calendar-add": "calendar-plus-2",
@@ -57,7 +57,7 @@ define([
         "settings": "settings",
         "administration": "monitor-cog",
         "support": "life-buoy",
-        "support-mailbox": "ambulance",
+        "support-mailbox": "ambulance", // XXX
         "homepage": "house",
         "file-template": "file-type", // XXX
         "file-pad": "file-text",
@@ -66,6 +66,7 @@ define([
         "access": "lock-open",
         "rename": "pen-line",
         "color-palette": "palette",
+        "customize": "brush",
         "upload": "hard-drive-upload",
         "download": "hard-drive-download",
         "destroy": "shredder",
@@ -106,6 +107,13 @@ define([
         "loading": "loader", // XXX
         "notification" : "bell",
         "cursor": "text-cursor",
+        "broadcast": "radio",
+        "apps-settings": "wrench",
+        "user-directory": "id-card",
+        "database": "database",
+        "stats": "chart-line",
+        "performance": "heart-pulse",
+        "network": "network"
     };
 
     Icons.get = (name, attrs = {}) => {

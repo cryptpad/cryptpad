@@ -60,7 +60,7 @@ define([
         // UNUSED-TRANSLATIONS:START
         var categories = {
             'general': { // Msg.admin_cat_general
-                icon: 'fa fa-user-o',
+                icon: 'register-homepage', // XXX
                 content: [
                     'instance-info-notice',
                     'name',
@@ -71,21 +71,21 @@ define([
                 ]
             },
             'customize': { // Msg.admin_cat_customize
-                icon: 'fa fa-paint-brush',
+                icon: 'customize',
                 content: [
                     'logo',
                     'color',
                 ]
             },
             'admins': {
-                icon: 'fa fa-users',
+                icon: 'teams', // XXX
                 content: [
                     'list-admins',
                     'add-admins'
                 ]
             },
             'broadcast' : { // Msg.admin_cat_broadcast
-                icon: 'fa fa-bullhorn',
+                icon: 'broadcast',
                 content : [
                     'notice',
                     'maintenance',
@@ -94,20 +94,20 @@ define([
                 ]
             },
             'security': { // Msg.admin_cat_security
-                icon: 'fa fa-lock',
+                icon: 'lock',
                 content: [
                     'enableembeds',
                     'forcemfa',
                 ]
             },
             'apps': { // Msg.admin_cat_apps
-                icon: 'fa fa-wrench',
+                icon: 'apps-settings',
                 content: [
                     'apps',
                 ]
             },
             'users' : { // Msg.admin_cat_users
-                icon : 'fa fa-address-card-o',
+                icon : 'user-directory',
                 content : [
                 'registration',
                 'invitation',
@@ -115,7 +115,7 @@ define([
                 ]
             },
             'quota': { // Msg.admin_cat_quota
-                icon: 'fa fa-hdd-o',
+                icon: 'drive',
                 content: [
                     'defaultlimit',
                     'setlimit',
@@ -123,7 +123,7 @@ define([
                 ]
             },
             'database' : { // Msg.admin_cat_database
-                icon : 'fa fa-database',
+                icon : 'database',
                 content : [
                     'account-metadata',
                     'document-metadata',
@@ -133,14 +133,14 @@ define([
                 ]
             },
             'support' : { // Msg.admin_cat_support
-                icon : 'fa fa-ambulance',
+                icon : 'support-mailbox', // XXX
                 content : [
                     'support-setup',
                     'support-team',
                 ]
             },
             'stats' : { // Msg.admin_cat_stats
-                icon : 'fa fa-line-chart',
+                icon : 'stats',
                 content : [
                     'refresh-stats',
                     'uptime',
@@ -152,7 +152,7 @@ define([
                 ]
             },
             'performance' : { // Msg.admin_cat_performance
-                icon : 'fa fa-heartbeat',
+                icon : 'performance',
                 content : [
                     'refresh-performance',
                     'performance-profiling',
@@ -161,7 +161,7 @@ define([
                 ]
             },
             'network' : { // Msg.admin_cat_network
-                icon : 'fa fa-sitemap',
+                icon : 'network',
                 content : [
                     'update-available',
                     'checkup',

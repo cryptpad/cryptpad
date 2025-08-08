@@ -12,6 +12,8 @@ define([
     '/common/common-hash.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 ], function(
     $,
     ApiConfig,
@@ -21,7 +23,9 @@ define([
     Util,
     Hash,
     Messages,
-    h
+    h,
+    Lucide,
+    Icons
 ) {
     const Sidebar = {};
     const keyToCamlCase = (key) => {
@@ -380,7 +384,7 @@ define([
                 if (!active && !i) { active = key; }
                 var category = categories[key];
                 var icon;
-                if (category.icon) { icon = h('span', { class: category.icon }); }
+                if (category.icon) { icon = Icons.get(category.icon); }
                 var item = h('li.cp-sidebarlayout-category', {
                     'role': 'menuitem',
                     'tabindex': 0,
@@ -407,6 +411,7 @@ define([
             common.setHash(active);
 
             setTimeout(() => { sidebar.openCategory(active); });
+            setTimeout( () => Lucide.createIcons());
             $leftside.append(container);
         };
 
