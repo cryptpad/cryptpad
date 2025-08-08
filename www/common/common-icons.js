@@ -129,7 +129,10 @@ define([
         "strikethrough": "strikethrough",
         "quote": "quote",
         "toc": "newspaper",
-        "embed": "image-plus"
+        "embed": "image-plus",
+        "expand-pad": "maximize-2",
+        "shrink-pad": "minimize-2",
+        "pad-settings": "file-cog"
     };
 
     Icons.get = (name, attrs = {}) => {

@@ -662,7 +662,7 @@ define([
             tag: 'a',
             attributes: attributes,
             content: [
-                h('i',{ 'class': $icon.attr('class') }),
+                Icons.get($icon.attr('class')),
                 h('span', $button.text())
             ],
             action: function () {

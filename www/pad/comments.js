@@ -10,8 +10,10 @@ define([
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
-    '/customize/messages.js'
-], function($, Sortify, Util, Hash, h, UI, UIElements, Messages) {
+    '/customize/messages.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
+], function($, Sortify, Util, Hash, h, UI, UIElements, Messages, Lucide, Icons) {
     var Comments = {};
 
     /*
@@ -314,11 +316,11 @@ define([
 
         // Remove everything
         Env.$container.html('');
-        var hideBtn = h('button.cp-pad-hide.btn.btn-default.fa.fa-chevron-right');
+        var hideBtn = h('button.cp-pad-hide.btn.btn-default', Icons.get('chevron-right'));
         var showBtn = h('button.cp-pad-show.btn.btn-default', {
             title: Messages.poll_comment_list
         }, [
-            h('i.fa.fa-comment')
+            Icons.get('chat') // XXX can be changed, there are multiple alternatives
         ]);
 
 
