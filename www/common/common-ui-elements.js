@@ -688,7 +688,7 @@ define([
                 title: title,
                 'aria-label': ariaLabel
             }, [
-                iconClasses ? h('i', { 'data-lucide': iconClasses }) : null,
+                iconClasses ? Icons.get(iconClasses) : null,
                 text ? h('span', { class: 'cp-toolbar-drawer-element' }, text) : null
             ]));
         };
@@ -876,7 +876,7 @@ define([
                 button = $(h('button', {
                     //title: Messages.presentButtonTitle, // TODO display if the label text is collapsed
                 }, [
-                    h('i.fa.fa-play-circle'),
+                    Icons.get('play'),
                     h('span.cp-toolbar-name', Messages.share_linkPresent)
                 ])).click(common.prepareFeedback(type));
                 break;

@@ -132,7 +132,8 @@ define([
         "embed": "image-plus",
         "expand-pad": "maximize-2",
         "shrink-pad": "minimize-2",
-        "pad-settings": "file-cog"
+        "pad-settings": "file-cog",
+        "play": "circle-play",
     };
 
     Icons.get = (name, attrs = {}) => {
