@@ -119,6 +119,7 @@ define([
         "redo": "redo",
         "type": "type",
         "clear-canvas": "brush-cleaning",
+        "key": "key"
     };
 
     Icons.get = (name, attrs = {}) => {

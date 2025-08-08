@@ -22,6 +22,8 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/components/marked/marked.min.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -45,7 +47,9 @@ define([
     h,
     Messages,
     AppConfig,
-    Marked)
+    Marked,
+    Lucide,
+    Icons)
 {
     var APP = window.APP = {
         _onRefresh: []
@@ -127,7 +131,7 @@ define([
         var buttonS = h('button.btn.btn-primary.' + VIEW_PROFILE_BUTTON, {
             'aria-labelledby': 'cp-profile-share-button'
         }, [
-            h('i.fa.fa-share-alt', { 'aria-hidden': 'true' }),
+            Icons.get('share'),
             h('span#cp-profile-share-button', Messages.shareButton)
         ]);
         $(buttonS).click(function () {
@@ -426,7 +430,7 @@ define([
             'class': 'btn',
             'aria-labelledby': 'cp-profile-copy-key-button'
         }).append([
-            h('i.fa.fa-key', {'aria-hidden': 'true' }),
+            Icons.get('key'),
             h('span#cp-profile-copy-key-button', Messages.profile_copyKey)
         ]).click(function () {
             if (!APP.getEdPublic) { return; }
@@ -553,6 +557,7 @@ define([
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
+        setTimeout(() => Lucide.createIcons(),0);
         createToolbar();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
