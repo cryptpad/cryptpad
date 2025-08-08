@@ -384,7 +384,7 @@ define([
         });
 
         var button = h('button.btn.btn-danger', [
-            h('i.fa.fa-trash-o'),
+            Icons.get('trash-full'),
             h('span', Messages.settings_cacheButton)
         ]);
         var buttonContainer = h('div.cp-settings-clear-cache', button);
@@ -470,7 +470,7 @@ define([
         if (!common.isLoggedIn()) { return cb(false); }
 
         var button = h('button.btn.btn-danger', [
-            h('i.cptools.cptools-destroy'),
+            Icons.get('destroy'),
             Messages.settings_removeOwnedButton
         ]);
         var form = h('div', [
@@ -2033,7 +2033,7 @@ define([
         $upButton.removeClass('btn-primary').addClass('btn-secondary');
         $upButton.removeProp('title');
         $upButton.text(Messages.profile_upload);
-        $upButton.prepend($('<i>', {'class': 'fa fa-upload', 'aria-hidden': 'true'}));
+        $upButton.prepend(Icons.get('upload'));
 
 
         cb([
@@ -2118,16 +2118,16 @@ define([
     };
 
     var SIDEBAR_ICONS = {
-        account: 'fa fa-user-o',
-        profile: 'fa fa-user-circle',
-        drive: 'fa fa-hdd-o',
-        cursor: 'fa fa-i-cursor',
-        code: 'fa fa-file-code-o',
-        pad: 'cptools cptools-richtext',
-        security: 'fa fa-lock',
-        kanban: 'cptools cptools-kanban',
-        style: 'cptools cptools-palette',
-        notifications: 'fa fa-bell'
+        account: 'register-homepage', // XXX
+        profile: 'user-profile',
+        drive: 'drive',
+        cursor: 'cursor',
+        code: 'code-file',
+        pad: 'drive-file',
+        security: 'lock',
+        kanban: 'drive-file', // XXX
+        style: 'color-palette',
+        notifications: 'notification'
     };
     let SIDEBAR_NAMES = {}; // for extension points
 
@@ -2143,9 +2143,7 @@ define([
             var iconClass = SIDEBAR_ICONS[key];
             var icon;
             if (iconClass) {
-                icon = h('span', {
-                    class: iconClass,
-                });
+                icon = Icons.get(iconClass);
             }
 
             let name = SIDEBAR_NAMES[key] ||

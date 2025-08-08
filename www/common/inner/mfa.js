@@ -10,8 +10,10 @@ define([
     '/components/nthen/index.js',
     '/customize.dist/login.js',
     '/common/common-util.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
-], function ($, Messages, h, UI, nThen, Login, Util) {
+], function ($, Messages, h, UI, nThen, Login, Util, Lucide, Icons) {
     const MFA = {};
 
     MFA.totpSetup = function (common, config, content, enabled, cb) {
@@ -23,10 +25,10 @@ define([
 
         var $content = $(content).empty();
         $content.append(h('div.cp-settings-mfa-hint.cp-settings-mfa-status' + (enabled ? '.mfa-enabled' : '.mfa-disabled'), [
-            h('i.fa' + (enabled ? '.fa-check' : '.fa-times')),
+            (enabled ? Icons.get('check') : Icons.get('close')),
             h('span', enabled ? Messages.mfa_status_on : Messages.mfa_status_off)
         ]));
-
+        setTimeout(() => Lucide.createIcons());
         if (enabled) {
             (function () {
             var button = h('button.btn', Messages.mfa_disable);

@@ -80,6 +80,7 @@ define([
         "arrow-left": "arrow-left",
         "arrow-up": "arrow-up",
         "code": "code-xml",
+        "code-file": "file-code",
         "qr-code": "qr-code",
         "lock": "lock",
         "help": "info",
@@ -103,6 +104,8 @@ define([
         "calendar-description": "align-justify",
         "save": "save",
         "loading": "loader", // XXX
+        "notification" : "bell",
+        "cursor": "text-cursor",
     };
 
     Icons.get = (name, attrs = {}) => {
