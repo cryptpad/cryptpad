@@ -171,7 +171,7 @@
             color: @cryptpad_text_col;
             border-radius: @variables_radius_L;
             font-weight: normal;
-            .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox):not(.fa-map-marker):not(.fa-align-justify) {
+            .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox):not(.fa-map-marker):not(.fa-align-justify):not(svg) {
                 display: none;
             }
             .tui-full-calendar-icon {
@@ -424,7 +424,6 @@
                     }
                     .btn-danger-outline {
                         display: block;
-                        margin-right: 0px !important;
                         background-color: transparent;
                         color: @cryptpad_text_col;
                         border-color: @cryptpad_text_col;
@@ -432,6 +431,9 @@
                             color: @cp_buttons-red-color;
                             background-color: @cp_buttons-red;
                             border-color: @cp_buttons-red;
+                        }
+                        svg {
+                            margin-right: 0;
                         }
                       }
                 }
@@ -460,6 +462,11 @@
                             outline: @cryptpad_color_brand solid 2px;
                         }
                     }
+                    .btn:last-of-type {
+                        svg {
+                            margin: 0;
+                        }
+                    }
                 }
                 // margin-bottom: 20px;
                 input {
@@ -478,6 +485,9 @@
             border: 1px solid;
             &:not(:hover) {
                 background: transparent;
+            }
+            svg {
+                margin: 0;
             }
         }
 
