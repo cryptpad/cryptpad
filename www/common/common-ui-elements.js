@@ -1696,7 +1696,7 @@ define([
 
 
         // Button
-        let icon = config.iconCls ? h('i', {'data-lucide':config.iconCls}) : undefined;
+        let icon = config.iconCls ? Icons.get(config.iconCls) : undefined;
         var $button = $(h('button', {
             class: config.buttonCls || '',
             'aria-haspopup': 'menu',

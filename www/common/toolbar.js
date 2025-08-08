@@ -19,8 +19,10 @@ define([
     '/customize/messages.js',
     '/customize/pages.js',
     '/common/pad-types.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 ], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, Badges, h,
-MessengerUI, Messages, Pages, PadTypes) {
+MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
     var Common;
 
     var Bar = {
@@ -107,7 +109,7 @@ MessengerUI, Messages, Pages, PadTypes) {
                 text: Messages.toolbar_file,
                 options: [],
                 common: Common,
-                iconCls: 'fa fa-file-o'
+                iconCls: 'drive-file'
             }).hide();
             $drawer.addClass(FILE_CLS).appendTo($file);
             $drawer.find('.cp-dropdown-content').addClass(DRAWER_CLS);
@@ -238,11 +240,16 @@ MessengerUI, Messages, Pages, PadTypes) {
         }
 
         // Update the buttons
-        var fa_editusers = '<span class="fa fa-users"></span>';
-        var fa_viewusers = numberOfViewUsers === '' ? '' : '<span class="fa fa-eye"></span>';
-        var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
-        $userButtons.find('.cp-toolbar-userlist-button').html('').append($spansmall);
+        var $editIcon = Icons.get('teams');
+        var $editCount = $('<span>').text(' ' + numberOfEditUsers);
+        var $separator = $('<span>').html('&nbsp;&nbsp;');
+        var $viewIcon = numberOfViewUsers === '' ? $() : Icons.get('preview');
+        var $viewCount = numberOfViewUsers === '' ? $() : $('<span>').text(' ' + numberOfViewUsers);
 
+        var $spansmall = $('<span>').append($editIcon, $editCount, $separator, $viewIcon, $viewCount);
+        $userButtons.find('.cp-toolbar-userlist-button').empty().append($spansmall);
+
+        setTimeout( () => Lucide.createIcons(), 0);
         if (!online || toolbar.isDeleted) { return; }
 
         if (metadataMgr.isDegraded() === true) { return; }
@@ -505,8 +512,9 @@ MessengerUI, Messages, Pages, PadTypes) {
     };
 
     var createCollapse = function (toolbar) {
-        var up = h('i.fa.fa-chevron-up', {title: Messages.toolbar_collapse});
-        var down = h('i.fa.fa-chevron-down', {title: Messages.toolbar_expand});
+        // XXX to be updated
+        var up = Icons.get('chevron-up', {title: Messages.toolbar_collapse});
+        var down =  Icons.get('chevron-down', {title: Messages.toolbar_expand});
         var notif = h('span.cp-collapsed-notif');
 
         var $button = $(h('button.cp-toolbar-collapse',[
@@ -560,7 +568,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         var $container = $('<span>', {id: 'cp-toolbar-chat-drawer-open'});
 
         var $button = $(h('button', [
-            h('i.fa.fa-comments'),
+            Icons.get('chat'),
             h('span.cp-button-name', Messages.chatButton)
         ])).appendTo($container);
 
@@ -623,7 +631,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         }
 
         var $shareBlock = $(h('button.cp-toolar-share-button.cp-toolbar-button-primary', [
-            h('i.fa.fa-shhare-alt'),
+            Icons.get('share'),
             h('span.cp-button-name', Messages.shareButton)
         ]));
         Common.getSframeChannel().event('EV_SHARE_OPEN', {
@@ -657,7 +665,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         }
 
         var $accessBlock = $(h('button.cp-toolar-access-button.cp-toolbar-button-primary', [
-            h('i.fa.fa-unlock-alt'),
+            Icons.get('access'),
             h('span.cp-button-name', Messages.accessButton)
         ]));
         $accessBlock.click(function () {
@@ -749,15 +757,9 @@ MessengerUI, Messages, Pages, PadTypes) {
         if (config.readOnly !== 1) {
             $text.attr("title", Messages.clickToEdit);
             $text.addClass("cp-toolbar-title-editable");
-            var $icon = $('<span>', {
-                'class': 'fa fa-pencil cp-toolbar-title-icon-readonly',
-                style: 'font-family: FontAwesome;'
-            });
+            var $icon = Icons.get('edit', {class: 'cp-toolbar-title-icon-readonly'});
             $pencilIcon.append($icon).appendTo($hoverable);
-            var $icon2 = $('<span>', {
-                'class': 'fa fa-check cp-toolbar-title-icon-readonly',
-                style: 'font-family: FontAwesome;'
-            });
+            var $icon2 = Icons.get('check', {class: 'cp-toolbar-title-icon-readonly'})
             $saveIcon.append($icon2).appendTo($hoverable);
         }
 
@@ -1162,7 +1164,7 @@ MessengerUI, Messages, Pages, PadTypes) {
             container: $notif,
             left: true,
             common: Common,
-            iconCls: 'bell'
+            iconCls: 'notification'
         };
         var $newPadBlock = UIElements.createDropdown(dropdownConfig);
         var $button = $newPadBlock.find('button');

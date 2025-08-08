@@ -22,6 +22,7 @@ define([
         "chevron-left": "chevron-left",
         "chevron-right": "chevron-right",
         "chevron-down": "chevron-down",
+        "chevron-up": "chevron-up",
         "check": "check",
         "drive": "hard-drive",
         "grid": "layout-grid",
@@ -112,7 +113,7 @@ define([
         "database": "database",
         "stats": "chart-line",
         "performance": "heart-pulse",
-        "network": "network"
+        "network": "network",
     };
 
     Icons.get = (name, attrs = {}) => {
