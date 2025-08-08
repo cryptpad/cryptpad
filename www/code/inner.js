@@ -88,7 +88,7 @@ define([
             text: Messages.toolbar_theme,
             options: [],
             common: framework._.sfCommon,
-            iconCls: 'cptools cptools-palette'
+            iconCls: 'color-palette'
         });
         framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
         framework._.toolbar.$bottomL.append($drawer);

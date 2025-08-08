@@ -1081,17 +1081,17 @@ define([
             'bold': {
                 // Msg.mdToolbar_bold
                 expr: '**{0}**',
-                icon: 'fa-bold'
+                icon: 'bold'
             },
             'italic': {
                 // Msg.mdToolbar_italic
                 expr: '_{0}_',
-                icon: 'fa-italic'
+                icon: 'italic'
             },
             'strikethrough': {
                 // Msg.mdToolbar_strikethrough
                 expr: '~~{0}~~',
-                icon: 'fa-strikethrough'
+                icon: 'strikethrough'
             },
             'heading': {
                 // Msg.mdToolbar_heading
@@ -1100,12 +1100,12 @@ define([
                         return '# '+line;
                     }).join('\n')+'\n';
                 },
-                icon: 'fa-header'
+                icon: 'heading'
             },
             'link': {
                 // Msg.mdToolbar_link
                 expr: '[{0}](http://)',
-                icon: 'fa-link'
+                icon: 'link'
             },
             'quote': {
                 // Msg.mdToolbar_quote
@@ -1114,7 +1114,7 @@ define([
                         return '> '+line;
                     }).join('\n')+'\n\n';
                 },
-                icon: 'fa-quote-right'
+                icon: 'quote'
             },
             'nlist': {
                 // Msg.mdToolbar_nlist
@@ -1123,7 +1123,7 @@ define([
                         return '1. '+line;
                     }).join('\n')+'\n';
                 },
-                icon: 'fa-list-ol'
+                icon: 'list-ol'
             },
             'list': {
                 // Msg.mdToolbar_list
@@ -1132,7 +1132,7 @@ define([
                         return '* '+line;
                     }).join('\n')+'\n';
                 },
-                icon: 'fa-list-ul'
+                icon: 'list'
             },
             'check': {
                 // Msg.mdToolbar_check
@@ -1141,7 +1141,7 @@ define([
                         return '* [ ] ' + line;
                     }).join('\n') + '\n';
                 },
-                icon: 'fa-check-square-o'
+                icon: 'list-todo'
             },
             'code': {
                 // Msg.mdToolbar_code
@@ -1151,18 +1151,18 @@ define([
                     }
                     return '`' + str + '`';
                 },
-                icon: 'fa-code'
+                icon: 'code'
             },
             'toc': {
                 // Msg.mdToolbar_toc
                 expr: '[TOC]',
-                icon: 'fa-newspaper-o'
+                icon: 'toc'
             }
         };
 
         if (typeof(cfg.embed) === "function") {
             actions.embed = { // Messages.mdToolbar_embed
-                icon: 'fa-picture-o',
+                icon: 'embed',
                 action: function () {
                     var _cfg = {
                         types: ['file', 'link'],
@@ -1220,11 +1220,7 @@ define([
                 'class': 'pure-button cp-markdown-' + k,
                 'title': Messages['mdToolbar_' + k] || k,
                 'aria-label': Messages['mdToolbar_' + k] || k
-                }).append(
-                $('<i>', {
-                    'class': 'fa ' + actions[k].icon,
-                    'aria-hidden': 'true'
-                })).click(onClick);
+                }).append(Icons.get(actions[k].icon)).click(onClick);
             if (k === "embed") { $toolbar.prepend($b); }
             else { $toolbar.append($b); }
         }
@@ -1234,10 +1230,7 @@ define([
             'title': Messages.mdToolbar_help,
             'aria-label': Messages.mdToolbar_help
         }).append(
-            $('<i>', {
-                'class': 'fa fa-question',
-                'aria-hidden': 'true'
-            })).click(function () {
+            Icons.get('help')).click(function () {
             var href = Messages.mdToolbar_tutorial;
             common.openUnsafeURL(href);
         }).appendTo($toolbar);
@@ -1320,7 +1313,7 @@ define([
             'type': 'button',
             'title': Messages.toolbar_show_text_tools
         })).append([
-            h('i.fa.fa-pencil', { 'aria-hidden': 'true' }),
+            Icons.get('edit'),
             h('span.cp-toolbar-label', {}, Messages.toolbar_text_tools)
         ]).click(function () {
             var isExpanded = $toolbar.is(':visible');

@@ -14,7 +14,9 @@ define([
     '/common/text-cursor.js',
     '/components/chainpad/chainpad.dist.js',
     '/common/hyperscript.js',
-], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad, h) {
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
+], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad, h, Lucide, Icons) {
     var module = {};
 
      var cursorToPos = module.cursorToPos = function(cursor, oldText) {
@@ -303,7 +305,7 @@ define([
                 name = name ? Messages.languageButton + ' ('+name+')' : Messages.languageButton;
                 exp.$language.setValue(mode, name);
                 exp.$language.find('span.cp-language-text').text(name);
-                exp.$language.find('span.cp-language-text').prepend('<i class="fa fa-chevron-right"></i>');
+                exp.$language.find('span.cp-language-text').prepend(Icons.get('chevron-right'));
             }
 
                 if (mode === "orgmode") {
@@ -349,7 +351,7 @@ define([
                     name = name ? Messages.themeButton + ' ('+theme+')' : Messages.themeButton;
                     $select.setValue(theme, name);
                     $select.find('span.cp-theme-text').text(name);
-                    $select.find('span.cp-theme-text').prepend('<i class="fa fa-chevron-right"></i>');
+                    $select.find('span.cp-theme-text').prepend(Icons.get('chevron-right'));
                 }
             };
         }());

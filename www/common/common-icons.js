@@ -27,6 +27,8 @@ define([
         "drive": "hard-drive",
         "grid": "layout-grid",
         "list": "list",
+        "list-ol": "list-ordered",
+        "list-todo": "list-todo",
         "filter": "list-filter-plus",
         "folder-open": "folder-open",
         "drive-recent": "clock",
@@ -119,7 +121,14 @@ define([
         "redo": "redo",
         "type": "type",
         "clear-canvas": "brush-cleaning",
-        "key": "key"
+        "key": "key",
+        "bold": "bold",
+        "italic": "italic",
+        "heading": "heading",
+        "strikethrough": "strikethrough",
+        "quote": "quote",
+        "toc": "newspaper",
+        "embed": "image-plus"
     };
 
     Icons.get = (name, attrs = {}) => {
