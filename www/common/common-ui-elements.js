@@ -884,7 +884,7 @@ define([
                 button = $(h('button', {
                     //title: Messages.previewButtonTitle, // TODO display if the label text is collapsed
                 }, [
-                    h('i.fa.fa-eye'),
+                    Icons.get('preview'),
                     h('span.cp-toolbar-name', Messages.toolbar_preview)
                 ])).click(common.prepareFeedback(type));
                 break;
@@ -964,7 +964,7 @@ define([
                     'aria-label': data.text || Messages.toolbar_tools, // Fallback
                     'aria-pressed': false
                 }, [
-                    h('i.fa.' + (data.icon || 'fa-wrench')),
+                    Icons.get('apps-settings'),
                     h('span.cp-toolbar-name', data.text || Messages.toolbar_tools)
                 ])).click(common.prepareFeedback(type));
                 /*

@@ -110,7 +110,7 @@ define([
         "notification" : "bell",
         "cursor": "text-cursor",
         "broadcast": "radio",
-        "apps-settings": "wrench",
+        "apps-settings": "wrench", // XXX multiple usages
         "user-directory": "id-card",
         "database": "database",
         "stats": "chart-line",
