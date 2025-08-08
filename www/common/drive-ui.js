@@ -120,7 +120,7 @@ define([
     var $folderOpenedIcon = $(Icons.get('folder-open'));
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
     var $sharedFolderIcon = $(Icons.get('drive-shared-folder', {"class": "cp-app-drive-icon-folder"}));
-    var $sharedFolderOpenedIcon = $(Icons.get('drive-shared-folder-open', {"class": "cp-app-drive-icon-folder"}));
+    var $sharedFolderOpenedIcon = $(Icons.get('folder-open', {"class": "cp-app-drive-icon-folder"}));
     var $unsortedIcon = $(Icons.get('copy')); // XXX
     var $templateIcon = $(Icons.get('file-template'));
     var $recentIcon = $(Icons.get('drive-recent'));
