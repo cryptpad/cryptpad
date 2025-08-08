@@ -352,10 +352,15 @@ define([
             cpIndex: 0
         };
 
-        var getContent = function (title) {
+        var getContent = function (title, type) {
+
             try {
-                getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['87'].title = title;
-                delete getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['87'].creator;
+                if (type && type === 'presentation') {
+                    getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['87'].title = title;
+                    delete getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['87'].creator;
+                } else if (type && type === 'doc') {
+                    delete getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['703'].creator;
+                }
                 return getEditor().asc_nativeGetFile();
             } catch (e) {
                 console.error(e);
@@ -2595,11 +2600,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var exportXLSXFile = function() {
-
+            var type = common.getMetadataMgr().getPrivateData().ooType;
             var md = common.getMetadataMgr().getMetadataLazy();
-            var type = md.getPrivateData().ooType;
             var title = md.title || md.defaultTitle || type;
-            var text = getContent(title);
+            var text = getContent(title, type);
             var suggestion = Title.suggestTitle(Title.defaultTitle);
             var ext = ['.xlsx', '.ods', '.bin', '.pdf'];
             var warning = '';
