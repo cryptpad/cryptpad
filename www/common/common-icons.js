@@ -114,6 +114,11 @@ define([
         "stats": "chart-line",
         "performance": "heart-pulse",
         "network": "network",
+        "select": "move",
+        "undo": "undo",
+        "redo": "redo",
+        "type": "type",
+        "clear-canvas": "brush-cleaning",
     };
 
     Icons.get = (name, attrs = {}) => {
