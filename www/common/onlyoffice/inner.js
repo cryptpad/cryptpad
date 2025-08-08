@@ -353,7 +353,6 @@ define([
         };
 
         var getContent = function (title, type) {
-
             try {
                 if (type && type === 'presentation') {
                     getEditor().WordControl.m_oDrawingDocument.m_oLogicDocument.History.CollaborativeEditing.CoHistory.Changes[0].Class.m_aPairs['87'].title = title;
