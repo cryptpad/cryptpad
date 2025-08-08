@@ -1180,7 +1180,7 @@ define([
                 });
                 $cbox.find('.cp-checkmark-label').addClass('cp-access-margin-right');
                 $cbox.find('.cp-checkmark-mark')
-                    .after(h('span.fa.fa-bell-slash.cp-access-margin-right'));
+                    .after(Icons.get('mute'));
                 content.push(h('p', cbox));
             }
 

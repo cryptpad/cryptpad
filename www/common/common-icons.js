@@ -108,6 +108,7 @@ define([
         "save": "save",
         "loading": "loader", // XXX
         "notification" : "bell",
+        "mute": "bell-off",
         "cursor": "text-cursor",
         "broadcast": "radio",
         "apps-settings": "wrench", // XXX multiple usages
