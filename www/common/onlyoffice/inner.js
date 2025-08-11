@@ -2151,7 +2151,10 @@ define([
             //let ec = integrationConfig?.editorConfig;
             let dc = integrationConfig?.document;
 
+            const mobile = $('body').width() <= 600;
+
             const ooconfig = {
+                type: mobile ? "mobile" : "desktop",
                 document: {
                     fileType: file.type,
                     key: "fresh",
