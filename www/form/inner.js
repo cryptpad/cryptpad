@@ -3900,7 +3900,7 @@ define([
 
             var controls = Object.keys(TYPES).map(addControl);
             var staticControls = Object.keys(STATIC_TYPES).map(addControl);
-            
+
             var buttons = h('div.cp-form-creator-control-inline', [
                 h('div.cp-form-creator-types', controls),
                 h('div.cp-form-creator-types', staticControls)
