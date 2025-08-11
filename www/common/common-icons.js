@@ -37,7 +37,7 @@ define([
         "drive-password-document": "file-lock",
         "ellipsis-vertical": "ellipsis-vertical",
         "ellipsis-horizontal": 'ellipsis',
-        "toolbar-insert": "file-image",
+        "toolbar-insert": "image-plus",
         "history-prev": 'arrow-left',
         "history-next": "arrow-right",
         "history-fast-next": "arrow-right-to-line",
@@ -134,6 +134,12 @@ define([
         "shrink-pad": "minimize-2",
         "pad-settings": "file-cog",
         "play": "circle-play",
+        "kanban-tags": "tags",
+        "kanban-minimize": "minus",
+        "kanban-maximize": "menu",
+        "kanban-touch-mode": "hand",
+        "kanban-add-top": "between-horizontal-end", // TEMP, TO BE UPDATED
+        "kanban-add-bottom": "between-horizontal-start"
     };
 
     Icons.get = (name, attrs = {}) => {

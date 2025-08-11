@@ -8,7 +8,9 @@ define([
     '/common/common-util.js',
     '/common/visible.js',
     '/components/dragula/dist/dragula.min.js',
-], function ($, Messages, Util, Visible, Dragula) {
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
+], function ($, Messages, Util, Visible, Dragula, Lucide, Icons) {
         /**
          * jKanban
          * Vanilla Javascript plugin for manage kanban boards
@@ -118,7 +120,7 @@ define([
             self.addBoards();
             var addBoard = document.createElement('div');
             addBoard.id = 'kanban-addboard';
-            addBoard.innerHTML = '<i class="fa fa-plus"></i>';
+            addBoard.innerHTML = Icons.get('add').outerHTML;
             boardContainer.appendChild(addBoard);
             var trash = self.trashContainer = document.createElement('div');
             trash.setAttribute('id', 'kanban-trash');
@@ -735,14 +737,14 @@ define([
             $(addTopBoardItem).attr('tabindex', '0');
             $(addTopBoardItem).attr('aria-label', Messages.addItemTop);
             addTopBoardItem.setAttribute('data-top', "1");
-            addTopBoardItem.innerHTML = '<i class="cptools cptools-add-top">';
+            addTopBoardItem.innerHTML = Icons.get('kanban-add-top').outerHTML;
             footerBoard.appendChild(addTopBoardItem);
             __onAddItemClickHandler(addTopBoardItem);
             var addBoardItem = document.createElement('span');
             addBoardItem.classList.add('kanban-title-button');
             $(addBoardItem).attr('tabindex', '0');
             $(addBoardItem).attr('aria-label', Messages.addItemBottom);
-            addBoardItem.innerHTML = '<i class="cptools cptools-add-bottom">';
+            addBoardItem.innerHTML = Icons.get('kanban-add-bottom').outerHTML;
             footerBoard.appendChild(addBoardItem);
             __onAddItemClickHandler(addBoardItem);
 

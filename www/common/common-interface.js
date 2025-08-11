@@ -315,7 +315,7 @@ define([
         $input.attr('tabindex', 0);
 
         var $button = $(h('button.btn.btn-primary', [
-            h('i.fa.fa-plus'),
+            Icons.get('add'),
             h('span', Messages.tag_add)
         ]));
 
@@ -356,6 +356,7 @@ define([
                 $container.append($form);
                 isEdit = false;
                 called = false;
+                setTimeout( () => Lucide.createIcons(), 0);
             });
         };
         resetUI();

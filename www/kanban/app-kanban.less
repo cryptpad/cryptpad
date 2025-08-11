@@ -37,6 +37,9 @@
         button.kanban-edit-item, .cp-kanban-arrow {
             color: @cryptpad_color_grey_800;
         }
+        svg {
+            margin: 0;
+        }
     }
     .kanban-board {
         .kanban-board-inner {
@@ -104,6 +107,9 @@
         overflow: hidden;
         .cp-markdown-toolbar {
             display: block;
+            svg {
+                margin: 0;
+            }
         }
     }
     #cp-kanban-edit-conflicts {
@@ -240,6 +246,9 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        svg {
+            margin: 0;
+        }
     }
    
 
@@ -374,6 +383,9 @@
             }
             .kanban-item-text {
                 width: 100%;
+            }
+            svg {
+                margin: 0;
             }
         }
         &.kanban-item-hidden {
@@ -570,7 +582,6 @@
                 width: 30px;
                 margin: 0;
                 padding: 1px 4px;
-                line-height: 30px;
                 text-align: center;
                 display: inline-block;
                 background-color: @board-bg;
@@ -588,6 +599,9 @@
                 &:focus-visible {
                     outline: @variables_focus_style;
                 }
+            }
+            svg {
+                margin: 0;
             }
         }
     }
@@ -725,6 +739,9 @@
             }
             &:focus-visible {
                 outline: @variables_focus_style;
+            }
+            svg {
+                margin: 0;
             }
         }
 
