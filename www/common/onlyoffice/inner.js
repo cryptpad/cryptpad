@@ -354,122 +354,10 @@ define([
             cpIndex: 0
         };
 
-            // try {
-//                 // 1. Create a safe stringify that handles circular references
 
-
-// try {
 
         var getContent = function () {
-            console.log('hi', PDFLib)
-//                             function safeStringify(obj, space = 2) {
-//   const seen = new WeakSet();
-//   return JSON.stringify(obj, function (key, value) {
-//     if (typeof value === "object" && value !== null) {
-//       if (seen.has(value)) {
-//         return "[Circular]";
-//       }
-//       seen.add(value);
-//     }
-//     return value;
-//   }, space); // pretty-print
-// }
-
-// function downloadJson(obj, filename = 'data.json') {
-//   // Step 1: safely stringify the object
-//   const jsonStr = safeStringify(obj); // 👈 this is a regular JSON string
-
-//   // Step 2: create a Blob from the string (not double stringified!)
-//   const blob = new Blob([jsonStr], { type: 'application/json' });
-
-//   // Step 3: trigger download with correct filename
-//   const link = document.createElement("a");
-//   link.href = URL.createObjectURL(blob);
-//   link.download = filename;
-
-//   // Trigger download and clean up
-//   link.click();
-//   URL.revokeObjectURL(link.href);
-// }  
-
-// downloadJson(getEditor(), 'myfile.json');
-
-
-function extractAllValuesFromPairs(rootNode) {
-  const results = [];
-    console.log()
-  const m_aPairs = getEditor().WordControl.m_oDrawingDocument
-    ?.m_oLogicDocument?.
-    TableId?.m_aPairs;
-
-  if (!m_aPairs || typeof m_aPairs !== 'object') {
-    console.error("m_aPairs missing or invalid");
-    return results;
-  }
-
-  // 🔁 Recursively walk .Content[] arrays
-  function walkContent(contentArray, context = {}) {
-    if (!Array.isArray(contentArray)) return;
-
-    contentArray.forEach((contentItem, contentIndex) => {
-      const path = { ...context, contentIndex };
-
-      if (typeof contentItem?.Value === "string" && contentItem.Value.trim() !== "") {
-        results.push(
-          contentItem.Value
-        );
-      }
-
-      if (Array.isArray(contentItem?.Content)) {
-        walkContent(contentItem.Content, path);
-      }
-    });
-  }
-
-  for (const pairKey in m_aPairs) {
-    const pair = m_aPairs[pairKey];
-    const spTreeArray = pair?.cSld?.spTree;
-
-    if (!Array.isArray(spTreeArray)) continue;
-
-    spTreeArray.forEach((spTreeItem, spTreeIndex) => {
-      const contentArray = spTreeItem?.txBody?.content?.Content;
-      const context = { pairKey, spTreeIndex };
-      walkContent(contentArray, context);
-    });
-  }
-
-  return results;
-}
-
-
-                var links = extractAllValuesFromPairs()
-
-                async function restoreHyperlinks(pdfBytes, links) {
-  const pdfDoc = await PDFDocument.load(pdfBytes);
-  const pages = pdfDoc.getPages();
-  let linkIndex = 0;
-
-  for (const page of pages) {
-    const annotations = page.node.Annots() || [];
-    for (const annotation of annotations) {
-      if (annotation instanceof PDFLinkAnnotation) {
-        const action = annotation.getAction();
-        if (action && action instanceof PDFURIAction) continue;
-        if (linkIndex < hyperlinksArray.length) {
-          const url = hyperlinksArray[linkIndex++];
-          const uriAction = pdfDoc.context.obj({
-            Type: 'Action',
-            S: 'URI',
-            URI: url,
-          });
-          annotation.dict.set(PDFName.of('A'), uriAction);
-        }
-      }
-    }
-  }
-  return await pdfDoc.save();
-}
+            
                 return getEditor().asc_nativeGetFile();
             // } catch (e) {
             //     console.error(e);
@@ -2683,7 +2571,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var title = md.title || md.defaultTitle || type;
 
-                function extractAllValuesFromPairs() {
+                function extractLinks() {
                     const results = [];
                     const m_aPairs = getEditor().WordControl.m_oDrawingDocument
                         ?.m_oLogicDocument?.
@@ -2726,9 +2614,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                     return results;
                 }
-                var links = extractAllValuesFromPairs()
+                var links = extractLinks()
 
-                async function fixLinkAnnotations(pdfBytes) {
+                async function fixLinkAnnotations(pdfBytes, links) {
                     const {
                         PDFDocument,
                         PDFName,
@@ -2738,6 +2626,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                     const pdfDoc = await PDFDocument.load(pdfBytes);
                     const pages = pdfDoc.getPages();
+                    
+                    let linkIndex = 0;
 
                     for (const page of pages) {
                         const annotsRef = page.node.get(PDFName.of('Annots'));
@@ -2747,28 +2637,24 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         if (!annots?.asArray) continue;
 
                         for (const annotRef of annots.asArray()) {
-                            const annot = pdfDoc.context.lookup(annotRef);
-                            console.log(annots.asArray().indexOf(annotRef))
+                            if (linkIndex >= links.length) break; 
 
+                            const annot = pdfDoc.context.lookup(annotRef);
                             const subtype = annot.get(PDFName.of('Subtype'));
                             if (!subtype || subtype.value() !== '/Link') continue;
-
                             let actionDict = annot.get(PDFName.of('A'));
-                            let uri = actionDict ? actionDict.get(PDFName.of('URI')) : undefined;
-                            let uriText = uri ? uri.decodeText() : '';
-                            if (!uriText) {
-                                actionDict = pdfDoc.context.obj({
-                                    S: PDFName.of('URI'),
-                                    URI: PDFString.of('https://example.com/updated'),
-                                });
+                            if (!actionDict) {
+                                actionDict = pdfDoc.context.obj({});
                                 annot.set(PDFName.of('A'), actionDict);
-                            } else {
-                                return;
                             }
+
+                            const uriString = links[linkIndex];
+                            actionDict.set(PDFName.of('S'), PDFName.of('URI'));
+                            actionDict.set(PDFName.of('URI'), PDFString.of(uriString));
 
                             if (!annot.get(PDFName.of('Rect'))) {
                                 annot.set(
-                                PDFName.of('Rect'),
+                                    PDFName.of('Rect'),
                                     pdfDoc.context.obj([
                                         PDFNumber.of(50),
                                         PDFNumber.of(750),
@@ -2777,20 +2663,24 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                                     ]),
                                 );
                             }
+
                             if (!annot.get(PDFName.of('Border'))) {
                                 annot.set(
                                     PDFName.of('Border'),
                                     pdfDoc.context.obj([PDFNumber.of(0), PDFNumber.of(0), PDFNumber.of(0)]),
                                 );
                             }
+
+                            linkIndex++;
                         }
                     }
 
                     return await pdfDoc.save();
-                }       
+                }
+
 
                 async function run() {
-                    return updatedPdfBytes = await fixLinkAnnotations(xlsData);
+                    return updatedPdfBytes = await fixLinkAnnotations(xlsData, links);
                 }
 
                 var blob;
