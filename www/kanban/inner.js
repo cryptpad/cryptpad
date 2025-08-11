@@ -1260,7 +1260,7 @@ define([
             var toggleOffclass = 'ontouchstart' in window ? 'cp-toggle-active' : 'cp-toggle-inactive'; 
             var toggleOnclass = 'ontouchstart' in window ? 'cp-toggle-inactive' : 'cp-toggle-active'; 
             var toggleDragOff = h(`button#toggle-drag-off.cp-kanban-view-drag.${toggleOffclass}`, {'title': Messages.toggleArrows, 'tabindex': 0}, Icons.get('select'));
-            var toggleDragOn = h(`button#toggle-drag-on.cp-kanban-view-drag.${toggleOnclass}`, {'title': Messages.toggleDrag, 'tabindex': 0}, Icons.get('kanban-touch-mode'));
+            var toggleDragOn = h(`button#toggle-drag-on.cp-kanban-view-drag.${toggleOnclass}`, {'title': Messages.toggleDrag, 'tabindex': 0}, Icons.get('touch-mode'));
             kanban.drag = 'ontouchstart' in window ? false : true;
             const updateDrag = state => {
                 return function () {

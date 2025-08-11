@@ -137,9 +137,25 @@ define([
         "kanban-tags": "tags",
         "kanban-minimize": "minus",
         "kanban-maximize": "menu",
-        "kanban-touch-mode": "hand",
+        "touch-mode": "hand",
         "kanban-add-top": "between-horizontal-end", // TEMP, TO BE UPDATED
-        "kanban-add-bottom": "between-horizontal-start"
+        "kanban-add-bottom": "between-horizontal-start",
+        "form-responses": "chart-no-axes-combined",
+        "grip-move": "grip-horizontal",
+        "grip-move-vertical": "grip-vertical",
+        "form-text": "minus",
+        "form-paragraph": "text",
+        "form-grid-radio": "list-todo", // XXX
+        "form-grid-check": "list-todo",
+        "form-list-check": "list-todo",
+        "form-list-radio": "list-todo",
+        "form-list-ordered": "list-ordered",
+        "form-poll": "vote",
+        "form-page-break": "chevrons-left-right-ellipsis",
+        "form-conditional": "workflow",
+        "form-poll-maybe": "circle-slash",
+        "form-poll-switch": "arrow-right-left"
+
     };
 
     Icons.get = (name, attrs = {}) => {

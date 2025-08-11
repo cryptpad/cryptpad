@@ -439,6 +439,9 @@
                                     border-radius: @variables_radius;
                                     outline: @variables_focus_style;
                                 }
+                                svg {
+                                    margin: 0;
+                                }
                             }
                         }
                         .cp-form-block-drag-handle {
@@ -467,8 +470,11 @@
                         }
                     }
                     .cp-form-creator-inline-add {
-                        font-size: 25px;
-                        margin-right: 30px;
+                        svg {
+                            margin: 0;
+                            width: 1.5rem;
+                            height: 1.5rem;
+                        }
                         .add-close { display: none; }
                         &.displayed {
                             .add-close { display: inline; }
@@ -514,10 +520,10 @@
                         align-items: center;
                         padding-right: 10px;
                         margin-bottom: 10px;
-                        i {
+                        svg {
                             color: @cryptpad_text_col;
-                            font-size: 30px;
-                            width: 50px;
+                            width:3rem;
+                            height:3rem;
                             text-align: center;
                         }
                     }
@@ -540,8 +546,9 @@
                                 border: 0px;
                                 padding:5px;
                                 margin-right: 10px;
-                                i {
-                                    font-size: 35px;
+                                svg {
+                                    width: 2rem;
+                                    height: 2rem;
                                     line-height: 35px;
                                 }
                             }
@@ -1200,8 +1207,9 @@
                 border-top: 0px;
                 border-left: 0px;
                 background-color: @cp_form-bg1;
-                .fa{
+                svg {
                     margin-left:10px;
+                    margin-right: 0;
                     transform: rotate(-45deg);
                 }
             }
@@ -1353,8 +1361,9 @@
             }
         }
         .cp-form-poll-choice, .cp-form-poll-answer {
-            .fa, .cptools {
+            svg {
                 display: none;
+                margin: 0;
             }
             color: @cp_form-poll-color;
             font-size: 25px;

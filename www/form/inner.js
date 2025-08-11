@@ -35,6 +35,8 @@ define([
 
     '/lib/datepicker/flatpickr.js',
     '/components/sortablejs/Sortable.min.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     'cm/addon/edit/closebrackets',
     'cm/addon/edit/matchbrackets',
@@ -78,7 +80,9 @@ define([
     DatePicker,
     Share, Access, Properties,
     Flatpickr,
-    Sortable
+    Sortable,
+    Lucide,
+    Icons
     )
 {
 
@@ -116,7 +120,7 @@ define([
 
     var saveAndCancelOptions = function (cb) {
         var cancelBlock = h('button.btn.btn-default.cp-form-preview-button',[
-                            h('i.fa.fa-eye'),
+                            Icons.get('preview'),
                             Messages.form_preview_button
                         ]);
         $(cancelBlock).click(function () { cb(undefined, true); });
@@ -220,11 +224,11 @@ define([
         var evOnSave = Util.mkEvent();
 
         var add = h('button.btn', [
-            h('i.fa.fa-plus'),
+            Icons.get('add'),
             h('span', Messages.form_add_option)
         ]);
         var addItem = h('button.btn.btn-secondary', [
-            h('i.fa.fa-plus'),
+            Icons.get('add'),
             h('span', Messages.form_add_item)
         ]);
 
@@ -332,8 +336,7 @@ define([
             var formHandle;
             if (v.type !== 'time') {
                 formHandle = h('span.cp-form-handle', [
-                    h('i.fa.fa-ellipsis-v'),
-                    h('i.fa.fa-ellipsis-v'),
+                    Icons.get('grip-move-vertical')
                 ]);
             }
             var el = h('div.cp-form-edit-block-input', [
@@ -457,7 +460,7 @@ define([
             var multipleInput = h('input', {placeholder: Messages.form_addMultipleHint});
             var multipleClearButton = h('button.btn', Messages.form_clear);
             var addMultipleButton = h('button.btn', [
-                h('i.fa.fa-plus'),
+                Icons.get('add'),
                 h('span', Messages.form_addMultiple)
             ]);
             addMultiple = h('div.cp-form-multiple-picker', { style: "display: none;" }, [
@@ -761,7 +764,7 @@ define([
         // Insert axis switch button
         var switchAxis = h('button.btn.btn-default', [
             Messages.form_poll_switch,
-            h('i.fa.fa-exchange'),
+            Icons.get('form-poll-switch'),
         ]);
         els.unshift(h('div.cp-poll-cell.cp-poll-switch', switchAxis));
         var lines = [h('div', els)];
@@ -1181,12 +1184,12 @@ define([
                 };
             },
             printResults: function () { return; },
-            icon: h('i.cptools.cptools-form-paragraph')
+            icon: Icons.get('form-paragraph')
         },
         page: {
             get: function () {
                 var tag = h('div.cp-form-page-break-edit', [
-                    h('i.cptools.cptools-form-page-break'),
+                    Icons.get('form-page-break'),
                     h('span', Messages.form_type_page)
                 ]);
                 return {
@@ -1195,7 +1198,7 @@ define([
                 };
             },
             printResults: function () { return; },
-            icon: h('i.cptools.cptools-form-page-break')
+            icon:  Icons.get('form-page-break')
         },
         section: {
             defaultOpts: {
@@ -1249,14 +1252,14 @@ define([
                     return values;
                 };
                 var addCondition = h('button.btn.btn-secondary', [
-                    h('i.fa.fa-plus'),
+                    Icons.get('add'),
                     h('span', Messages.form_conditional_add)
                 ]);
                 var $addC = $(addCondition);
                 var getConditions;
                 var getAddAndButton = function ($container, rules) {
                     var btn = h('button.btn.btn-secondary.cp-form-add-and', [
-                        h('i.fa.fa-plus'),
+                        Icons.get('add'),
                         h('span', Messages.form_conditional_addAnd)
                     ]);
                     $(btn).click(function () {
@@ -1641,7 +1644,7 @@ define([
                 };
             },
             printResults: function () { return; },
-            icon: h('i.cptools.cptools-form-conditional')
+            icon: Icons.get("form-conditional")
         },
     };
 
@@ -1742,7 +1745,7 @@ define([
                     return h('div.cp-form-results-contained', h('div.cp-charts.cp-text-table', results));
                 //}
             },
-            icon: h('i.cptools.cptools-form-text')
+            icon: Icons.get('form-text')
         },
         textarea: {
             defaultOpts: {
@@ -1813,7 +1816,7 @@ define([
 
                 return h('div.cp-form-results-contained', h('div.cp-charts.cp-text-table', results));
             },
-            icon: h('i.cptools.cptools-form-paragraph')
+            icon: Icons.get('form-paragraph')
         },
         radio: {
             compatible: ['radio', 'checkbox', 'sort'],
@@ -1905,7 +1908,7 @@ define([
                 var rendered = renderTally(count, empty, showBars);
                 return h('div.cp-charts.cp-bar-table', rendered);
             },
-            icon: h('i.cptools.cptools-form-list-radio')
+            icon: Icons.get('form-list-radio')
         },
         multiradio: {
             compatible: ['multiradio', 'multicheck'],
@@ -2078,7 +2081,7 @@ define([
                     return String(answer[uid] || '');
                 });
             },
-            icon: h('i.cptools.cptools-form-grid-radio')
+            icon: Icons.get('form-grid-radio')
         },
         date: {
             defaultOpts: {
@@ -2154,7 +2157,7 @@ define([
                 return answer ? [new Date(answer).toISOString()]
                               : [''];
             },
-            icon: h('i.cp-calendar-active.fa.fa-calendar')
+            icon: Icons.get('calendar', {class: 'cp-calendar-active'})
         },
         checkbox: {
             compatible: ['radio', 'checkbox', 'sort'],
@@ -2268,7 +2271,7 @@ define([
                 var rendered = renderTally(count, empty, showBars);
                 return h('div.cp-charts.cp-bar-table', rendered);
             },
-            icon: h('i.cptools.cptools-form-list-check')
+            icon: Icons.get('form-list-check')
         },
         multicheck: {
             compatible: ['multiradio', 'multicheck'],
@@ -2465,7 +2468,7 @@ define([
                     return String(answer[uid] || '');
                 });
             },
-            icon: h('i.cptools.cptools-form-grid-check')
+            icon: Icons.get('form-grid-check')
         },
         sort: {
             compatible: ['radio', 'checkbox', 'sort'],
@@ -2500,8 +2503,7 @@ define([
                     invMap[data] = uid;
                     var div = h('div.cp-form-type-sort', {'data-id': uid}, [
                         h('span.cp-form-handle', [
-                            h('i.fa.fa-ellipsis-v'),
-                            h('i.fa.fa-ellipsis-v'),
+                            Icons.get('grip-move-vertical')
                         ]),
                         h('span.cp-form-sort-order', '?'),
                         h('span', data)
@@ -2599,7 +2601,7 @@ define([
                 var rendered = renderTally(count, empty, showBars);
                 return h('div.cp-charts.cp-bar-table', rendered);
             },
-            icon: h('i.cptools.cptools-form-list-ordered')
+            icon: Icons.get('form-list-ordered')
         },
         poll: {
             defaultOpts: {
@@ -2623,9 +2625,9 @@ define([
                 // Add form
                 var addLine = extractValues(opts.values).map(function (data) {
                     var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
-                        h('i.fa.fa-times.cp-no'),
-                        h('i.fa.fa-check.cp-yes'),
-                        h('i.cptools.cptools-form-poll-maybe.cp-maybe'),
+                        Icons.get('check', { class: 'cp-yes' }),
+                        Icons.get('close', { class: 'cp-no' }),
+                        Icons.get('form-poll-maybe', { class: 'cp-maybe' }),
                     ]);
                     var $c = $(cell);
                     $c.data('option', data);
@@ -2653,13 +2655,13 @@ define([
                 if (total) { lines.push(h('div', total)); }
 
                 var pollHint = UI.setHTML(h('div.cp-form-poll-hint'), Messages.form_poll_hint);
-                var classes = [
-                    'fa fa-check cp-yes',
-                    'fa fa-times cp-no',
-                    'cptools cptools-form-poll-maybe cp-maybe',
+                var icons = [
+                    Icons.get('check', { class: 'cp-yes' }),
+                    Icons.get('close', { class: 'cp-no' }),
+                    Icons.get('form-poll-maybe', { class: 'cp-maybe' }),
                 ];
                 $(pollHint).find('i').each(function (index) {
-                    this.setAttribute('class', classes[index]);
+                    $(this).replaceWith(icons[index]);
                 });
 
                 var tag = h('div.cp-form-type-poll-container', [
@@ -2742,7 +2744,7 @@ define([
                 });
                 return res;
             },
-            icon: h('i.cptools.cptools-form-poll')
+            icon: Icons.get('form-poll')
         },
     };
 
@@ -3207,7 +3209,7 @@ define([
         var $container = $('.cp-forms-results-participant');
         var l = getAnswersLength(answers);
         var $res = $(h('button.btn.btn-default.cp-toolbar-form-button', [
-            h('i.fa.fa-bar-chart'),
+            Icons.get('form-responses'),
             h('span.cp-button-name', Messages._getKey('form_results', [l])),
         ]));
         var it = setInterval(function () {
@@ -3306,7 +3308,7 @@ define([
         var newAnswer;
         if (content.answers.multiple) {
             newAnswer = h('button.btn.btn-primary', [
-                h('i.fa.fa-plus'),
+                Icons.get('add'),
                 h('span', Messages.form_answer_new)
             ]);
             $(newAnswer).click(function () {
@@ -3905,13 +3907,13 @@ define([
                 h('div.cp-form-creator-types', controls),
                 h('div.cp-form-creator-types', staticControls)
             ]);
-            var add = h('div', [h('i.fa.fa-plus')]);
+            var add = h('div', [Icons.get('add')]);
             if (!full) {
                 add = h('button.btn.cp-form-creator-inline-add', {
                     title: Messages.tag_add
                 }, [
-                    h('i.fa.fa-plus.add-open'),
-                    h('i.fa.fa-times.add-close')
+                    Icons.get('add', {class: 'add-open'}),
+                    Icons.get('close', {class: 'add-close'}),
                 ]);
                 var $b = $(buttons).hide();
                 $(add).click(function () {
@@ -3924,6 +3926,7 @@ define([
             }
 
             var inlineCls = full ? '-full' : '-inline';
+            Lucide.createIcons();
             return h('div.cp-form-creator-add'+inlineCls, [
                 add,
                 buttons
@@ -4056,12 +4059,12 @@ define([
                     'data-notippy':1,
                     'title': Messages.moveItemUp,
                     'aria-label': Messages.moveItemUp
-                }, [h('i.fa.fa-arrow-up',  {'aria-hidden': true})]);
+                }, Icons.get('chevron-up'));
                 var downButton = h('button.cp-form-arrow', {
                     'data-notippy':1,
                     'title': Messages.moveItemDown,
                     'aria-label': Messages.moveItemDown
-                }, [h('i.fa.fa-arrow-down', {'aria-hidden': true})]);
+                }, Icons.get('chevron-down'));
                 var shiftBlock = function(direction) {
                     var blockIndex = content.order.indexOf(uid);
                     if (direction === 'up' && blockIndex > 0) {
@@ -4087,7 +4090,7 @@ define([
 
 
                 // Drag handle
-                var dragEllipses = [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')];
+                var dragEllipses = [Icons.get('grip-move')];
                 dragHandle = h('span.cp-form-block-drag-handle', dragEllipses);
 
                 // Question
@@ -4141,7 +4144,7 @@ define([
                 // Delete question
                 var fakeEdit = h('span');
                 var del = h('button.btn.btn-danger-alt', [
-                    h('i.fa.fa-trash-o'),
+                    Icons.get('trash-full'),
                     h('span', Messages.form_delete)
                 ]);
                 UI.confirmButton(del, {
@@ -4164,11 +4167,11 @@ define([
                 // Values
                 if (data.edit) {
                     var edit = h('button.btn.btn-default.cp-form-edit-button', [
-                        h('i.fa.fa-pencil'),
+                        Icons.get('edit'),
                         h('span', Messages.form_editBlock)
                     ]);
                     var copy = h('button.btn.btn-default.cp-form-copy-button', [
-                        h('i.fa.fa-copy'),
+                        Icons.get('copy'),
                         h('span', Messages.duplicate)
                     ]);
                     $(copy).click(function() {
@@ -4782,11 +4785,11 @@ define([
 
         var makeFormSettings = function () {
             var previewBtn = h('button.btn.btn-primary', [
-                h('i.fa.fa-eye'),
+                Icons.get('preview'),
                 Messages.form_preview
             ]);
             var participantBtn = h('button.btn.btn-primary',[
-                h('i.fa.fa-link'),
+                Icons.get('link'),
                 Messages.form_geturl
             ]);
             var preview = h('div.cp-forms-results-participant', [previewBtn, participantBtn]);
@@ -5153,7 +5156,7 @@ define([
             var $modal = modal.$modal;
             $modal.find('.cp-modal').append([
                 h('h2', [
-                    h('i.fa.fa-wrench'),
+                    Icons.get('settings'),
                     h('span', Messages.form_settingsButton)
                 ]),
                 endDateContainer,
@@ -5164,7 +5167,7 @@ define([
                 editableContainer,
             ]);
             var modalBtn = h('button.btn.btn-secondary', [
-                h('i.fa.fa-wrench'),
+                Icons.get('settings'),
                 h('span', Messages.form_settingsButton)
             ]);
             $(modalBtn).click(function () {
@@ -5185,8 +5188,8 @@ define([
 
             var toggleOffclass = 'ontouchstart' in window ? 'cp-toggle-active' : undefined;
             var toggleOnclass = 'ontouchstart' in window ? undefined : 'cp-toggle-active';
-            var toggleDragOff = h(`button#cp-toggle-drag-off.cp-form-view-drag.${toggleOffclass}.fa.fa-arrows`, {'title': Messages.toggleArrows, 'tabindex': 0});
-            var toggleDragOn = h(`button#cp-toggle-drag-on.cp-form-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'title': Messages.toggleDrag, 'tabindex': 0});
+            var toggleDragOff = h(`button#cp-toggle-drag-off.cp-form-view-drag.${toggleOffclass}`, {'title': Messages.toggleArrows, 'tabindex': 0}, Icons.get('select'));
+            var toggleDragOn = h(`button#cp-toggle-drag-on.cp-form-view-drag.${toggleOnclass}`, {'title': Messages.toggleDrag, 'tabindex': 0}, Icons.get('touch-mode'));
             const updateDrag = state => {
                 return function () {
                     var $container = $('.cp-form-creator-content');
@@ -5443,7 +5446,7 @@ define([
 
             var $container = $('#cp-app-form-container');
             $container.append(makeFormCreator());
-
+            Lucide.createIcons();
             if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
                 return void UI.errorLoadingScreen(Messages.form_invalid);
             }
@@ -5585,15 +5588,15 @@ define([
             var p = h('p.cp-form-response-msg-hint', Messages.form_responseMsg);
 
             var preview = h('button.btn.btn-default.cp-form-preview-button',[
-                h('i.fa.fa-eye'),
+                Icons.get('preview'),
                 h('span', Messages.form_preview_button)
             ]);
             var edit = h('button.btn.btn-default.cp-form-edit-button', [
-                h('i.fa.fa-pencil'),
+                Icons.get('edit'),
                 h('span', Messages.form_editBlock)
             ]);
             var del = h('button.btn.btn-danger-alt', [
-                h('i.fa.fa-trash-o'),
+                Icons.get('trash'),
                 h('span', Messages.form_delete)
             ]);
             var editButtons = h('div.cp-form-edit-buttons-container', [ preview, edit, del ]);
