@@ -49,7 +49,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                         myCurve: data.adminCurvePrivate || Util.find(ctx.store.proxy, [
                                     'mailboxes', 'supportteam', 'keys', 'curvePrivate']),
                         theirPublic: data.curvePublic,
-                        myKem: ctx.store.proxy.kemPublic,
+                        myKem: ctx.store.proxy.kemPrivate,
                         theirKem: data.kemPublic,
                         notifKey: data.curvePublic
                     });
@@ -61,7 +61,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                 supportKemKey: supportKemKey,
                 myCurve: ctx.store.proxy.curvePrivate,
                 theirPublic: data.curvePublic || supportKey, // old tickets may use deprecated key
-                myKem: ctx.store.proxy.kemPublic,
+                myKem: ctx.store.proxy.kemPrivate,
                 theirKem: data.kemPublic || supportKemKey,    // Needed for PQC, currently making messages unreadable
                 notifKey: supportKey
             });
