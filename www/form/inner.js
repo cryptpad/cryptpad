@@ -2833,7 +2833,7 @@ define([
     };
 
     var renderResults = APP.renderResults = function (content, answers, showUser) {
-        setTimeout(() => Lucide.createIcons());;
+        setTimeout(() => Lucide.createIcons());
         var $container = $('div.cp-form-creator-results').empty().css('display', '');
 
         var framework = APP.framework;
