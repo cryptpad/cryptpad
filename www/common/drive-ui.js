@@ -412,24 +412,22 @@ define([
                 ])),
                 isAppEnabled('code') ? h('li', UI.setHTML(h('a.cp-app-drive-context-openincode.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': 'fa-arrows',
-                }), getOpenIn('code'))) : undefined,
+                }, [Icons.get('select')]), getOpenIn('code'))) : undefined,
                 isAppEnabled('sheet') ? h('li', UI.setHTML(h('a.cp-app-drive-context-openinsheet.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': 'fa-arrows',
-                }), getOpenIn('sheet'))) : undefined,
+                }, [Icons.get('select')]), getOpenIn('sheet'))) : undefined,
                 isAppEnabled('doc') ? h('li', UI.setHTML(h('a.cp-app-drive-context-openindoc.dropdown-item' + (restricted.doc === 0 ? '.cp-app-disabled' : ''), {
                     'tabindex': '-1',
-                    'data-icon': 'fa-arrows',
-                }), getOpenIn('doc'))) : undefined,
+                }, [Icons.get('select')]), getOpenIn('doc'))) : undefined,
                 isAppEnabled('presentation') ?  h('li', UI.setHTML(h('a.cp-app-drive-context-openinpresentation.dropdown-item' + (restricted.presentation === 0 ? '.cp-app-disabled' : ''), {
                     'tabindex': '-1',
-                    'data-icon': 'fa-arrows',
-                }), getOpenIn('presentation'))) : undefined,
+                }, [Icons.get('select')]), getOpenIn('presentation'))) : undefined,
                 h('li', h('a.cp-app-drive-context-savelocal.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': 'fa-cloud-upload',
-                }, Messages.pad_mediatagImport)), // Save in your CryptDrive
+                }, [
+                    Icons.get('cloud-upload'),
+                    Messages.pad_mediatagImport
+                ])), // Save in your CryptDrive
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
                     'tabindex': '-1',
@@ -2881,7 +2879,7 @@ define([
             if (hasOwned) {
                 buttons.push({
                     className: 'danger',
-                    iconClass: '.cptools.cptools-destroy',
+                    iconClass: 'destroy',
                     name: Messages.fc_delete_owned,
                     onClick: function () {
                         manager.emptyTrash(true, refresh);
@@ -2892,7 +2890,7 @@ define([
             buttons.push({
                 className: 'primary',
                 // We may want to use a new key here
-                iconClass: '.fa.fa-trash',
+                iconClass: 'trash-full',
                 name: hasOwned ? Messages.fc_remove : Messages.okButton,
                 onClick: function () {
                     manager.emptyTrash(false, refresh);
@@ -2903,6 +2901,7 @@ define([
                 buttons: buttons
             });
             UI.openCustomModal(m);
+            Lucide.createIcons();
         };
         var createEmptyTrashButton = function () {
             var button = h('button.btn.btn-danger', [
@@ -2989,7 +2988,7 @@ define([
         var showLinkModal = function () {
             var name, url;
             var warning = h('div.alert.alert-warning', [
-                h('i.fa.fa-exclamation-triangle'),
+                Icons.get('alert'),
                 h('span', Messages.fm_link_warning)
             ]);
             var content = h('p', [
@@ -3034,7 +3033,7 @@ define([
             buttons.push({
                 className: 'primary',
                 // We may want to use a new key here
-                iconClass: '.fa.fa-plus',
+                iconClass: 'add',
                 name: Messages.tag_add,
                 onClick: function () {
                     var $name = $(name);
@@ -3259,7 +3258,7 @@ define([
                         'class': 'cp-app-drive-rm-filter',
                     },
                     content: [
-                        h('i.fa.fa-times'),
+                        Icons.get('close'),
                         Messages.fm_rmFilter,
                     ],
                 });
@@ -3423,7 +3422,7 @@ define([
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-type'},
                 content: [
-                    h('i.fa.fa-minus'),
+                    Icons.get('minus'),
                     Messages.fm_type,
                 ],
                 action: function (e) { onSortByClick.call($(e.target).find('a')[0]); }
@@ -3431,7 +3430,7 @@ define([
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-atime'},
                 content: [
-                    h('i.fa.fa-minus'),
+                    Icons.get('minus'),
                     Messages.fm_lastAccess,
                 ],
                 action: function (e) { onSortByClick.call($(e.target).find('a')[0]); }
@@ -3439,7 +3438,7 @@ define([
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-ctime'},
                 content: [
-                    h('i.fa.fa-minus'),
+                    Icons.get('minus'),
                     Messages.fm_creation,
                 ],
                 action: function (e) { onSortByClick.call($(e.target).find('a')[0]); }
@@ -3453,7 +3452,7 @@ define([
                 common: common
             };
             var $sortBlock = UIElements.createDropdown(dropdownConfig);
-            $sortBlock.find('button').append(h('span.fa.fa-sort-amount-desc')).append(h('span', Messages.fm_sort));
+            $sortBlock.find('button').append(Icons.get('sort-amount-desc')).append(h('span', Messages.fm_sort));
             return $fhSort;
         };
         var getFolderListHeader = function (clickable, small) {
@@ -3991,7 +3990,7 @@ define([
             $input[0].selectionStart = search.cursor || 0;
             $input[0].selectionEnd = search.cursor || 0;
 
-            var cancel = h('span.fa.fa-times.cp-app-drive-search-cancel', {title:Messages.cancel});
+            var cancel = Icons.get('close', {class: 'cp-app-drive-search-cancel',title:Messages.cancel});
             cancel.addEventListener('click', function () {
                 $input.val('');
                 search.cursor = 0;
@@ -5665,7 +5664,7 @@ define([
                 var pw = $(newPassword).find('.cp-password-input').val();
                 locked = true;
                 $(div).find('.alert').remove();
-                $(passwordOk).html('').append(h('span.fa.fa-spinner.fa-spin', {style: 'margin-left: 0'}));
+                $(passwordOk).html('').append(Icons.get('loading'));
                 manager.restoreSharedFolder(fId, pw, function (err, obj) {
                     if (obj && obj.error) {
                         var wrong = h('div.alert.alert-danger', Messages.drive_sfPasswordError);

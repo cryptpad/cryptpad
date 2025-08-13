@@ -57,7 +57,7 @@ define([
         "calendar-inactive": "calendar",
         "calendar-add": "calendar-plus-2",
         "contacts": "contact-round",
-        "contact-request": "book-user",
+        "contact-request": "book-user", // XXX change name
         "settings": "settings",
         "administration": "monitor-cog",
         "support": "life-buoy",
@@ -161,7 +161,13 @@ define([
         "server": "server",
         "support-ticket": "ticket",
         "refresh": "refresh-ccw",
-        "send": "send"
+        "send": "send",
+        "minus": "minus",
+        "alert": "triangle-alert",
+        "cloud-upload": "cloud-upload",
+        "sort-amount-desc": "arrow-down-wide-narrow",
+        "unfriend": "user-round-x",
+        "add-friend": "user-round-plus"
 
 
     };

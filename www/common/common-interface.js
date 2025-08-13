@@ -523,7 +523,7 @@ define([
         buttons.forEach(function (b) {
             if (!b.name || !b.onClick) { return; }
             var button = h('button', { 'class': b.className || '' }, [
-                b.iconClass ? h('i' + b.iconClass) : undefined,
+                b.iconClass ? Icons.get(b.iconClass): undefined,
                 b.name
             ]);
             button.classList.add('btn');
