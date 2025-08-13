@@ -46,6 +46,8 @@ define([
         "history-restore": "archive-restore",
         "close": "x",
         "drive-folder": "folder",
+        "folder-nocolor": "folder-minus",
+        "folder-check": "folder-check",
         "drive-shared-folder": "folder-git-2", // XXX
         "drive-upload-file": "file-up",
         "drive-upload-folder": "folder-up",
@@ -154,7 +156,13 @@ define([
         "form-page-break": "chevrons-left-right-ellipsis",
         "form-conditional": "workflow",
         "form-poll-maybe": "circle-slash",
-        "form-poll-switch": "arrow-right-left"
+        "form-poll-switch": "arrow-right-left",
+        "inbox": "inbox",
+        "server": "server",
+        "support-ticket": "ticket",
+        "refresh": "refresh-ccw",
+        "send": "send"
+
 
     };
 

@@ -59,21 +59,10 @@ define([
             ]);
         };
 
-        blocks.icon = (icon) => {
-            let s = icon.split(' ');
-            let cls;
-            if (s.length > 1) {
-                cls = '.' + s.join('.');
-            } else {
-                let prefix = icon.slice(0, icon.indexOf('-'));
-                cls = `.${prefix}.${icon}`;
-            }
-            return h(`i${cls}`, { 'aria-hidden': 'true' });
-        };
         blocks.button = (type, icon, text) => {
             type = type || 'primary';
             return h(`button.btn.btn-${type}`, [
-                icon ? blocks.icon(icon) : undefined,
+                icon ? Icons.get(icon) : undefined,
                 h('span', text)
             ]);
         };

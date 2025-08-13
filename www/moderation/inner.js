@@ -17,6 +17,8 @@ define([
     '/common/common-hash.js',
     '/common/inner/sidebar-layout.js',
     '/support/ui.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     '/components/file-saver/FileSaver.min.js',
 
@@ -36,7 +38,9 @@ define([
     Util,
     Hash,
     Sidebar,
-    Support
+    Support,
+    Lucide,
+    Icons
     )
 {
     var APP = {};
@@ -342,7 +346,7 @@ define([
         // Make sidebar layout
         const categories = {
             'open': { // Msg.support_cat_open
-                icon: 'fa fa-inbox',
+                icon: 'inbox',
                 content: [
                     'refresh',
                     'filter',
@@ -351,7 +355,7 @@ define([
                 ]
             },
             'closed': { // Msg.support_cat_closed
-                icon: 'fa fa-archive',
+                icon: 'history',
                 content: [
                     'refresh',
                     'filter',
@@ -359,7 +363,7 @@ define([
                 ]
             },
             'search': { // Msg.support_cat_search
-                icon: 'fa fa-search',
+                icon: 'drive-search',
                 content: [
                     'filter',
                     'search'
@@ -372,7 +376,7 @@ define([
                 }
             },
             'new': { // Msg.support_cat_new
-                icon: 'fa fa-envelope',
+                icon: 'support-ticket',
                 content: [
                     'open-ticket'
                 ],
@@ -384,13 +388,13 @@ define([
                 }
             },
             'legacy': { // Msg.support_cat_legacy
-                icon: 'fa fa-server',
+                icon: 'server',
                 content: [
                     'legacy'
                 ]
             },
             'settings': { // Msg.support_cat_settings
-                icon: 'fa fa-cogs',
+                icon: 'settings',
                 content: [
                     'privacy',
                     'notifications',
@@ -407,7 +411,7 @@ define([
         if (!APP.privateKey) { delete categories.legacy; }
 
         sidebar.addItem('refresh', cb => {
-            let button = blocks.button('secondary', 'fa-refresh', Messages.oo_refresh);
+            let button = blocks.button('secondary', 'refresh', Messages.oo_refresh);
             APP.$refreshButton = $(button);
             Util.onClickEnter($(button), () => {
                 APP.$refreshButton.prop('disabled', 'disabled');
@@ -456,7 +460,7 @@ define([
         sidebar.addItem('search', cb => {
 
             let inputSearch = blocks.input({type:'text', class: 'cp-support-search-input'});
-            let button = blocks.button('primary', 'fa-search');
+            let button = blocks.button('primary', 'drive-search');
             let inputBlock = blocks.inputButton(inputSearch, button, { onEnterDelegate: true });
             let searchBlock = blocks.labelledInput(Messages.support_searchLabel,
                                                     inputSearch, inputBlock);
@@ -536,7 +540,7 @@ define([
                 var existing = APP.allTags;
                 var list = h('div.cp-tags-list');
                 var reset = h('button.btn.btn-cancel.cp-tags-filter-reset', [
-                    h('i.fa.fa-times'),
+                    Icons.get('close'),
                     Messages.kanban_clearFilter
                 ]);
                 var hint = h('span', Messages.kanban_tags);
@@ -622,7 +626,7 @@ define([
             let labelId = blocks.labelledInput(Messages.support_recordedId, inputId);
             let labelContent = blocks.labelledInput(Messages.support_recordedContent, inputContent);
 
-            let create = blocks.button('primary', 'fa-plus', Messages.tag_add);
+            let create = blocks.button('primary', 'add', Messages.tag_add);
             let nav = blocks.nav([create]);
 
             let form = blocks.form([
@@ -662,7 +666,7 @@ define([
                     let messages = obj.messages;
                     $list.empty();
                     Object.keys(messages).forEach(id => {
-                        let del = blocks.button('danger-alt', 'fa-trash-o', Messages.kanban_delete);
+                        let del = blocks.button('danger-alt', 'trash-full', Messages.kanban_delete);
                         Util.onClickEnter($(del), () => {
                             edit(id, '', true);
                         });
@@ -722,10 +726,10 @@ define([
             let labelChan = blocks.labelledInput(Messages.support_userChannel, inputChan);
             let labelKey = blocks.labelledInput(Messages.support_userKey, inputKey);
 
-            let send = blocks.button('primary', 'fa-paper-plane', Messages.support_formButton);
+            let send = blocks.button('primary', 'send', Messages.support_formButton);
             let nav = blocks.nav([send]);
 
-            let reset = blocks.button('danger-alt', 'fa-times', Messages.form_reset);
+            let reset = blocks.button('danger-alt', 'close', Messages.form_reset);
 
             let paste = blocks.textarea({
                 class: 'cp-support-newticket-paste',
@@ -797,9 +801,9 @@ define([
         sidebar.addItem('legacy', cb => {
             if (!APP.privateKey) { return void cb(false); }
 
-            let start = blocks.button('primary', 'fa-paper-plane', Messages.support_legacyButton);
-            let dump = blocks.button('secondary', 'fa-database', Messages.support_legacyDump);
-            let clean = blocks.button('danger', 'fa-trash-o', Messages.support_legacyClear);
+            let start = blocks.button('primary', 'send', Messages.support_legacyButton);
+            let dump = blocks.button('secondary', 'database', Messages.support_legacyDump);
+            let clean = blocks.button('danger', 'trash-full', Messages.support_legacyClear);
             let content = h('div.cp-support-container');
             let nav = blocks.nav([start, dump, clean]);
             let spinner = UI.makeSpinner($(nav));
