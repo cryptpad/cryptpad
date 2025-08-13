@@ -332,7 +332,7 @@ define([
                 setCursor();
             }
 
-            var del = h('button.btn.btn-danger-outline', h('i.fa.fa-times'));
+            var del = h('button.btn.btn-danger-outline', Icons.get('close'));
             var formHandle;
             if (v.type !== 'time') {
                 formHandle = h('span.cp-form-handle', [
@@ -813,7 +813,7 @@ define([
                 var values = answer.values || {};
                 var els = extractValues(opts.values).map(function (data) {
                     var res = values[data] || 0;
-                    var v = (Number(res) === 1) ? h('i.fa.fa-check.cp-yes') : undefined;
+                    var v = (Number(res) === 1) ? Icons.get('check', {'class': 'cp-yes'}): undefined;
                     var cell = h('div.cp-poll-cell.cp-form-poll-answer', {
                         'data-value': res
                     }, v);
@@ -1351,7 +1351,7 @@ define([
                     iSelect.onChange.reg(function () { onChange(); });
 
                     var remove = h('button.btn.btn-danger-alt.cp-condition-remove', [
-                        h('i.fa.fa-times.nomargin')
+                        Icons.get('close', {'class': 'nomargin'})
                     ]);
                     $(remove).on('click', function () {
                         var w = block.opts.when = block.opts.when || [];
@@ -2833,6 +2833,7 @@ define([
     };
 
     var renderResults = APP.renderResults = function (content, answers, showUser) {
+        setTimeout(() => Lucide.createIcons());;
         var $container = $('div.cp-form-creator-results').empty().css('display', '');
 
         var framework = APP.framework;
@@ -2885,7 +2886,7 @@ define([
         }];
         var dropdownExport = {
             buttonContent: [
-                h('i.fa.fa-download'),
+                Icons.get('download'),
                 h('span', Messages.exportButton)
             ],
             buttonCls: 'btn btn-primary',
@@ -2897,7 +2898,7 @@ define([
 
         // Export in "sheet"
         var export2Button = h('button.btn.btn-primary', [
-            h('i.fa.fa-file-excel-o'),
+            Icons.get('sheet'),
             Messages.form_exportSheet
         ]);
         $(export2Button).appendTo($controls);
@@ -3152,7 +3153,7 @@ define([
                     if (ud.profile) {
                         if (priv && priv.friends[curve]) {
                             badge = h('span.cp-form-friend', [
-                                h('i.fa.fa-address-book'),
+                                Icons.get('contact-request'),
                                 Messages._getKey('isContact', [ud.name || Messages.anonymous])
                             ]);
                         }
@@ -3230,7 +3231,7 @@ define([
                 $res.remove();
                 clearInterval(it);
                 var $editor = $(h('button.btn.btn-default', [
-                    h('i.fa.fa-pencil'),
+                    Icons.get('edit'),
                     h('span.cp-button-name', Messages.form_editor)
                 ]));
                 $editor.click(function () {
@@ -3283,7 +3284,7 @@ define([
         if (content.answers.privateKey) {
             var l = getAnswersLength(answers);
             responses = h('button.btn.btn-secondary', [
-                h('i.fa.fa-bar-chart'),
+                Icons.get('form-responses'),
                 h('span.cp-button-name', Messages._getKey('form_viewAllAnswers', [l]))
             ]);
             var sframeChan = framework._.sfCommon.getSframeChannel();
@@ -3339,7 +3340,7 @@ define([
             var viewOnly = content.answers.cantEdit || APP.isClosed;
 
             var action = h(viewOnly ? 'button.btn.btn-secondary' : 'button.btn.btn-primary', [
-                viewOnly ? h('i.fa.fa-bar-chart') : h('i.fa.fa-pencil'),
+                viewOnly ? Icons.get('form-responses') : Icons.get('edit'),
                 h('span', viewOnly ? Messages.form_viewAnswer : Messages.form_editAnswer)
             ]);
 
@@ -3368,7 +3369,7 @@ define([
             var canDelete = !viewOnly && content.answers.version >= 2;
             if (answer._hash && canDelete) {
                 del = h('button.btn.btn-danger', [
-                    h('i.fa.fa-trash-o'),
+                    Icons.get('trash-full'),
                     h('span', Messages.kanban_delete)
                 ]);
                 $(del).click(function () {
@@ -4272,7 +4273,7 @@ define([
                         changeType = h('div.cp-form-block-type.editable', [
                             model.icon.cloneNode(),
                             h('span', Messages['form_type_'+type]),
-                            h('i.fa.fa-caret-down')
+                            Icons.get('chevron-down')
                         ]);
                         $(changeType).click(function () {
                             var name = Util.uid();
@@ -4438,10 +4439,10 @@ define([
                     }
 
                     var left = h('button.btn.btn-secondary.cp-prev', [
-                        h('i.fa.fa-arrow-left'),
+                        Icons.get('chevron-left'),
                     ]);
                     var right = h('button.btn.btn-secondary.cp-next', [
-                        h('i.fa.fa-arrow-right'),
+                        Icons.get('chevron-rigt'),
                     ]);
 
                     var togglePageArrows = function(checkPages) {
@@ -5074,7 +5075,7 @@ define([
                             refreshEndDate();
                         });
                     });
-                    var cancel = h('button.btn.btn-danger', h('i.fa.fa-times.nomargin'));
+                    var cancel = h('button.btn.btn-danger',Icons.get('close', {'class': 'nomargin'}));
                     $(cancel).click(function () {
                         refreshEndDate();
                     });

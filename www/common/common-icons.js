@@ -167,7 +167,8 @@ define([
         "cloud-upload": "cloud-upload",
         "sort-amount-desc": "arrow-down-wide-narrow",
         "unfriend": "user-round-x",
-        "add-friend": "user-round-plus"
+        "add-friend": "user-round-plus",
+        "sheet": "sheet"
 
 
     };
