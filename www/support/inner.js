@@ -17,6 +17,8 @@ define([
     '/api/config',
     '/customize/application_config.js',
     '/customize/pages.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -35,7 +37,9 @@ define([
     Support,
     ApiConfig,
     AppConfig,
-    Pages
+    Pages,
+    Lucide,
+    Icons
     )
 {
     var APP = window.APP = {};
@@ -276,9 +280,9 @@ define([
     };
 
     var icons = {
-        tickets: 'fa-envelope-o',
-        new: 'fa-life-ring',
-        debugging: 'fa-wrench',
+        tickets: 'support-ticket',
+        new: 'support',
+        debugging: 'settings',
     };
 
     var createLeftside = function () {
@@ -296,9 +300,7 @@ define([
             }).appendTo($categories);
             var iconClass = icons[key];
             if (iconClass) {
-                $category.append(h('span', {
-                    class: 'fa ' + iconClass,
-                }));
+                $category.append(Icons.get(iconClass));
             }
 
             if (key === active) {
@@ -320,6 +322,7 @@ define([
             $category.append(Messages['support_cat_'+key] || key);
         });
         showCategories(categories[active]);
+        Lucide.createIcons();
     };
 
     var createToolbar = function () {
