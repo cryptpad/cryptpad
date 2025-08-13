@@ -22,6 +22,8 @@ define([
     '/api/instance',
     '/lib/datepicker/flatpickr.js',
     '/install/onboardscreen.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -47,6 +49,8 @@ define([
     Instance,
     Flatpickr,
     Onboarding,
+    Lucide,
+    Icons
 ) {
 
     var APP = window.APP = {};
@@ -265,7 +269,7 @@ define([
                 const newRows = admins.map(obj => {
                     let { name, edPublic, hardcoded } = obj;
                     name = name || Messages.admin_admin;
-                    let button = blocks.button('danger','fa-ban', Messages.admin_usersRemove);
+                    let button = blocks.button('danger','restricted', Messages.admin_usersRemove);
                     let $b = $(button);
                     Util.onClickEnter($b, () => {
                         $b.prop('disabled', 'disabled');
@@ -323,7 +327,7 @@ define([
                 placeholder: Messages.admin_accountMetadataPlaceholder
             });
             const keyLabel = blocks.labelledInput(Messages.admin_addKeyLabel, keyInput);
-            const keyButton = blocks.button('primary', 'fa-plus', Messages.tag_add);
+            const keyButton = blocks.button('primary', 'add', Messages.tag_add);
             const keyForm = blocks.form([keyLabel], blocks.nav([keyButton]));
             const $keyInput = $(keyInput).on('input', () => {
                 let val = $keyInput.val().trim();
@@ -364,7 +368,7 @@ define([
                     large: true,
                     data: friends
                 }, function () {});
-                let addBtn = blocks.button('primary', 'fa-plus', Messages.tag_add);
+                let addBtn = blocks.button('primary', 'add', Messages.tag_add);
                 Util.onClickEnter($(addBtn), () => {
                     var $sel = $(contactsGrid.div).find('.cp-usergrid-user.cp-selected');
                     if (!$sel.length) {
@@ -1130,13 +1134,13 @@ define([
             let preview = blocks.block([
                 blocks.block([
                     blocks.link('CryptPad', '/admin/#customize'),
-                    blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
-                    blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
+                    blocks.button('primary', 'save', Messages.settings_save),
+                    blocks.button('secondary', 'save', Messages.settings_save)
                 ], 'cp-admin-color-preview-dark cp-sidebar-flex-block'),
                 blocks.block([
                     blocks.link('CryptPad', '/admin/#customize'),
-                    blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
-                    blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
+                    blocks.button('primary', 'save', Messages.settings_save),
+                    blocks.button('secondary', 'save', Messages.settings_save)
                 ], 'cp-admin-color-preview-light cp-sidebar-flex-block')
             ], 'cp-admin-color-preview');
             let labelPreview = blocks.labelledInput(Messages.admin_colorPreview, preview);
@@ -1358,7 +1362,7 @@ define([
                         var data = all[key];
                         var url = privateData.origin + Hash.hashToHref(key, 'register');
 
-                        var del = blocks.button('danger', 'fa-trash', Messages.kanban_delete );
+                        var del = blocks.button('danger', 'trash-full', Messages.kanban_delete );
                         var $del = $(del);
                         Util.onClickEnter($del, function () {
                             $del.attr('disabled', 'disabled');
@@ -1368,7 +1372,7 @@ define([
                                 deleteInvite(key);
                             });
                         });
-                        var copy = blocks.button('secondary', 'fa-clipboard', Messages.admin_invitationCopy);
+                        var copy = blocks.button('secondary', 'copy', Messages.admin_invitationCopy);
                         Util.onClickEnter($(copy), function () {
                             Clipboard.copy(url, () => {
                                 UI.log(Messages.genericCopySuccess);
@@ -1688,7 +1692,7 @@ define([
                     Object.keys(all).sort(sort(all)).forEach(function (key) {
                         var data = all[key];
                         var editUser = () => {};
-                        var del = blocks.button('danger', 'fa fa-trash', Messages.admin_usersRemove);
+                        var del = blocks.button('danger', 'trash-full', Messages.admin_usersRemove);
                         var $del = $(del);
                         Util.onClickEnter($del, function () {
                             $del.attr('disabled', 'disabled');
@@ -1698,7 +1702,7 @@ define([
                                 deleteUser(key);
                             });
                         });
-                        var edit = blocks.activeButton('secondary', 'fa fa-pencil',
+                        var edit = blocks.activeButton('secondary', 'edit',
                                     Messages.tag_edit, () => { editUser(); }, true);
 
                         let aliasCell = blocks.inline(data.alias);
@@ -1733,7 +1737,7 @@ define([
                             $actions.html('').append([save, cancel]);
                         };
 
-                        let infoBtn = blocks.activeButton('primary', 'fa fa-database',
+                        let infoBtn = blocks.activeButton('primary', 'database',
                                 Messages.admin_diskUsageButton, function (done) {
                             getAccountData(key, (err, data) => {
                                 done(!err);
@@ -3170,12 +3174,12 @@ define([
                         $delButton.show();
                         $openButton.show();
                         return $state.append([
-                            blocks.icon('fa-check'),
+                            Icons.get('check'),
                             blocks.inline(Messages.admin_supportEnabled)
                         ]);
                     }
                     $state.append([
-                        blocks.icon('fa-times'),
+                        Icons.get('close'),
                         blocks.inline(Messages.admin_supportDisabled)
                     ]);
                 };
@@ -3227,7 +3231,7 @@ define([
                 const drawModerators = () => {
                     if (!supportKey) {
                         const list = blocks.block([
-                            blocks.icon('fa-times'),
+                            Icons.get('close'),
                             blocks.inline(Messages.admin_supportDisabled)
                         ], 'cp-admin-support-state');
                         $div.append(list);
