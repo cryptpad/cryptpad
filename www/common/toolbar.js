@@ -695,7 +695,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
         }
 
         var $shareBlock = $(h('button.cp-toolar-share-button.cp-toolbar-button-primary', [
-            h('i.fa.fa-shhare-alt'),
+            Icons.get('share'),
             h('span.cp-button-name', Messages.shareButton)
         ]));
         Common.getSframeChannel().event('EV_SHARE_OPEN', {
@@ -996,7 +996,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
     };
 
     var createLimit = function (toolbar, config) {
-        var $limitIcon = $('<span>', {'class': 'fa fa-exclamation-triangle'});
+        var $limitIcon = Icons.get('alert');
         var $limit = toolbar.$userAdmin.find('.'+LIMIT_CLS).attr({
             'title': Messages.pinLimitReached
         }).append($limitIcon).hide();
@@ -1060,7 +1060,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
 
     var createMaintenance = function (toolbar) {
         var $notif = toolbar.$top.find('.'+MAINTENANCE_CLS);
-        var button = h('button.cp-maintenance-wrench.fa.fa-wrench');
+        var button = h('button.cp-maintenance-wrench', [Icons.get('settings')]);
         $notif.append(button);
 
 
