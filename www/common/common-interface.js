@@ -1459,7 +1459,7 @@ define([
         opts = opts || {};
 
         var dontShowAgain = h('div.cp-corner-dontshow', [
-            h('span.fa.fa-times'),
+            Icons.get('close'),
             Messages.dontShowAgain
         ]);
 
