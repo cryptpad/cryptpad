@@ -179,7 +179,8 @@ define([
         "downgrade": "chevrons-down",
         "certificate": "shield-check",
         "secret-user": "venetian-mask",
-        "circle-question": "circle-question-mark"
+        "circle-question": "circle-question-mark",
+        "print": "printer"
     };
 
     Icons.get = (name, attrs = {}) => {

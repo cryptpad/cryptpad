@@ -1068,7 +1068,7 @@ define([
      *  spinner
      */
     UI.spinner = function (parent) {
-        var $target = Icons.get('loading').hide();
+        var $target = $(Icons.get('loading')).hide();
 
         $(parent).append($target);
 

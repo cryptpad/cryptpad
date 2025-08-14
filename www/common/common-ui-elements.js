@@ -696,7 +696,7 @@ define([
 
         switch (type) {
             case 'export':
-                button = makeButton('fa fa-download', 'cp-toolbar-icon-export', Messages.exportButtonTitle, Messages.exportButton);
+                button = makeButton('download', 'cp-toolbar-icon-export', Messages.exportButtonTitle, Messages.exportButton);
                 button
                 .click(common.prepareFeedback(type))
                 .click(UI.clearTooltipsDelay);
@@ -705,7 +705,7 @@ define([
                 }
                 break;
             case 'import':
-                button = makeButton('fa fa-upload', 'cp-toolbar-icon-import', Messages.importButtonTitle, Messages.importButton);
+                button = makeButton('upload', 'cp-toolbar-icon-import', Messages.importButtonTitle, Messages.importButton);
                 var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
                     accept: data ? data.accept : undefined,
                     binary: data ? data.binary : undefined
@@ -726,7 +726,7 @@ define([
                 //}
                 break;
             case 'upload':
-                button = makeButton('fa fa-upload', 'btn btn-primary new', Messages.uploadButtonTitle, Messages.uploadButton);
+                button = makeButton('upload', 'btn btn-primary new', Messages.uploadButtonTitle, Messages.uploadButton);
                 if (!data.FM) { return; }
                 var $input = $('<input>', {
                     'type': 'file',
@@ -758,7 +758,7 @@ define([
                 });
                 break;
             case 'copy':
-                button = makeButton('fa fa-files-o', 'cp-toolbar-icon-import', '', Messages.makeACopy);
+                button = makeButton('copy', 'cp-toolbar-icon-import', '', Messages.makeACopy);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -769,7 +769,7 @@ define([
             case 'importtemplate':
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
-                button = makeButton('fa fa-upload', 'cp-toolbar-icon-import', '', Messages.template_import);
+                button = makeButton('upload', 'cp-toolbar-icon-import', '', Messages.template_import);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -829,7 +829,7 @@ define([
                 }
                 break;
             case 'forget':
-                button = makeButton('fa fa-trash', 'cp-toolbar-icon-forget', '', Messages.fc_delete);
+                button = makeButton('trash-full', 'cp-toolbar-icon-forget', '', Messages.fc_delete);
                 callback = typeof callback === "function" ? callback : function () {};
                 button
                 .click(common.prepareFeedback(type))
@@ -890,7 +890,7 @@ define([
                 ])).click(common.prepareFeedback(type));
                 break;
             case 'print':
-                button = makeButton('fa fa-print', 'cp-toolbar-icon-print', Messages.printButtonTitle2, Messages.printText);
+                button = makeButton('print', 'cp-toolbar-icon-print', Messages.printButtonTitle2, Messages.printText);
                 break;
             case 'history':
                 if (!AppConfig.enableHistory) {
@@ -947,7 +947,7 @@ define([
                 });
                 break;
             case 'hashtag':
-                button = makeButton('fa fa-hashtag', 'cp-toolbar-icon-hashtag', Messages.tags_title, Messages.fc_hashtag);
+                button = makeButton('tag', 'cp-toolbar-icon-hashtag', Messages.tags_title, Messages.fc_hashtag);
                 button.click(common.prepareFeedback(type))
                 .click(function () {
                     common.isPadStored(function (err, data) {
@@ -995,7 +995,7 @@ define([
                 //updateIcon(data.element.is(':visible'));
                 break;
             case 'properties':
-                button = makeButton('fa fa-info-circle', 'cp-toolbar-icon-properties', Messages.propertiesButtonTitle, Messages.propertiesButton);
+                button = makeButton('features', 'cp-toolbar-icon-properties', Messages.propertiesButtonTitle, Messages.propertiesButton);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -1012,7 +1012,7 @@ define([
                 });
                 break;
             case 'save': // OnlyOffice save
-                button = makeButton('fa fa-save', '', Messages.settings_save, Messages.settings_save);
+                button = makeButton('save', '', Messages.settings_save, Messages.settings_save);
                 button
                 .click(function() {
                     common.prepareFeedback(type);
@@ -1021,7 +1021,7 @@ define([
                 if (callback) { button.click(callback); }
                 break;
             case 'newpad':
-                button = makeButton('fa fa-plus', 'cp-toolbar-icon-newpad', Messages.newButtonTitle, Messages.newButton);
+                button = makeButton('add', 'cp-toolbar-icon-newpad', Messages.newButtonTitle, Messages.newButton);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -1030,7 +1030,7 @@ define([
                 });
                 break;
             case 'snapshots':
-                button = makeButton('fa fa-camera', 'cp-toolbar-icon-snapshots', Messages.snapshots_button,Messages.snapshots_button);
+                button = makeButton('snapshot', 'cp-toolbar-icon-snapshots', Messages.snapshots_button,Messages.snapshots_button);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -1043,7 +1043,7 @@ define([
                 break;
             default:
                 var drawerCls = data.drawer === false ? '' : '.cp-toolbar-drawer-element';
-                var icon = data.icon || "fa-question";
+                var icon = data.icon || "circle-question";
                 button = $(h('button', {
                     title: data.tippy || ''
                     //title: data.title || '',
