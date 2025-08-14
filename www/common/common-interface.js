@@ -1052,7 +1052,7 @@ define([
     };
 
     UI.createHelper = function (href, text) {
-        var q = h('a.fa.fa-question-circle', {
+        var q = h('a', {
             'data-cptippy-html': true,
             style: 'text-decoration: none !important;',
             title: text,
@@ -1060,7 +1060,7 @@ define([
             target: "_blank",
             'data-tippy-placement': "right",
             'aria-label': text
-        });
+        }, Icons.get('circle-question'));
         return q;
     };
 

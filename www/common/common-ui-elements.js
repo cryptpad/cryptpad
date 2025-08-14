@@ -21,11 +21,12 @@ define([
     '/common/inner/invitation.js',
     '/common/visible.js',
     '/common/pad-types.js',
+    '/customize/fonts/lucide.js',
     '/common/common-icons.js',
 
     'css!/customize/fonts/cptools/style.css',
 ], function ($, Config, Broadcast, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
-             Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes, Icons) {
+             Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes, Lucide, Icons) {
     var UIElements = {};
     var urlArgs = Config.requireConf.urlArgs;
 
@@ -1705,7 +1706,7 @@ define([
             $button.prepend(Icons.get('chevron-down')); // XXX
         }
         if (config.angleDown) {
-            $button.prepend(h('i.fa.fa-angle-down'));
+            $button.prepend(Icons.get('chevron-down'));
         }
 
         // Menu
@@ -2383,7 +2384,7 @@ define([
                 });
             }
         }
-        var $icon = $('<span>', {'class': 'fa fa-user-secret'});
+        var $icon = Icons.get('secret-user');
         var $userButton = $('<div>').append($icon);
         if (accountName) {
             $userButton = $('<div>').append(accountName);
@@ -2545,7 +2546,7 @@ define([
             $body: $('body')
         });
         var $modal = modal.$modal;
-        var $title = $(h('h3', [ h('i.fa.fa-plus'), ' ', Messages.fm_newButton ]));
+        var $title = $(h('h3', [ Icons.get('add'), ' ', Messages.fm_newButton ]));
 
         var $description = $(Pages.setHTML(h('p'), Messages.creation_newPadModalDescription));
         $modal.find('.cp-modal').append($title);
@@ -2719,6 +2720,7 @@ define([
     };
     */
     UIElements.getPadCreationScreen = function (common, cfg, appCfg, cb) {
+        setTimeout(() => Lucide.createIcons());
         appCfg = appCfg || {};
         if (!common.isLoggedIn()) { return void cb(); }
         var sframeChan = common.getSframeChannel();
@@ -2818,7 +2820,7 @@ define([
                 'data-id': '-1',
                 title: Messages.settings_cat_drive
             }, [
-                h('span.cp-creation-team-avatar.fa.fa-hdd-o'),
+                h('span.cp-creation-team-avatar', Icons.get('drive')),
                 h('span.cp-creation-team-name', Messages.settings_cat_drive)
             ]));
             team = h('div.cp-creation-teams', [
@@ -2894,12 +2896,12 @@ define([
         var $w = $(window);
         var big = $w.width() > 800;
 
-        var right = h('button.fa.fa-chevron-right.cp-creation-template-more', {
+        var right = h('button.cp-creation-template-more', {
             'aria-label': Messages.page_next
-        });
-        var left = h('button.fa.fa-chevron-left.cp-creation-template-more', {
+        }, Icons.get('chevron-right'));
+        var left = h('button.cp-creation-template-more', {
             'aria-label': Messages.page_previous
-        });
+        }, Icons.get('chevron-left'));
         if (!big) {
             $(left).removeClass('fa-chevron-left').addClass('fa-chevron-up');
             $(right).removeClass('fa-chevron-right').addClass('fa-chevron-down');
@@ -2907,7 +2909,7 @@ define([
         var templates = h('div.cp-creation-template', [
             left,
             h('div.cp-creation-template-container', [
-                h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')
+                Icons.get('loading')
             ]),
             right
         ]);
@@ -3378,7 +3380,7 @@ define([
             // Display the popup
             var text = Messages.crowdfunding_popup_text;
             var yes = h('button.cp-corner-primary', [
-                h('span.fa.fa-external-link'),
+                Icons.get('external-link'),
                 'OpenCollective'
             ]);
             var no = h('button.cp-corner-cancel', Messages.crowdfunding_popup_no);
@@ -3505,7 +3507,7 @@ define([
             Messages._getKey('formattedMB', [mb])
         ]);
         var yes = h('button.cp-corner-primary', [
-            h('span.fa.fa-trash-o'),
+            Icons.get('trash-full'),
             Messages.trimHistory_button
         ]);
         var no = h('button.cp-corner-cancel', Messages.crowdfunding_popup_no); // Not now
@@ -3878,7 +3880,7 @@ define([
         if (priv.friends && priv.friends[curve]) {
             $verified.addClass('cp-notifications-requestedit-verified');
             var f = priv.friends[curve];
-            $verified.append(h('span.fa.fa-certificate'));
+            $verified.append(Icons.get('certificate'));
             var $avatar = $(h('span.cp-avatar')).appendTo($verified);
             name = UI.getDisplayName(f.displayName);
             $verified.append(h('p', Messages._getKey('isContact', [name])));
@@ -4282,7 +4284,7 @@ define([
                 var openButton = h('button.cp-snapshot-view.btn.btn-light', {
                     tabindex: 1,
                 }, [
-                    h('i.fa.fa-eye'),
+                    Icons.get('preview'),
                     h('span', Messages.snapshots_open)
                 ]);
                 $(openButton).click(function () {
@@ -4295,7 +4297,7 @@ define([
                 var deleteButton = h('button.cp-snapshot-delete.btn.btn-light', {
                     tabindex: 1,
                 }, [
-                    h('i.fa.fa-trash'),
+                    Icons.get('trash-full'),
                     h('span', Messages.snapshots_delete)
                 ]);
                 UI.confirmButton(deleteButton, {
@@ -4306,7 +4308,7 @@ define([
                 });
 
                 return h('span.cp-snapshot-element', {tabindex:1}, [
-                    h('i.fa.fa-camera'),
+                    Icons.get('snapshot'),
                     h('span.cp-snapshot-title', [
                         h('span', s.title),
                         h('span.cp-snapshot-time', new Date(s.time).toLocaleString())

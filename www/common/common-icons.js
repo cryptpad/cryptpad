@@ -13,6 +13,7 @@ define([
         "user-profile": "circle-user-round",
         "language": "languages",
         "link": "link",
+        "external-link": "external-link",
         "donate": "hand-coins",
         "login": "log-in",
         "logout": "log-out",
@@ -176,7 +177,9 @@ define([
         "snapshot": "camera",
         "promote": "chevrons-up",
         "downgrade": "chevrons-down",
-
+        "certificate": "shield-check",
+        "secret-user": "venetian-mask",
+        "circle-question": "circle-question-mark"
     };
 
     Icons.get = (name, attrs = {}) => {
