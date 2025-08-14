@@ -638,7 +638,7 @@ define([
         });
 
         addTabListener(frame);
-
+        Lucide.createIcons();
         return frame;
     };
 
