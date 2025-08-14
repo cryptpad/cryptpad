@@ -17,7 +17,7 @@ define([
         "login": "log-in",
         "logout": "log-out",
         "logout-everywhere": "unplug",
-        "register-homepage": "user", // XXX
+        "register-homepage": "user", // XXX change name
         "register": "user-round-plus",
         "chevron-left": "chevron-left",
         "chevron-right": "chevron-right",
@@ -171,7 +171,9 @@ define([
         "sheet": "sheet",
         "announcement": "megaphone",
         "reply": "message-square-reply",
-        "comment": "message-square"
+        "comment": "message-square",
+        "file-image": "file-image",
+        "snapshot": "camera"
 
     };
 

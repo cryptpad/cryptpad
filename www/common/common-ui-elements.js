@@ -916,7 +916,7 @@ define([
                 button = $(h('button.cp-toolbar-savetodrive', {
                     title: Messages.canvas_saveToDrive,
                 }, [
-                    h('i.fa.fa-file-image-o'),
+                    Icons.get('file-image'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_savetodrive)
                 ])).click(common.prepareFeedback(type));
                 if (callback) { button.click(callback); }
@@ -925,7 +925,7 @@ define([
                 button = $(h('button.cp-toolbar-storeindrive', {
                     style: 'display:none;'
                 }, [
-                    h('i.fa.fa-hdd-o'),
+                    Icons.get('drive'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
                     $('.cp-toolbar-storeindrive').hide();

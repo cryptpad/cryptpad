@@ -1206,7 +1206,7 @@ define([
     };
 
     UI.getNewIcon = function (type) {
-        var icon = h('i.fa.fa-file-text-o');
+        var icon = Icons.get('drive-file');
 
         if (AppConfig.applicationsIcon && AppConfig.applicationsIcon[type]) {
             icon = AppConfig.applicationsIcon[type];
@@ -1530,7 +1530,7 @@ define([
 
     UI.makeSpinner = function ($container) {
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
-        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+        var $spinner = Icons.get('loading').hide();
 
         var state = false;
         var to;

@@ -163,7 +163,7 @@ define([
                     snapshotsEl.push(h('div.cp-history-snapshot', {
                         style: 'width:'+patchWidth+'%;left:'+(patchWidth * (i-1))+'%;',
                         title: snapshotsData[hash].title
-                    }, h('i.fa.fa-camera')));
+                    }, Icons.get('snapshot')));
                 }
                 if (config.drive) {
                     // Display only one bar, split by patch
@@ -436,22 +436,22 @@ define([
             $hist.removeClass('cp-history-init');
 
             var fastPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_fastPrev }, [
-                h('i.fa.fa-step-backward'),
-                h('i.fa.fa-users')
+                Icons.get('history-prev'),
+                Icons.get('teams') // change icon name
             ]);
             var userPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_userPrev }, [
-                h('i.fa.fa-step-backward'),
-                h('i.fa.fa-user')
+                Icons.get('history-prev'),
+                Icons.get('register-homepage') // change icon name
             ]);
             var prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
                 Icons.get('history-prev'),
             ]);
             var fastNext = h('button.cp-toolbar-history-next', { title: Messages.history_fastNext }, [
-                h('i.fa.fa-users'),
+                Icons.get('teams'),
                 Icons.get('history-fast-next'),
             ]);
             var userNext = h('button.cp-toolbar-history-next', { title: Messages.history_userNext }, [
-                h('i.fa.fa-user'),
+                Icons.get('register-homepage'),
                 Icons.get('history-next'),
             ]);
             var next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
@@ -484,8 +484,8 @@ define([
             var timeline = h('div.cp-toolbar-history-timeline', [
                 h('div.cp-history-timeline-line', [
                     h('span.cp-history-timeline-legend', [
-                        h('i.fa.fa-users'),
-                        h('i.fa.fa-user')
+                        Icons.get('teams'),
+                        Icons.get('register-homepage')
                     ]),
                     h('span.cp-history-timeline-loadmore', _loadMore),
                     h('span.cp-history-timeline-container', [
@@ -510,10 +510,10 @@ define([
             var snapshot = h('button', {
                 title: Messages.snapshots_new,
             }, [
-                h('i.fa.fa-camera')
+                Icons.get('snapshot')
             ]);
             var share = h('button', { title: Messages.history_shareTitle }, [
-                h('i.fa.fa-shhare-alt'),
+                Icons.get('share'),
                 h('span', Messages.shareButton)
             ]);
             var restoreTitle = config.drive ? Messages.history_restoreDriveTitle

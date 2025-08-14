@@ -408,7 +408,7 @@ define([
         // to avoid alert fatigue
         if (!opts.versionHash && !opts.static) {
             var localStore = window.cryptpadStore;
-            var dismissButton = h('span.fa.fa-times');
+            var dismissButton = Icons.get('close');
             var shareLinkWarning = h('div.alert.alert-warning.dismissable',
                 { style: 'display: none;' },
                 [
@@ -560,7 +560,7 @@ define([
         // Show alert if the pad is password protected
         if (opts.hasPassword) {
             embedContent.push(h('div.alert.alert-primary', [
-                h('i.fa.fa-lock'), ' ',
+                Icons.get('lock'), ' ',
                 Messages.share_embedPasswordAlert, h('br'),
                 makeFaqLink(opts)
             ]));
@@ -895,7 +895,7 @@ define([
             // Add the versionHash warning if needed
             if (opts.versionHash) {
                 $rights.after(h('div.alert.alert-warning', [
-                    h('i.fa.fa-history'),
+                    Icons.get('history'),
                     UI.setHTML(h('span'), Messages.share_versionHash)
                 ]));
             }
@@ -918,7 +918,7 @@ define([
         // Show alert if the pad is password protected
         if (opts.hasPassword) {
             $contactsContent.append(h('div.alert.alert-primary', [
-                h('i.fa.fa-lock'),
+                Icons.get('lock'),
                 Messages.share_linkPasswordAlert, h('br'),
                 makeFaqLink(opts)
             ]));
@@ -944,7 +944,7 @@ define([
         // Show alert if the pad is password protected
         if (opts.hasPassword) {
             linkContent.push(h('div.alert.alert-primary', [
-                h('i.fa.fa-lock'),
+                Icons.get('lock'),
                 Messages.share_linkPasswordAlert, h('br'),
                 makeFaqLink(opts)
             ]));
@@ -952,7 +952,7 @@ define([
 
         // warning about sharing links
         var localStore = window.cryptpadStore;
-        var dismissButton = h('span.fa.fa-times');
+        var dismissButton = Icons.get('close');
         var shareLinkWarning = h('div.alert.alert-warning.dismissable',
             { style: 'display: none;' },
             [
@@ -1009,7 +1009,7 @@ define([
         // Show alert if the pad is password protected
         if (opts.hasPassword) {
             $(embed).append(h('div.alert.alert-primary', [
-                h('i.fa.fa-lock'),
+                Icons.get('lock'),
                 Messages.share_linkPasswordAlert, h('br'),
                 makeFaqLink(opts)
             ]));
