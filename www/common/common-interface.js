@@ -1068,9 +1068,7 @@ define([
      *  spinner
      */
     UI.spinner = function (parent) {
-        var $target = $('<span>', {
-            'class': 'fa fa-circle-o-notch fa-spin fa-4x fa-fw',
-        }).hide();
+        var $target = Icons.get('loading').hide();
 
         $(parent).append($target);
 

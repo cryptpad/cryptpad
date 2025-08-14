@@ -428,7 +428,7 @@ define([
                 return;
             }
             var div = h('div.cp-team-trim', [
-                h('span.fa.fa-spin.fa-spinner'),
+                Icons.get('loading'),
                 h('span', Messages.team_autoTrim)
             ]);
             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
@@ -605,7 +605,7 @@ define([
         content.push(h('br'));
         content.push(h('br'));
         content.push(button);
-        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+        var $spinner = Icons.get('loading').hide();
         content.push($spinner[0]);
         var state = false;
         $(button).click(function () {

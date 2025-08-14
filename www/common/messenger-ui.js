@@ -60,7 +60,7 @@ define([
         $container.addClass('cp-app-contacts-initializing');
 
         var messaging = h('div#cp-app-contacts-messaging', [
-            h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw.cp-app-contacts-spinner'),
+            Icons.get('loading', {'class': 'cp-app-contacts-spinner'}),
             h('div.cp-app-contacts-info', [
                 h('h2', Messages.contacts_info1),
                 h('ul', [
@@ -72,7 +72,7 @@ define([
         ]);
 
         var friendList = h('div#cp-app-contacts-friendlist', [
-            h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw.cp-app-contacts-spinner'),
+            Icons.get('loading', {'class': 'cp-app-contacts-spinner'}),
             h('div.cp-app-contacts-padchat.cp-app-contacts-category', [
                 h('div.cp-app-contacts-category-content')
             ]),

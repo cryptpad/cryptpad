@@ -307,7 +307,7 @@ define([
             var content = h('div#cp-app-debug-loading', [
                 h('h2', 'Step 1/3'),
                 h('p', 'Loading history from the server...'),
-                h('span.fa.fa-circle-o-notch.fa-spin.fa-3x.fa-fw')
+                Icons.get('loading')
             ]);
             $('#cp-app-debug-content').html('').append(content);
 
@@ -322,7 +322,7 @@ define([
                     var content = h('div.cp-app-debug-progress.cp-loading-progress', [
                         h('h2', 'Step 2/3'),
                         h('p', 'Decrypting your history...'),
-                        h('span.fa.fa-circle-o-notch.fa-spin.fa-3x.fa-fw'),
+                        Icons.get('loading'),
                         h('br'),
                         decryptProgress
                     ]);
@@ -349,7 +349,7 @@ define([
                 var content = h('div#cp-app-debug-loading', [
                     h('h2', 'Step 3/3'),
                     h('p', 'Parsing history...'),// TODO
-                    h('span.fa.fa-circle-o-notch.fa-spin.fa-3x.fa-fw'),
+                    Icons.get('loading'),
                     h('br'),
                     parseProgress
                 ]);
@@ -403,7 +403,7 @@ define([
             // Set spinner
             var content = h('div#cp-app-debug-loading', [
                 h('p', 'Loading history from the server...'),
-                h('span.fa.fa-circle-o-notch.fa-spin.fa-3x.fa-fw')
+                Icons.get('loading'),
             ]);
             $('#cp-app-debug-content').html('').append(content);
             var makeChainpad = function () {

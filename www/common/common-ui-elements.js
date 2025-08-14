@@ -495,7 +495,7 @@ define([
             linkSpin = h('div.cp-teams-invite-spinner', {
                 style: 'display: none;'
             }, [
-                h('i.fa.fa-spinner.fa-spin'),
+                Icons.get('loading'),
                 h('span', Messages.team_inviteLinkLoading)
             ]),
             linkResult = h('div', {

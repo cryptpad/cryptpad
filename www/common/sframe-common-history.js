@@ -475,7 +475,7 @@ define([
 
             var _loadMore = h('button.cp-toolbar-history-loadmore', { title: Messages.history_loadMore }, [
                 Icons.get("ellipsis-horizontal"),
-                h('i.fa.fa-refresh.fa-spin.fa-3x.fa-fw', { style: 'display: none;' })
+                Icons.get('loading', { style: 'display: none;'})
             ]);
 
             var pos = h('span.cp-history-timeline-pos', [ Icons.get("history-timeline-position")]);
