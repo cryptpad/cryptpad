@@ -173,7 +173,9 @@ define([
         "reply": "message-square-reply",
         "comment": "message-square",
         "file-image": "file-image",
-        "snapshot": "camera"
+        "snapshot": "camera",
+        "promote": "chevrons-up",
+        "downgrade": "chevrons-down",
 
     };
 

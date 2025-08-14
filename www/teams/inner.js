@@ -605,7 +605,7 @@ define([
         content.push(h('br'));
         content.push(h('br'));
         content.push(button);
-        var $spinner = Icons.get('loading').hide();
+        var $spinner = $(Icons.get('loading')).hide();
         content.push($spinner[0]);
         var state = false;
         $(button).click(function () {
@@ -700,16 +700,16 @@ define([
                             Messages.teams_table_admins, Messages.teams_table_owners];
         rows.push(h('tr', makeRow(firstRow, true)));
         rows.push(h('tr', makeRow([
-            Messages.team_viewers, h('span.fa.fa-check'), h('span.fa.fa-times'), h('span.fa.fa-times'), h('span.fa.fa-times')
+            Messages.team_viewers, Icons.get('check'), Icons.get('close'), Icons.get('close'), Icons.get('close')
         ])));
         rows.push(h('tr', makeRow([
-            Messages.team_members, h('span.fa.fa-check'), h('span.fa.fa-check'), h('span.fa.fa-times'), h('span.fa.fa-times')
+            Messages.team_members, Icons.get('check'), Icons.get('check'), Icons.get('close'), Icons.get('close')
         ])));
         rows.push(h('tr', makeRow([
-            Messages.team_admins, h('span.fa.fa-check'), h('span.fa.fa-check'), h('span.fa.fa-check'), h('span.fa.fa-times')
+            Messages.team_admins, Icons.get('check'), Icons.get('check'), Icons.get('check'), Icons.get('close')
         ])));
         rows.push(h('tr', makeRow([
-            Messages.team_owner, h('span.fa.fa-check'), h('span.fa.fa-check'), h('span.fa.fa-check'), h('span.fa.fa-check')
+            Messages.team_owner, Icons.get('check'), Icons.get('check'), Icons.get('check'), Icons.get('check')
         ])));
         var t = h('table.cp-teams-generic', rows);
 
@@ -731,6 +731,7 @@ define([
         APP.module.execCommand('GET_EDITABLE_FOLDERS', {
             teamId: APP.team
         }, function (arr) {
+            setTimeout( () => Lucide.createIcons());
             if (!Array.isArray(arr) || !arr.length) {
                 return void $blockContainer.find('.cp-modal').append(content);
             }
@@ -809,7 +810,7 @@ define([
         var ADMIN = ROLES.indexOf('ADMIN');
         // If they're an admin and I am an owner, I can promote them to owner
         if (!isMe && myRole > theirRole && theirRole === ADMIN && !data.pending) {
-            var promoteOwner = h('span.fa.fa-angle-double-up', {
+            var promoteOwner = Icons.get('promote', {
                 title: Messages.team_rosterPromoteOwner
             });
             $(promoteOwner).click(function () {
@@ -832,7 +833,7 @@ define([
         }
         // If they're a viewer/member and I have a higher role than them, I can promote them to admin
         if (!isMe && myRole >= ADMIN && theirRole < ADMIN && !data.pending) {
-            var promote = h('span.fa.fa-angle-double-up', {
+            var promote = Icons.get('promote', {
                 title: Messages.team_rosterPromote
             });
             $(promote).click(function () {
@@ -846,7 +847,7 @@ define([
         // If I'm not a member and I have an equal or higher role than them, I can demote them
         // (if they're not already a MEMBER)
         if (myRole >= theirRole && myRole >= ADMIN && theirRole > 0 && !data.pending) {
-            var demote = h('span.fa.fa-angle-double-down', {
+            var demote = Icons.get('downgrade', {
                 title: Messages.team_rosterDemote
             });
             $(demote).click(function () {
@@ -872,7 +873,7 @@ define([
         // If I'm at least an admin and I have an equal or higher role than them, I can remove them
         // Note: we can't remove owners, we have to demote them first
         if (!isMe && myRole >= ADMIN && myRole >= theirRole && theirRole !== ROLES.indexOf('OWNER')) {
-            var remove = h('span.fa.fa-times', {
+            var remove = Icons.get('close', {
                 title: Messages.team_rosterKick
             });
             $(remove).click(function () {
@@ -903,7 +904,7 @@ define([
         ];
         if (data.inviteChannel) {
             if (data.hash) {
-                var copy = h('span.fa.fa-copy');
+                var copy = Icons.get('copy');
                 $(copy).click(function () {
                     var privateData = common.getMetadataMgr().getPrivateData();
                     var origin = privateData.origin;
@@ -1112,8 +1113,8 @@ define([
             'placeholder': Messages.anonymous}).appendTo($inputBlock);
         var $save = $('<button>', {'class': 'cp-online-alt btn btn-primary'}).text(Messages.settings_save).appendTo($inputBlock);
 
-        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
-        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+        var $ok = $(Icons.get('check', {title: Messages.saved})).hide();
+        var $spinner = $(Icons.get('loading')).hide();
 
         var todo = function () {
             var newName = $input.val();
@@ -1263,8 +1264,8 @@ define([
     makeBlock('delete', function (common, cb, $div) { // Msg.team_deleteHint, .team_deleteTitle
         $div.addClass('cp-online');
         var deleteTeam = h('button.btn.btn-danger', Messages.team_deleteButton);
-        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
-        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+        var $ok = $(Icons.get('check', {title: Messages.saved})).hide();
+        var $spinner = $(Icons.get('loading')).hide();
 
         var deleting = false;
         $(deleteTeam).click(function () {
@@ -1324,7 +1325,7 @@ define([
         }
 
         var div = h('div', [
-            h('i.fa.fa-spin.fa-spinner')
+            Icons.get('loading')
         ]);
         var $div = $(div);
         var errorBlock;
@@ -1364,7 +1365,7 @@ define([
             var $spinner;
             nThen(function (waitFor) {
                 $inviteDiv.append(h('div', [
-                    h('i.fa.fa-spin.fa-spinner'),
+                    Icons.get('loading'),
                     spinnerText = h('span', Messages.team_invitePasswordLoading || 'Scrypt...')
                 ]));
                 $spinner = $(spinnerText);
