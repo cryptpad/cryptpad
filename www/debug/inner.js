@@ -21,6 +21,8 @@ define([
     '/customize/application_config.js',
     '/common/common-ui-elements.js',
     '/debug/chainpad.dist.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -43,7 +45,9 @@ define([
     Messages,
     AppConfig,
     UIElements,
-    ChainWalk)
+    ChainWalk,
+    Lucide,
+    Icons)
 {
     var APP = window.APP = {
         $: $,
@@ -426,12 +430,12 @@ define([
                 var replay, input, left, right;
                 var content = h('div.cp-app-debug-progress.cp-loading-progress', [
                     h('p', [
-                        left = h('span.fa.fa-chevron-left'),
+                        left = Icons.get('chevron-left'),
                         h('label', 'Start'),
                         start = h('input', {type: 'number', value: 0}),
                         h('label', 'State'),
                         input = h('input', {type: 'number', min: 1}),
-                        right = h('span.fa.fa-chevron-right'),
+                        right = Icons.get('chevron-right'),
                     ]),
                     h('br'),
                     replay = h('pre.cp-debug-replay'),
@@ -709,7 +713,7 @@ define([
             toolbar.$drawer.append($histEntry);
 
             var $content = common.createButton(null, true, {
-                icon: 'fa-clock-o',
+                icon: 'drive-recent',
                 title: 'Get debugging graph', // TODO
                 name: 'graph',
                 text: 'Replay',
@@ -722,7 +726,7 @@ define([
             var priv = metadataMgr.getPrivateData();
             if (priv.debugDrive) {
                 var $drive = common.createButton(null, true, {
-                    icon: 'fa-hdd-o',
+                    icon: 'drive',
                     title: 'Get Shared Folder content', // TODO
                     text: 'SF channel list',
                     id: 'cp-app-debug-get-channels'

@@ -433,7 +433,7 @@ define([
         var linkForm, linkSpin, linkResult, linkUses, linkRole;
         var linkWarning;
         // Invite from link
-        var dismissButton = h('span.fa.fa-times');
+        var dismissButton = Icons.get('close');
 
         var roleViewer = UI.createRadio('cp-team-role', 'cp-team-role-viewer',
                 Messages.team_viewers, true, {

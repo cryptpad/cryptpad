@@ -23,6 +23,8 @@ define([
     '/customize/messages.js',
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
     '/common/test.js',
 
     'cm/addon/display/placeholder',
@@ -54,7 +56,9 @@ define([
     h,
     Messages,
     SFCodeMirror,
-    CMeditor/*,
+    CMeditor,
+    Lucide,
+    Icons/*,
     Test*/)
 {
     var saveAs = window.saveAs;
@@ -1282,7 +1286,7 @@ define([
                             }, Messages.poll_commit),
                             h('button#cp-app-poll-create-option.btn.btn-default', {
                                 title: Messages.poll_create_option
-                            }, h('span.fa.fa-plus')),
+                            }, Icons.get('add')),
                         ]),
                         h('div#cp-app-poll-comments', [
                             h('h2#cp-app-poll-comments-add-title', Messages.poll_comment_add),

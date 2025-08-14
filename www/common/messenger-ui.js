@@ -11,7 +11,9 @@ define([
     '/common/inner/badges.js',
     '/common/hyperscript.js',
     '/common/diffMarked.js',
-], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd) {
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
+], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd, Lucide, Icons) {
     'use strict';
 
     var debug = console.log;
@@ -76,7 +78,7 @@ define([
             ]),
             h('div.cp-app-contacts-friends.cp-app-contacts-category', [
                 h('button.btn.btn-default.cp-app-contacts-muted-button', {tabindex:0},[
-                    h('i.fa.fa-bell-slash'),
+                    Icons.get('mute'),
                     Messages.contacts_manageMuted
                 ]), 
                 h('div.cp-app-contacts-category-content.cp-contacts-friends')
@@ -904,7 +906,7 @@ define([
                     var button = h('button.btn', {
                         'data-user': curve
                     }, [
-                        h('i.fa.fa-bell'),
+                        Icons.get('notification'),
                         Messages.contacts_unmute || 'unmute'
                     ]);
                     common.displayAvatar($(avatar), data.avatar, data.name, Util.noop, data.uid, data.badge);

@@ -67,7 +67,7 @@ define([
                 return;
             }
             if (data.type === 'broadcast') {
-                avatar = h('i.fa.fa-bullhorn.cp-broadcast');
+                avatar = Icons.get('announcement', {'class': 'cp-broadcast'});
                 if (/^LOCAL\|/.test(data.content.hash)) {
                     $(avatar).addClass('preview');
                 }

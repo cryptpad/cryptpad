@@ -168,8 +168,10 @@ define([
         "sort-amount-desc": "arrow-down-wide-narrow",
         "unfriend": "user-round-x",
         "add-friend": "user-round-plus",
-        "sheet": "sheet"
-
+        "sheet": "sheet",
+        "announcement": "megaphone",
+        "reply": "message-square-reply",
+        "comment": "message-square"
 
     };
 

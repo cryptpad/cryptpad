@@ -167,13 +167,13 @@ define([
         var cancel = h('button.btn.btn-cancel', {
             tabindex: 1
         }, [
-            h('i.fa.fa-times'),
+            Icons.get('close'),
             Messages.cancel
         ]);
         var submit = h('button.btn.btn-primary', {
             tabindex: 1
         }, [
-            h('i.fa.fa-paper-plane-o'),
+            Icons.get('send'),
             Messages.comments_submit
         ]);
 
@@ -262,7 +262,7 @@ define([
             deleteButton = h('button.btn.btn-danger', {
                 tabindex: 1
             }, [
-                h('i.fa.fa-times'),
+                Icons.get('close'),
                 Messages.kanban_delete
             ]);
             $(deleteButton).click(function(e) {
@@ -442,7 +442,7 @@ define([
                     edit = h('span.cp-comment-edit', {
                         tabindex: 1,
                         title: Messages.clickToEdit
-                    }, h('i.fa.fa-pencil'));
+                    }, Icons.get('edit'));
                     $(edit).click(function(e) {
                         Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
                         $div.addClass('cp-comment-active');
@@ -505,13 +505,13 @@ define([
             var reply = h('button.btn.btn-secondary', {
                 tabindex: 1
             }, [
-                h('i.fa.fa-reply'),
+                Icons.get('reply'),
                 Messages.comments_reply
             ]);
             var resolve = h('button.btn.btn-primary', {
                 tabindex: 1
             }, [
-                h('i.fa.fa-check'),
+                Icons.get('check'),
                 Messages.comments_resolve
             ]);
 
@@ -783,7 +783,7 @@ define([
 
         var button = h('button.btn.btn-secondary', {
             title: Messages.comments_comment
-        }, h('i.fa.fa-commenting'));
+        }, Icons.get('comment'));
         Env.bubble = {
             range: ranges[ranges.length-1],
             button: button
