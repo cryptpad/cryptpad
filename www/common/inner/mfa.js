@@ -216,7 +216,7 @@ define([
                 var next = waitFor();
                 recoverySecret = Util.encodeBase64(Nacl.randomBytes(24));
                 var button = h('button.btn.btn-primary', [
-                    h('i.fa.fa-check'),
+                    Icons.get('check'),
                     h('span', Messages.done)
                 ]);
                 $content.append(h('div.alert.alert-danger', [
@@ -270,7 +270,7 @@ define([
 
                     var description = h('p.cp-settings-mfa-hint', Messages.settings_otp_tuto);
                     var confirmOTP = h('button.btn.btn-primary', [
-                        h('i.fa.fa-check'),
+                        Icons.get('check'),
                         h('span', Messages.mfa_enable)
                     ]);
                     var lock = false;

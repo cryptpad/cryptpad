@@ -623,12 +623,12 @@ define([
         // Create modal
         var tabs = [{
             title: Messages.share_contactCategory,
-            icon: "fa fa-address-book",
+            icon: "contact-request",
             content: frameContacts,
             active: hasFriends
         }, {
             title: Messages.share_linkCategory,
-            icon: "fa fa-link",
+            icon: "link",
             content: frameLink,
             active: !hasFriends
         }];
