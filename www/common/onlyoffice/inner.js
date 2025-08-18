@@ -3201,6 +3201,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     ooChannel.historyLastHash = ooChannel.lastHash;
                     ooChannel.currentIndex = ooChannel.cpIndex;
                     Feedback.send('OO_HISTORY');
+
                     var histConfig = {
                         onPatch: onPatch,
                         onCheckpoint: onCheckpoint,
@@ -3214,6 +3215,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         },
                         $toolbar: $('.cp-toolbar-container')
                     };
+                    console.log("heshes2", content)
                     History.create(common, histConfig);
                 });
 

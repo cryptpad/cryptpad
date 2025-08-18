@@ -34,6 +34,8 @@ define([
         var sortedCp = Object.keys(hashes).map(Number).sort(function (a, b) {
             return hashes[a].index - hashes[b].index;
         });
+        console.log("beep", config.onlyoffice)
+        console.log("sortedCp", hashes, sortedCp)
 
         var endWithCp = sortedCp.length &&
                         config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
@@ -43,6 +45,7 @@ define([
             if (ooMessages[id]) { return; }
             ooMessages[id] = messages;
             update();
+            console.log("history", ooMessages[id])
         };
 
         if (endWithCp) { cpIndex = 0; }
@@ -79,6 +82,8 @@ define([
             else { $time.text(''); }
         };
 
+        var messages;
+
         // We want to load a checkpoint (or initial state)
         var loadMoreOOHistory = function () {
             if (!Array.isArray(sortedCp)) { return void console.error("Wrong type"); }
@@ -91,6 +96,8 @@ define([
                 id = sortedCp[sortedCp.length - 1 - cpIndex];
                 cp = hashes[id];
             }
+                        console.log("index", cpIndex, sortedCp, cp)
+
             var nextId = sortedCp[sortedCp.length - cpIndex];
 
             // Get the history between "toHash" and "fromHash". This function is using
@@ -100,7 +107,7 @@ define([
             // We need to get all the patches between the current cp hash and the next cp hash
 
             // Current cp or initial hash (invalid hash ==> initial hash)
-            var toHash = cp.hash || 'NONE';
+            var toHash = cp ? cp.hash : 'NONE';
             // Next cp or last hash
             var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
 
@@ -123,10 +130,10 @@ define([
 
                 // The first "cp" in history is the empty doc. It doesn't include the first patch
                 // of the history
-                var initialCp = cpIndex === sortedCp.length || !cp.hash;
+                var initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined
 
                 var messages = (data.messages || []).slice(initialCp ? 0 : 1);
-
+                console.log("data mess", messages, data.messages)
                 if (config.debug) { console.log(data.messages); }
                 fillOO(id, messages);
                 loading = false;
@@ -134,6 +141,8 @@ define([
                 $share.show();
             });
         };
+        
+
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
@@ -147,10 +156,12 @@ define([
 
         UI.spinner($hist).get().show();
 
-        var $fastPrev, $fastNext, $next;
+        var $fastPrev, $fastNext, $next, $prev;
 
         var getId = function () {
             var cps = sortedCp.length;
+                        console.log("cps", sortedCp, cpIndex, cps, sortedCp[cps - cpIndex -1])
+
             return sortedCp[cps - cpIndex -1] || -1;
         };
 
@@ -158,6 +169,7 @@ define([
             var cps = sortedCp.length;
             $fastPrev.show();
             $next.show();
+            $prev.show();
             $fastNext.show();
             $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous')
                 .prop('disabled', '');
@@ -174,13 +186,45 @@ define([
             }
         };
 
+        var msgIndex;
+
         var next = function () {
             var id = getId();
+                        console.log("id", id, ooMessages[id])
+            console.log("next1", msgIndex)
+            msgIndex = -1
+
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
             msgIndex++;
             var patch = msgs[msgIndex];
             if (!patch) { loading = false; return; }
+            console.log("next2", msgIndex)
+            config.onPatch(patch);
+            showVersion();
+            setTimeout(function () {
+                $('iframe').blur();
+                loading = false;
+            }, 200);
+        };
+
+        var prev = function () {
+            var id = getId();
+            console.log("id", id, ooMessages[id])
+            console.log("msgs", ooMessages, msgs)
+
+            if (!ooMessages[id]) { loading = false; return; }
+            var msgs = ooMessages[id];
+            msgIndex = msgs.length-1
+            console.log("prev1", msgIndex)
+
+            msgIndex--;
+            var patch = msgs[msgIndex];
+                        console.log("patch", ooMessages[id])
+
+            if (!patch) { loading = false; return; }
+                        console.log("prev2", msgIndex)
+
             config.onPatch(patch);
             showVersion();
             setTimeout(function () {
@@ -203,9 +247,15 @@ define([
             var _next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
                 h('i.fa.fa-step-forward')
             ]);
+            var _prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
+                h('i.fa.fa-step-backward')
+            ]);
             $fastPrev = $(fastPrev);
             $fastNext = $(fastNext).prop('disabled', 'disabled');
             $next = $(_next).prop('disabled', 'disabled');
+            $prev = $(_prev)
+            // .prop('disabled', 'disabled');
+
 
             var pos = h('span.cp-history-timeline-pos.fa.fa-caret-down');
             var time = h('div.cp-history-timeline-time');
@@ -219,6 +269,7 @@ define([
                 ]),
                 h('div.cp-history-timeline-actions', [
                     h('span.cp-history-timeline-prev', [
+                        _prev,
                         fastPrev,
                     ]),
                     time,
@@ -282,6 +333,19 @@ define([
                 if (loading) { return; }
                 loading = true;
                 next();
+                update();
+            });
+            $prev.click(function () {
+                                loadMoreOOHistory();
+                console.log("hiiii", data)
+                console.log("loading", loading)
+                if (loading) { return; }
+                loading = true;
+                if (msgIndex === -1) {
+                    cpIndex++;
+                }
+                console.log("hello")
+                prev();
                 update();
             });
             // Go to previous checkpoint
