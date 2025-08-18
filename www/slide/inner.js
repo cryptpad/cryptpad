@@ -17,6 +17,8 @@ define([
     '/customize/messages.js',
     'cm/lib/codemirror',
     '/common/common-ui-elements.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -63,7 +65,9 @@ define([
     h,
     Messages,
     CMeditor,
-    UIElements)
+    UIElements,
+    Lucide,
+    Icons)
 {
     window.CodeMirror = CMeditor;
 
@@ -235,10 +239,9 @@ define([
                 if (slideOptionsTmp.background && slideOptionsTmp.background.name) {
                     $bgValue.append(Messages._getKey("printBackgroundValue", [Util.fixHTML(slideOptionsTmp.background.name)]));
                     $('<span>', {
-                        'class': 'fa fa-times',
                         title: Messages.printBackgroundRemove,
                         style: 'margin-left: 5px'
-                    }).click(function () {
+                    }, Icons.get('close')).click(function () {
                         slideOptionsTmp.background = false;
                         refreshValue();
                     }).appendTo($bgValue);
@@ -321,7 +324,7 @@ define([
         };
 
         var $optionsButton = framework._.sfCommon.createButton(null, true, {
-            icon: 'fa-cog',
+            icon: 'apps-settings',
             title: Messages.slideOptionsTitle,
             hiddenReadOnly: true,
             text: Messages.slideOptionsText,
@@ -376,7 +379,7 @@ define([
             .css({ display: 'none', })
             .on('change', function() { updateLocalColors(undefined, this.value); });
         var $back = framework._.sfCommon.createButton(null, true, {
-            icon: 'fa-square',
+            icon: 'square',
             text: Messages.slide_backCol,
             title: Messages.backgroundButtonTitle,
             hiddenReadOnly: true,
@@ -392,7 +395,7 @@ define([
             .css({ display: 'none', })
             .on('change', function() { updateLocalColors(this.value, undefined); });
         var $text = framework._.sfCommon.createButton(null, true, {
-            icon: 'fa-i-cursor',
+            icon: 'cursor',
             text: Messages.slide_textCol,
             title: Messages.colorButtonTitle,
             hiddenReadOnly: true,

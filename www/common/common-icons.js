@@ -196,6 +196,7 @@ define([
         "badge-premium": "ticket-check",
         "badge-error": "circle-alert",
         "remove-history": "eraser",
+        "square": "square",
     };
 
     Icons.get = (name, attrs = {}) => {
