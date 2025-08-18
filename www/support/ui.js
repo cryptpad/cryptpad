@@ -13,7 +13,9 @@ define([
     '/common/common-ui-elements.js',
     '/customize/messages.js',
     '/customize/pages.js',
-], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages, Pages) {
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
+], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages, Pages, Lucide, Icons) {
 
     var getDebuggingData = function (ctx, data) {
         var common = ctx.common;
@@ -244,7 +246,7 @@ define([
             $recorded.append(h('span.cp-support-recorded-insert',
                                     Messages.support_insertRecorded));
             let $span = $(h('span')).appendTo($recorded);
-            let $fakeMore = $(h('button.btn.btn-secondary.fa.fa-ellipsis-h.cp-fake-dropdown')).appendTo($recorded);
+            let $fakeMore = $(h('button.btn.btn-secondary.cp-fake-dropdown', Icons.get('ellipsis-horizontal'))).appendTo($recorded);
             let opts = [];
 
             let all = recorded.all;
@@ -286,8 +288,8 @@ define([
                 });
             });
             let dropdownConfig = {
-                //buttonContent: [ h('i.fa.fa-ellipsis-h') ],
-                buttonCls: 'btn btn-secondary fa fa-ellipsis-h',
+                buttonCls: 'btn btn-secondary',
+                iconCls: 'ellipsis-horizontal',
                 options: opts, // Entries displayed in the menu
                 left: true, // Open to the left of the button
                 common: ctx.common
@@ -328,7 +330,7 @@ define([
                 'data-name': name,
                 'data-href': href
             }, [
-                x = h('i.fa.fa-times'),
+                x = Icons.get('close'),
                 a = h('a', {
                     href: '#'
                 }, name)
@@ -410,7 +412,7 @@ define([
             // Admin actions
 
             // Copy URL
-            let url = h('button.btn.fa.fa-link', { title: Messages.share_linkCopy, });
+            let url = h('button.btn', { title: Messages.share_linkCopy, }, Icons.get('link'));
             $(url).click(function (e) {
                 e.stopPropagation();
                 let cat = content.category === 'closed' ? 'closed' : 'open';
@@ -455,7 +457,7 @@ define([
             if (onMove && !onMove.disableMove) {
                 let text = onMove.isTicketActive ? Messages.support_movePending
                                                  : Messages.support_moveActive;
-                move = h('button.btn.btn-secondary.fa.fa-archive', { title: text });
+                move = h('button.btn.btn-secondary', { title: text }, Icons.get('history'));
                 Util.onClickEnter($(move), function () {
                     onMove(ticket, id, content);
                 });
@@ -463,9 +465,9 @@ define([
 
             let tag;
             if (onTag && onTag.getAllTags) {
-                tag = h('button.btn.btn-secondary.fa.fa-tags', {
+                tag = h('button.btn.btn-secondary', {
                     title: Messages.fm_tagsName
-                });
+                }, Icons.get('tag'));
                 if (onTag.readOnly) { tag = undefined; }
                 tagsContainer = h('div.cp-support-ticket-tags');
                 tagsList = h('div.cp-tags-list');
@@ -510,7 +512,7 @@ define([
                     $tags.toggle();
                 });
                 let close = h('button.btn.btn-secondary.cp-token-close', [
-                    h('i.fa.fa-times'),
+                    Icons.get('close'),
                     h('span', Messages.filePicker_close)
                 ]);
                 Util.onClickEnter($(close), () => {
@@ -610,9 +612,9 @@ define([
                         || (!senderKey && content.sender.accountName === 'support'); // XXX anon key?
         var fromPremium = Boolean(content.sender.plan || Util.find(content, ['sender', 'quota', 'plan']));
 
-        var copyUser = h('button.btn.btn-secondary.fa.fa-clipboard.cp-support-copydata', {
+        var copyUser = h('button.btn.btn-secondary.cp-support-copydata', {
             title: Messages.support_copyUserData
-        });
+        }, Icons.get('copy'));
         Util.onClickEnter($(copyUser), () => {
             let data = JSON.stringify({
                 name: content.sender.name,

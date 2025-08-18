@@ -458,7 +458,7 @@ define([
                 title: Messages.canvas_imageEmbed,
                 text: Messages.toolbar_insert,
                 drawer: false,
-                icon: 'fa-picture-o',
+                icon: 'file-image',
                 name: 'mediatag'
             }).click(function () {
                 $('<input>', {type:'file'}).on('change', onUpload).click();

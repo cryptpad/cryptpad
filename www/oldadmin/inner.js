@@ -22,6 +22,8 @@ define([
     'json.sortify',
 
     '/lib/datepicker/flatpickr.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
     '/components/tweetnacl/nacl-fast.min.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
@@ -46,7 +48,9 @@ define([
     Support,
     Clipboard,
     Sortify,
-    Flatpickr
+    Flatpickr,
+    Lucide,
+    Icons
     )
 {
     var APP = {
@@ -1633,7 +1637,7 @@ Example
                     var url = privateData.origin + Hash.hashToHref(key, 'register');
 
                     var del = h('button.btn.btn-danger', [
-                        h('i.fa.fa-trash'),
+                        Icons.get('trash-full'),
                         h('span', Messages.kanban_delete)
                     ]);
                     var $del = $(del);
@@ -1646,7 +1650,7 @@ Example
                         });
                     });
                     var copy = h('button.btn.btn-secondary', [
-                        h('i.fa.fa-clipboard'),
+                        Icons.get('copy'),
                         h('span', Messages.admin_invitationCopy)
                     ]);
                     Util.onClickEnter($(copy), function () {
@@ -1834,7 +1838,7 @@ Example
                     var data = all[key];
                     var editUser = () => {};
                     var del = h('button.btn.btn-danger', [
-                        h('i.fa.fa-trash'),
+                        Icons.get('trash-full'),
                         Messages.admin_usersRemove
                     ]);
                     var $del = $(del);
@@ -1847,7 +1851,7 @@ Example
                         });
                     });
                     var edit = h('button.btn.btn-secondary', [
-                        h('i.fa.fa-pencil'),
+                        Icons.get('edit'),
                         h('span', Messages.tag_edit)
                     ]);
                     Util.onClickEnter($(edit), function () {
@@ -1889,7 +1893,7 @@ Example
                     var infoButton = h('button.btn.primary.cp-report', {
                         style: 'margin-left: 10px; cursor: pointer;',
                     }, [
-                        h('i.fa.fa-database'),
+                        Icons.get('database'),
                         h('span', Messages.admin_diskUsageButton)
                     ]);
                     $(infoButton).click(() => {
@@ -3906,15 +3910,15 @@ Example
     };
 
     var SIDEBAR_ICONS = {
-        general: 'fa fa-user-o',
-        stats: 'fa fa-line-chart',
-        users: 'fa fa-address-card-o',
-        quota: 'fa fa-hdd-o',
-        support: 'fa fa-life-ring',
-        broadcast: 'fa fa-bullhorn',
-        performance: 'fa fa-heartbeat',
-        network: 'fa fa-sitemap', // or fa-university ?
-        database: 'fa fa-database',
+        general: 'user-profile',
+        stats: 'stats',
+        users: 'teams',
+        quota: 'drive',
+        support: 'support',
+        broadcast: 'broadcast',
+        performance: 'performance',
+        network: 'newtork',
+        database: 'database',
     };
 
     var createLeftside = function () {
@@ -3932,7 +3936,7 @@ Example
             var iconClass = SIDEBAR_ICONS[key];
             var icon;
             if (iconClass) {
-                icon = h('span', { class: iconClass });
+                icon = Icons.get(iconClass);
             }
             var $category = $(h('div', {
                 'tabindex': 0,

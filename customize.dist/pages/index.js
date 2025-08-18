@@ -143,7 +143,7 @@ define([
         var locationBlock;
         if (Pages.Instance.location) {
             locationBlock = h('div.cp-instance-location', [
-                h('i.fa.fa-map-pin', {'aria-hidden': 'true'}),
+                Icons.get('map-pin'),
                 Msg._getKey('home_location', [ Pages.Instance.location ]),
             ]);
         } else {
