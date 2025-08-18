@@ -99,7 +99,7 @@ define([
         "renamed": "flag", // XXX
         "restore": "restore", // XXX
         "all": "menu",
-        "history": "archive",
+        "history": "history",
         "chat": "message-circle-more",
         "mail": "mail", // XXX
         "upload-avatar": "image-up",
@@ -194,7 +194,8 @@ define([
         "badge-admin": "star",
         "badge-moderator": "life-buoy",
         "badge-premium": "ticket-check",
-        "badge-error": "circle-alert"
+        "badge-error": "circle-alert",
+        "remove-history": "eraser",
     };
 
     Icons.get = (name, attrs = {}) => {

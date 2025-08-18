@@ -243,7 +243,8 @@ define([
             $(getChat(id)).find('.cp-app-contacts-messages').html('');
         };
         markup.chatbox = function (id, data, curvePublic) {
-            var moreHistory = h('span.cp-app-contacts-more-history.fa.fa-history', {
+            var moreHistory = Icons.get('history', {
+                class: 'cp-app-contacts-more-history',
                 title: Messages.contacts_fetchHistory,
             });
 
@@ -307,7 +308,8 @@ define([
                 });
             });
 
-            var removeHistory = h('span.cp-app-contacts-remove-history.fa.fa-eraser', {
+            var removeHistory = Icons.get('remove-history', {
+                'class': 'cp-app-contacts-remove-history',
                 title: Messages.contacts_removeHistoryTitle
             });
 
@@ -343,7 +345,7 @@ define([
 
             var priv = metadataMgr.getPrivateData();
 
-            var closeTips = h('span.fa.fa-times.cp-app-contacts-tips-close');
+            var closeTips = Icons.get('close', { 'class': 'cp-app-contacts-tips-close'});
             var tips;
             if (isApp && Util.find(priv.settings, ['general', 'hidetips', 'chat']) !== true) {
                 tips = h('div.cp-app-contacts-tips', [
@@ -360,9 +362,9 @@ define([
             var input = h('textarea', {
                 placeholder: Messages.contacts_typeHere
             });
-            var sendButton = h('button.btn.btn-primary.fa.fa-paper-plane', {
+            var sendButton = h('button.btn.btn-primary', {
                 title: Messages.contacts_send,
-            });
+            }, Icons.get('send'));
 
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', displayName),
@@ -542,21 +544,24 @@ define([
                 curve = __channel.curvePublic;
             }
 
-            var unmute = h('span.cp-app-contacts-remove.fa.fa-bell.cp-unmute-icon', {
+            var unmute = Icons.get('notification', {
+                class: 'cp-app-contacts-remove cp-unmute-icon',
                 title: Messages.contacts_unmute || 'unmute',
                 style: (curve && mutedUsers[curve]) ? undefined : 'display: none;'
             });
-            var mute = h('span.cp-app-contacts-remove.fa.fa-bell-slash.cp-mute-icon', {
+            var mute = Icons.get('mute', {
+                class: 'cp-app-contacts-remove cp-mute-icon',
                 title: Messages.contacts_mute || 'mute',
                 style: (curve && mutedUsers[curve]) ? 'display: none;' : undefined
             });
-            var remove = h('span.cp-app-contacts-remove.fa.fa-user-times', {
+            var remove = Icons.get('unfriend', {
+                class: 'cp-app-contacts-remove',
                 title: Messages.contacts_remove
             });
-            var leaveRoom = h('span.cp-app-contacts-remove.fa.fa-sign-out', {
+            var leaveRoom = Icons.get('logout', {
+                class: 'cp-app-contacts-remove',
                 title: Messages.contacts_leaveRoom
             });
-
             var status = h('span.cp-app-contacts-status', {
                 title: Messages.contacts_online
             });
@@ -820,6 +825,7 @@ define([
                     $container.removeClass('cp-app-contacts-initializing');
                     display(room.id);
                 }
+                setTimeout( () => Lucide.createIcons());
             });
         };
 
