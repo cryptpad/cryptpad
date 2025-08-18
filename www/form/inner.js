@@ -3937,7 +3937,8 @@ define([
             $container.find('.cp-form-block:not(.cp-form-submit-message)').each(function (i, el) {
                 var $el = $(el);
                 var uid = $el.attr('data-id');
-                $el.before(getFormCreator(uid));
+                var inSection = ($(el.parentElement).attr('class').indexOf('section') !== -1) ? true : false;
+                $el.before(getFormCreator(uid, inSection));
             });
             // Add to the end of a section
             $container.find('.cp-form-section-sortable').each(function (i, el) {
