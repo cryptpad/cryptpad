@@ -2983,7 +2983,7 @@ define([
                         $span.attr('aria-checked', true);
                     }
                     if (!obj.thumbnail) {
-                        $span.append(obj.icon || h('span.cptools.cptools-template'));
+                        $span.append(obj.icon || Icons.get('file-template'));
                     }
                     $('<span>', {'class': 'cp-creation-template-element-name'}).text(name)
                         .appendTo($span);

@@ -197,6 +197,7 @@ define([
         "badge-error": "circle-alert",
         "remove-history": "eraser",
         "square": "square",
+        "timer": "hourglass"
     };
 
     Icons.get = (name, attrs = {}) => {

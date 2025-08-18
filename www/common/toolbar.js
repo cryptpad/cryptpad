@@ -275,9 +275,9 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
             if (isMe && !priv.readOnly) {
                 if (!Config.disableProfile) {
                     var $button = $('<button>', {
-                        'class': 'fa fa-pencil cp-toolbar-userlist-button',
+                        'class': 'cp-toolbar-userlist-button',
                         title: Messages.user_rename
-                    }).appendTo($nameSpan);
+                    }, Icons.get('edit')).appendTo($nameSpan);
                     $button.hover(function (e) { e.preventDefault(); e.stopPropagation(); });
                     $button.mouseenter(function (e) {
                         e.preventDefault();
@@ -329,27 +329,27 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
                 && !priv.readOnly) {
                 if (pendingFriends[data.curvePublic]) {
                     $('<button>', {
-                        'class': 'fa fa-hourglass-half cp-toolbar-userlist-button',
+                        'class': 'cp-toolbar-userlist-button',
                         'title': Messages.profile_friendRequestSent
-                    }).appendTo($nameSpan);
+                    }, Icons.get('timer')).appendTo($nameSpan);
                 } else if (friendRequests[data.curvePublic]) {
                     $('<button>', {
-                        'class': 'fa fa-bell cp-toolbar-userlist-button',
+                        'class': ' cp-toolbar-userlist-button',
                         'data-cptippy-html': true,
                         'title': Messages._getKey('friendRequest_received', [safeName]),
-                    }).appendTo($nameSpan).click(function (e) {
+                    }, Icons.get('notification')).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
                         UIElements.displayFriendRequestModal(Common, friendRequests[data.curvePublic]);
                     });
 
                 } else {
                     $('<button>', {
-                        'class': 'fa fa-user-plus cp-toolbar-userlist-button',
+                        'class': 'cp-toolbar-userlist-button',
                         'data-cptippy-html': true,
                         'title': Messages._getKey('userlist_addAsFriendTitle', [
                             safeName,
                         ])
-                    }).appendTo($nameSpan).click(function (e) {
+                    }, Icons.get('add-friend')).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
                         Common.sendFriendRequest(data, function (err, obj) {
                             if (err || (obj && obj.error)) {
@@ -361,9 +361,9 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
                 }
             } else if (Common.isLoggedIn() && data.curvePublic && friends[data.curvePublic]) {
                 $('<button>', {
-                    'class': 'fa fa-comments-o cp-toolbar-userlist-button',
+                    'class': 'cp-toolbar-userlist-button',
                     'title': Messages.contact_chat
-                }).appendTo($nameSpan).click(function (e) {
+                }, Icons.get('comment')).appendTo($nameSpan).click(function (e) {
                     e.stopPropagation();
                     Common.openURL('/contacts/');
                 });

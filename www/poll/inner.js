@@ -1231,7 +1231,7 @@ define([
         var $publish = common.createButton('', true, {
             name: 'publish',
             text: Messages.poll_publish_button,
-            icon: 'fa-check',
+            icon: 'check',
             drawer: false,
             hiddenReadOnly: true
         }).click(function () { publish(!APP.proxy.published); }).appendTo(APP.toolbar.$bottomM);
