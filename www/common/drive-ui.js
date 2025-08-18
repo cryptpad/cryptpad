@@ -504,9 +504,10 @@ define([
                     h("ul.dropdown-menu", getNewPadTypes().map(function (app) {
                         return isAppEnabled(app) ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (restricted[app] === 0 ? '.cp-app-disabled' : ''), {
                             'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon[app],
-                            'data-type': app
-                        }, Messages.type[app])) : undefined;
+                        },[
+                            Icons.get(AppConfig.applicationsIcon[app]),
+                            Messages.type[app]
+                        ])) : undefined;
                     })),
                 ]),
                 $separator.clone()[0],
@@ -585,15 +586,6 @@ define([
                 ]))
             ])
         ]);
-        // add icons to the contextmenu options
-        $(menu).find("li a.dropdown-item").each(function (i, el) { // XXX will be removed after updating custom icons
-            var $icon = $("<span>");
-            if ($(el).attr('data-icon')) {
-                var font = $(el).attr('data-icon').indexOf('cptools') === 0 ? 'cptools' : 'fa';
-                $icon.addClass(font).addClass($(el).attr('data-icon'));
-                $(el).prepend($icon);
-            }
-        });
         // add events handlers for the contextmenu submenus
         $(menu).find(".dropdown-submenu").each(function (i, el) {
             var $el = $(el);

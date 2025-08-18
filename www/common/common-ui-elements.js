@@ -3019,7 +3019,7 @@ define([
                         name: fromFileData.title,
                         id: 0,
                         thumbnail: thumbnail,
-                        icon: h('span.cptools.cptools-file'),
+                        icon: Icons.get('drive-file'),// XXX
                     }];
                     redraw(0);
                 };
@@ -3033,7 +3033,7 @@ define([
                 allData = [{
                     name: fromContent.title,
                     id: 0,
-                    icon: h('span.cptools.cptools-poll'),
+                    icon: Icons.get('poll'),
                 }];
                 redraw(0);
             }

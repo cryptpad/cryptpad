@@ -80,7 +80,7 @@ define([
                 return h('a.cp-index-appitem' + cls, [
                     attr,
                     h(s, [
-                        h('i.' + font + '.' + icon, {'aria-hidden': 'true'}),
+                        Icons.get(icon),
                         h('div.pad-button-text', [ x[1] ])
                     ])
                 ]);

@@ -1210,28 +1210,26 @@ define([
 
         if (AppConfig.applicationsIcon && AppConfig.applicationsIcon[type]) {
             icon = AppConfig.applicationsIcon[type];
-            var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
             if (type === 'fileupload') { type = 'file'; }
             if (type === 'folderupload') { type = 'file'; }
             if (type === 'link') { type = 'drive'; }
             var appClass = ' cp-icon cp-icon-color-'+type;
-            icon = h('i', {'class': font + ' ' + icon + appClass});
+            icon = Icons.get(icon, {'class': appClass});
         }
 
         return icon;
     };
-    var $defaultIcon = $('<span>', {"class": "fa fa-file-text-o"});
+    var $defaultIcon = $(Icons.get('drive-file'));
     UI.getIcon = function (type) {
         var $icon = $defaultIcon.clone();
 
         if (AppConfig.applicationsIcon && AppConfig.applicationsIcon[type]) {
             var icon = AppConfig.applicationsIcon[type];
-            var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
             if (type === 'fileupload') { type = 'file'; }
             if (type === 'folderupload') { type = 'file'; }
             if (type === 'link') { type = 'drive'; }
             var appClass = ' cp-icon cp-icon-color-'+type;
-            $icon = $('<span>', {'class': font + ' ' + icon + appClass});
+            $icon = Icons.get(icon, {'class': appClass});
         }
 
         return $icon;

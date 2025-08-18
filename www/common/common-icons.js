@@ -180,7 +180,21 @@ define([
         "certificate": "shield-check",
         "secret-user": "venetian-mask",
         "circle-question": "circle-question-mark",
-        "print": "printer"
+        "print": "printer",
+        "pad": "file",
+        "slide": "file",
+        "poll": "file",
+        "form": "file",
+        "whiteboard": "file",
+        "diagram": "file",
+        "todo": "file",
+        "kanban": "file",
+        "doc": "file",
+        "presentation": "file",
+        "badge-admin": "star",
+        "badge-moderator": "life-buoy",
+        "badge-premium": "ticket-check",
+        "badge-error": "circle-alert"
     };
 
     Icons.get = (name, attrs = {}) => {

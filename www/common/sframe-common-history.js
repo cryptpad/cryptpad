@@ -629,7 +629,7 @@ define([
                     keys: [27],
                 }, {
                     className: 'primary',
-                    iconClass: '.fa.fa-camera',
+                    iconClass: 'snapshot',
                     name: Messages.snapshots_new,
                     onClick: function () {
                         var val = $input.val();

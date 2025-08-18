@@ -89,7 +89,7 @@
         }
         .cp-instance-location {
             margin-top: 20px;
-            i {
+            svg {
                 font-size: 1.2em;
                 margin-right: 5px;
             }
@@ -145,7 +145,7 @@
     @icons-text-size: 24px;
     .bs-callout {
         display: flex;
-        align-items: stretch;
+        align-items: center;
         margin: 0;
         box-sizing: border-box;
         position: relative;
@@ -169,7 +169,7 @@
             text-overflow: ellipsis;
             font-size: 16px;
         }
-        .fa, .cptools {
+        svg {
             display: flex;
             align-items: center;
             font-size: 3.5em;
@@ -214,11 +214,11 @@
     each(@colortheme_apps, {
         .cp-callout-@{key} {
             border-radius: @infopages-radius;
-            i { color: @value; }
+            svg { color: @value; }
             &:hover {
                 @desat: desaturate(@value, 15%);
                 background-color: contrast(@cryptpad_text_col, lighten(@value, 30%), darken(@desat, 20%));
-                i { color: @cryptpad_text_col; }
+                svg { color: @cryptpad_text_col; }
             }
         }
     });
@@ -261,7 +261,7 @@
                 margin: 10px 0;
                 border-radius: @infopages-radius-L;
                 padding: 0.75rem;
-                i {
+                svg {
                     display: inline;
                     margin-right: 10px;
                 }
@@ -286,7 +286,7 @@
         div {
             .infopages_link();
             color: @cryptpad_color_white;
-            .fa, .cptools {
+            svg {
                 font-size: inherit;
                 padding: 0;
                 width: 1em;
