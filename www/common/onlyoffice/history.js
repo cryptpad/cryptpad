@@ -24,6 +24,7 @@ define([
 
         var cpIndex = -1;
         var msgIndex = -1;
+        var msgIndexPrev;
         var ooMessages = {};
         var loading = false;
         var update = function () {};
@@ -224,7 +225,7 @@ define([
             var id = getId();
                         console.log("id", id, ooMessages[id])
             console.log("next1", msgIndex)
-            msgIndex = -1
+            // msgIndex = -1
 
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
@@ -251,8 +252,8 @@ define([
 
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
-            msgIndex = Object.keys(msgs).length-2
-            console.log("prev1", msgIndex, id)
+            // msgIndex = Object.keys(msgs).length-2
+            console.log("prev1", msgIndex, id, )
 
             msgIndex--;
             var patch = msgs[msgIndex];
@@ -372,7 +373,7 @@ define([
                 update();
             });
             $prev.click(function () {
-                                loadMoreOOHistory();
+                                // loadMoreOOHistory();
                 // console.log("hiiii", data)
                 // console.log("loading", loading)
                 if (loading) { return; }
