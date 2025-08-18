@@ -565,6 +565,8 @@ define([
                 delete pendingChanges[key];
             });
             if (APP.stopHistory || APP.template) { APP.history = false; }
+                                console.log("config2")
+
             startOO(blob, type, true);
         };
 
@@ -599,6 +601,8 @@ define([
             data.callback = function () {
                 if (APP.template) { APP.template = false; }
                 resetData(blob, file);
+                                                console.log("config23")
+
             };
 
             APP.FM.handleFile(blob, data);
@@ -842,6 +846,8 @@ define([
                     .then(({blob, fileType}) => {
                         ooChannel.queue = messages;
                         resetData(blob, fileType);
+                                                        console.log("config24")
+
                         UI.removeLoadingScreen();
                     })
                     .catch(() => {
@@ -858,6 +864,8 @@ define([
                         var blob = loadInitDocument(type, true);
                         ooChannel.queue = messages;
                         resetData(blob, file);
+                                                        console.log("config25")
+
                         UI.removeLoadingScreen();
                     });
             });
@@ -2910,11 +2918,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 const {blob, fileType} = await loadLastDocument(cp);
                 if (!keepQueue) { ooChannel.queue = []; }
                 resetData(blob, fileType);
+                                                console.log("config26")
+
             } catch (e) {
                 var file = getFileType();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
                 if (!keepQueue) { ooChannel.queue = []; }
+                                                console.log("config27")
+
                 resetData(blob, file);
             }
         };
@@ -2966,6 +2978,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 });
                 ooChannel.historyLastHash = ooChannel.lastHash;
                 ooChannel.currentIndex = ooChannel.cpIndex;
+                                                console.log("config3")
+
                 loadCp(lastCp, true);
             });
         };
@@ -3131,10 +3145,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onPatch = function (patch) {
                     // Patch on the current cp
+                    console.log('patchmsg', patch.msg)
                     ooChannel.send(JSON.parse(patch.msg));
                 };
                 var onCheckpoint = function (cp) {
                     // We want to load a checkpoint:
+                                                    console.log("config4")
+
                     loadCp(cp);
                 };
                 var setHistoryMode = function (bool) {
@@ -3150,6 +3167,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // Fill the queue and then load the last CP
                     rtChannel.getHistory(function () {
                         var lastCp = getLastCp();
+                                                        console.log("config5")
+
                         loadCp(lastCp, true);
                     });
                 };
@@ -3597,6 +3616,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
 
                 var next = function () {
+                    console.log("config1")
                     const { blob, file } = cpObj;
                     startOO(blob, file);
                     setEditable(!readOnly);
@@ -3808,6 +3828,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var lastCp = getLastCp();
             loadLastDocument(lastCp)
                 .then(({blob, fileType}) => {
+                                                    console.log("config28")
+
                     resetData(blob, fileType);
                 })
                 .catch((err) => {

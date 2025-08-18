@@ -82,7 +82,40 @@ define([
             else { $time.text(''); }
         };
 
-        var messages;
+        function getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, callback) {
+            sframeChan.query('Q_GET_HISTORY_RANGE', {
+                channel: config.onlyoffice.channel,
+                lastKnownHash: fromHash,
+                toHash: toHash,
+            }, function (err, data) {
+                if (err) {
+                    console.error(err);
+                    callback(err);
+                    return;
+                }
+
+                if (!Array.isArray(data.messages)) {
+                    console.error('Not an array!');
+                    callback(new Error('Invalid messages format'));
+                    return;
+                }
+
+                let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
+
+                const messages = (data.messages || []).slice(initialCp ? 0 : 1);
+                console.log("data mess", messages, data.messages);
+
+                if (config.debug) {
+                    console.log(data.messages);
+                }
+
+                fillOO(id, messages);
+                loading = false;
+                // $share.show();
+
+                callback(null, messages);
+            });
+        }
 
         // We want to load a checkpoint (or initial state)
         var loadMoreOOHistory = function () {
@@ -96,8 +129,6 @@ define([
                 id = sortedCp[sortedCp.length - 1 - cpIndex];
                 cp = hashes[id];
             }
-                        console.log("index", cpIndex, sortedCp, cp)
-
             var nextId = sortedCp[sortedCp.length - cpIndex];
 
             // Get the history between "toHash" and "fromHash". This function is using
@@ -107,7 +138,7 @@ define([
             // We need to get all the patches between the current cp hash and the next cp hash
 
             // Current cp or initial hash (invalid hash ==> initial hash)
-            var toHash = cp ? cp.hash : 'NONE';
+            var toHash = cp?.hash ? cp.hash : 'NONE';
             // Next cp or last hash
             var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
 
@@ -120,27 +151,28 @@ define([
                 return void config.onCheckpoint(cp);
             }
 
-            sframeChan.query('Q_GET_HISTORY_RANGE', {
-                channel: config.onlyoffice.channel,
-                lastKnownHash: fromHash,
-                toHash: toHash,
-            }, function (err, data) {
-                if (err) { return void console.error(err); }
-                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
+            getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, function (err, messages) {
+                if (err) {
+                    console.error("Failed to get messages:", err);
+                    return;
+                }
 
-                // The first "cp" in history is the empty doc. It doesn't include the first patch
-                // of the history
-                var initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined
-
-                var messages = (data.messages || []).slice(initialCp ? 0 : 1);
-                console.log("data mess", messages, data.messages)
-                if (config.debug) { console.log(data.messages); }
-                fillOO(id, messages);
-                loading = false;
-                config.onCheckpoint(cp);
-                $share.show();
+                // Now you can use `messages` here
+                console.log("Messages received:", messages);
             });
+
+
         };
+
+        getMessages(config.onlyoffice.lastHash, 'NONE', cpIndex, sortedCp, undefined, -1, config, fillOO, $share, function (err, messages) {
+            if (err) {
+                console.error("Failed to get messages:", err);
+                return;
+            }
+
+            // Now you can use `messages` here
+            console.log("Messages received:", messages);
+        });
         
 
 
@@ -198,6 +230,10 @@ define([
             var msgs = ooMessages[id];
             msgIndex++;
             var patch = msgs[msgIndex];
+                                                console.log("patch next1", patch, msgs, msgIndex)
+
+                                    console.log("patch next2", ooMessages[id])
+
             if (!patch) { loading = false; return; }
             console.log("next2", msgIndex)
             config.onPatch(patch);
@@ -215,15 +251,15 @@ define([
 
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
-            msgIndex = msgs.length-1
-            console.log("prev1", msgIndex)
+            msgIndex = Object.keys(msgs).length-2
+            console.log("prev1", msgIndex, id)
 
             msgIndex--;
             var patch = msgs[msgIndex];
-                        console.log("patch", ooMessages[id])
+                        console.log("patch prev", ooMessages[id], msgs[msgIndex])
 
             if (!patch) { loading = false; return; }
-                        console.log("prev2", msgIndex)
+                        console.log("prev2", msgIndex, id)
 
             config.onPatch(patch);
             showVersion();
@@ -337,8 +373,8 @@ define([
             });
             $prev.click(function () {
                                 loadMoreOOHistory();
-                console.log("hiiii", data)
-                console.log("loading", loading)
+                // console.log("hiiii", data)
+                // console.log("loading", loading)
                 if (loading) { return; }
                 loading = true;
                 if (msgIndex === -1) {
