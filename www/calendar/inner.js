@@ -2203,6 +2203,7 @@ APP.recurrenceRule = {
             $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(h('i.fa.fa-floppy-o', {'aria-hidden': 'true'}));
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
+            $el.find('.tui-full-calendar-dropdown-arrow').append(h('i.fa.fa-caret-down', {'aria-hidden': 'true'})).removeClass('tui-full-calendar-dropdown-arrow').addClass('tui-full-calendar-dropdown-arrow-custom');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
             $el.find('.tui-full-calendar-section-allday').attr('tabindex', 0);
             $el.find('.cp-calendar-close').attr('tabindex',-1);
@@ -2288,13 +2289,21 @@ APP.recurrenceRule = {
                             break;
                     }
                 };
-
+                let updateDropdownArrow = function(isOpen) {
+                    const $icon = $dropdownButton.find('i.fa');
+                    if (isOpen) {
+                        $icon.removeClass('fa-caret-down').addClass('fa-caret-up');
+                    } else {
+                        $icon.removeClass('fa-caret-up').addClass('fa-caret-down');
+                    }
+                }
                 $dropdownButton.on('click keydown', function (event) {
                     if (event.type !== 'click' && event.key !== 'Enter' && event.key !== ' ' && event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
                         return;
                     }
                     let isOpen = $el.find('.tui-full-calendar-open').length > 0;
                     toggleAriaExpanded(!isOpen);
+                    updateDropdownArrow(!isOpen);
                     if (!isOpen && event.key !== 'ArrowUp') {
                         $dropdownMenu.find('li').first().focus();
                     }
@@ -2306,6 +2315,7 @@ APP.recurrenceRule = {
                 $(document).on('click', function (event) {
                     if (!$(event.target).closest($dropdownButton).length) {
                         toggleAriaExpanded(false);
+                        updateDropdownArrow(false);
                     }
                 });
 
