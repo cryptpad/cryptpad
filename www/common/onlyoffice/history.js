@@ -23,8 +23,8 @@ define([
             throw new Error("Missing config element");
         }
 
-        var cpIndex = -1;
-        var msgIndex = -1;
+        var cpIndex;
+        var msgIndex = 0;
 
         var ooMessages = {};
         var loading = false;
@@ -39,7 +39,7 @@ define([
 
         var endWithCp = sortedCp.length &&
                         config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
-
+        console.log("endwithcp?", sortedCp, config.onlyoffice.lastHash)
         var fillOO = function (id, messages) {
             if (!id) { return; }
             if (ooMessages[id]) { return; }
@@ -47,7 +47,7 @@ define([
             update();
         };
 
-        if (endWithCp) { cpIndex = 0; }
+        if (endWithCp) { cpIndex = 0; } else {cpIndex = -1}
 
         var $version, $time, $share;
         var $hist = $toolbar.find('.cp-toolbar-history');
@@ -139,7 +139,7 @@ define([
             // Next cp or last hash
             var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
 
-            msgIndex = -1;
+            msgIndex = -2;
 
 
             showVersion();
@@ -207,6 +207,25 @@ define([
         };
 
         var next = function () {
+            var id = getId();
+            if (!ooMessages[id]) { loading = false; return; }
+            var msgs = ooMessages[id];
+            // msgIndex = 0
+            msgIndex++;
+            // id++;
+            var patch = msgs[msgIndex];
+            if (!patch) { loading = false; return; }
+                        console.log("patch next", msgs, msgIndex, id)
+
+            config.onPatch(patch);
+            showVersion();
+            setTimeout(function () {
+                $('iframe').blur();
+                loading = false;
+            }, 200);
+        };
+
+        var prev = function () {
             var id = getId();
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
@@ -371,11 +390,14 @@ define([
              $prev.click(function () {
                 if (loading) { return; }
                 loading = true;
+                cpIndex = 0
+                                console.log("hello1", cpIndex)
+
                 if (msgIndex === -1) {
-                    cpIndex++;
+                    // cpIndex++;
                 }
                 loadMoreOOHistory();
-                console.log("hello")
+                console.log("hello2", cpIndex)
                 setTimeout(function () {
                     next()
                     // loading = false;
