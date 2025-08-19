@@ -10,7 +10,8 @@ define([
     //var ChainPad = window.ChainPad;
     var History = {};
 
-    History.create = function (common, config) {
+    History.create = function (common, config, patchNo) {
+        console.log("Patch number", patchNo)
         if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
         if (History.loading) { return void console.error("History is already being loaded..."); }
         History.loading = true;
@@ -120,6 +121,7 @@ define([
 
             // Get the checkpoint ID
             var id = -1;
+            console.log("CP", cpIndex, sortedCp)
             if (cpIndex < sortedCp.length) {
                 id = sortedCp[sortedCp.length - 1 - cpIndex];
                 cp = hashes[id];
@@ -141,10 +143,11 @@ define([
 
 
             showVersion();
+            console.log("oomsgs", ooMessages, id, cp)
             if (ooMessages[id]) {
                 // Cp already loaded: reload OO
                 loading = false;
-                return void config.onCheckpoint(cp);
+                return void config.onCheckpoint(cp, 'patchNo');
             }
 
             getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, function (err, messages) {
@@ -207,9 +210,13 @@ define([
             var id = getId();
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
+            // msgIndex = 0
             msgIndex++;
+            id++;
             var patch = msgs[msgIndex];
             if (!patch) { loading = false; return; }
+                        console.log("patch next", msgs, msgIndex, id)
+
             config.onPatch(patch);
             showVersion();
             setTimeout(function () {
@@ -218,37 +225,39 @@ define([
             }, 200);
         };
 
-        var prev = (function () {
-            var msgIndexPrevMap = {};
+        // var prev = (function () {
+        //     var msgIndexPrevMap = {};
 
-            return function () {
-                var id = getId();
 
-                if (!ooMessages[id]) { loading = false; return; }
+        //     return function () {
+                
+        //         var id = getId();
 
-                var msgs = ooMessages[id];
+        //         if (!ooMessages[id]) { loading = false; return; }
 
-                if (!(id in msgIndexPrevMap)) {
-                    msgIndexPrevMap[id] = Object.keys(msgs).length - 1;
-                } else {
-                    msgIndexPrevMap[id]--;
-                }
+        //         var msgs = ooMessages[id];
 
-                var index = msgIndexPrevMap[id];
+        //         if (!(id in msgIndexPrevMap)) {
+        //             msgIndexPrevMap[id] = Object.keys(msgs).length - 1;
+        //         } else {
+        //             msgIndexPrevMap[id]--;
+        //         }
 
-                var patch = msgs[index];
+        //         var index = msgIndexPrevMap[id];
 
-                if (!patch) { loading = false; return; }
+        //         var patch = msgs[index];
 
-                config.onPatch(patch);
-                showVersion();
+        //         if (!patch) { loading = false; return; }
+        //         console.log("patch", msgs, index)
+        //         config.onPatch(patch);
+        //         showVersion();
 
-                setTimeout(function () {
-                    $('iframe').blur();
-                    loading = false;
-                }, 200);
-            };
-        })();
+        //         setTimeout(function () {
+        //             $('iframe').blur();
+        //             loading = false;
+        //         }, 200);
+        //     };
+        // })();
 
 
 
@@ -365,7 +374,34 @@ define([
                 if (msgIndex === -1) {
                     cpIndex++;
                 }
-                prev();
+                loadMoreOOHistory();
+                console.log("hello")
+                setTimeout(function () {
+                    next()
+                    // loading = false;
+                }, 2000);
+                // next()
+
+                // var id = getId();
+                // if (!ooMessages[id]) { loading = false; return; }
+                // var msgs = ooMessages[id];
+                // msgIndex--;
+                // var patch = msgs[32];
+                // if (!patch) { loading = false; return; }
+                // config.onPatch(patch);
+                // showVersion();
+                // setTimeout(function () {
+                //     $('iframe').blur();
+                //     loading = false;
+                // }, 200);
+                // update();
+                
+                // if (loading) { return; }
+                // loading = true;
+                // if (msgIndex === -1) {
+                //     cpIndex++;
+                // }
+                // prev();
                 update();
             });
             // Go to next checkpoint
@@ -376,7 +412,7 @@ define([
                     cpIndex++;
                 }
                 loadMoreOOHistory();
-                update();
+                // update();
             });
             onKeyDown = function (e) {
                 var p = function () { e.preventDefault(); };
