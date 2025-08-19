@@ -691,6 +691,7 @@ define([
                 default:
                     newText = '';
             }
+            console.log("newtext", newText)
             return new Blob([newText], {type: 'text/plain'});
         };
 
@@ -2544,6 +2545,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
 
             ooLoaded = true;
+            console.log("content", APP.ooconfig)
             if (content.version < 7) {
                 makeChannel();
                 return;
@@ -2904,17 +2906,28 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         const loadCp = async function (cp, keepQueue, patchNo) {
+            console.log("checkpoint", cp)
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
             try {
+                console.log("checkpoint1")
                 const {blob, fileType} = await loadLastDocument(cp);
+                                console.log("checkpoint1.2")
+
                 if (!keepQueue) { ooChannel.queue = []; }
+                                                console.log("checkpoint1.3")
+
                 resetData(blob, fileType);
+                                                                console.log("checkpoint1.4")
+
             } catch (e) {
+                                console.log("checkpoint2", e)
+
                 var file = getFileType();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
+                console.log("blob", blob)
                 if (!keepQueue) { ooChannel.queue = []; }
                 resetData(blob, file, patchNo);
             }
