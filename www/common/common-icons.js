@@ -11,11 +11,11 @@ define([
         "drive-shared-folder": "folder-git-2", // XXX change icon
         "drive-upload-file": "file-up",
         "drive-upload-folder": "folder-up",
-        "file": "file", // change name
+        "file": "file",
         "drive-recent": "clock",
         "drive-owned-document": "id-card",
         "drive-password-document": "file-lock",
-        "drive-folder": "folder", // change name
+        "folder": "folder",
         "folder-open": "folder-open",
         "folder-nocolor": "folder-minus",
         "folder-check": "folder-check",

@@ -93,7 +93,7 @@ define([
     var FILTER = "filter";
 
     // Icons
-    var folder = 'drive-folder';
+    var folder = 'folder';
     var folderOpen = 'folder-open';
     var sharedFolder = 'drive-shared-folder';
     var expandAll = 'expand';
@@ -1311,7 +1311,7 @@ define([
             const icon_classes = 'cp-app-drive-icon-folder cp-app-drive-content-icon';
             colors.forEach(function (color, i) {
                 var element = h("span.cp-app-drive-color-picker-color", [
-                    (i === 0 ? Icons.get('folder-nocolor', {'class': icon_classes + ' folder-no-color'}): Icons.get('drive-folder', {'class': icon_classes})),
+                    (i === 0 ? Icons.get('folder-nocolor', {'class': icon_classes + ' folder-no-color'}): Icons.get('folder', {'class': icon_classes})),
                 ]);
                 $(element).css("color", colors[i]);
                 if (colors[i] === currentColor) {
@@ -1330,7 +1330,7 @@ define([
                         var currentIndex = colorsElements.indexOf(currentElement);
                         var originalIcon = currentIndex === 0 ?
                             Icons.get('folder-nocolor', {'class': icon_classes + ' folder-no-color'}) :
-                            Icons.get('drive-folder', {'class': icon_classes});
+                            Icons.get('folder', {'class': icon_classes});
                         $(currentElement).find('.cp-app-drive-icon-folder').replaceWith(originalIcon);
                     }
                     currentElement = element;
