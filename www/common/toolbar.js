@@ -240,7 +240,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
         }
 
         // Update the buttons
-        var $editIcon = Icons.get('teams');
+        var $editIcon = Icons.get('users');
         var $editCount = $('<span>').text(' ' + numberOfEditUsers);
         var $separator = $('<span>').html('&nbsp;&nbsp;');
         var $viewIcon = numberOfViewUsers === '' ? $() : Icons.get('preview');

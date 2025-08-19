@@ -251,7 +251,7 @@ define([
             if (key === 'list') { $category.append($(Icons.get('list',{class: 'cp-team-cat-list'}))); }
             if (key === 'create') { $category.append($(Icons.get('add'))); } // XXX icon to be changed
             if (key === 'back') { $category.append($(Icons.get('chevron-left'))); }
-            if (key === 'members') { $category.append($(Icons.get('teams'))); }
+            if (key === 'members') { $category.append($(Icons.get('users'))); }
             if (key === 'chat') { $category.append($(Icons.get('chat'))); }
             if (key === 'drive') { $category.append($(Icons.get('drive'))); }
             if (key === 'admin') { $category.append($((Icons.get('administration')))); }

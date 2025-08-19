@@ -2175,7 +2175,7 @@ define([
         if (padType !== 'teams' && accountName) {
             options.push({
                 tag: 'a',
-                content: h('span', [Icons.get('teams')], Messages.type.teams),
+                content: h('span', [Icons.get('users')], Messages.type.teams),
                 action: function () {
                     Common.openURL('/teams/');
                 },

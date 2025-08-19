@@ -19,7 +19,7 @@ define([
         "folder-open": "folder-open",
         "folder-nocolor": "folder-minus",
         "folder-check": "folder-check",
-        "file-template": "file-type", // XXX
+        "file-template": "file-type", // XXX change icon
         "file-pad": "file-text",
         "grid": "layout-grid",
         "list": "list",
@@ -27,7 +27,7 @@ define([
         // Teams
         "promote": "chevrons-up",
         "downgrade": "chevrons-down",
-        // CryptPad apps - icon to be changed
+        // CryptPad apps - icons to be changed
         // Pad
         "pad": "file",
         "pad-settings": "file-cog",
@@ -35,7 +35,7 @@ define([
         "shrink-pad": "minimize-2",
         "slide": "file",
         "poll": "file",
-        // Form
+        // Form - to be changed
         "form": "file",
         "form-text": "minus",
         "form-paragraph": "text",
@@ -95,7 +95,7 @@ define([
         "chevron-up": "chevron-up",
         "copy": "files",
         "close": "x",
-        "teams": "users-round", // XXX change name, multiple usages
+        "users": "users-round", // XXX change name, multiple usages
         "square": "square",
         "timer": "hourglass",
         "map-pin": "map-pin",

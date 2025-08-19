@@ -437,7 +437,7 @@ define([
 
             var fastPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_fastPrev }, [
                 Icons.get('history-prev'),
-                Icons.get('teams') // change icon name
+                Icons.get('users')
             ]);
             var userPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_userPrev }, [
                 Icons.get('history-prev'),
@@ -447,7 +447,7 @@ define([
                 Icons.get('history-prev'),
             ]);
             var fastNext = h('button.cp-toolbar-history-next', { title: Messages.history_fastNext }, [
-                Icons.get('teams'),
+                Icons.get('users'),
                 Icons.get('history-fast-next'),
             ]);
             var userNext = h('button.cp-toolbar-history-next', { title: Messages.history_userNext }, [
@@ -484,7 +484,7 @@ define([
             var timeline = h('div.cp-toolbar-history-timeline', [
                 h('div.cp-history-timeline-line', [
                     h('span.cp-history-timeline-legend', [
-                        Icons.get('teams'),
+                        Icons.get('users'),
                         Icons.get('register-homepage')
                     ]),
                     h('span.cp-history-timeline-loadmore', _loadMore),
