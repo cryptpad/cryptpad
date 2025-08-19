@@ -211,7 +211,7 @@ const factory = () => {
         kanban: 'kanban',
         doc: 'doc',
         presentation: 'presentation',
-        sheet: 'file',
+        sheet: 'sheet',
         drive: 'drive',
         teams: 'teams',
         admin: 'administration',

@@ -2898,7 +2898,7 @@ define([
 
         // Export in "sheet"
         var export2Button = h('button.btn.btn-primary', [
-            Icons.get('sheet'),
+            Icons.get('export-sheet'),
             Messages.form_exportSheet
         ]);
         $(export2Button).appendTo($controls);

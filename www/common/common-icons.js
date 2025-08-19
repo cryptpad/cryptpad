@@ -62,6 +62,8 @@ define([
         "kanban-add-bottom": "between-horizontal-start",
         // Doc
         "doc": "file",
+        // Sheet
+        "sheet": "file",
         // Presentation
         "presentation": "file",
         // Actions
@@ -95,7 +97,7 @@ define([
         "chevron-up": "chevron-up",
         "copy": "files",
         "close": "x",
-        "users": "users-round", // XXX change name, multiple usages
+        "users": "users-round",
         "square": "square",
         "timer": "hourglass",
         "map-pin": "map-pin",
@@ -107,7 +109,7 @@ define([
         "minus": "minus",
         "alert": "triangle-alert",
         "sort-amount-desc": "arrow-down-wide-narrow",
-        "sheet": "sheet", // change name
+        "export-sheet": "sheet",
         "announcement": "megaphone",
         "reply": "message-square-reply",
         "comment": "message-square",
