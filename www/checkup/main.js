@@ -21,6 +21,8 @@ define([
     '/checkup/checkup-tools.js',
     '/customize/application_config.js',
     '/common/onlyoffice/current-version.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     '/components/tweetnacl/nacl-fast.min.js',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -28,7 +30,7 @@ define([
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
             NetConfig, Block, Pages, Tools, AppConfig,
-            OOCurrentVersion) {
+            OOCurrentVersion, Lucide, Icons) {
     window.CHECKUP_MAIN_LOADED = true;
 
     var Assert = Assertions();
@@ -1816,7 +1818,7 @@ define([
         $progress.html('').append(h('div.report.pending.summary', [
             versionStatement(),
             h('p', [
-                h('i.fa.fa-spinner.fa-pulse'),
+                Icons.get('loading'),
                 h('span', Messages._getKey('assert_numberOfTestsCompleted', [completed, total]))
             ])
         ]));

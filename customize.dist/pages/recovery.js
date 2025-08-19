@@ -8,8 +8,10 @@ define([
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/customize/messages.js',
-    '/customize/pages.js'
-], function (Config, $, h, UI, Msg, Pages) {
+    '/customize/pages.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
+], function (Config, $, h, UI, Msg, Pages, Lucide, Icons) {
 
     return function () {
         document.title = Msg.recovery_header;
@@ -68,7 +70,7 @@ define([
                             autofocus: true,
                         }),
                         h('div.cp-recovery-forgot', [
-                            h('i.fa.fa-caret-right'),
+                            Icons.get('chevron-right'),
                             h('span', Msg.recovery_forgot)
                         ]),
                         h('div.cp-recovery-alt', {style: 'display: none;'}, [
