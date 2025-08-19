@@ -1652,6 +1652,7 @@ define([
                         console.error(obj);
                         return;
                     }
+                    console.log("obj", obj)
 
                     debug(obj, 'toOO');
                     chan.event('CMD', obj);
@@ -3131,6 +3132,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onPatch = function (patch) {
                     // Patch on the current cp
+                    console.log("patch", patch.msg)
                     ooChannel.send(JSON.parse(patch.msg));
                 };
                 var onCheckpoint = function (cp) {

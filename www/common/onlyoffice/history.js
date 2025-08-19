@@ -24,6 +24,7 @@ define([
 
         var cpIndex = -1;
         var msgIndex = -1;
+
         var ooMessages = {};
         var loading = false;
         var update = function () {};
@@ -79,6 +80,38 @@ define([
             else { $time.text(''); }
         };
 
+        function getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, callback) {
+            sframeChan.query('Q_GET_HISTORY_RANGE', {
+                channel: config.onlyoffice.channel,
+                lastKnownHash: fromHash,
+                toHash: toHash,
+            }, function (err, data) {
+                if (err) {
+                    console.error(err);
+                    callback(err);
+                    return;
+                }
+
+                if (!Array.isArray(data.messages)) {
+                    return;
+                }
+
+                let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
+
+                const messages = (data.messages || []).slice(initialCp ? 0 : 1);
+
+                if (config.debug) {
+                    console.log(data.messages);
+                }
+
+                fillOO(id, messages);
+                loading = false;
+                // $share.show();
+
+                callback(null, messages);
+            });
+        }
+
         // We want to load a checkpoint (or initial state)
         var loadMoreOOHistory = function () {
             if (!Array.isArray(sortedCp)) { return void console.error("Wrong type"); }
@@ -100,11 +133,12 @@ define([
             // We need to get all the patches between the current cp hash and the next cp hash
 
             // Current cp or initial hash (invalid hash ==> initial hash)
-            var toHash = cp.hash || 'NONE';
+            var toHash = cp?.hash ? cp.hash : 'NONE';
             // Next cp or last hash
             var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
 
             msgIndex = -1;
+
 
             showVersion();
             if (ooMessages[id]) {
@@ -113,27 +147,21 @@ define([
                 return void config.onCheckpoint(cp);
             }
 
-            sframeChan.query('Q_GET_HISTORY_RANGE', {
-                channel: config.onlyoffice.channel,
-                lastKnownHash: fromHash,
-                toHash: toHash,
-            }, function (err, data) {
-                if (err) { return void console.error(err); }
-                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
-
-                // The first "cp" in history is the empty doc. It doesn't include the first patch
-                // of the history
-                var initialCp = cpIndex === sortedCp.length || !cp.hash;
-
-                var messages = (data.messages || []).slice(initialCp ? 0 : 1);
-
-                if (config.debug) { console.log(data.messages); }
-                fillOO(id, messages);
-                loading = false;
-                config.onCheckpoint(cp);
-                $share.show();
+            getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, function (err, messages) {
+                if (err) {
+                    return;
+                }
+                console.log(messages);
             });
-        };
+        }
+
+        getMessages(config.onlyoffice.lastHash, 'NONE', cpIndex, sortedCp, undefined, -1, config, fillOO, $share, function (err, messages) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+        });
+        
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
@@ -147,7 +175,7 @@ define([
 
         UI.spinner($hist).get().show();
 
-        var $fastPrev, $fastNext, $next;
+        var $fastPrev, $fastNext, $next, $prev;
 
         var getId = function () {
             var cps = sortedCp.length;
@@ -158,6 +186,7 @@ define([
             var cps = sortedCp.length;
             $fastPrev.show();
             $next.show();
+            $prev.show();
             $fastNext.show();
             $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous')
                 .prop('disabled', '');
@@ -189,6 +218,39 @@ define([
             }, 200);
         };
 
+        var prev = (function () {
+            var msgIndexPrevMap = {};
+
+            return function () {
+                var id = getId();
+
+                if (!ooMessages[id]) { loading = false; return; }
+
+                var msgs = ooMessages[id];
+
+                if (!(id in msgIndexPrevMap)) {
+                    msgIndexPrevMap[id] = Object.keys(msgs).length - 1;
+                } else {
+                    msgIndexPrevMap[id]--;
+                }
+
+                var index = msgIndexPrevMap[id];
+
+                var patch = msgs[index];
+
+                if (!patch) { loading = false; return; }
+
+                config.onPatch(patch);
+                showVersion();
+
+                setTimeout(function () {
+                    $('iframe').blur();
+                    loading = false;
+                }, 200);
+            };
+        })();
+
+
 
         // Create the history toolbar
         var display = function () {
@@ -203,9 +265,13 @@ define([
             var _next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
                 h('i.fa.fa-step-forward')
             ]);
+            var _prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
+                h('i.fa.fa-step-backward')
+            ]);
             $fastPrev = $(fastPrev);
             $fastNext = $(fastNext).prop('disabled', 'disabled');
             $next = $(_next).prop('disabled', 'disabled');
+            $prev = $(_prev)
 
             var pos = h('span.cp-history-timeline-pos.fa.fa-caret-down');
             var time = h('div.cp-history-timeline-time');
@@ -220,6 +286,7 @@ define([
                 h('div.cp-history-timeline-actions', [
                     h('span.cp-history-timeline-prev', [
                         fastPrev,
+                        _prev,
                     ]),
                     time,
                     version,
@@ -290,6 +357,15 @@ define([
                 loading = true;
                 cpIndex--;
                 loadMoreOOHistory();
+                update();
+            });
+             $prev.click(function () {
+                if (loading) { return; }
+                loading = true;
+                if (msgIndex === -1) {
+                    cpIndex++;
+                }
+                prev();
                 update();
             });
             // Go to next checkpoint
