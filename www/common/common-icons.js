@@ -198,7 +198,10 @@ define([
         "remove-history": "eraser",
         "square": "square",
         "timer": "hourglass",
-        "map-pin": "map-pin"
+        "map-pin": "map-pin",
+        "checked-box": "square-check",
+        "unchecked-box": "square",
+        "table": "table"
     };
 
     Icons.get = (name, attrs = {}) => {

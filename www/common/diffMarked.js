@@ -276,16 +276,16 @@ define([
         var isCheckbox = true;
         if (isCheckedTaskItem) {
             text = text.replace(checkedTaskItemPtn,
-                '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square-check" aria-hidden="true"></i>') + '\n';
         } else if (isUncheckedTaskItem) {
             text = text.replace(uncheckedTaskItemPtn,
-                '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square" aria-hidden="true"></i>') + '\n';
         } else if (hasBogusCheckedInput) {
             text = text.replace(bogusCheckPtn,
-                '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square-check" aria-hidden="true"></i>') + '\n';
         } else if (hasBogusUncheckedInput) {
             text = text.replace(bogusUncheckPtn,
-                '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square" aria-hidden="true"></i>') + '\n';
         } else {
             isCheckbox = false;
         }

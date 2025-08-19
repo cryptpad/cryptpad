@@ -704,10 +704,10 @@ define([
             // Actions
             if (!APP.readOnly && (!c.profile || c.profile === profile)) {
                 $('<button>', {
-                    'class': 'btn btn-secondary fa fa-times',
+                    'class': 'btn btn-secondary',
                     'title': Messages.poll_comment_remove,
                     'data-rt-id': k
-                }).appendTo($actions).click(function () { removeComment(k); });
+                }, Icons.get('close')).appendTo($actions).click(function () { removeComment(k); });
                 /*$('<button>', {
                     'class': 'fa fa-pencil',
                     'title': 'TODO: edit comment',

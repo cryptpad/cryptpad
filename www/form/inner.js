@@ -2861,8 +2861,8 @@ define([
 
         var options = [{
             tag: 'a',
-            attributes: {'class': 'cp-form-export-csv fa fa-table'},
-            content: h('span', Messages.form_exportCSV),
+            attributes: {'class': 'cp-form-export-csv'},
+            content: h('span',[ Icons.get('table'), Messages.form_exportCSV]),
             action: function () {
                 var csv = Exporter.results(content, answers, TYPES, getFullOrder(content));
                 if (!csv) { return void UI.warn(Messages.error); }
