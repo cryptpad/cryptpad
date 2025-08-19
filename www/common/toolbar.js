@@ -109,7 +109,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
                 text: Messages.toolbar_file,
                 options: [],
                 common: Common,
-                iconCls: 'drive-file'
+                iconCls: 'file'
             }).hide();
             $drawer.addClass(FILE_CLS).appendTo($file);
             $drawer.find('.cp-dropdown-content').addClass(DRAWER_CLS);

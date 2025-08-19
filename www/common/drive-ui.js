@@ -3298,7 +3298,7 @@ define([
                         'data-type': 'file',
                     },
                     content: [
-                        Icons.get('drive-file', {'class': 'cp-icon-color-file'}),
+                        Icons.get('file', {'class': 'cp-icon-color-file'}),
                         Messages.type['file']
                     ],
                 });

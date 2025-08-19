@@ -1206,7 +1206,7 @@ define([
     };
 
     UI.getNewIcon = function (type) {
-        var icon = Icons.get('drive-file');
+        var icon = Icons.get('file');
 
         if (AppConfig.applicationsIcon && AppConfig.applicationsIcon[type]) {
             icon = AppConfig.applicationsIcon[type];
@@ -1219,7 +1219,7 @@ define([
 
         return icon;
     };
-    var $defaultIcon = $(Icons.get('drive-file'));
+    var $defaultIcon = $(Icons.get('file'));
     UI.getIcon = function (type) {
         var $icon = $defaultIcon.clone();
 

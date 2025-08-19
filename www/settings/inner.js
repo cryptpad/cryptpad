@@ -2123,9 +2123,9 @@ define([
         drive: 'drive',
         cursor: 'cursor',
         code: 'code-file',
-        pad: 'drive-file',
+        pad: 'file',
         security: 'lock',
-        kanban: 'drive-file', // XXX
+        kanban: 'file', // XXX
         style: 'color-palette',
         notifications: 'notification'
     };

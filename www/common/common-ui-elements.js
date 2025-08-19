@@ -3019,7 +3019,7 @@ define([
                         name: fromFileData.title,
                         id: 0,
                         thumbnail: thumbnail,
-                        icon: Icons.get('drive-file'),// XXX
+                        icon: Icons.get('file'),// XXX
                     }];
                     redraw(0);
                 };
