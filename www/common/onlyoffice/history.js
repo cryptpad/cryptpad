@@ -212,7 +212,7 @@ define([
             var msgs = ooMessages[id];
             // msgIndex = 0
             msgIndex++;
-            id++;
+            // id++;
             var patch = msgs[msgIndex];
             if (!patch) { loading = false; return; }
                         console.log("patch next", msgs, msgIndex, id)
