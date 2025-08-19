@@ -39,7 +39,7 @@ define([
         "form": "file",
         "form-text": "minus",
         "form-paragraph": "text",
-        "form-grid-radio": "list-todo", // XXX
+        "form-grid-radio": "list-todo",
         "form-grid-check": "list-todo",
         "form-list-check": "list-todo",
         "form-list-radio": "list-todo",
@@ -83,8 +83,8 @@ define([
         "refresh": "refresh-ccw",
         "select": "move",
         // General
-        "trash-empty": "trash", // XXX change name
-        "trash-full": "trash-2", // XXX
+        "trash-empty": "trash",
+        "trash-full": "trash-2",
         "features": "info", // XXX
         "documentation": "book-open-text",
         "user-profile": "circle-user-round",
@@ -158,7 +158,7 @@ define([
         "color-palette": "palette",
         "customize": "brush",
         "upload": "hard-drive-upload",
-        "read-only": "pen-off", // XXX
+        "read-only": "pen-off",
         "preview": "eye",
         "tag": "hash",
         "default-error": "circle-x",
@@ -177,8 +177,8 @@ define([
         "expand": "square-plus",
         "expire": "clock-alert",
         "restricted": "ban",
-        "renamed": "flag", // XXX
-        "restore": "restore", // XXX
+        "renamed": "flag",
+        "restore": "restore",
         "all": "menu",
         "chat": "message-circle-more",
         "mail": "mail", // XXX
