@@ -59,7 +59,6 @@ define([
                 var isEAEnabled = checkEarlyAccess(x[0]);
                 //if (i > 2) { s += '.cp-more.cp-hidden'; }
                 var icon = AppConfig.applicationsIcon[x[0]];
-                var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
                 var href = '/'+ x[0] +'/';
                 var attr = isEnabled ? { href: href } : {
                     onclick: function () {

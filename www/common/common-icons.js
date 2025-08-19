@@ -201,7 +201,8 @@ define([
         "map-pin": "map-pin",
         "checked-box": "square-check",
         "unchecked-box": "square",
-        "table": "table"
+        "table": "table",
+        "survey": "graduation-cap"
     };
 
     Icons.get = (name, attrs = {}) => {

@@ -461,11 +461,11 @@ define([
                 h('br'),
                 h('div.cp-teams-invite-block', [
                     h('span', Messages.team_inviteLinkSetPassword),
-                    h('a.cp-teams-help.fa.fa-question-circle', {
+                    h('a.cp-teams-help', {
                         href: Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/security.html#passwords-for-documents-and-folders'),
                         target: "_blank",
                         'data-tippy-placement': "right"
-                    })
+                    }, Icons.get('circle-question'))
                 ]),
                 linkPassword = UI.passwordInput({
                     id: 'cp-teams-invite-password',
@@ -2327,9 +2327,9 @@ define([
         options.push({
             tag: 'a',
             attributes: {
-                'class': 'cp-toolbar-survey fa fa-graduation-cap'
+                'class': 'cp-toolbar-survey'
             },
-            content: h('span', Messages.survey),
+            content: h('span', [Icons.get('survey'), Messages.survey]),
             action: function () {
                 Common.openUnsafeURL(surveyURL);
                 Feedback.send('SURVEY_CLICKED');
@@ -4337,7 +4337,7 @@ define([
         if (!readOnly) {
             buttons.push({
                 className: 'primary',
-                iconClass: '.fa.fa-camera',
+                iconClass: 'camera',
                 name: Messages.snapshots_new,
                 onClick: function () {
                     var val = $input.val();

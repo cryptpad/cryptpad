@@ -94,7 +94,7 @@ define([
         var shareButton = {
             className: 'primary cp-share-with-friends',
             name: Messages.share_withFriends,
-            iconClass: '.fa.fa-shhare-alt',
+            iconClass: 'share',
             onClick: function () {
                 var href;
                 nThen(function (waitFor) {
@@ -444,7 +444,7 @@ define([
             !opts.sharedFolder && {
                 className: 'secondary cp-nobar',
                 name: Messages.share_linkOpen,
-                iconClass: '.fa.fa-eye',
+                iconClass: 'preview',
                 onClick: function () {
                     opts.saveValue();
                     var v = opts.getLinkValue({
@@ -533,7 +533,7 @@ define([
             {
                 className: 'primary cp-nobar',
                 name: Messages.download_dl,
-                iconClass: '.fa.fa-download',
+                iconClass: 'download',
                 onClick: function () {
                     qr.querySelector('canvas').toBlob(blob => {
                         var name = Util.fixFileName((opts.title || 'document') + '-qr.png');
@@ -571,7 +571,7 @@ define([
             {
                 className: 'primary',
                 name: Messages.share_linkCopy,
-                iconClass: '.fa.fa-link',
+                iconClass: 'link',
                 onClick: function () {
                     Feedback.send('SHARE_EMBED');
                     var v = opts.getEmbedValue();
@@ -977,7 +977,7 @@ define([
             {
                 className: 'primary',
                 name: Messages.share_linkCopy,
-                iconClass: '.fa.fa-link',
+                iconClass: 'link',
                 onClick: function () {
                     var v = opts.getLinkValue();
                     Clipboard.copy(v, (err) => {
@@ -1023,7 +1023,7 @@ define([
         }, {
             className: 'primary',
             name: Messages.share_mediatagCopy,
-            iconClass: '.fa.fa-link',
+            iconClass: 'link',
             onClick: function () {
                 var v = common.getMediatagFromHref(opts.fileData);
                 Clipboard.copy(v, (err) => {

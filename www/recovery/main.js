@@ -65,8 +65,8 @@ define([
 
         $forgot.click(function () {
             $alt.toggle();
-            if ($alt.is(':visible')) { $forgot.find('i').attr('class', 'fa fa-caret-down'); }
-            else { $forgot.find('i').attr('class', 'fa fa-caret-right'); }
+            if ($alt.is(':visible')) { $forgot.find('i').attr('data-lucide', 'chevron-down'); }
+            else { $forgot.find('i').attr('data-lucide', 'chevron-right'); }
         });
 
         var proofStr;

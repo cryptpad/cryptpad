@@ -16,8 +16,10 @@ define([
     '/components/nthen/index.js',
     '/components/saferphore/index.js',
     '/components/jszip/dist/jszip.min.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 ], function ($, FileCrypto, Hash, Util, UI, h, Feedback, UO,
-             Cache, Messages, nThen, Saferphore, JsZip) {
+             Cache, Messages, nThen, Saferphore, Lucide, Icons) {
     var saveAs = window.saveAs;
 
     var sanitize = function (str) {
@@ -528,7 +530,7 @@ define([
                 $(progress).find('.fa-square-o').removeClass('fa-square-o')
                     .addClass('fa-check-square-o');
                 $(progress).append(h('p', [
-                    h('span.fa.fa-square-o'),
+                    Icons.get('checked-box'),
                     h('span.text', Messages['settings_export_' + step] || step)
                 ]));
                 done[step] = state; // -1 if no bar, object otherwise
