@@ -210,12 +210,13 @@ define([
             var id = getId();
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
-            // msgIndex = 0
+            msgIndex = 0
             msgIndex++;
-            // id++;
             var patch = msgs[msgIndex];
+                        console.log("patch next 1", msgs, msgIndex)
+
             if (!patch) { loading = false; return; }
-                        console.log("patch next", msgs, msgIndex, id)
+                                    console.log("patch next 2", msgs, msgIndex, id)
 
             config.onPatch(patch);
             showVersion();
@@ -233,8 +234,9 @@ define([
             msgIndex++;
             // id++;
             var patch = msgs[msgIndex];
+            console.log("patch prev 1", msgs, msgIndex)
             if (!patch) { loading = false; return; }
-                        console.log("patch next", msgs, msgIndex, id)
+                        console.log("patch prev 2", msgs, msgIndex, id)
 
             config.onPatch(patch);
             showVersion();
@@ -399,7 +401,7 @@ define([
                 loadMoreOOHistory();
                 console.log("hello2", cpIndex)
                 setTimeout(function () {
-                    next()
+                    prev()
                     // loading = false;
                 }, 2000);
                 // next()

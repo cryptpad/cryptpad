@@ -286,7 +286,6 @@ define([
         };
         var getLastCp = function (old, i) {
             var hashes = old ? oldHashes : content.hashes;
-            console.log("hashes", hashes, content)
             if (!hashes || !Object.keys(hashes).length) { return {}; }
             i = i || 0;
             var idx = sortCpIndex(hashes);
@@ -2911,15 +2910,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             try {
                 const {blob, fileType} = await loadLastDocument(cp);
                 if (!keepQueue) { ooChannel.queue = []; }
-                console.log("blobdata1", blob)
                 resetData(blob, fileType);
             } catch (e) {
                 var file = getFileType();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
                 if (!keepQueue) { ooChannel.queue = []; }
-                                console.log("blobdata2", blob)
-
                 resetData(blob, file, patchNo);
             }
         };
@@ -3137,7 +3133,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onPatch = function (patch) {
                     // Patch on the current cp
-                    console.log("patch", patch.msg)
                     ooChannel.send(JSON.parse(patch.msg));
                 };
                 var onCheckpoint = function (cp, patchNo) {
