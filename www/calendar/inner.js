@@ -412,9 +412,9 @@ define([
             return `<div class="event-location"> ${location_icon.outerHTML} ${str} </div>`;
         },
         popupDetailBody: function(schedule) {
-            var str = schedule.body;
+            var str = schedule.body ? schedule.body.trim() : ""; //check also whitespace
             delete APP.eventBody;
-
+            if (!str) { return "";}
             let description_icon = h('i.fa.fa-align-left.tui-full-calendar-icon', { 'aria-hidden': true }, []);
             let description = diffMk.render(str, true);
             return `${description_icon.outerHTML}<div class="event-description">${description}</div>`;
