@@ -242,8 +242,8 @@ define([
                 'class': 'btn btn-primary'
             }).text(Messages.settings_logoutEverywhereButton)
             .appendTo($div);
-        var $ok = Icons.get('check', { title: Messages.saved }).hide().appendTo($div);
-        var $spinner = Icons.get('loading').hide().appendTo($div);
+        var $ok = $(Icons.get('check', { title: Messages.saved })).hide().appendTo($div);
+        var $spinner = $(Icons.get('loading')).hide().appendTo($div);
 
         $button.click(function() {
 
@@ -273,8 +273,8 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .append(Messages.settings_autostoreHint).appendTo($div);
 
-        var $ok = Icons.get('check', { title: Messages.saved });
-        var $spinner = Icons.get('loading');
+        var $ok = $(Icons.get('check', { title: Messages.saved }));
+        var $spinner = $(Icons.get('loading'));
 
         var opt1 = UI.createRadio('cp-settings-autostore', 'cp-settings-autostore-no',
             Messages.settings_autostoreNo, false, {
@@ -330,8 +330,8 @@ define([
             Messages.settings_userFeedbackHint2,
         ]));
 
-        var $ok = Icons.get('check', { title: Messages.saved });
-        var $spinner = Icons.get('loading');
+        var $ok = $(Icons.get('check', { title: Messages.saved }));
+        var $spinner = $(Icons.get('loading'));
 
         var $cbox = $(UI.createCheckbox('cp-settings-userfeedback',
             Messages.settings_userFeedback,
@@ -966,8 +966,8 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_driveDuplicateHint).appendTo($div);
 
-        var $ok = Icons.get('check', { title: Messages.saved });
-        var $spinner = Icons.get('loading');
+        var $ok = $(Icons.get('check', { title: Messages.saved }));
+        var $spinner = $(Icons.get('loading'));
 
         var $cbox = $(UI.createCheckbox('cp-settings-drive-duplicate',
             Messages.settings_driveDuplicateLabel,
@@ -1005,8 +1005,8 @@ define([
             class: 'cp-sidebarlayout-description',
         }, Messages.settings_driveRedirectHint));
 
-        var $ok = Icons.get('check', { title: Messages.saved });
-        var $spinner = Icons.get('loading');
+        var $ok = $(Icons.get('check', { title: Messages.saved }));
+        var $spinner = $(Icons.get('loading'));
 
         var $cbox = $(UI.createCheckbox('cp-settings-redirect',
             Messages.settings_driveRedirect,
@@ -1064,8 +1064,8 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_disableThumbnailsDescription).appendTo($div);
 
-        var $ok = Icons.get('check', { title: Messages.saved });
-        var $spinner = Icons.get('loading');
+        var $ok = $(Icons.get('check', { title: Messages.saved }));
+        var $spinner = $(Icons.get('loading'));
 
         var $cbox = $(UI.createCheckbox('disableThumbnails',
             Messages.settings_disableThumbnailsAction,
@@ -1203,8 +1203,8 @@ define([
             'id': 'cp-settings-import-local-pads',
             'class': 'btn btn-primary'
         }).text(Messages.settings_import).appendTo($div);
-        var $ok = Icons.get('check', { title: Messages.saved }).hide().appendTo($div);
-        var $spinner = Icons.get('loading').hide().appendTo($div);
+        var $ok = $(Icons.get('check', { title: Messages.saved })).hide().appendTo($div);
+        var $spinner = $(Icons.get('loading')).hide().appendTo($div);
 
         $button.click(function() {
             UI.confirm(Messages.settings_importConfirm, function(yes) {
@@ -1336,8 +1336,8 @@ define([
         var $inputBlock = $('<div>').appendTo($div);
 
         var $colorPicker = $("<div>", { class: "cp-settings-cursor-color-picker" });
-        var $ok = Icons.get('check', {title: Messages.saved });
-        var $spinner = Icons.get('loading');
+        var $ok = $(Icons.get('check', { title: Messages.saved }));
+        var $spinner = $(Icons.get('loading'));
 
         // when jscolor picker value change
         var _onchange = function(colorL) {
@@ -1387,8 +1387,8 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_cursorShareHint).appendTo($div);
 
-        var $ok = Icons.get('check', { title: Messages.saved });
-        var $spinner = Icons.get('loading');
+        var $ok = $(Icons.get('check', { title: Messages.saved }));
+        var $spinner = $(Icons.get('loading'));
 
         var $cbox = $(UI.createCheckbox('cp-settings-cursor-share',
             Messages.settings_cursorShareLabel,
@@ -1424,8 +1424,8 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_cursorShowHint).appendTo($div);
 
-        var $ok = Icons.get('check', { title: Messages.saved });
-        var $spinner = Icons.get('loading');
+        var $ok = $(Icons.get('check', { title: Messages.saved }));
+        var $spinner = $(Icons.get('loading'));
 
         var $cbox = $(UI.createCheckbox('cp-settings-cursor-show',
             Messages.settings_cursorShowLabel,
@@ -1464,8 +1464,8 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_padWidthHint).appendTo($div);
 
-        var $ok = Icons.get('check', { title: Messages.saved });
-        var $spinner = Icons.get('loading');
+        var $ok = $(Icons.get('check', { title: Messages.saved }));
+        var $spinner = $(Icons.get('loading'));
 
         var store = window.cryptpadStore;
         var key = 'pad-small-width';
@@ -1499,8 +1499,8 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_padSpellcheckHint).appendTo($div);
 
-        var $ok = Icons.get('check', { title: Messages.saved });
-        var $spinner = Icons.get('loading');
+        var $ok = $(Icons.get('check', { title: Messages.saved }));
+        var $spinner = $(Icons.get('loading'));
 
         var $cbox = $(UI.createCheckbox('cp-settings-pad-spellcheck',
             Messages.settings_padSpellcheckLabel,
@@ -1562,8 +1562,8 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_padOpenLinkHint).appendTo($div);
 
-        var $ok = Icons.get('check', { title: Messages.saved });
-        var $spinner = Icons.get('loading');
+        var $ok = $(Icons.get('check', { title: Messages.saved }));
+        var $spinner = $(Icons.get('loading'));
 
         var $cbox = $(UI.createCheckbox('cp-settings-pad-openlink',
             Messages.settings_padOpenLinkLabel,
@@ -1735,8 +1735,8 @@ define([
         //$('<span>', {'class': 'cp-sidebarlayout-description'})
         //    .text(Messages.settings_padSpellcheckHint).appendTo($div);
 
-        var $ok = Icons.get('check', { title: Messages.saved });
-        var $spinner = Icons.get('loading');
+        var $ok = $(Icons.get('check', { title: Messages.saved }));
+        var $spinner = $(Icons.get('loading'));
 
         var $cbox = $(UI.createCheckbox('cp-settings-code-spellcheck',
             Messages.settings_codeSpellcheckLabel,

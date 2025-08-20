@@ -1528,7 +1528,7 @@ define([
 
     UI.makeSpinner = function ($container) {
         var $ok = $('<span>', { title: Messages.saved}, Icons.get('check')).hide();
-        var $spinner = Icons.get('loading').hide();
+        var $spinner = $(Icons.get('loading')).hide();
 
         var state = false;
         var to;
