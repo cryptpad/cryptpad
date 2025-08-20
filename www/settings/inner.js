@@ -2119,14 +2119,14 @@ define([
     };
 
     var SIDEBAR_ICONS = {
-        account: 'register-homepage', // XXX
+        account: 'register-homepage',
         profile: 'user-profile',
         drive: 'drive',
         cursor: 'cursor',
         code: 'code-file',
-        pad: 'file',
+        pad: 'pad',
         security: 'lock',
-        kanban: 'file', // XXX
+        kanban: 'kanban',
         style: 'color-palette',
         notifications: 'notification'
     };
