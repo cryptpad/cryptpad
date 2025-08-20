@@ -24,6 +24,7 @@ define([
         "grid": "layout-grid",
         "list": "list",
         "owner": "id-card-lanyard",
+        "burn-drive": "ban",
         // Teams
         "promote": "chevrons-up",
         "downgrade": "chevrons-down",
@@ -37,6 +38,7 @@ define([
         "poll": "file",
         // Form
         "form": "file-chart-column-increasing",
+        "form-responses": "chart-no-axes-combined",
         "form-text": "minus",
         "form-paragraph": "text",
         "form-grid-radio": "cp-form-grid-radio",

@@ -3414,6 +3414,7 @@ define([
             ])
         ]));
         $container.append(getLogo());
+        Lucide.createIcons();
     };
 
     var getFormResults = function () {
@@ -4442,7 +4443,7 @@ define([
                         Icons.get('chevron-left'),
                     ]);
                     var right = h('button.btn.btn-secondary.cp-next', [
-                        Icons.get('chevron-rigt'),
+                        Icons.get('chevron-right'),
                     ]);
 
                     var togglePageArrows = function(checkPages) {
@@ -4486,6 +4487,7 @@ define([
                         refreshPage(current + 1, 'next');
                     });
                     $page.append([left, state, right]);
+                    Lucide.createIcons();
                 };
                 setTimeout(refreshPage);
             }
