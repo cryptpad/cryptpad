@@ -243,10 +243,10 @@ define([
             $(getChat(id)).find('.cp-app-contacts-messages').html('');
         };
         markup.chatbox = function (id, data, curvePublic) {
-            var moreHistory = Icons.get('history', {
+            var moreHistory = h('span', Icons.get('history', {
                 class: 'cp-app-contacts-more-history',
                 title: Messages.contacts_fetchHistory,
-            });
+            }));
 
             var chan = state.channels[id];
             var displayName = UI.getDisplayName(chan.name || chan.displayName);
@@ -308,10 +308,10 @@ define([
                 });
             });
 
-            var removeHistory = Icons.get('remove-history', {
+            var removeHistory = h('span', Icons.get('remove-history', {
                 'class': 'cp-app-contacts-remove-history',
                 title: Messages.contacts_removeHistoryTitle
-            });
+            }));
 
             $(removeHistory).click(function () {
                 UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
@@ -544,24 +544,24 @@ define([
                 curve = __channel.curvePublic;
             }
 
-            var unmute = Icons.get('notification', {
+            var unmute = h('span', Icons.get('notification', {
                 class: 'cp-app-contacts-remove cp-unmute-icon',
                 title: Messages.contacts_unmute || 'unmute',
                 style: (curve && mutedUsers[curve]) ? undefined : 'display: none;'
-            });
-            var mute = Icons.get('mute', {
+            }));
+            var mute = h('span', Icons.get('mute', {
                 class: 'cp-app-contacts-remove cp-mute-icon',
                 title: Messages.contacts_mute || 'mute',
                 style: (curve && mutedUsers[curve]) ? 'display: none;' : undefined
-            });
-            var remove = Icons.get('unfriend', {
+            }));
+            var remove = h('span', Icons.get('unfriend', {
                 class: 'cp-app-contacts-remove',
                 title: Messages.contacts_remove
-            });
-            var leaveRoom = Icons.get('logout', {
+            }));
+            var leaveRoom = h('span', Icons.get('logout', {
                 class: 'cp-app-contacts-remove',
                 title: Messages.contacts_leaveRoom
-            });
+            }));
             var status = h('span.cp-app-contacts-status', {
                 title: Messages.contacts_online
             });
@@ -942,6 +942,7 @@ define([
                 $button.off('click');
                 $button.click(function () {
                     UI.alert(content);
+                    Lucide.createIcons();
                 }).show();
             });
         };
