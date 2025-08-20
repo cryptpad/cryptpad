@@ -132,7 +132,7 @@ define([
         "logout": "log-out",
         "logout-everywhere": "unplug",
         "register": "user-round-plus",
-        "register-homepage": "user", // XXX change name
+        "account": "user", // XXX change name
         // History
         "history": "history",
         "history-prev": 'arrow-left',

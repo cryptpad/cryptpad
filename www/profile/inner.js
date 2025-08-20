@@ -479,7 +479,7 @@ define([
     var createLeftside = function () {
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'}).appendTo(APP.$leftside);
         var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
-        $category.append(Icons.get('register-homepage'));
+        $category.append(Icons.get('account'));
         $category.addClass('cp-leftside-active');
         $category.text(Messages.profileButton);
     };

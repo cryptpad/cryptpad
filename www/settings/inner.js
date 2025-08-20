@@ -2119,7 +2119,7 @@ define([
     };
 
     var SIDEBAR_ICONS = {
-        account: 'register-homepage',
+        account: 'account',
         profile: 'user-profile',
         drive: 'drive',
         cursor: 'cursor',

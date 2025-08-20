@@ -64,7 +64,7 @@ define([
         // UNUSED-TRANSLATIONS:START
         var categories = {
             'general': { // Msg.admin_cat_general
-                icon: 'register-homepage', // XXX
+                icon: 'account',
                 content: [
                     'instance-info-notice',
                     'name',

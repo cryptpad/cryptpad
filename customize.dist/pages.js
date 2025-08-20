@@ -192,7 +192,7 @@ define([
 
         if (!ApiConfig.restrictRegistration) {
             registerLink = h('a.nav-item.nav-link.cp-register-btn', { href: '/register/', role: 'button'}, [
-                Icons.get('register-homepage'),
+                Icons.get('account'),
                 Msg.login_register
             ]);
         }
