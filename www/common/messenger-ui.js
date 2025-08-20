@@ -345,7 +345,7 @@ define([
 
             var priv = metadataMgr.getPrivateData();
 
-            var closeTips = Icons.get('close', { 'class': 'cp-app-contacts-tips-close'});
+            var closeTips = h('span', Icons.get('close', { 'class': 'cp-app-contacts-tips-close'}));
             var tips;
             if (isApp && Util.find(priv.settings, ['general', 'hidetips', 'chat']) !== true) {
                 tips = h('div.cp-app-contacts-tips', [

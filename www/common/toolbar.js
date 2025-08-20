@@ -277,7 +277,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
                     var $button = $('<button>', {
                         'class': 'cp-toolbar-userlist-button',
                         title: Messages.user_rename
-                    }, Icons.get('edit')).appendTo($nameSpan);
+                    }).append(Icons.get('edit')).appendTo($nameSpan);
                     $button.hover(function (e) { e.preventDefault(); e.stopPropagation(); });
                     $button.mouseenter(function (e) {
                         e.preventDefault();
@@ -382,6 +382,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
             Common.displayAvatar($avatar, data.avatar, name, function () {
                 $span.append($rightCol);
                 onAvatar.fire();
+                Lucide.createIcons();
             }, data.uid);
             $span.data('uid', data.uid);
             if (data.badge && data.edPublic) {
