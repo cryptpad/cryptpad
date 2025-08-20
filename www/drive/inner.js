@@ -282,7 +282,7 @@ define([
                 APP.$burnThisDrive = common.createButton(null, true, {
                     text: '',
                     name: 'burn-anon-drive',
-                    icon: 'fa-ban',
+                    icon: 'burn-drive',
                     tippy: Messages.fm_burnThisDriveButton,
                     drawer: false
                 }, function () {
