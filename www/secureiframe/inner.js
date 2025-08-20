@@ -14,6 +14,8 @@ define([
     '/common/hyperscript.js',
     'json.sortify',
     '/customize/messages.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -29,7 +31,9 @@ define([
     Hash,
     h,
     Sortify,
-    Messages)
+    Messages,
+    Lucide,
+    Icons)
 {
     var APP = window.APP = {};
 
@@ -230,6 +234,7 @@ define([
                             'title': Util.fixHTML(name),
                         }).appendTo($container);
                         $span.append(UI.getFileIcon(data));
+                        Lucide.createIcons();
                         $('<span>', {'class': 'cp-filepicker-content-element-name'}).text(name)
                             .appendTo($span);
                         if (data.static) { $span.attr('title', Util.fixHTML(data.href)); }
