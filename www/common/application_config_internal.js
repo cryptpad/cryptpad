@@ -199,7 +199,7 @@ const factory = () => {
         folderupload: 'drive-upload-folder',
         link: 'link',
         pad: 'pad',
-        code: 'file',
+        code: 'code-file',
         slide: 'slide',
         poll: 'poll',
         form: 'form',

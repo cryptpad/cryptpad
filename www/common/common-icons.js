@@ -19,7 +19,7 @@ define([
         "folder-open": "folder-open",
         "folder-nocolor": "folder-minus",
         "folder-check": "folder-check",
-        "file-template": "file-type", // XXX change icon
+        "file-template": "file-cog",
         "file-pad": "file-text",
         "grid": "layout-grid",
         "list": "list",
@@ -29,43 +29,47 @@ define([
         "downgrade": "chevrons-down",
         // CryptPad apps - icons to be changed
         // Pad
-        "pad": "file",
+        "pad": "file-text",
         "pad-settings": "file-cog",
         "expand-pad": "maximize-2",
         "shrink-pad": "minimize-2",
-        "slide": "file",
+        "slide": "cp-file-slide",
         "poll": "file",
-        // Form - to be changed
-        "form": "file",
+        // Form
+        "form": "file-chart-column-increasing",
         "form-text": "minus",
         "form-paragraph": "text",
-        "form-grid-radio": "list-todo",
-        "form-grid-check": "list-todo",
-        "form-list-check": "list-todo",
-        "form-list-radio": "list-todo",
+        "form-grid-radio": "cp-form-grid-radio",
+        "form-grid-check": "cp-form-grid-check",
+        "form-list-check": "list-checks",
+        "form-list-radio": "list",
         "form-list-ordered": "list-ordered",
-        "form-poll": "vote",
-        "form-page-break": "chevrons-left-right-ellipsis",
-        "form-conditional": "workflow",
-        "form-poll-maybe": "circle-slash",
+        "form-poll": "cp-form-poll",
+        "form-page-break": "cp-form-page-break",
+        "form-conditional": "cp-form-conditional",
+        "form-poll-maybe": "cp-form-poll-maybe",
         "form-poll-switch": "arrow-right-left",
-        "whiteboard": "file",
-        "diagram": "file",
+        // Whiteboard
+        "whiteboard": "cp-file-whiteboard",
+        // Diagram
+        "diagram": "cp-file-diagram",
+        // Code
+        "code-file": "file-code", // change name
         "todo": "file",
         // Kanban
-        "kanban": "file",
+        "kanban": "cp-file-kanban",
         "kanban-tags": "tags",
         "kanban-minimize": "minus",
         "kanban-maximize": "menu",
         "touch-mode": "hand",
-        "kanban-add-top": "between-horizontal-end", // TEMP, TO BE UPDATED
-        "kanban-add-bottom": "between-horizontal-start",
+        "kanban-add-top": "cp-kanban-add-top",
+        "kanban-add-bottom": "cp-kanban-add-bottom",
         // Doc
-        "doc": "file",
+        "doc": "cp-file-oo-document",
         // Sheet
-        "sheet": "file",
+        "sheet": "cp-file-oo-sheet",
         // Presentation
-        "presentation": "file",
+        "presentation": "cp-file-oo-presentation",
         // Actions
         "add": "plus",
         "check": "check",
@@ -167,7 +171,6 @@ define([
         "arrow-left": "arrow-left",
         "arrow-up": "arrow-up",
         "code": "code-xml",
-        "code-file": "file-code",
         "qr-code": "qr-code",
         "lock": "lock",
         "help": "info",
