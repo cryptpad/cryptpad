@@ -25,7 +25,12 @@ define([
         if (!icon) { return; }
         let cls = 'cp-badge';
         if (id === 'error') { cls += ' cp-badge-error'; }
-        return Icons.get(icon,{'class': cls, 'title': Messages[`badges_${id}`] || id, 'data-badge': id})
+        let span = document.createElement('span');
+        span.setAttribute('class', cls);
+        span.setAttribute('title', Messages[`badges_${id}`] || id);
+        span.setAttribute('data-badge', id);
+        span.append(Icons.get(icon));
+        return span;
     };
 
     return Badges;

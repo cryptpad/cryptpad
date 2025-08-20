@@ -84,12 +84,17 @@
             }
         }
         .badges_include();
-        & > i.cp-badge {
+        & > span.cp-badge {
             position: absolute;
             z-index: 10;
             bottom: var(--badges-offset);
             right: var(--badges-offset);
             border: 1px solid @cp_badges-color;
+
+            svg {
+                width:3rem;
+                height:3rem;
+            }
         }
     }
 }

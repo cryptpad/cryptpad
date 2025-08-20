@@ -239,15 +239,13 @@
                     display: flex;
                     align-items: center;
                     font-size: 24px;
+                    gap: 0.5rem;
                     margin-top: 10px;
                     .badges_main(40px);
-                    i {
+                    span {
                         cursor: pointer;
                         &:focus-visible {
                             outline: @variables_focus_style;
-                        }
-                        &:not(:last-child) {
-                            margin-right: 0.5em;
                         }
                     }
                 }
@@ -266,7 +264,7 @@
                     border-radius: 4px;
                     overflow: visible;
                     position: relative;
-                    i.cp-badge {
+                    span.cp-badge {
                         border-width: 3px;
                     }
                     .cp-settings-avatar-delete {

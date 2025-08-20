@@ -1938,6 +1938,7 @@ define([
             ]);
             $badges.empty().append(content);
             spinner = UI.makeSpinner($badges.find('.cp-settings-badges-list'));
+            setTimeout(() => Lucide.createIcons());
         });
     };
     makeBlock('profile-badges', function(cb) {

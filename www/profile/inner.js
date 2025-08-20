@@ -348,6 +348,7 @@ define([
     };
 
     var displayAvatar = function (val, data, badgeOK) {
+        setTimeout(()=> Lucide.createIcons());
         var $span = APP.$avatar;
         $span.empty();
         const badge = data?.badge;
