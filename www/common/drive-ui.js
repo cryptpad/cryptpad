@@ -3168,7 +3168,7 @@ define([
                 options.push({
                     class: typeClass,
                     type: type,
-                    icon: getIcon(type)[0],
+                    icon: getIcon(type),
                     name: Messages.type[type],
                 });
             });
@@ -3273,7 +3273,7 @@ define([
                     tag: 'a',
                     attributes: attributes,
                     content: [
-                        getIcon(type)[0],
+                        getIcon(type),
                         Messages.type[type]
                     ],
                 });
@@ -3318,7 +3318,7 @@ define([
                 var message = type === 'link' ? Messages.fm_link_type : Messages.type[type];
                 dropdownConfig.buttonContent.push(
                     h('span.cp-button-name', ':'),
-                    getIcon(type)[0],
+                    getIcon(type),
                     h('span.cp-button-name', message)
                 );
             }

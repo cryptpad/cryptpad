@@ -1375,7 +1375,7 @@ define([
 
         var apps = {
             pad: 'richtext',
-            code: 'code',
+            code: 'code-file',
             slide: 'slides',
             sheet: 'sheets',
             poll: 'poll',
