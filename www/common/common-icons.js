@@ -8,7 +8,7 @@ define([
         "homepage": "house",
         "drive": "hard-drive",
         "drive-search": "search",
-        "drive-shared-folder": "folder-users", // XXX change icon
+        "drive-shared-folder": "folder-users",
         "drive-upload-file": "file-up",
         "drive-upload-folder": "folder-up",
         "file": "file",

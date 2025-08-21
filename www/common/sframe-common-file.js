@@ -143,6 +143,7 @@ define([
             var $row = $table.find('tr[id="'+id+'"]');
 
             $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(Icons.get('minus'));
+            Lucide.createIcons();
             var $pv = $row.find('.cp-fileupload-table-progress-value');
             var $pb = $row.find('.cp-fileupload-table-progressbar');
             var $link = $row.find('.cp-fileupload-table-link');
@@ -292,8 +293,8 @@ define([
             }).append(h('span.cp-fileupload-table-name', obj.dl ? obj.name : obj.metadata.name));
 
             var typeIcon;
-            if (obj.dl) { typeIcon = Icons.get('chevron-down', { title: Messages.download_dl }); }
-            else { typeIcon = Icons.get('chevron-up', { title: Messages.upload_up }); }
+            if (obj.dl) { typeIcon = Icons.get('download', { title: Messages.download_dl }); }
+            else { typeIcon = Icons.get('upload', { title: Messages.upload_up }); }
 
             // type (download / upload)
             $('<td>', {'class': 'cp-fileupload-table-type'}).append(typeIcon).appendTo($tr);
@@ -313,7 +314,7 @@ define([
             if (diff && diff > 0) {
                 $table.css('margin-right', diff+'px');
             }
-
+            Lucide.createIcons();
             queue.next();
         };
 
