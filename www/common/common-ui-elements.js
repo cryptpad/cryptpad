@@ -2961,6 +2961,7 @@ define([
                 icon: UI.getFileIcon({type: type})
             });
             var redraw = function (index) {
+                setTimeout( ()=> Lucide.createIcons());
                 if (index < 0) { i = 0; }
                 else if (index > allData.length - 1) { return; }
                 else { i = index; }
