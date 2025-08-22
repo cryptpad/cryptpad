@@ -5599,7 +5599,7 @@ define([
                 h('span', Messages.form_editBlock)
             ]);
             var del = h('button.btn.btn-danger-alt', [
-                Icons.get('trash'),
+                Icons.get('trash-full'),
                 h('span', Messages.form_delete)
             ]);
             var editButtons = h('div.cp-form-edit-buttons-container', [ preview, edit, del ]);
