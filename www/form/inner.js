@@ -5658,6 +5658,7 @@ define([
                 editor.refresh();
                 $tb.show();
                 setTimeout(function () {
+                    Lucide.createIcons();
                     var firstBtn = $(markdownTb.toolbar).find('button').get(0);
                     if (firstBtn) {
                         firstBtn.focus();
