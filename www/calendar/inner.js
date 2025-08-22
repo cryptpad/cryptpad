@@ -2049,6 +2049,7 @@ APP.recurrenceRule = {
             });
             $list.append(span);
             APP.notificationsEntries.push(minutes);
+            Lucide.createIcons();
         };
         $(addNotif).click(function () {
             var unit = $block.getValue();
