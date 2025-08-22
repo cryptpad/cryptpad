@@ -557,8 +557,9 @@
                     //transform: scale(0.5);
                     .cp-toolbar-link-logo {
                         padding: 5px;
-                        span {
-                            font-size: 24px;
+                        svg {
+                            height: 1.5rem;
+                            width: 1.5rem;
                         }
                     }
                 }
@@ -821,9 +822,6 @@
             justify-content: center;
             cursor: pointer;
             order: 1;
-            .fa {
-                margin: 0;
-            }
             a.cp-toolbar-link-logo {
                 cursor: pointer;
                 display: inline-flex;
@@ -833,27 +831,10 @@
                 color: @toolbar-bg-color;
                 color: var(--toolbar-bg-color);
                 border-radius: @variables_radius;
-
                 svg {
                     height: 3rem;
                     width: 3rem;
                     margin: 0;
-                }
-                span {
-                    font-size: 45px;
-                }
-
-                &:hover {
-                    // Icons shown when hovering the toolbar icon (where logo used to be)
-                    .cptools::before {
-                        content: "\e920"; // shows drive icon in document toolbars
-                    }
-                    .fa::before {
-                        content: "\f0a0"; // shows hdd-o for all FA icons (settings, etc)
-                    }
-                    .fa-hdd-o::before {
-                        content: "\f015"; // shows home for drive
-                    }
                 }
 
                 // svg {
