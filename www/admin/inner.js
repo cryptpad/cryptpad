@@ -82,7 +82,7 @@ define([
                 ]
             },
             'admins': {
-                icon: 'teams', // XXX
+                icon: 'users',
                 content: [
                     'list-admins',
                     'add-admins'
