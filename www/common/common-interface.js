@@ -996,6 +996,7 @@ define([
     };
 
     UI.passwordInput = function (opts, displayEye) {
+        setTimeout( () => Lucide.createIcons(), 0);
         opts = opts || {};
         var attributes = merge({
             type: 'password',
