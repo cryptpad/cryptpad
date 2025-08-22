@@ -152,6 +152,7 @@
         box-sizing: border-box;
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         line-height: 20px;
         padding: 8px 6px;
         white-space: nowrap;
@@ -162,10 +163,6 @@
         cursor: pointer;
         border-radius: @variables_radius;
         transition: none;
-
-        &:not(.fa):not(.cptools) {
-            font-family: inherit;
-        }
 
         i, .fa, .cptools {
             &:not(.nomargin) {

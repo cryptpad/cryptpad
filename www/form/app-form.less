@@ -347,7 +347,7 @@
                     &.editable {
                         cursor: pointer;
                     }
-                    .fa-caret-down {
+                    .lucide-chevron-down {
                         margin-left: 5px;
                     }
                 }
@@ -496,11 +496,10 @@
                                 }
                             }
                             button {
-                                border: 0px;
-                                //padding-bottom: 3px;
+                                border: 0;
                                 svg {
-                                    font-size: 35px;
-                                    line-height: 35px;
+                                    height: 2rem;
+                                    width: 2rem;
                                 }
                             }
                             &:first-child {
@@ -1071,13 +1070,11 @@
             }
         }
         .cp-form-block-type {
-            //float: right;
             padding: 5px;
-            //margin-top: -10px;
-            //margin-right: -10px;
             border-radius: 0px @variables_radius 0px 0px;
-            svg { margin-right: 5px; }
             background: fade(@cryptpad_text_col, 10%);
+            display: inline-flex;
+            align-items: center;
         }
     }
 
