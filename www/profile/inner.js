@@ -325,6 +325,7 @@ define([
                         refreshMute(data);
                     });
                 }).appendTo($mute);
+                Lucide.createIcons();
                 return;
             }
             var muteButton = h('button.btn.btn-danger-outline.cp-app-profile-friend-request', {
@@ -343,6 +344,7 @@ define([
                     refreshMute(data);
                 });
             }).appendTo($mute);
+            Lucide.createIcons();
             $(UI.setHTML(h('p'), Messages.contacts_muteInfo)).appendTo($mute);
         });
     };
