@@ -182,7 +182,7 @@ define([
                     ]),
                     Messages.register_warning_note
                 ]);
-
+            setTimeout(() => Lucide.createIcons(), 0); 
             UI.confirm(span, function (yes) {
                 if (!yes) { return; }
 
