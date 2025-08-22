@@ -123,7 +123,7 @@ define([
                             Icons.get('preview'),
                             Messages.form_preview_button
                         ]);
-        $(cancelBlock).click(function () { cb(undefined, true); });
+        $(cancelBlock).click(function () { cb(undefined, true); Lucide.createIcons(); });
 
         return cancelBlock;
     };
@@ -4259,6 +4259,7 @@ define([
 
                         $(edit).hide();
                         $(copy).hide();
+                        Lucide.createIcons();
                     };
                     $(edit).click(function () {
                         onEdit();
