@@ -513,33 +513,25 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
     };
 
     var createCollapse = function (toolbar) {
-        // XXX to be updated
-        var up = Icons.get('chevron-up', {title: Messages.toolbar_collapse});
-        var down =  Icons.get('chevron-down', {title: Messages.toolbar_expand});
+        var icon = Icons.get('chevron-up', {title: Messages.toolbar_collapse});
         var notif = h('span.cp-collapsed-notif');
 
         var $button = $(h('button.cp-toolbar-collapse',[
-            up,
-            down,
+            icon,
             notif
         ]));
-        var $up = $(up);
-        var $down = $(down);
         toolbar.$bottomR.prepend($button);
-        $down.hide();
         $(notif).hide();
         $button.click(function () {
             toolbar.$top.toggleClass('toolbar-hidden');
             var hidden = toolbar.$top.hasClass('toolbar-hidden');
             $button.toggleClass('cp-toolbar-button-active');
-            if (hidden) {
-                $up.hide();
-                $down.show();
-            } else {
-                $up.show();
-                $down.hide();
-                $(notif).hide();
-            }
+            const newIcon = hidden ?
+                Icons.get('chevron-down', {title: Messages.toolbar_expand}):
+                Icons.get('chevron-up', {title: Messages.toolbar_collapse});
+
+            $button.find('[data-lucide]').replaceWith(newIcon);
+            Lucide.createIcons();
         });
     };
 
