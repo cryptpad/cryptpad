@@ -1649,6 +1649,27 @@ define([
         });
     });
 
+    // confirm that POST requests to the `/upload-blob` endpoint
+    // return something other than a 404, which would probably indicate
+    // a reverse proxy misconfiguration
+    assert(function (cb, msg) {
+        msg.appendChild(h('span', [
+            `The server returned a 404 error when attempting to reach the `,
+            h('code', `/upload-blob`),
+            ` endpoint. This can be caused by an incorrectly configured reverse proxy.`,
+        ]));
+
+        fetch('/upload-blob', {
+            method: 'POST',
+        }).then(res => {
+            console.log({ upload_fetch_response: res });
+            cb(res.status !== 404);
+        }).catch(err => {
+            console.error(err);
+            cb(false);
+        });
+    });
+
     var row = function (cells) {
         return h('tr', cells.map(function (cell) {
             return h('td', cell);
