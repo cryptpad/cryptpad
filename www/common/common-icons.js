@@ -26,6 +26,7 @@ define([
         "owner": "id-card-lanyard",
         "burn-drive": "ban",
         // Teams
+        "teams": "users-round",
         "promote": "chevrons-up",
         "downgrade": "chevrons-down",
         // CryptPad apps - icons to be changed
