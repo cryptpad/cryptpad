@@ -126,8 +126,7 @@ define([
             trash.setAttribute('id', 'kanban-trash');
             trash.setAttribute('class', 'kanban-trash');
             var trashBg = document.createElement('div');
-            var trashIcon = document.createElement('i');
-            trashIcon.setAttribute('class', 'fa fa-trash');
+            var trashIcon = Icons.get('trash-full');
             trash.appendChild(trashIcon);
             trash.appendChild(trashBg);
             self.boardContainer.push(trash);
@@ -929,6 +928,7 @@ define([
         };
         this.onChange = function () {
             self.options.onChange();
+            Lucide.createIcons(); // reprocess all lucide icons after any DOM changes
         };
 
         this.getBoardsJSON = function () {
