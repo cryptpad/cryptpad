@@ -2246,10 +2246,11 @@ define([
             $(icon).addClass('cp-app-drive-element-icon');
             $name.addClass('cp-app-drive-element-name-icon');
             $name.prepend($(icon));
+            Lucide.createIcons();
             // Clean up
             setTimeout(function() {
                 $name.closest('li').find('svg').not($name.find('svg')).remove();
-            }, 1);
+            }, 0);
         };
 
         var addFileData = function (element, $element) {
