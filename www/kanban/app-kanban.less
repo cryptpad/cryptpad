@@ -64,6 +64,16 @@
     .cp-kanban-palette-nocolor {
         background-color: @palette0;
     }
+    .cp-palette-container {
+        .cp-palette-color {
+            svg.lucide {
+                margin-bottom: 0.3rem;
+            }
+            .is-hidden {
+                display: none;
+            }
+        }   
+    }
 
     .kanban-colors(@kanban-colors; @index) when (@index > 0){
         // loop through the @colors

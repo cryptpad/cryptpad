@@ -4390,9 +4390,12 @@ define([
 
         var all = [];
         palette.forEach(function (color, i) {
-            var $color = $(h('button.cp-palette-color.fa'));
+            var $color = $(h('button.cp-palette-color'));
             all.push($color);
             $color.addClass('cp-palette-'+(color || 'nocolor'));
+            const checkIcon = Icons.get('check');
+            $(checkIcon).addClass('cp-check-icon is-hidden'); // added hidden class to overcome Lucide rendering
+            $color.append(checkIcon);
             $color.keydown(function (e) {
                 if (e.which === 13) {
                     e.stopPropagation();
@@ -4403,9 +4406,9 @@ define([
             $color.click(function () {
                 if (offline) { return; }
                 if (color === selectedColor) { return; }
+                $container.find('.cp-palette-color').find('.cp-check-icon').addClass('is-hidden');
+                $(this).find('.cp-check-icon').removeClass('is-hidden');
                 selectedColor = color;
-                $container.find('.cp-palette-color').removeClass('fa-check');
-                $color.addClass('fa-check');
                 onSelect(color, $color);
             }).appendTo($container);
             $color.keydown(e => {
@@ -4442,9 +4445,11 @@ define([
             return selectedColor;
         };
         container.setValue = color => {
-            $container.find('.cp-palette-color').removeClass('fa-check');
+            $container.find('.cp-palette-color').find('.cp-check-icon').addClass('is-hidden');
             let $color = $container.find('.cp-palette-'+(color || 'nocolor'));
-            $color.addClass('fa-check');
+            if ($color.length) {
+                $color.find('.cp-check-icon').removeClass('is-hidden');
+            }
             selectedColor = color;
         };
         return container;

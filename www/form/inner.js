@@ -5117,18 +5117,23 @@ define([
                 var currentContainer = colorLine1;
                 palette.forEach(function (_color, i) {
                     if (i === 5) { currentContainer = colorLine2; }
-                    var $color = $(h('span.cp-form-palette.fa'));
+                    var $color = $(h('span.cp-form-palette'));
                     $color.addClass('cp-form-palette-'+(_color || 'nocolor'));
-                    if (selectedColor === _color) { $color.addClass('fa-check'); }
+                    const checkIcon = Icons.get('check');
+                    $(checkIcon).addClass('cp-check-icon is-hidden');
+                    $color.append(checkIcon);
+                    if (selectedColor === _color) { $(checkIcon).removeClass('is-hidden'); }
                     $color.click(function () {
                         if (_color === selectedColor) { return; }
                         content.answers.color = _color;
                         framework.localChange();
+                        var $clickedElement = $(this);
                         framework._.cpNfInner.chainpad.onSettle(function () {
                             UI.log(Messages.saved);
                             selectedColor = _color;
-                            $colors.find('.cp-form-palette').removeClass('fa-check');
-                            $color.addClass('fa-check');
+                            $colors.find('.cp-check-icon').addClass('is-hidden');
+                            console.log(this);
+                            $clickedElement.find('.cp-check-icon').removeClass('is-hidden');
 
                             var $body = $('body');
                             $body[0].classList.forEach(function (cls) {
