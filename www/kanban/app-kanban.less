@@ -176,10 +176,6 @@
             .btn {
             outline: 0;
             border-radius: @variables_radius;
-            .fa {
-                font: normal normal normal 14px/1 FontAwesome;
-                font-family: FontAwesome;
-            }
             &:hover {
                 background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
             }
@@ -486,9 +482,6 @@
                 &:hover {
                     background-color: @cp_kanban-add-hover;
                 }
-                .fa {
-                    margin-right: 5px;
-                }
                 &:focus-visible {
                     outline: @variables_focus_style;
                 }
@@ -535,9 +528,6 @@
                     margin-right: 10px;
                 }
                 .tools_unselectable();
-                i {
-                    margin-right: 5px;
-                }
             }
             .cp-kanban-filterTags-list {
                 margin-right: 10px;
@@ -689,9 +679,6 @@
                 display: flex;
                 height: 60px;
                 font-size: 40px;
-            }
-            i {
-                position: fixed;
             }
             div {
                 width: 100%;
