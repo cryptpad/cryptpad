@@ -87,11 +87,6 @@
         button:nth-of-type(1) {
             margin-left: 0.2rem;
         }
-        @media screen and (max-width: @browser_media-medium-screen) {
-            button:nth-of-type(1) {
-                margin-left: 0;
-            }
-        }
     }
 
     .cp-toolbar-container {
@@ -101,7 +96,7 @@
     .toolbar_button {
         height: @toolbar_line-height;
         box-sizing: border-box;
-        padding: 3px 10px;
+        padding: 3px 7px;
         margin: 0;
         transition: all 0.15s;
         .tools_unselectable();
@@ -300,7 +295,16 @@
 
     #cp-app-toolbar-creation-dialog.cp-modal-container {
         .icons_main();
+        h3 {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
 
+            svg {
+                height: 2rem;
+                width: 2rem;
+            }
+        }
         li {
             color: @cp_drive-fg;
             border: 1px solid @cp_drive-icon-border;
