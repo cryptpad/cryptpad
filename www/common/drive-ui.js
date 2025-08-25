@@ -4643,7 +4643,7 @@ define([
                     (isRootOpened ? $folderOpenedIcon : $folderIcon);
                 var $rootElement = createTreeElement(rootName, $rootIcon.clone(), path.slice(), false, true, true, isRootOpened);
                 if (!manager.hasSubfolder(root)) {
-                    $rootElement.find('.cp-app-drive-icon-expcol').css('visibility', 'hidden');
+                    $rootElement.find('.cp-app-drive-icon-expcol').css('display', 'none');
                 }
                 $rootElement.addClass('cp-app-drive-tree-root');
                 $rootElement.find('>.cp-app-drive-element-row')
