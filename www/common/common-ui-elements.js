@@ -648,7 +648,8 @@ define([
 
     UIElements.getEntryFromButton = function ($button) {
         if (!$button || !$button.length) { return; }
-        let $icon = $button.find('> i');
+        let $icon = $button.children('svg,i,[data-lucide]').first();
+        if (!$icon.length) $icon = $button.find('svg,i,[data-lucide]').first();
 
         let attributes = {};
         let btnClass = $button.attr('class');
@@ -663,7 +664,7 @@ define([
             tag: 'a',
             attributes: attributes,
             content: [
-                Icons.get($icon.attr('class')),
+                $icon.length ? $icon.clone()[0] : null,,
                 h('span', $button.text())
             ],
             action: function () {
