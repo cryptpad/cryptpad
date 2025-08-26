@@ -716,7 +716,7 @@ define([
             $rights.find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
         } else if (!hashes.editHash) {
             if (opts.auditorHash) {
-              $rights.find('#cp-share-editable-false').attr('checked', false).attr('disabled', true);
+                $rights.find('#cp-share-editable-false').attr('checked', false).attr('disabled', true);
             } else {
                 $rights.find('#cp-share-editable-false').attr('checked', true);
             }
@@ -726,7 +726,7 @@ define([
             $rights.find('#cp-share-present').removeAttr('checked').attr('disabled', true);
             $rights.find('#cp-share-editable-true').attr('checked', true);
         }
-        if (isForm && !opts.auditorHash && opts.auditorHash) {
+        if (isForm && !opts.auditorHash) {
             $rights.find('#cp-share-form').removeAttr('checked').attr('disabled', true);
         }
 
