@@ -530,7 +530,7 @@ define([
         };
         APP.FM = common.createFileManager(fmConfig);
 
-        var resetData = function (blob, type) {
+        var resetData = function (blob, type, patchNo) {
             // If a read-only refresh popup was planned, abort it
             delete APP.refreshPopup;
             clearTimeout(APP.refreshRoTo);
@@ -565,7 +565,7 @@ define([
                 delete pendingChanges[key];
             });
             if (APP.stopHistory || APP.template) { APP.history = false; }
-            startOO(blob, type, true);
+            startOO(blob, type, true, patchNo);
         };
 
         var saveToServer = function (blob, title) {
@@ -691,6 +691,7 @@ define([
                 default:
                     newText = '';
             }
+            console.log("newtext", newText)
             return new Blob([newText], {type: 'text/plain'});
         };
 
@@ -1652,6 +1653,7 @@ define([
                         console.error(obj);
                         return;
                     }
+                    console.log("obj", obj)
 
                     debug(obj, 'toOO');
                     chan.event('CMD', obj);
@@ -2207,7 +2209,7 @@ define([
         };
 
         var firstOO = true;
-        startOO = function (blob, file, force) {
+        startOO = function (blob, file, force, patchNo) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             const lock = !APP.history && (APP.migrate);
 
@@ -2543,6 +2545,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
 
             ooLoaded = true;
+            console.log("content", APP.ooconfig)
             if (content.version < 7) {
                 makeChannel();
                 return;
@@ -2902,20 +2905,31 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             pinImages();
         };
 
-        const loadCp = async function (cp, keepQueue) {
+        const loadCp = async function (cp, keepQueue, patchNo) {
+            console.log("checkpoint", cp)
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
             try {
+                console.log("checkpoint1")
                 const {blob, fileType} = await loadLastDocument(cp);
+                                console.log("checkpoint1.2")
+
                 if (!keepQueue) { ooChannel.queue = []; }
+                                                console.log("checkpoint1.3")
+
                 resetData(blob, fileType);
+                                                                console.log("checkpoint1.4")
+
             } catch (e) {
+                                console.log("checkpoint2", e)
+
                 var file = getFileType();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
+                console.log("blob", blob)
                 if (!keepQueue) { ooChannel.queue = []; }
-                resetData(blob, file);
+                resetData(blob, file, patchNo);
             }
         };
 
@@ -2966,6 +2980,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 });
                 ooChannel.historyLastHash = ooChannel.lastHash;
                 ooChannel.currentIndex = ooChannel.cpIndex;
+                console.log("checkpoint", lastCp)
                 loadCp(lastCp, true);
             });
         };
@@ -3133,11 +3148,14 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // Patch on the current cp
                     ooChannel.send(JSON.parse(patch.msg));
                 };
-                var onCheckpoint = function (cp) {
+                var onCheckpoint = function (cp, patchNo) {
                     // We want to load a checkpoint:
-                    loadCp(cp);
+                    loadCp(cp, patchNo);
                 };
                 var setHistoryMode = function (bool) {
+                    console.log("HISTORY")
+                                        var lastCp = getLastCp();
+                                            console.log("checkpoin!", lastCp)
                     if (bool) {
                         APP.history = true;
                         try { getEditor().asc_setRestriction(true); } catch (e) {}
@@ -3147,9 +3165,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     APP.history = false;
                     ooChannel.queue = [];
                     ooChannel.ready = false;
+
+
                     // Fill the queue and then load the last CP
                     rtChannel.getHistory(function () {
                         var lastCp = getLastCp();
+                        console.log("checkpoin!", lastCp)
                         loadCp(lastCp, true);
                     });
                 };
@@ -3214,7 +3235,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         },
                         $toolbar: $('.cp-toolbar-container')
                     };
-                    History.create(common, histConfig);
+                    patchNo = 'beep'
+                    History.create(common, histConfig, patchNo);
                 });
 
                 var $historyDropdown = UIElements.getEntryFromButton($historyButton);
