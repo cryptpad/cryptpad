@@ -520,7 +520,10 @@ define([
                 h('li', h('a.cp-app-drive-context-restore.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': restore,
-                }, Messages.fc_restore)),
+                }, [
+                    Icons.get(restore),
+                    Messages.fc_restore
+                ])),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-rename.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
