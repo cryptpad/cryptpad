@@ -12,7 +12,7 @@ define([
 
     return function () {
         document.title = Msg.contact;
-        var developerEmail = "contact@cryptpad.fr";
+        var developerEmail = "contact@cryptpad.org";
         var adminEmail = Config.adminEmail && [
             'i.did.not.read.my.config@cryptpad.fr',
             developerEmail
