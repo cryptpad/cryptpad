@@ -115,7 +115,7 @@ define([
         var allMsgs
 
         // We want to load a checkpoint (or initial state)
-        var loadMoreOOHistory = function () {
+        var loadMoreOOHistory = function (keepQueue, patch) {
             if (!Array.isArray(sortedCp)) { return void console.error("Wrong type"); }
 
             var cp = {};
@@ -123,11 +123,11 @@ define([
             // Get the checkpoint ID
             var id = -1;
             console.log("CP", cpIndex, sortedCp)
-            // if (cpIndex < sortedCp.length) {
-            //     id = sortedCp[sortedCp.length - 1 - cpIndex];
-            //     cp = hashes[id];ooMessages[-1]
-            // }
-            // var nextId = sortedCp[sortedCp.length - cpIndex];
+            if (cpIndex < sortedCp.length) {
+                id = sortedCp[sortedCp.length - 1 - cpIndex];
+                cp = hashes[id];ooMessages[-1]
+            }
+            var nextId = sortedCp[sortedCp.length - cpIndex];
 
             // Get the history between "toHash" and "fromHash". This function is using
             // "getOlderHistory", that's why we start from the more recent hash
@@ -136,9 +136,9 @@ define([
             // We need to get all the patches between the current cp hash and the next cp hash
 
             // Current cp or initial hash (invalid hash ==> initial hash)
-            // var toHash = cp?.hash ? cp.hash : 'NONE';
+            var toHash = cp?.hash ? cp.hash : 'NONE';
             // // Next cp or last hash
-            // var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
+            var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
 
             msgIndex = -2;
 
@@ -146,19 +146,33 @@ define([
             showVersion();
             console.log("oomsgs", ooMessages, id, cp)
             console.log("oomsgs2", ooMessages[-1], ooMessages[-1].length)
-            
-            if (ooMessages[id]) {
+                            console.log('checkt', patch)
+
+            if (ooMessages[id] && keepQueue) {
                 // Cp already loaded: reload OO
-                loading = false;
-                return void config.onCheckpoint(cp, 'patchNo');
+                return void config.onCheckpoint(cp, keepQueue);
+            } else if (ooMessages[id] && patch) {
+                const parsedMsg = JSON.parse(patch.msg);
+
+                // Create the output object
+                const checkPoint = {
+                msg: parsedMsg,
+                hash: patch.serverHash
+                };
+                console.log('checkpoint', checkPoint)
+                                loading = false;
+
+                                return void config.onCheckpoint(checkPoint);
+
+                config.onPatch(patch)
             }
 
-            // getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, function (err, messages) {
-            //     if (err) {
-            //         return;
-            //     }
-            //     console.log('msgs', messages);
-            // });
+            getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, function (err, messages) {
+                if (err) {
+                    return;
+                }
+                console.log('msgs', messages);
+            });
         }
 
         getMessages(config.onlyoffice.lastHash, 'NONE', cpIndex, sortedCp, undefined, -1, config, fillOO, $share, function (err, messages) {
@@ -224,6 +238,7 @@ define([
             console.log("patch next1", msgIndex, allMsgs)
             var id = getId();
             if (!ooMessages[id]) { loading = false; return; }
+            console.log("check1", ooMessages[id])
             var msgs = ooMessages[id];
             // msgIndex = 0
             msgIndex++;
@@ -233,13 +248,15 @@ define([
             var patch = msgs[allMsgs];
             if (!patch) { loading = false; return; }
                         console.log("patch next", msgs, msgIndex, id)
+            console.log('patch!', patch)
+            // config.onPatch(patch);
+            // showVersion();
+            // setTimeout(function () {
+            //     $('iframe').blur();
+            //     loading = false;
+            // }, 200);
+            loadMoreOOHistory(false, patch);
 
-            config.onPatch(patch);
-            showVersion();
-            setTimeout(function () {
-                $('iframe').blur();
-                loading = false;
-            }, 200);
         };
 
         var prev = function () {
@@ -393,10 +410,12 @@ define([
 
             // Push one patch
             $next.click(function () {
-                if (loading) { return; }
+                console.log("laodin", loading)
+                // if (loading) { return; }
                 loading = true;
+                console.log("hello")
                 next();
-                update();
+                // update();
             });
             // Go to previous checkpoint
             $fastNext.click(function () {
@@ -415,7 +434,7 @@ define([
                 // if (msgIndex === -1) {
                 //     // cpIndex++;
                 // }
-                loadMoreOOHistory();
+                loadMoreOOHistory(true);
                 console.log("CP2", cpIndex)
                 setTimeout(function () {
                     prev()

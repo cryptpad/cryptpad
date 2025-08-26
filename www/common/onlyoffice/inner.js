@@ -286,7 +286,7 @@ define([
         };
         var getLastCp = function (old, i) {
             var hashes = old ? oldHashes : content.hashes;
-            console.log("hashes", hashes, content)
+            console.log("hashes", hashes, content, APP.getContent())
             if (!hashes || !Object.keys(hashes).length) { return {}; }
             i = i || 0;
             var idx = sortCpIndex(hashes);
@@ -598,6 +598,8 @@ define([
             }
             ooChannel.ready = false;
             ooChannel.queue = [];
+                            console.log("here!2")
+
             data.callback = function () {
                 if (APP.template) { APP.template = false; }
                 resetData(blob, file);
@@ -698,6 +700,8 @@ define([
 
         const loadLastDocument = function (lastCp) {
             return new Promise((resolve, reject) => {
+                lastCp = getLastCp()
+                console.log('lastCp', lastCp, !lastCp || !lastCp.file, stringifyInner())
                 if (!lastCp || !lastCp.file) {
                     return void reject('EEMPTY');
                 }
@@ -843,6 +847,8 @@ define([
                 loadLastDocument(cp)
                     .then(({blob, fileType}) => {
                         ooChannel.queue = messages;
+                                        console.log("here!3")
+
                         resetData(blob, fileType);
                         UI.removeLoadingScreen();
                     })
@@ -859,6 +865,8 @@ define([
                         if (APP.downloadType) { type = APP.downloadType; }
                         var blob = loadInitDocument(type, true);
                         ooChannel.queue = messages;
+                                        console.log("here!4")
+
                         resetData(blob, file);
                         UI.removeLoadingScreen();
                     });
@@ -914,6 +922,8 @@ define([
                             ooChannel.lastHash = obj.data.hash;
                             ooChannel.cpIndex++;
                         } else {
+                                            console.log("here!5")
+
                             ooChannel.queue.push(obj.data);
                         }
                         break;
@@ -1076,6 +1086,8 @@ define([
         const getInitialChanges = function() {
             const changes = [];
             if (content.version > 2) {
+                                console.log("here!6")
+
                 ooChannel.queue.forEach(function (data) {
                     Array.prototype.push.apply(changes, data.msg.changes);
                 });
@@ -1083,8 +1095,11 @@ define([
 
                 ooChannel.cpIndex += ooChannel.queue.length;
                 var last = ooChannel.queue.pop();
+                                                console.log("here!7", ooChannel.queue, last)
+
                 if (last) { ooChannel.lastHash = last.hash; }
             }
+            console.log("here!8", changes)
             return changes;
         };
 
@@ -1101,11 +1116,12 @@ define([
 
             var changes = [];
             if (content.version > 2) {
+                                console.log("here!8")
+
                 ooChannel.queue.forEach(function (data) {
                     Array.prototype.push.apply(changes, data.msg.changes);
                 });
                 ooChannel.ready = true;
-
                 ooChannel.cpIndex += ooChannel.queue.length;
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
@@ -1975,6 +1991,8 @@ define([
                 ooChannel.ready = true;
                 var changes = [];
                 var changesIndex;
+                                console.log("here!9")
+
                 ooChannel.queue.forEach(function (data) {
                     Array.prototype.push.apply(changes, data.msg.changes);
                     changesIndex = data.msg.changesIndex;
@@ -1982,6 +2000,7 @@ define([
                 });
                 ooChannel.cpIndex += ooChannel.queue.length;
                 var last = ooChannel.queue.pop();
+                console.log("here!0")
                 if (last) { ooChannel.lastHash = last.hash; }
 
                 var onDocUnlock = function () {
@@ -2917,11 +2936,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 console.log("blobdata1", blob)
                 resetData(blob, fileType);
             } catch (e) {
+                console.log("error", e, cp)
                 var file = getFileType();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
                 if (!keepQueue) { ooChannel.queue = []; }
-                                console.log("blobdata2", blob)
+                                console.log("blobdata2", blob, ooChannel.queue)
 
                 resetData(blob, file);
             }
@@ -2965,6 +2985,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var initialCp = !lastCp.hash;
 
                 var messages = (data.messages || []).slice(initialCp ? 0 : 1);
+                                console.log("here!10")
 
                 ooChannel.queue = messages.map(function (obj) {
                     return {
@@ -3143,9 +3164,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // console.log("patch", patch.msg)
                     ooChannel.send(JSON.parse(patch.msg));
                 };
-                var onCheckpoint = function (cp, patchNo) {
+                var onCheckpoint = function (cp, keepQueue) {
                     // We want to load a checkpoint:
-                    loadCp(cp, patchNo);
+                    loadCp(cp, keepQueue);
                 };
                 var setHistoryMode = function (bool) {
                     if (bool) {
@@ -3156,6 +3177,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // Cancel button: redraw from lastCp
                     APP.history = false;
                     ooChannel.queue = [];
+                                    console.log("here!11", )
+
                     ooChannel.ready = false;
 
 
@@ -3557,6 +3580,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     return str.length === 32;
                 }).length;
                 if ((m - v) === 1 && !readOnly && common.isLoggedIn()) {
+                                    console.log("here!12")
+
                     var needCp = ooChannel.queue.length > CHECKPOINT_INTERVAL;
                     APP.initCheckpoint = needCp;
                 }
@@ -3866,6 +3891,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var latest = getLastCp(true);
                 var newLatest = getLastCp();
                 if (newLatest.index > latest.index || (newLatest.index && !latest.index)) {
+                                    console.log("here!13")
+
                     ooChannel.queue = [];
                     ooChannel.ready = false;
                     var reload = function () {
