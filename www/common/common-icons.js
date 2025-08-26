@@ -184,7 +184,7 @@ define([
         "expire": "clock-alert",
         "restricted": "ban",
         "renamed": "flag",
-        "restore": "restore",
+        "restore": "rotate-cw",
         "all": "menu",
         "chat": "message-circle-more",
         "mail": "mail", // XXX
