@@ -1826,5 +1826,7 @@
     "admin_addAdminsAdd": "Promuovi un contatto ad amministratore/trice",
     "toggleArrows": "Pulsanti freccia per spostare gli elementi",
     "oo_unstableMigrationWarning": "L'importazione e l'esportazione di alcuni formati OpenDocument (.odt, .odp) è attualmente instabile. Si consiglia di utilizzare altri formati quando possibile. CryptPad tenterà ora una conversione.",
-    "settings_profileHeaderTitle": "Informazioni del profilo"
+    "settings_profileHeaderTitle": "Informazioni del profilo",
+    "skipLink": "Vai al contenuto principale",
+    "fc_open_formaud": "Apri (come revisore/a)"
 }
