@@ -51,6 +51,7 @@
     "open-sans-fontface": "^1.4.0",
     "openid-client": "^5.7.1",
     "pako": "^2.1.0",
+    "pdf-lib": "^1.17.1",
     "prompt-confirm": "^2.0.4",
     "pull-stream": "^3.6.1",
     "require-css": "0.1.10",
