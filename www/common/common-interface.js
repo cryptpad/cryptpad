@@ -856,7 +856,7 @@ define([
         document.body.appendChild(frame);
 
         addTabListener(frame);
-
+        Lucide.createIcons();
         listener = listenForKeys(function () {
             // Only trigger OK if cancel is not focused
             if (document.activeElement === $cancel[0]) {

@@ -271,9 +271,14 @@
     .cp-app-drive-search-spinner {
         display: inline-flex;
         color: @cp_drive-fg;
-        font-size: 40px;
         align-items: center;
         justify-content: center;
+        animation: spin 10s linear infinite;
+        svg {
+            height: 2rem;
+            width: 2rem;
+            margin: 0;
+        }
     }
     .cp-app-drive-search-noresult {
         font-size: 30px;
@@ -607,6 +612,10 @@
                         font-size: 12px;
                         line-height: 16px;
                         color: @cp_drive-header-fg;
+                    }
+                    .cp-icon {
+                        height: 1.5rem;
+                        width: 1.5rem;
                     }
                 }
                 &.cp-app-drive-tags-list {

@@ -344,6 +344,7 @@ define([
                 input,
                 del
             ]);
+            setTimeout(()=> Lucide.createIcons());
             $(del).click(function () {
                 var $block = $(el).closest('.cp-form-edit-block');
                 $(el).remove();
