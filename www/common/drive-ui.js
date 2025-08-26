@@ -4066,6 +4066,7 @@ define([
                     createTitle($path, obj._path);
 
                     $list.append($element);
+                    Lucide.createIcons();
                 };
                 if (_folders.length) { getFolderListHeader(true, true).appendTo($list); }
                 _folders.forEach(function (el) {
