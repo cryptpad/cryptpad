@@ -376,9 +376,6 @@
             box-shadow: @cryptpad_ui_shadow;
             .cp-app-drive-tree-root {
                 .droppable-tree-element();
-                .fa-trash-o {
-                    padding-left: 2px;
-                }
             }
             li {
                 padding: 0;
@@ -1087,6 +1084,12 @@
     .cp-app-drive-button {
         order: 15;
         margin: 0 1em;
+        .btn.btn-danger {
+            svg.lucide {
+                width: 1em;
+                height: 1em;
+            }
+        }
     }
 
 }
