@@ -352,8 +352,12 @@ define([
             cpIndex: 0
         };
 
-        var getContent = function () {
+        var getContent = function (title) {
             try {
+                getEditor().asc_setCoreProps({
+                    'title': title,
+                    'creator': ''
+                });
                 return getEditor().asc_nativeGetFile();
             } catch (e) {
                 console.error(e);
@@ -2593,10 +2597,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var exportXLSXFile = function() {
-            var text = getContent();
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+            var md = common.getMetadataMgr().getMetadataLazy();
+            var title = md.title || md.defaultTitle || type;
+            var text = getContent(title);
             var suggestion = Title.suggestTitle(Title.defaultTitle);
             var ext = ['.xlsx', '.ods', '.bin', '.pdf'];
-            var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
             if (type==="presentation") {
                 ext = ['.pptx', '.odp', '.bin', '.pdf'];
