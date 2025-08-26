@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@mcrowe/minibloom": "^0.2.0",
+    "@noble/post-quantum": "^0.4.1",
     "@node-saml/node-saml": "^4.0.5",
     "alertify.js": "1.0.11",
     "body-parser": "^1.20.2",
@@ -89,7 +90,7 @@
     "jquery": "3.6.0"
   },
   "scripts": {
-    "install:components": "node scripts/copy-components.js",
+    "install:components": "node scripts/copy-components.js && node scripts/pqc-browser-convert.js",
     "start": "node server.js",
     "dev": "DEV=1 node server.js",
     "windev": "set DEV=1& node server.js",

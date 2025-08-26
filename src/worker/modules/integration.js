@@ -24,7 +24,16 @@ const factory = (Crypto) => {
             msg: data.msg,
             uid: data.uid,
         };
-        chan.sendMsg(JSON.stringify(obj), cb);
+        if (obj.msg === 'ISAVE') {
+            ctx.pending[data.uid] = true;
+        }
+        chan.sendMsg(JSON.stringify(obj), obj => {
+            if (!ctx.pending[data.uid]) {
+                return void setTimeout(cb, 1000);
+            }
+            delete ctx.pending[data.uid];
+            cb(obj);
+        });
         ctx.emit('MESSAGE', obj, chan.clients.filter(function (cl) {
             return cl !== client;
         }));
@@ -90,6 +99,9 @@ const factory = (Crypto) => {
                 var parsed;
                 try {
                     parsed = JSON.parse(msg);
+                    if (parsed.msg === "ISAVE") {
+                        delete ctx.pending[parsed.uid];
+                    }
                     ctx.emit('MESSAGE', parsed, chan.clients);
                 } catch (e) { console.error(e); }
             });
@@ -176,6 +188,7 @@ const factory = (Crypto) => {
             store: cfg.store,
             emit: emit,
             channels: {},
+            pending: {}, // prevent ISAVE race condition
             clients: {}
         };
 

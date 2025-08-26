@@ -355,6 +355,7 @@ define([
                 toolbar: APP.toolbar,
                 APP: driveAPP,
                 edPublic: APP.teamEdPublic,
+                dsaPublic: APP.teamDsaPublic,
                 editKey: teamData.secondaryKey
             });
             APP.drive = drive;

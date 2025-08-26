@@ -47,7 +47,8 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
     "netflux-websocket",
     "drawio",
     "pako",
-    "x2js"
+    "x2js",
+    "@noble"
 ].forEach(l => {
     let s = l;
     if (s === 'tweetnacl') {

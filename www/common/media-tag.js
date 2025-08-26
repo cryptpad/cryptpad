@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (function (window) {
-var factory = function (Util) {
+var factory = function (Util, Crypto) {
     var Promise = window.Promise;
     var cache;
     var cypherChunkLength = 131088;
@@ -456,7 +456,7 @@ var factory = function (Util) {
         var metadataLength = Decrypt.decodePrefix(prefix);
 
         var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
-        var metaChunk = window.nacl.secretbox.open(metaBox, Decrypt.createNonce(), key);
+        var metaChunk = Crypto.CryptoAgility.secretboxOpen(metaBox, Decrypt.createNonce(), key);
 
         try {
             return JSON.parse(Util.encodeUTF8(metaChunk));
@@ -478,7 +478,7 @@ var factory = function (Util) {
 
     // Decrypts a Uint8Array with the given key.
     var decrypt = function (u8, strKey, done, progressCb) {
-        var Nacl = window.nacl;
+        //var Nacl = window.nacl;
 
         var progress = function (offset) {
             progressCb((offset / u8.length) * 100);
@@ -494,7 +494,7 @@ var factory = function (Util) {
 
         // Get metadata
         var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
-        var metaChunk = Nacl.secretbox.open(metaBox, nonce, key);
+        var metaChunk = Crypto.CryptoAgility.secretboxOpen(metaBox, nonce, key);
 
         Decrypt.increment(nonce);
 
@@ -513,7 +513,7 @@ var factory = function (Util) {
                 var box = new Uint8Array(u8.subarray(start, end));
 
                 // Decrypt the chunk
-                var plaintext = Nacl.secretbox.open(box, nonce, key);
+                var plaintext = Crypto.CryptoAgility.secretboxOpen(box, nonce, key);
                 Decrypt.increment(nonce);
 
                 if (!plaintext) { return void cb('DECRYPTION_FAILURE'); }
@@ -833,8 +833,8 @@ var factory = function (Util) {
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = factory();
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-        define(['/common/common-util.js'], function (Util) {
-            return factory(Util);
+        define(['/common/common-util.js', '/components/chainpad-crypto/crypto.js'], function (Util, Crypto) {
+            return factory(Util, Crypto);
         });
     } else {
         // unsupported initialization

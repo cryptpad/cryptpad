@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (() => {
-const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
+const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
 
     var Block = {};
 
@@ -23,7 +23,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
     // [b64_public, b64_sig, b64_block [version, nonce, content]]
 
     Block.seed = function () {
-        return Nacl.hash(Util.decodeUTF8('pewpewpew'));
+        return Crypto.CryptoAgility.createHash(Util.decodeUTF8('pewpewpew'));
     };
 
     // should be deterministic from a seed...
@@ -35,23 +35,54 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
             throw new Error('INVALID_SEED_LENGTH');
         }
 
-        var signSeed = seed.subarray(0, Nacl.sign.seedLength);
-        var symmetric = seed.subarray(Nacl.sign.seedLength,
-            Nacl.sign.seedLength + Nacl.secretbox.keyLength);
+        var signSeed = seed.subarray(0, Crypto.CryptoAgility.signSeedLength());
+        var symmetric = seed.subarray(Crypto.CryptoAgility.signSeedLength(),
+            Crypto.CryptoAgility.signSeedLength() + Crypto.CryptoAgility.secretboxKeyLength());
+
+        // Generate standard keys using the existing method
+        var sign = Crypto.CryptoAgility.signKeyPairFromSeed(signSeed);
+
+        // Store the post-quantum keys separately for future use (no server validation issues)
+        var pqSignPair = null;
+        var hybridCapable = !!Crypto.PQC && !!Crypto.PQC.ml_dsa;
+
+        if (hybridCapable) {
+            try {
+                // Use separate seed for PQ keys derived from original seed
+                // ML-DSA requires a 32-byte seed, so we hash the seed to get a consistent 32-byte value
+                var pqSeed = Nacl.hash(seed).subarray(0, 32);
+
+                // Generate post-quantum keypair using the 32-byte hash
+                pqSignPair = Crypto.CryptoAgility.generateDsaKeypair(pqSeed);
+            } catch (err) {
+                console.error("Failed to generate post-quantum keys:", err);
+                pqSignPair = null;
+            }
+        }
 
         return {
-            sign: Nacl.sign.keyPair.fromSeed(signSeed), // 32 bytes
-            symmetric: symmetric, // 32 bytes ...
+            sign: sign,
+            pqSignPair: pqSignPair,
+            symmetric: symmetric,
+            // Store whether we have post-quantum capability
+            hasPQ: pqSignPair !== null
         };
     };
 
     Block.keysToRPCFormat = function (keys) {
         try {
             var sign = keys.sign;
-            return {
+            var pqSignPair = keys.pqSignPair;
+
+            // Basic format with classical and pqc keys
+            var result = {
                 edPrivate: Util.encodeBase64(sign.secretKey),
                 edPublic: Util.encodeBase64(sign.publicKey),
+                dsaPrivate: Util.encodeBase64(pqSignPair.secretKey),
+                dsaPublic: Util.encodeBase64(pqSignPair.publicKey),
             };
+
+            return result;
         } catch (err) {
             console.error(err);
             return;
@@ -61,21 +92,23 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
     // (UTF8 content, keys object) => Uint8Array block
     Block.encrypt = function (version, content, keys) {
         var u8 = Util.decodeUTF8(content);
-        var nonce = Nacl.randomBytes(Nacl.secretbox.nonceLength);
+        var nonce = Crypto.CryptoAgility.bytes(Crypto.CryptoAgility.secretboxNonceLength());
         return Block.join([
             [0],
             nonce,
-            Nacl.secretbox(u8, nonce, keys.symmetric)
+            Crypto.CryptoAgility.secretbox(u8, nonce, keys.symmetric)
         ]);
     };
 
     // (uint8Array block) => payload object
+    // src/common/outer/login-block.js
     Block.decrypt = function (u8_content, keys) {
         // version is currently ignored since there is only one
-        var nonce = u8_content.subarray(1, 1 + Nacl.secretbox.nonceLength);
-        var box = u8_content.subarray(1 + Nacl.secretbox.nonceLength);
+        var nonceLength = Crypto.CryptoAgility.secretboxNonceLength();
+        var nonce = u8_content.subarray(1, 1 + nonceLength);
+        var box = u8_content.subarray(1 + nonceLength);
 
-        var plaintext = Nacl.secretbox.open(box, nonce, keys.symmetric);
+        var plaintext = Crypto.CryptoAgility.secretboxOpen(box, nonce, keys.symmetric);
         try {
             return JSON.parse(Util.encodeUTF8(plaintext));
         } catch (e) {
@@ -86,7 +119,43 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
 
     // (Uint8Array block) => signature
     Block.sign = function (ciphertext, keys) {
-        return Nacl.sign.detached(Nacl.hash(ciphertext), keys.sign.secretKey);
+        var hash = Crypto.CryptoAgility.createHash(ciphertext);
+
+        // Generate hybrid signature if post-quantum capabilities are available
+        if (keys.hasPQ && keys.pqSignPair) {
+            try {
+                // Generate classical signature (always required for server compatibility)
+                var classicalSig = Crypto.CryptoAgility.signDetached(hash, keys.sign.secretKey);
+
+                // Generate post-quantum signature
+                var pqSig = Crypto.PQC.ml_dsa.ml_dsa44.internal.sign(keys.pqSignPair.secretKey, hash);
+
+                console.log("Hybrid signature created successfully:");
+                // Create a hybrid signature with format:
+                // [1-byte type][64-byte classical sig][4-byte PQ sig length][PQ sig bytes]
+                var hybridSig = new Uint8Array(1 + classicalSig.length + 4 + pqSig.length);
+                hybridSig[0] = 1; // Type 1 indicates hybrid signature
+                hybridSig.set(classicalSig, 1);
+
+                // Set PQ signature length as 4-byte integer (big endian)
+                var view = new DataView(hybridSig.buffer);
+                view.setUint32(1 + classicalSig.length, pqSig.length, false);
+
+                // Add the PQ signature
+                hybridSig.set(pqSig, 1 + classicalSig.length + 4);
+
+                return hybridSig;
+            } catch (e) {
+                console.error("PQ signing failed, falling back to classical:", e);
+            }
+        }
+
+        // Classical signature with a type marker
+        classicalSig = Crypto.CryptoAgility.signDetached(hash, keys.sign.secretKey);
+        var taggedSig = new Uint8Array(classicalSig.length + 1);
+        taggedSig[0] = 0; // Type 0 indicates classical only
+        taggedSig.set(classicalSig, 1);
+        return taggedSig;
     };
 
     Block.serialize = function (content, keys) {
@@ -97,21 +166,29 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
         var sig = Block.sign(ciphertext, keys);
 
         // serialize {publickey, sig, ciphertext}
-        return {
+        var result = {
             publicKey: Util.encodeBase64(keys.sign.publicKey),
+            pqPublicKey: Util.encodeBase64(keys.pqSignPair.publicKey),
             signature: Util.encodeBase64(sig),
             ciphertext: Util.encodeBase64(ciphertext),
         };
+
+        return result;
     };
 
     Block.proveAncestor = function (O /* oldBlockKeys, N, newBlockKeys */) {
         var u8_pub = Util.find(O, ['sign', 'publicKey']);
-        var u8_secret = Util.find(O, ['sign', 'secretKey']);
         try {
-        // sign your old publicKey with your old privateKey
-            var u8_sig = Nacl.sign.detached(u8_pub, u8_secret);
-        // return an array with the sig and the pubkey
-            return JSON.stringify([u8_pub, u8_sig].map(Util.encodeBase64));
+            // Use Block.sign to create a hybrid signature if available
+            var hybridSig = Block.sign(u8_pub, O);
+            let result = [u8_pub, hybridSig].map(Util.encodeBase64);
+
+            if (O.pqSignPair && O.pqSignPair.publicKey) {
+                result.push(Util.encodeBase64(O.pqSignPair.publicKey));
+            }
+
+            // Return an array with the signature and the pubkey
+            return JSON.stringify(result);
         } catch (err) {
             return void console.error(err);
         }
@@ -122,6 +199,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
     };
 
     Block.getBlockUrl = function (keys) {
+        // Use classical keys for backward compatibility with URL structure
         var publicKey = urlSafeB64(keys.sign.publicKey);
         // 'block/' here is hardcoded because it's hardcoded on the server
         // if we want to make CryptPad work in server subfolders, we'll need
@@ -172,9 +250,10 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
 
         ServerCommand(blockKeys.sign, {
             command: command,
-            auth: auth && auth.data
+            auth: auth && auth.data,
         }, cb);
     };
+
     Block.writeLoginBlock = function (data, cb) {
         const { content, blockKeys, oldBlockKeys, auth, pw, session, token, userData } = data;
 
@@ -191,9 +270,10 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
         ServerCommand(blockKeys.sign, {
             command: command,
             content: block,
-            session: session // sso session
+            session: session, // sso session
         }, cb);
     };
+
     Block.removeLoginBlock = function (data, cb) {
         const { reason, blockKeys, auth, edPublic } = data;
 
@@ -204,7 +284,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
             command: command,
             auth: auth && auth.data,
             edPublic: edPublic,
-            reason: reason
+            reason: reason,
         }, cb);
     };
 
@@ -214,7 +294,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
 
         ServerCommand(blockKeys.sign, {
             command: 'SSO_UPDATE_BLOCK',
-            ancestorProof: oldProof
+            ancestorProof: oldProof,
         }, cb);
 
     };
@@ -227,7 +307,8 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('../common-util'),
         undefined,
         require('./http-command'),
-        require('tweetnacl/nacl-fast')
+        require('tweetnacl/nacl-fast'),
+        require('chainpad-crypto/crypto')
     );
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
     define([
@@ -235,8 +316,9 @@ if (typeof(module) !== 'undefined' && module.exports) {
         '/api/config',
         '/common/outer/http-command.js',
         '/components/tweetnacl/nacl-fast.min.js',
-    ], (Util, ApiConfig, ServerCommand) => {
-        return factory(Util, ApiConfig, ServerCommand, window.nacl);
+        '/components/chainpad-crypto/crypto.js',
+    ], (Util, ApiConfig, ServerCommand, Nacl, Crypto) => {
+        return factory(Util, ApiConfig, ServerCommand, window.nacl, Crypto);
     });
 } else {
     // unsupported initialization

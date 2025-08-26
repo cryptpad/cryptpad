@@ -13,6 +13,26 @@ const factory = (Crypto, Hash, Util, Realtime, Messaging,
         Messages = data.Messages;
     };
 
+    /*
+     * CRYPTOGRAPHIC IDENTITY NOTE:
+     *
+     * Throughout this module and the entire CryptPad application, we continue to use
+     * curve25519 public keys (curvePublic) as the primary identifier for users despite
+     * having post-quantum cryptography (PQC) keys (kemPublic) available.
+     *
+     * 1. Legacy compatibility: A complete migration to PQC for identification would require
+     *    changing all existing user relationships and channels
+     *
+     * 2. System integration: The curvePublic key is deeply integrated into friend relationships,
+     *    channel management, history keeper, and other core components
+     *
+     * 3. Risk management: Partially migrating identity systems can lead to inconsistencies
+     *    across the application, potentially creating security vulnerabilities
+     *
+     * A future coordinated migration will be necessary to fully replace curve25519 with PQC,
+     * which will require careful planning to ensure all components are updated simultaneously.
+     */
+
     var Types = {
         message: 'MSG',
         unfriend: 'UNFRIEND',
@@ -701,7 +721,7 @@ const factory = (Crypto, Hash, Util, Realtime, Messaging,
         }
 
         var proxy = ctx.store.proxy;
-        var keys = Curve.deriveKeys(friend.curvePublic, proxy.curvePrivate);
+        var keys = Curve.deriveKeys(friend.curvePublic, proxy.curvePrivate, friend.kemPublic, proxy.kemPublic);
         var data = {
             keys: keys,
             channel: friend.channel,

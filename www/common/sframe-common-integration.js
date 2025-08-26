@@ -92,7 +92,7 @@ define([
                 if (state.me) { return; } // I have the lock: abort
                 if (state.other && state.other !== data.uid) { return; } // someone else has the lock
                 // If state.other === data.uid ==> save failed and someone else tries again
-                if (!state.changed) { return; }
+                if (!state.changed && state.other !== data.uid) { return; }
                 // If !state.other: nobody has the lock, give them
                 state.other = data.uid;
                 state.lastTmp = +new Date();
@@ -103,6 +103,7 @@ define([
                 setStateChanged(false);
                 saveTo = setTimeout(function () {
                     // They weren't able to save in time, try ourselves
+                    setStateChanged(true);
                     var id = state.other;
                     state.other = false;
                     save(id);
@@ -151,7 +152,7 @@ define([
         // is already saving
         requestSave = function (id, cb) {
             if (state.other || state.me) { return void cb(false); } // save in progress
-            debug('Integration send ISAVE');
+            debug('Integration send ISAVE', id);
             alreadySaved = false; // someone may have saved while we were waiting for our callback
             execCommand('SEND', {
                 msg: 'ISAVE',

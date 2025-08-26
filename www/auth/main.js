@@ -15,11 +15,12 @@ define([
 
     '/lib/qrcode.min.js',
     '/components/tweetnacl/nacl-fast.min.js',
+    'componenst/chainpad-cypto/crypto.js',
 
     'less!/auth/app-auth.less',
-], function ($, Util, h, UI, ServerCommand, Base32, Login, Block, LocalStore) {
+], function ($, Util, h, UI, ServerCommand, Base32, Login, Block, LocalStore, Crypto) {
     var QRCode = window.QRCode;
-    var Nacl = window.nacl;
+    //var Nacl = window.nacl;
 
 
     var main = h('div.centered', [
@@ -220,7 +221,7 @@ Note: This must currently be reversed manually (by deleting the mfa config file)
     var $b32Secret = $('#base32-secret');
 
     var randomSecret = () => {
-        var U8 = Nacl.randomBytes(20);
+        var U8 = Crypto.CryptoAgility.bytes(20);
         return Base32.encode(U8);
     };
 
