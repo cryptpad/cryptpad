@@ -1092,7 +1092,7 @@ define([
                         type: "releaseLock",
                         locks: l
                     });
-                    delete content.locks[id];
+                    // delete content.locks[id];
                 }
             });
             if (content.saveLock && !isUserOnline(content.saveLock)) {
@@ -3231,17 +3231,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                                         console.log('q i', ooChannel.queue, ooChannel.queue.length, APP.last)
                     var lastP = ooChannel.queue[ooChannel.queue.length-1];
                                         // ooChannel.queue.push(output)
+                    if (!APP.next) {
+                        ooChannel.queue.push(APP.last)
 
-                    ooChannel.queue.push(APP.last)
+                    }
                     ooChannel.queue.push(output)
                     var next = true
                     loadCp({}, true, next)
                 };
                 var onCheckpoint = function (cp, keepQueue) {
-                    // cp = getLastCp()
-                    // console.log("checkpoint!", cp)
-                    // We want to load a checkpoint:
-                    console.log('getcontent')
                     loadCp(cp, keepQueue);
                 };
                 var setHistoryMode = function (bool) {
@@ -3261,7 +3259,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // Fill the queue and then load the last CP
                     rtChannel.getHistory(function () {
                         var lastCp = getLastCp();
-                        console.log("checkpoin!", lastCp)
                         loadCp(lastCp, true);
                     });
                 };

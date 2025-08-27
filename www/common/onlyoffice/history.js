@@ -234,14 +234,9 @@ define([
         };
 
         var next = function () {
-                        console.log('indexN', msgIndex, allMsgs)
-
-            console.log("patch next1", msgIndex, allMsgs)
             var id = getId();
             if (!ooMessages[id]) { loading = false; return; }
-            console.log("check1", ooMessages[id])
             var msgs = ooMessages[id];
-            // msgIndex = 0
             msgIndex++;
             id++;
             allMsgs++
