@@ -38,7 +38,6 @@ define([
 
         var endWithCp = sortedCp.length &&
                         config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
-        console.log("endwithcp?", sortedCp, config.onlyoffice.lastHash)
         var fillOO = function (id, messages) {
             if (!id) { return; }
             if (ooMessages[id]) { return; }
@@ -122,7 +121,6 @@ define([
 
             // Get the checkpoint ID
             var id = -1;
-            console.log("CP", cpIndex, sortedCp)
             if (cpIndex < sortedCp.length) {
                 id = sortedCp[sortedCp.length - 1 - cpIndex];
                 cp = hashes[id];ooMessages[-1]
@@ -144,29 +142,11 @@ define([
 
 
             showVersion();
-            console.log("oomsgs", ooMessages, id, cp)
-            console.log("oomsgs2", ooMessages[-1], ooMessages[-1].length)
-                            console.log('checkt', patch)
 
             if (ooMessages[id] && keepQueue) {
                 // Cp already loaded: reload OO
                 return void config.onCheckpoint(cp, keepQueue);
             } 
-            // else if (ooMessages[id] && patch) {
-            //     // const parsedMsg = JSON.parse(patch.msg);
-
-            //     // // Create the output object
-            //     // const checkPoint = {
-            //     // msg: parsedMsg,
-            //     // hash: patch.serverHash
-            //     // };
-            //     // console.log('checkpoint', checkPoint)
-            //                     loading = false;
-
-            //                     return void config.onCheckpoint(cp, keepQueue);
-
-            //     config.onPatch(patch)
-            // }
 
             getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, function (err, messages) {
                 if (err) {
@@ -184,13 +164,8 @@ define([
                 return;
             }
         });
-        // console.log()
 
-        var trackMsgs= function (msgNumber) {
-            msgNumber--
-            
 
-        }
         
 
         var onClose = function () { config.setHistory(false); };
@@ -243,16 +218,12 @@ define([
 
             var patch = msgs[allMsgs];
             if (!patch) { loading = false; return; }
-            //             console.log("patch next", msgs, msgIndex, id)
-            // console.log('patch!', patch)
             config.onPatchHistory(patch);
             showVersion();
             setTimeout(function () {
                 $('iframe').blur();
                 loading = false;
             }, 200);
-            // loadMoreOOHistory(true, patch);
-
         };
 
         var prev = function () {
@@ -358,9 +329,7 @@ define([
                 console.log("laodin", loading)
                 // if (loading) { return; }
                 loading = true;
-                console.log("hello")
                 next();
-                // update();
             });
             // Go to previous checkpoint
             $fastNext.click(function () {
@@ -374,39 +343,10 @@ define([
                 // if (loading) { return; }
                 loading = true;
                 cpIndex = 0
-                console.log("CP1", cpIndex)
-
-                // if (msgIndex === -1) {
-                //     // cpIndex++;
-                // }
                 loadMoreOOHistory(true);
-                console.log("CP2", cpIndex)
                 setTimeout(function () {
                     prev()
-                    // loading = false;
                 }, 2000);
-                // next()
-
-                // var id = getId();
-                // if (!ooMessages[id]) { loading = false; return; }
-                // var msgs = ooMessages[id];
-                // msgIndex--;
-                // var patch = msgs[32];
-                // if (!patch) { loading = false; return; }
-                // config.onPatch(patch);
-                // showVersion();
-                // setTimeout(function () {
-                //     $('iframe').blur();
-                //     loading = false;
-                // }, 200);
-                // update();
-                
-                // if (loading) { return; }
-                // loading = true;
-                // if (msgIndex === -1) {
-                //     cpIndex++;
-                // }
-                // prev();
                 update();
             });
             // Go to next checkpoint
@@ -417,7 +357,7 @@ define([
                     cpIndex++;
                 }
                 loadMoreOOHistory();
-                // update();
+                update();
             });
             onKeyDown = function (e) {
                 var p = function () { e.preventDefault(); };
