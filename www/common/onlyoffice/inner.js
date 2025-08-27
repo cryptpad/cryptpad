@@ -285,8 +285,21 @@ define([
             });
         };
         var getLastCp = function (old, i) {
-            var hashes = old ? oldHashes : content.hashes;
-            console.log("hashes", hashes, content, APP.getContent())
+            var hashes;
+            if (old) {
+                hashes = oldHashes
+            } else if (content.hashes) {
+                hashes = content.hashes
+            } 
+            // else if (ooChannel.queue) {
+            //     hashes = []
+
+            // }
+            // var hashes = old ? oldHashes : content.hashes;
+            ooChannel.queue.forEach(function(msg){
+                console.log('msg hash', msg.hash)
+            })
+            console.log("hashes", hashes, content, APP.getContent(), ooChannel.queue)
             if (!hashes || !Object.keys(hashes).length) { return {}; }
             i = i || 0;
             var idx = sortCpIndex(hashes);
@@ -295,6 +308,7 @@ define([
                 return {};
             }
             var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
+            
             return last;
         };
         var deleteLastCp = function (i) {
@@ -531,7 +545,7 @@ define([
         };
         APP.FM = common.createFileManager(fmConfig);
 
-        var resetData = function (blob, type) {
+        var resetData = function (blob, type, next) {
             // If a read-only refresh popup was planned, abort it
             delete APP.refreshPopup;
             clearTimeout(APP.refreshRoTo);
@@ -567,7 +581,7 @@ define([
             });
             if (APP.stopHistory || APP.template) { APP.history = false; }
             console.log("app", APP)
-            startOO(blob, type, true);
+            startOO(blob, type, true, next);
         };
 
         var saveToServer = function (blob, title) {
@@ -611,6 +625,7 @@ define([
         var noLogin = false;
 
         var makeCheckpoint = function (force) {
+            console.log("queue1", ooChannel.queue)
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
 
             var locked = content.saveLock;
@@ -701,7 +716,7 @@ define([
         const loadLastDocument = function (lastCp) {
             return new Promise((resolve, reject) => {
                 lastCp = getLastCp()
-                console.log('lastCp', lastCp, !lastCp || !lastCp.file, stringifyInner())
+                console.log('lastCp', lastCp, !lastCp || !lastCp.file, stringifyInner(),)
                 if (!lastCp || !lastCp.file) {
                     return void reject('EEMPTY');
                 }
@@ -918,6 +933,8 @@ define([
                                 APP.refreshRoTo = setTimeout(refreshReadOnly, READONLY_REFRESH_TO);
                                 return;
                             }*/
+                                           console.log("hello0")
+
                             ooChannel.send(obj.data.msg);
                             ooChannel.lastHash = obj.data.hash;
                             ooChannel.cpIndex++;
@@ -1084,22 +1101,41 @@ define([
         };
 
         const getInitialChanges = function() {
+
             const changes = [];
             if (content.version > 2) {
-                                console.log("here!6")
-
                 ooChannel.queue.forEach(function (data) {
                     Array.prototype.push.apply(changes, data.msg.changes);
                 });
                 ooChannel.ready = true;
+                console.log("q indexcheck", APP.next)
+                console.log("q index", ooChannel.cpIndex, ooChannel.queue.length, ooChannel.queue)
+                // ooChannel.cpIndex += ooChannel.queue.length;
 
-                ooChannel.cpIndex += ooChannel.queue.length;
-                var last = ooChannel.queue.pop();
-                                                console.log("here!7", ooChannel.queue, last)
+
+                if (APP.next) {
+                    console.log("next")
+                                    console.log("q index!", ooChannel.queue, ooChannel.queue.length+1)
+
+                                    ooChannel.cpIndex += ooChannel.queue.length+1;
+
+                    var last = ooChannel.queue;
+                } else {
+                                    console.log("q index?", ooChannel.queue, ooChannel.queue.length)
+                    ooChannel.cpIndex += ooChannel.queue.length;
+
+                    var last = ooChannel.queue.pop()
+                    APP.last = last
+                                                    console.log("q index!!", last, ooChannel.queue, ooChannel.queue.hash)
+
+
+                }
+                                console.log("q index1", ooChannel.cpIndex, last)
+
 
                 if (last) { ooChannel.lastHash = last.hash; }
+                console.log("q index last", ooChannel.queue)
             }
-            console.log("here!8", changes)
             return changes;
         };
 
@@ -1359,6 +1395,8 @@ define([
                     });
                 }
                 // Increment index and update latest hash
+                                                           console.log("hello1")
+
                 ooChannel.cpIndex++;
                 ooChannel.lastHash = hash;
                 // Check if a checkpoint is needed
@@ -1440,6 +1478,8 @@ define([
                 }
                 // Apply it on our side
                 ooChannel.send(msg);
+                                                           console.log("hello2")
+
                 ooChannel.lastHash = hash;
                 ooChannel.cpIndex++;
             });
@@ -2229,7 +2269,12 @@ define([
         };
 
         var firstOO = true;
-        startOO = function (blob, file, force) {
+        startOO = function (blob, file, force, next) {
+            if (next) {
+                APP.next = true
+            } else {
+                APP.next = undefined
+            }
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             const lock = !APP.history && (APP.migrate);
 
@@ -2926,7 +2971,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             pinImages();
         };
 
-        const loadCp = async function (cp, keepQueue) {
+        const loadCp = async function (cp, keepQueue, next) {
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
@@ -2941,9 +2986,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
                 if (!keepQueue) { ooChannel.queue = []; }
-                                console.log("blobdata2", blob, ooChannel.queue)
+                console.log("blobdata2", blob, ooChannel.queue)
 
-                resetData(blob, file);
+                resetData(blob, file, next);
             }
         };
 
@@ -3156,16 +3201,47 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // Wait for the checkpoint to be uploaded before leaving history mode
                     // (race condition). We use "stopHistory" to remove the history
                     // flag only when the checkpoint is ready.
+                                console.log("queue2", ooChannel.queue)
+
                     APP.stopHistory = true;
+                                console.log("queue3", ooChannel.queue)
+
                     makeCheckpoint(true);
                 };
                 var onPatch = function (patch) {
                     // Patch on the current cp
-                    // console.log("patch", patch.msg)
+                    console.log("onpatch", ooChannel.queue)
                     ooChannel.send(JSON.parse(patch.msg));
+                    
+                };
+                var onPatchHistory = function (patch) {
+                    // Patch on the current cp
+
+                    console.log("onpatch", ooChannel.queue)
+                    ooChannel.send(JSON.parse(patch.msg));
+                    const parsedMsg = JSON.parse(patch.msg);
+
+                    // Create the output object
+                    const output = {
+                        msg: parsedMsg,
+                        hash: patch.serverHash
+                    };
+                                        console.log("onpatch2", ooChannel.queue)
+                                        console.log("onpatch3", output)
+                                        console.log('q i', ooChannel.queue, ooChannel.queue.length, APP.last)
+                    var lastP = ooChannel.queue[ooChannel.queue.length-1];
+                                        // ooChannel.queue.push(output)
+
+                    ooChannel.queue.push(APP.last)
+                    ooChannel.queue.push(output)
+                    var next = true
+                    loadCp({}, true, next)
                 };
                 var onCheckpoint = function (cp, keepQueue) {
+                    // cp = getLastCp()
+                    // console.log("checkpoint!", cp)
                     // We want to load a checkpoint:
+                    console.log('getcontent')
                     loadCp(cp, keepQueue);
                 };
                 var setHistoryMode = function (bool) {
@@ -3239,6 +3315,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     Feedback.send('OO_HISTORY');
                     var histConfig = {
                         onPatch: onPatch,
+                        onPatchHistory: onPatchHistory,
                         onCheckpoint: onCheckpoint,
                         onRevert: commit,
                         setHistory: setHistoryMode,

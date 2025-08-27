@@ -151,21 +151,22 @@ define([
             if (ooMessages[id] && keepQueue) {
                 // Cp already loaded: reload OO
                 return void config.onCheckpoint(cp, keepQueue);
-            } else if (ooMessages[id] && patch) {
-                const parsedMsg = JSON.parse(patch.msg);
+            } 
+            // else if (ooMessages[id] && patch) {
+            //     // const parsedMsg = JSON.parse(patch.msg);
 
-                // Create the output object
-                const checkPoint = {
-                msg: parsedMsg,
-                hash: patch.serverHash
-                };
-                console.log('checkpoint', checkPoint)
-                                loading = false;
+            //     // // Create the output object
+            //     // const checkPoint = {
+            //     // msg: parsedMsg,
+            //     // hash: patch.serverHash
+            //     // };
+            //     // console.log('checkpoint', checkPoint)
+            //                     loading = false;
 
-                                return void config.onCheckpoint(checkPoint);
+            //                     return void config.onCheckpoint(cp, keepQueue);
 
-                config.onPatch(patch)
-            }
+            //     config.onPatch(patch)
+            // }
 
             getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, function (err, messages) {
                 if (err) {
@@ -247,72 +248,21 @@ define([
 
             var patch = msgs[allMsgs];
             if (!patch) { loading = false; return; }
-                        console.log("patch next", msgs, msgIndex, id)
-            console.log('patch!', patch)
-            // config.onPatch(patch);
-            // showVersion();
-            // setTimeout(function () {
-            //     $('iframe').blur();
-            //     loading = false;
-            // }, 200);
-            loadMoreOOHistory(false, patch);
+            //             console.log("patch next", msgs, msgIndex, id)
+            // console.log('patch!', patch)
+            config.onPatchHistory(patch);
+            showVersion();
+            setTimeout(function () {
+                $('iframe').blur();
+                loading = false;
+            }, 200);
+            // loadMoreOOHistory(true, patch);
 
         };
 
         var prev = function () {
-            console.log('indexP', msgIndex, allMsgs)
             allMsgs--
-            // var id = getId();
-            // if (!ooMessages[id]) { loading = false; return; }
-            // var msgs = ooMessages[id];
-            // // msgIndex = 0
-            // msgIndex++;
-            // // id++;
-            // var patch = msgs[msgIndex];
-            // if (!patch) { loading = false; return; }
-            //             console.log("patch next", msgs, msgIndex, id)
-
-            // config.onPatch(patch);
-            // showVersion();
-            // setTimeout(function () {
-            //     $('iframe').blur();
-            //     loading = false;
-            // }, 200);
         };
-
-        // var prev = (function () {
-        //     var msgIndexPrevMap = {};
-
-
-        //     return function () {
-                
-        //         var id = getId();
-
-        //         if (!ooMessages[id]) { loading = false; return; }
-
-        //         var msgs = ooMessages[id];
-
-        //         if (!(id in msgIndexPrevMap)) {
-        //             msgIndexPrevMap[id] = Object.keys(msgs).length - 1;
-        //         } else {
-        //             msgIndexPrevMap[id]--;
-        //         }
-
-        //         var index = msgIndexPrevMap[id];
-
-        //         var patch = msgs[index];
-
-        //         if (!patch) { loading = false; return; }
-        //         console.log("patch", msgs, index)
-        //         config.onPatch(patch);
-        //         showVersion();
-
-        //         setTimeout(function () {
-        //             $('iframe').blur();
-        //             loading = false;
-        //         }, 200);
-        //     };
-        // })();
 
 
 
@@ -426,7 +376,7 @@ define([
                 update();
             });
              $prev.click(function () {
-                if (loading) { return; }
+                // if (loading) { return; }
                 loading = true;
                 cpIndex = 0
                 console.log("CP1", cpIndex)
