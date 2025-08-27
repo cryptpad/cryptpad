@@ -285,17 +285,7 @@ define([
             });
         };
         var getLastCp = function (old, i) {
-            var hashes;
-            if (old) {
-                hashes = oldHashes
-            } else if (content.hashes) {
-                hashes = content.hashes
-            } 
-            // else if (ooChannel.queue) {
-            //     hashes = []
-
-            // }
-            // var hashes = old ? oldHashes : content.hashes;
+            var hashes = old ? oldHashes : content.hashes;
 
             if (!hashes || !Object.keys(hashes).length) { return {}; }
             i = i || 0;

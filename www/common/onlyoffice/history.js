@@ -326,7 +326,6 @@ define([
 
             // Push one patch
             $next.click(function () {
-                console.log("laodin", loading)
                 // if (loading) { return; }
                 loading = true;
                 next();
