@@ -552,10 +552,7 @@ define([
         if (APP.loggedIn && (data.teams.indexOf(1) === -1 || teamId === 0)) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-clone',
-                },
-                content: h('span', Messages.calendar_import),
+                content: h('span', [ Icons.get('copy'), Messages.calendar_import]),
                 action: function (e) {
                     e.stopPropagation();
                     importCalendar({
