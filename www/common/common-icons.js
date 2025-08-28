@@ -13,7 +13,6 @@ define([
         "drive-upload-folder": "folder-up",
         "file": "file",
         "drive-recent": "clock",
-        "drive-owned-document": "id-card",
         "drive-password-document": "file-lock",
         "folder": "folder",
         "folder-open": "folder-open",
