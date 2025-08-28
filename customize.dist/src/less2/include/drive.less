@@ -60,6 +60,8 @@
                 min-width: 1.25em;
                 min-height: 1.25em;
                 font-size: 1em;
+                margin-right: 0.2rem;
+            }
             }
             &:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-selected-tmp) {
                 border: 1px solid @cp_drive-icon-border;
@@ -92,8 +94,7 @@
                 max-width: none;
                 margin: 8px 0;
             }
-            .fa, .cptools, svg {
-                font-size: 64px;
+            svg {
                 margin: auto;
                 margin: 18px 0;
                 text-align: center;
@@ -110,7 +111,7 @@
             }
             &.cp-app-disabled {
                 cursor: not-allowed !important;
-                .fa, .cptools { cursor: not-allowed !important; }
+                svg { cursor: not-allowed !important; }
                 opacity: 0.5;
             }
         }
@@ -161,13 +162,6 @@
     //div:focus {
     //    outline: none;
     //}
-
-    .fa {
-        font-family: FontAwesome;
-    }
-    .cptools {
-        font-family: cptools;
-    }
 
     ul {
         list-style: none;
@@ -353,13 +347,6 @@
                     cursor: pointer;
                     margin: 0 0 2px -5px;
                     padding-left: 5px;
-                    .fa, .cptools, svg {
-                        display: inline-block;
-                        min-width: 0;
-                        width: 20px;
-                        margin-right: 0px;
-                        z-index: 99;
-                    }
                     .cp-app-drive-element {
                         flex: 1;
                         min-width: 0;
@@ -642,6 +629,9 @@
         }
         .cp-app-drive-element {
             .cp-app-drive-element-truncated { display: none; }
+             span.cp-app-drive-element-name {
+                padding: 0;
+            }
         }
 
         .cp-app-drive-new-ghost {
@@ -654,7 +644,7 @@
             &:hover {
                 opacity: 0.7;
             }
-            .fa, .cptools, svg {
+            svg {
                 cursor: pointer;
             }
         }
@@ -689,15 +679,10 @@
                     top: 3px;
                     display: flex;
                     flex-direction: column;
-                    .fa, .cptools, svg {
+                    svg {
                         margin: 0;
                         font-size: 18px;
                     }
-                }
-                .cp-app-drive-element-icon {
-                    font-size: 0.9rem;
-                    margin: 0;
-                    margin-right: 0.3rem;
                 }
                 .cp-app-drive-element-name-text {
                     overflow: hidden;
@@ -715,7 +700,7 @@
                     max-width: 100px;
                     max-height: 100px;
                     background: @cp_drive-thumb-bg;
-                    & ~ .fa, & ~ .cptools {
+                    & ~ svg {
                         display: none;
                         font-size: 17px;
                         position: absolute;
@@ -727,7 +712,7 @@
             }
             .cp-app-drive-new-ghost {
                 flex-flow: column;
-                .fa, .cptools, svg {
+                svg {
                     font-size: 90px;
                     margin: 0;
                 }
@@ -738,9 +723,6 @@
         }
 
         div.cp-app-drive-content-list {
-            .cp-app-drive-element-icon {
-                display: none !important;
-            }
             .cp-app-drive-element-grid {
                 display: none;
             }
@@ -791,7 +773,7 @@
                         align-items: center;
                         justify-content: end;
                         height: @variables_bar-height;
-                        .fa, .cptools, svg {
+                        svg {
                             &:not(:last-child) {
                                 margin-right: 2px;
                             }
@@ -813,9 +795,6 @@
                             color: inherit;
                             background: none;
                             border: none;
-                            .fa {
-                                margin-right: 5px;
-                            }
                         }
                     }
                 }
@@ -836,7 +815,7 @@
                     cursor: default;
                     color: @cp_drive-header-fg;
                     span {
-                        &:not(.fa):not(.cptools) {
+                        &:not(svg) {
                             text-align: left;
                         }
                         &.sortasc, &.sortdesc {
@@ -975,7 +954,7 @@
         .cp-modal {
             display: flex;
             flex-flow: column;
-            li, li .fa, li .cptools {
+            li, li svg.lucide {
                 cursor: pointer;
                 border-radius: @variables_radius;
                 &:focus {
@@ -1035,7 +1014,7 @@
                         display: flex;
                         align-items: center;
                         align-content: unset;
-                        .fa, .cptools {
+                        svg {
                             font-size: 32px;
                             min-width: 50px;
                         }
@@ -1075,7 +1054,7 @@
             }
             #cp-app-drive-toolbar-context-mobile, #cp-app-drive-toolbar-contextbuttons { order: 0; }
             #cp-app-drive-toolbar-context-mobile {
-                .fa { margin: 0 !important; }
+                .svg { margin: 0 !important; }
             }
             #cp-app-drive-toolbar-contextbuttons {
                 height: @variables_bar-height;
