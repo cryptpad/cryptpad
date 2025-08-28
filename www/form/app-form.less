@@ -1394,7 +1394,10 @@
             color: @cryptpad_text_col;
         }
         div.cp-form-poll-answer {
-            color: @cp_form-poll-yes-color;
+            color: @cryptpad_text_col;
+            &[data-value="1"] {
+                color: @cp_form-poll-yes-color;
+            }
         }
     }
     .cp-form-response-modal {
