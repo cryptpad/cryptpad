@@ -812,10 +812,11 @@ define([
         var ADMIN = ROLES.indexOf('ADMIN');
         // If they're an admin and I am an owner, I can promote them to owner
         if (!isMe && myRole > theirRole && theirRole === ADMIN && !data.pending) {
-            var promoteOwner = Icons.get('promote', {
-                title: Messages.team_rosterPromoteOwner
+            var promoteOwner = h('span', Icons.get('promote'), {
+                title: Messages.team_rosterPromoteOwner,
+                'tabindex': '0'
             });
-            $(promoteOwner).click(function () {
+            Util.onClickEnter($(promoteOwner), function () {
                 UI.confirm(Messages.team_ownerConfirm, function (yes) {
                     if (!yes) { return; }
                     $(promoteOwner).hide();
@@ -835,10 +836,11 @@ define([
         }
         // If they're a viewer/member and I have a higher role than them, I can promote them to admin
         if (!isMe && myRole >= ADMIN && theirRole < ADMIN && !data.pending) {
-            var promote = Icons.get('promote', {
-                title: Messages.team_rosterPromote
+            var promote = h('span', Icons.get('promote'), {
+                title: Messages.team_rosterPromote,
+                'tabindex': '0'
             });
-            $(promote).click(function () {
+            Util.onClickEnter($(promote), function () {
                 $(promote).hide();
                 describeUser(common, data.curvePublic, {
                     role: ROLES[theirRole + 1]
@@ -849,10 +851,11 @@ define([
         // If I'm not a member and I have an equal or higher role than them, I can demote them
         // (if they're not already a MEMBER)
         if (myRole >= theirRole && myRole >= ADMIN && theirRole > 0 && !data.pending) {
-            var demote = Icons.get('downgrade', {
-                title: Messages.team_rosterDemote
+            var demote = h('span', Icons.get('downgrade'), {
+                title: Messages.team_rosterDemote,
+                'tabindex': '0'
             });
-            $(demote).click(function () {
+            Util.onClickEnter($(demote), function () {
                 var todo = function () {
                     var role = ROLES[theirRole - 1] || 'VIEWER';
                     $(demote).hide();
@@ -875,10 +878,11 @@ define([
         // If I'm at least an admin and I have an equal or higher role than them, I can remove them
         // Note: we can't remove owners, we have to demote them first
         if (!isMe && myRole >= ADMIN && myRole >= theirRole && theirRole !== ROLES.indexOf('OWNER')) {
-            var remove = Icons.get('close', {
-                title: Messages.team_rosterKick
+            var remove = h('span', Icons.get('close'), {
+                title: Messages.team_rosterKick,
+                'tabindex': 0
             });
-            $(remove).click(function () {
+            Util.onClickEnter($(remove), function () {
                 UI.confirm(Messages._getKey('team_kickConfirm', [Util.fixHTML(displayName)]), function (yes) {
                     if (!yes) { return; }
                     APP.module.execCommand('REMOVE_USER', {
@@ -930,6 +934,7 @@ define([
                 common.openURL('/profile/#' + data.profile);
             });
         }
+        setTimeout(() => Lucide.createIcons());
         return div;
     };
     APP.refreshRoster = function (common, roster) {

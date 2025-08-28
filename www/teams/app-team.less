@@ -273,13 +273,18 @@
                     .tools_unselectable();
                 }
                 .cp-team-member-actions {
-                    .fa {
+                    span{
+                        border-radius: @variables_radius;
+                        cursor: pointer;
+                        &:focus-visible {
+                            outline: @variables_focus_style;
+                        }
+                    }
+                    svg {
                         height: 25px;
                         width: 25px;
-                        display: inline-flex;
-                        justify-content: center;
-                        align-items: center;
-                        cursor: pointer;
+                        border-radius: @variables_radius;
+                        margin: 0;
                         &:hover {
                             background-color: @roster-bg-color-hover2;
                         }
