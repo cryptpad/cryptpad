@@ -3783,7 +3783,7 @@ define([
             });
             evOnChange.fire(true);
         }
-
+        setTimeout(()=> Lucide.createIcons());
         return h('div.cp-form-send-container', [
             errors,
             invalid,
