@@ -5089,6 +5089,7 @@ define([
                     $button.after(confirmContent);
                     $button.remove();
                     picker.open();
+                    Lucide.createIcons();
                 });
 
                 $endDate.append(h('div.cp-form-status', text));
