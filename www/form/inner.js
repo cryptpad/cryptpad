@@ -3783,7 +3783,7 @@ define([
             });
             evOnChange.fire(true);
         }
-
+        setTimeout(()=> Lucide.createIcons());
         return h('div.cp-form-send-container', [
             errors,
             invalid,
@@ -5089,6 +5089,7 @@ define([
                     $button.after(confirmContent);
                     $button.remove();
                     picker.open();
+                    Lucide.createIcons();
                 });
 
                 $endDate.append(h('div.cp-form-status', text));
