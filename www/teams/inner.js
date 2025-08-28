@@ -605,7 +605,7 @@ define([
         content.push(h('br'));
         content.push(h('br'));
         content.push(button);
-        var $spinner = $(Icons.get('loading')).hide();
+        var $spinner = $('<span>').hide().append(Icons.get('loading'));
         content.push($spinner[0]);
         var state = false;
         $(button).click(function () {
@@ -646,10 +646,12 @@ define([
             });
         });
         cb(content);
+        Lucide.createIcons();
     };
     makeBlock('create', function (common, cb) {
         refreshCreate(common, cb);
     });
+
 
     makeBlock('drive', function (common, cb, $div) {
         $('div.cp-team-drive').empty();
