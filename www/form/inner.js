@@ -3248,6 +3248,7 @@ define([
 
         });
         $container.prepend($res);
+        Lucide.createIcons();
     };
 
     var getLogo = function () {
