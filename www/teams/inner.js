@@ -605,7 +605,7 @@ define([
         content.push(h('br'));
         content.push(h('br'));
         content.push(button);
-        var $spinner = $('<span>').hide().append(Icons.get('loading'));
+        var $spinner = $('<span>', {'class': 'cp-team-spinner'}).hide().append(Icons.get('loading'));
         content.push($spinner[0]);
         var state = false;
         $(button).click(function () {
