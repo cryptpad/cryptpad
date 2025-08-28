@@ -814,7 +814,10 @@ define([
                 var values = answer.values || {};
                 var els = extractValues(opts.values).map(function (data) {
                     var res = values[data] || 0;
-                    var v = (Number(res) === 1) ? Icons.get('check', {'class': 'cp-yes'}): undefined;
+                    var v = (Number(res) === 1) ? Icons.get('check', {'class': 'cp-yes'}) :
+                                        (Number(res) === 0) ? Icons.get('close', {'class': 'cp-no'}) :
+                                        (Number(res) === 2) ? Icons.get('form-poll-maybe', {'class': 'cp-maybe'}) :
+                                        undefined;
                     var cell = h('div.cp-poll-cell.cp-form-poll-answer', {
                         'data-value': res
                     }, v);
