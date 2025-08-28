@@ -5135,7 +5135,6 @@ define([
                             UI.log(Messages.saved);
                             selectedColor = _color;
                             $colors.find('.cp-check-icon').addClass('is-hidden');
-                            console.log(this);
                             $clickedElement.find('.cp-check-icon').removeClass('is-hidden');
 
                             var $body = $('body');
