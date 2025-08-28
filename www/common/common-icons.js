@@ -22,7 +22,7 @@ define([
         "file-pad": "file-text",
         "grid": "layout-grid",
         "list": "list",
-        "owner": "id-card-lanyard",
+        "document-owner": "id-card-lanyard",
         "burn-drive": "ban",
         // Teams
         "teams": "users-round",

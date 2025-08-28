@@ -135,7 +135,7 @@ define([
     var $addIcon = $(Icons.get('add'));
     var $renamedIcon = $(Icons.get('renamed'));
     var $readonlyIcon = $(Icons.get(readOnly));
-    var $ownedIcon = $(Icons.get('owner'));
+    var $ownedIcon = $(Icons.get('document-owner'));
     var $sharedIcon = $(Icons.get('share'));
     var $tagsIcon = $(Icons.get(tags));
     var $passwordIcon = $(Icons.get('drive-password-document'));
