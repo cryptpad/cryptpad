@@ -2252,7 +2252,7 @@ define([
             Lucide.createIcons();
             // Clean up
             setTimeout(function() {
-                $name.closest('li').find('svg').not($name.find('svg')).remove();
+                $name.closest('li').children('svg').remove();
             }, 0);
         };
 
