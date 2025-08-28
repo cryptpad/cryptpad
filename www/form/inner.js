@@ -3933,7 +3933,9 @@ define([
             }
 
             var inlineCls = full ? '-full' : '-inline';
-            Lucide.createIcons();
+            setTimeout(()=> {
+                Lucide.createIcons();
+            });
             return h('div.cp-form-creator-add'+inlineCls, [
                 add,
                 buttons
