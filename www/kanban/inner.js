@@ -169,6 +169,7 @@ define([
         addMoveElementButton(framework, kanban);
         restoreCursor(cursor);
         onRemoteChange.fire();
+        Lucide.createIcons();
     };
     var _updateBoardsThrottle = Util.throttle(_updateBoards, 1000);
     var updateBoards = function (framework, kanban, boards) {
