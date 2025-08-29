@@ -262,7 +262,7 @@ define([
             deleteButton = h('button.btn.btn-danger', {
                 tabindex: 1
             }, [
-                Icons.get('close'),
+                Icons.get('trash-full'),
                 Messages.kanban_delete
             ]);
             $(deleteButton).click(function(e) {
@@ -273,6 +273,7 @@ define([
 
 
         setTimeout(function() {
+            Lucide.createIcons();
             $(textarea).focus();
             selectAll(textarea);
         });
