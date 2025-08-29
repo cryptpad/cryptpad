@@ -316,8 +316,8 @@ define([
         var loadMore = function (cb) {
             if (loading) { return; }
             loading = true;
-            $loadMore.find('.fa-ellipsis-h').hide();
-            $loadMore.find('.fa-refresh').show();
+            $loadMore.find('.cp-loadmore-ellipsis').hide();
+            $loadMore.find('.cp-loadmore-loading').show();
 
             loadMoreHistory(config, common, function (err, newRt, isFull) {
                 if (err === 'EFULL') {
@@ -328,8 +328,8 @@ define([
                 loading = false;
                 if (err) { return void console.error(err); }
                 update(newRt);
-                $loadMore.find('.fa-ellipsis-h').show();
-                $loadMore.find('.fa-refresh').hide();
+                $loadMore.find('.cp-loadmore-ellipsis').show();
+                $loadMore.find('.cp-loadmore-loading').hide();
                 get(c);
                 if (isFull) {
                     $loadMore.off('click').hide();
@@ -476,8 +476,8 @@ define([
             var $next = $(next);
 
             var _loadMore = h('button.cp-toolbar-history-loadmore', { title: Messages.history_loadMore }, [
-                Icons.get("ellipsis-horizontal"),
-                Icons.get('loading', { style: 'display: none;'})
+                Icons.get("ellipsis-horizontal", {class: 'cp-loadmore-ellipsis'}),
+                Icons.get('loading', { style: 'display: none;', class: 'cp-loadmore-loading' })
             ]);
 
             var pos = h('span.cp-history-timeline-pos', [ Icons.get("history-timeline-position")]);
