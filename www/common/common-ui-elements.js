@@ -4338,7 +4338,7 @@ define([
         if (!readOnly) {
             buttons.push({
                 className: 'primary',
-                iconClass: 'camera',
+                iconClass: 'snapshot',
                 name: Messages.snapshots_new,
                 onClick: function () {
                     var val = $input.val();

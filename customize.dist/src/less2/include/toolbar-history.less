@@ -32,6 +32,9 @@
         &.cp-history-init {
             padding: 0;
             height: 32px;
+            svg {
+                animation: spin 10s linear infinite;
+            }
         }
 
         .cp-toolbar-history-timeline {
@@ -62,6 +65,11 @@
             align-self: baseline;
             margin-right: 5px;
             .cp-history-actions-first {
+                .cp-history-create-snapshot {
+                    svg {
+                        margin: 0;
+                    }
+                }
                 margin-right: @fill-width;
             }
             button {

@@ -10,10 +10,11 @@ define([
     '/customize/messages.js',
     '/components/nthen/index.js',
     '/common/common-icons.js',
+    '/customize/fonts/lucide.js',
     //'/components/chainpad-json-validator/json-ot.js',
 
     '/components/chainpad/chainpad.dist.js',
-], function ($, UI, Util, h, Messages, nThen, Icons, ChainPad /* JsonOT */) {
+], function ($, UI, Util, h, Messages, nThen, Icons, Lucide, ChainPad /* JsonOT */) {
     //var ChainPad = window.ChainPad;
     var History = {};
 
@@ -432,6 +433,7 @@ define([
 
         // Create the history toolbar
         var display = function () {
+            setTimeout(()=> Lucide.createIcons());
             $hist.html('');
             $hist.removeClass('cp-history-init');
 
@@ -509,6 +511,7 @@ define([
 
             var snapshot = h('button', {
                 title: Messages.snapshots_new,
+                class: 'cp-history-create-snapshot',
             }, [
                 Icons.get('snapshot')
             ]);
