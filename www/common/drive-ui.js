@@ -1440,7 +1440,7 @@ define([
                         //hide.push('delete');
                         hide.push('makeacopy');
                         //hide.push('deleteowned');
-                    } else { // it's a folder
+                    } else { // it's a folder or a file in a guest drive
                         if (containsFolder) {
                             // More than 1 folder selected: cannot create a new subfolder
                             hide.push('newfolder');
@@ -1449,7 +1449,9 @@ define([
                         }
                         containsFolder = true;
                         hide.push('savelocal');
-                        hide.push('openro');
+                         if ($element.is('.cp-app-drive-element-folder')) {
+                            hide.push('openro');
+                         }
                         hide.push('openincode');
                         hide.push('openinsheet');
                         hide.push('openindoc');
@@ -1758,9 +1760,8 @@ define([
                     $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_ro);
                     if (paths.length === 1) {
                         var metadata = manager.getFileData(manager.find(paths[0].path));
-                        if (metadata.roHref) {
-                            var parsed = Hash.parsePadUrl(metadata.roHref);
-                            // Forms: change "Open (read-only)" to "Open (as participant)"
+                        if (metadata.roHref || manager.find(paths[0].path).roHref) {
+                            var parsed = metadata.roHref ? Hash.parsePadUrl(metadata.roHref) : Hash.parsePadUrl(manager.find(paths[0].path).roHref);
                             if (parsed.type === "form") {
                                 if (parsed.hashData.auditorKey) {
                                     $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_formaud);
