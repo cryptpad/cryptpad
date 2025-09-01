@@ -3493,7 +3493,7 @@ define([
             if (APP.store[SORT_FILE_BY] === '') { classSorted = 'cp-app-drive-sort-filename'; }
             else if (APP.store[SORT_FILE_BY]) { classSorted = 'cp-app-drive-element-' + APP.store[SORT_FILE_BY]; }
             if (classSorted) {
-                $list.find('.' + classSorted).addClass('cp-app-drive-sort-active').prepend($icon).find('svg').hide();
+                $list.find('.' + classSorted).addClass('cp-app-drive-sort-active').prepend($icon).find('i').eq(1).hide();
             }
         };
         var getFileListHeader = function (clickable) {
@@ -4648,7 +4648,7 @@ define([
                     (isRootOpened ? $folderOpenedIcon : $folderIcon);
                 var $rootElement = createTreeElement(rootName, $rootIcon.clone(), path.slice(), false, true, true, isRootOpened);
                 if (!manager.hasSubfolder(root)) {
-                    $rootElement.find('.cp-app-drive-icon-expcol').css('display', 'none');
+                    $rootElement.find('.cp-app-drive-icon-expcol').addClass('cp-icon-hidden');
                 }
                 $rootElement.addClass('cp-app-drive-tree-root');
                 $rootElement.find('>.cp-app-drive-element-row')

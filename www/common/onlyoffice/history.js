@@ -234,6 +234,7 @@ define([
             ]);
             var snapshot = h('button', {
                 title: Messages.snapshots_new,
+                class: 'cp-history-create-snapshot'
             }, [
                 Icons.get('snapshot')
             ]);

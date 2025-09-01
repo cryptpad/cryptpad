@@ -24,7 +24,6 @@ define([
     '/customize/fonts/lucide.js',
     '/common/common-icons.js',
 
-    'css!/customize/fonts/cptools/style.css',
 ], function ($, Config, Broadcast, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
              Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes, Lucide, Icons) {
     var UIElements = {};
@@ -4339,7 +4338,7 @@ define([
         if (!readOnly) {
             buttons.push({
                 className: 'primary',
-                iconClass: 'camera',
+                iconClass: 'snapshot',
                 name: Messages.snapshots_new,
                 onClick: function () {
                     var val = $input.val();

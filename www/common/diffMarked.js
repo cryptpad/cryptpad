@@ -14,12 +14,13 @@ define([
     '/customize/messages.js',
     '/lib/less.min.js',
     '/customize/pages.js',
+    '/customize/fonts/lucide.js',
 
     '/lib/highlight/highlight.pack.js',
     '/lib/diff-dom/diffDOM.js',
     '/components/tweetnacl/nacl-fast.min.js',
     'css!/lib/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
-],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less, Pages) {
+],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less, Pages, Lucide) {
     var DiffMd = {};
 
     var Highlight = window.hljs;
@@ -214,7 +215,7 @@ define([
             r = r.replace(/<div class="cp-md-toc"><\/div>/g, getTOC());
         }
         toc = [];
-
+        setTimeout(() => Lucide.createIcons());
         return r;
     };
 

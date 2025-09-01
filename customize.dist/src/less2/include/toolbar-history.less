@@ -32,6 +32,9 @@
         &.cp-history-init {
             padding: 0;
             height: 32px;
+            svg {
+                animation: spin 10s linear infinite;
+            }
         }
 
         .cp-toolbar-history-timeline {
@@ -62,6 +65,11 @@
             align-self: baseline;
             margin-right: 5px;
             .cp-history-actions-first {
+                .cp-history-create-snapshot {
+                    svg {
+                        margin: 0;
+                    }
+                }
                 margin-right: @fill-width;
             }
             button {
@@ -107,6 +115,9 @@
                 &:focus-visible {
                     outline: @variables_focus_style;
                     border-radius: @variables_radius;
+                }
+                .cp-loadmore-loading {
+                    animation: spin 10s linear infinite;
                 }
             }
             .cp-history-timeline-actions {
@@ -160,9 +171,6 @@
                     height: 100%;
                     background: @history_lineBg;
                     margin-right: 1px;
-                    .fa-refresh {
-                        font-size: 13px;
-                    }
                 }
             }
             .cp-history-timeline-container {

@@ -134,6 +134,13 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    // XXX
+    Messages.register_password_note1 = 'Your password is the secret key that encrypts all of your documents.';
+    Messages.register_password_note2 = 'If you lose it there is no way we can recover your data.';
+    Messages.register_computer_note1 = 'If you are using a shared computer, ';
+    Messages.register_computer_note2 = 'remember to log out';
+    Messages.register_computer_note3 = ' when you are done. Only closing the browser window leaves your account exposed.';
+    Messages.register_import_note1 = 'To keep the documents you created and/or stored without being logged in, tick "Import documents from your guest session".';
     return Messages;
 
 });

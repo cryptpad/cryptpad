@@ -2878,8 +2878,8 @@ define([
             },
         }, {
             tag: 'a',
-            attributes: {'class': 'cp-form-export-json cptools cptools-code'},
-            content: h('span', Messages.form_exportJSON),
+            attributes: {'class': 'cp-form-export-json'},
+            content: h('span', [Icons.get('code-file'), Messages.form_exportJSON]),
             action: function () {
                 var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), "json");
                 if (!arr) { return void UI.warn(Messages.error); }

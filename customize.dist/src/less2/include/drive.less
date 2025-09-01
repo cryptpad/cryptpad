@@ -28,9 +28,13 @@
     min-height: auto;
 
     .lucide {
-        width: 1.2em;
-        height: 1.2em;
+        width: @variables_icon_width;
+        height: @variables_icon_height;
         margin-right: @variables_icon_margin;
+    }
+    .cp-icon-hidden > svg {
+        visibility: hidden;
+        position: absolute;
     }
     .cp-unselectable {
         .tools_unselectable();
@@ -1075,8 +1079,8 @@
         margin: 0 1em;
         .btn.btn-danger {
             svg.lucide {
-                width: 1em;
-                height: 1em;
+                width: @variables_icon_width;
+                height: @variables_icon_height;
             }
         }
     }
