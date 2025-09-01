@@ -141,6 +141,10 @@ define(req, function(AppConfig, Default, Language) {
     Messages.register_computer_note2 = 'remember to log out';
     Messages.register_computer_note3 = ' when you are done. Only closing the browser window leaves your account exposed.';
     Messages.register_import_note1 = 'To keep the documents you created and/or stored without being logged in, tick "Import documents from your guest session".';
+    Messages.install_notes_admin =  "Create your first administrator account on this page. Administrators manage instance settings including storage quotas, and have access to moderation tools.";
+    Messages.install_notes_password_note1 = "Your password is the secret key that encrypts all of your documents and administrator privileges on this instance. ";
+    Messages.install_notes_password_note2 = "If you lose it there is no way we can recover your data.";
+
     return Messages;
 
 });
