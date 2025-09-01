@@ -43,7 +43,7 @@ define([
         var nextPageForm = nextPageFunction(Env);
         let frame = h('div.cp-onboarding-box', nextPageForm);
         Env.overlay.empty().append(frame);
-        Lucide.createIcons();
+        setTimeout(() => Lucide.createIcons());
     };
     const blocks = Sidebar.blocks('admin');
 
