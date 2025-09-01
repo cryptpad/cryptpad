@@ -190,7 +190,7 @@ define([
         "upload-avatar": "image-up",
         "edit": "pencil",
         "save": "save",
-        "loading": "loader-circle",
+        "loading": "loader",
         "notification" : "bell",
         "mute": "bell-off",
         "cursor": "text-cursor",

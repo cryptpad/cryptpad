@@ -1526,10 +1526,12 @@ define([
             delete: deletePopup
         };
     };
-
     UI.makeSpinner = function ($container) {
-        var $ok = $('<span>', { title: Messages.saved}, Icons.get('check')).hide();
-        var $spinner = $(Icons.get('loading')).hide();
+        var $okWrap = $('<span>', {class: "cp-ok"}).hide();
+        var $spinWrap = $('<span>', {class: "cp-spinner"}).hide()
+
+        $okWrap.append(Icons.get('check'));
+        $spinWrap.append(Icons.get('loading'));
 
         var state = false;
         var to;
@@ -1537,34 +1539,34 @@ define([
         var spin = function () {
             clearTimeout(to);
             state = true;
-            $ok.hide();
-            $spinner.show();
+            $okWrap.hide();
+            $spinWrap.show();
         };
         var hide = function () {
             clearTimeout(to);
             state = false;
-            $ok.hide();
-            $spinner.hide();
+            $okWrap.hide();
+            $spinWrap.hide();
         };
         var done = function () {
             clearTimeout(to);
             state = false;
-            $ok.show();
-            $spinner.hide();
+            $okWrap.show();
+            $spinWrap.hide();
             to = setTimeout(function () {
-                $ok.hide();
+                $okWrap.hide();
             }, 500);
         };
 
         if ($container && $container.append) {
-            $container.append($ok);
-            $container.append($spinner);
+            $container.append($okWrap);
+            $container.append($spinWrap);
         }
 
         return {
             getState: function () { return state; },
-            ok: $ok[0],
-            spinner: $spinner[0],
+            ok: $okWrap[0],
+            spinner: $spinWrap[0],
             spin: spin,
             hide: hide,
             done: done
