@@ -3161,6 +3161,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // We want to load a checkpoint:
                     loadCp(cp);
                 };
+                var onPatchBack = function (cp, queue) {
+                    // We want to load a checkpoint:
+                    ooChannel.queue = queue;
+                    loadCp(cp, true);
+                };
                 var setHistoryMode = function (bool) {
                     if (bool) {
                         APP.history = true;
