@@ -35,7 +35,7 @@ define([
         "expand-pad": "maximize-2",
         "shrink-pad": "minimize-2",
         "slide": "cp-file-slide",
-        "poll": "file",
+        "poll": "file-chart-column-increasing",
         // Form
         "form": "file-chart-column-increasing",
         "form-responses": "chart-no-axes-combined",

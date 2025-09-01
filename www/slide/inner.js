@@ -354,13 +354,13 @@ define([
                 textColor = text;
                 $modal.css('color', text);
                 $modal.css('border-color', text);
-                $('#' + SLIDE_COLOR_ID).find('i').css('color', text);
+                $('#' + SLIDE_COLOR_ID).find('svg').css('color', text);
                 slideOptions.textColor = text;
             }
             if (back) {
                 backColor = back;
                 $modal.find('.cp-app-slide-frame').css('background-color', back);
-                $('#' + SLIDE_BACKCOLOR_ID).find('i').css('color', back);
+                $('#' + SLIDE_BACKCOLOR_ID).find('svg').css('color', back).css('fill', back);
                 slideOptions.bgColor = back;
             }
         };

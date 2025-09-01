@@ -8,8 +8,9 @@ define([
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/customize/messages.js',
-    '/customize/pages.js'
-], function (Config, $, h, UI, Msg, Pages) {
+    '/customize/pages.js',
+    '/common/common-icons.js',
+], function (Config, $, h, UI, Msg, Pages, Icons) {
     Config.adminKeys = [];
     return function () {
         // Redirect to drive if this instance already has admins
@@ -36,7 +37,25 @@ define([
             h('div.row.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
                     h('h2', Msg.register_notes_title),
-                    Pages.setHTML(h('div.cp-register-notes'), Msg.install_notes)
+                    h('div.cp-register-notes', [
+                        h('ul.cp-notes-list', [
+                            h('li', [
+                                Icons.get('alert'),
+                                Msg.install_notes_admin
+                            ]),
+                            h('li', [
+                                Icons.get('alert'),
+                                Msg.install_notes_password_note1,
+                                h('span.red', Msg.install_notes_password_note2)
+                            ]),
+                            h('li', [
+                                Icons.get('alert'),
+                                Msg.register_computer_note1,
+                                h('span.red', Msg.register_computer_note2),
+                                Msg.register_computer_note3
+                            ])
+                        ])
+                    ])
                 ]),
                 h('div.cp-reg-form.col-md-6', [
                     h('div#userForm.form-group.hidden', [
