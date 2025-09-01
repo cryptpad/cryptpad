@@ -1241,7 +1241,7 @@ define([
         }, {
             getTab: getOwnersTab,
             title: Messages.creation_owners,
-            icon: "owner",
+            icon: "document-owner",
             buttons: buttons,
         }];
         Modal.getModal(common, opts, tabs, cb);
