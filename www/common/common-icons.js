@@ -66,6 +66,7 @@ define([
         "touch-mode": "hand",
         "kanban-add-top": "cp-kanban-add-top",
         "kanban-add-bottom": "cp-kanban-add-bottom",
+        "delete-token": "x",
         // Doc
         "doc": "cp-file-oo-document",
         // Sheet
