@@ -3101,6 +3101,7 @@ define([
             });
             $results.empty().append(elements);
             if (header) { $results.prepend(header); }
+            Lucide.createIcons();
         };
         show(answers);
 
