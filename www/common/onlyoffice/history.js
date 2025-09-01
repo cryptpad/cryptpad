@@ -25,6 +25,7 @@ define([
         var cpIndex = -1;
         var msgIndex = -1;
         var ooMessages = {};
+        var ooCheckpoints = {};
         var loading = false;
         var update = function () {};
         var currentTime;
@@ -92,6 +93,8 @@ define([
                 cp = hashes[id];
             }
             var nextId = sortedCp[sortedCp.length - cpIndex];
+
+            ooCheckpoints[id] = cp;
 
             // Get the history between "toHash" and "fromHash". This function is using
             // "getOlderHistory", that's why we start from the more recent hash
@@ -187,6 +190,19 @@ define([
                 $('iframe').blur();
                 loading = false;
             }, 200);
+        };
+
+        var back = function () {
+            // Load checkpoint data if needed
+
+
+            var id = getId();
+            var msgs = ooMessages[id];
+            var cp = ooCheckpoints[id];
+            msgIndex--;
+            var queue = msgs.slice(0, msgIndex);
+            config.onPatchBack(cp, msgs);
+
         };
 
 
