@@ -544,16 +544,16 @@ define([
                 curve = __channel.curvePublic;
             }
 
-            var unmute = h('span', Icons.get('notification', {
+            var unmute = h('span', Icons.get('notification'), {
                 class: 'cp-app-contacts-remove cp-unmute-icon',
                 title: Messages.contacts_unmute || 'unmute',
                 style: (curve && mutedUsers[curve]) ? undefined : 'display: none;'
-            }));
-            var mute = h('span', Icons.get('mute', {
+            });
+            var mute = h('span', Icons.get('mute'), {
                 class: 'cp-app-contacts-remove cp-mute-icon',
                 title: Messages.contacts_mute || 'mute',
                 style: (curve && mutedUsers[curve]) ? 'display: none;' : undefined
-            }));
+            });
             var remove = h('span', Icons.get('unfriend', {
                 class: 'cp-app-contacts-remove',
                 title: Messages.contacts_remove
@@ -922,6 +922,8 @@ define([
                             if (e) { return void console.error(e); }
                             $(button).closest('div').remove();
                             if (!data) { $button.hide(); }
+                            $('.cp-app-contacts-friend[data-user="'+curve+'"]')
+                                .find('.cp-unmute-icon').hide();
                             $('.cp-app-contacts-friend[data-user="'+curve+'"]')
                                 .find('.cp-mute-icon').show();
                             if ($('.cp-contacts-muted-table').find('.cp-contacts-muted-user').length === 0) {
