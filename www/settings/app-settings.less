@@ -26,6 +26,11 @@
     .cp-sidebarlayout-element {
         max-width: 650px;
     }
+    .cp-spinner, .cp-ok {
+        svg {
+            margin: 0.5rem;
+        }
+    }
 
     div.alert {
         font-size: @colortheme_app-font-size;
@@ -33,13 +38,6 @@
     }
 
     .export_main();
-
-    .cp-settings-displayname .fa{
-        margin-left: 0.5rem;
-    }
-    .cp-settings-mediatag-size .fa{
-        margin-left: 0.5rem;
-    }
 
     .alertify {
         nav {
@@ -97,7 +95,7 @@
                         margin-right: 100%;
                     }
                 }
-                & > .fa {
+                & > svg {
                     align-self: center;
                     margin-right: -16px;
                 }
@@ -118,8 +116,7 @@
                     padding-bottom:0.5rem;
                 }
                 svg {
-                    display: inline-block;
-                    margin-bottom: 0.5rem;
+                    margin: 0 0 0.5rem;
                 }
             }
 

@@ -1527,11 +1527,8 @@ define([
         };
     };
     UI.makeSpinner = function ($container) {
-        var $okWrap = $('<span>', {class: "cp-ok"}).hide();
-        var $spinWrap = $('<span>', {class: "cp-spinner"}).hide()
-
-        $okWrap.append(Icons.get('check'));
-        $spinWrap.append(Icons.get('loading'));
+        var $okWrap = $('<span>', {class: "cp-ok"}).hide().append(Icons.get('check', { title: Messages.saved }));
+        var $spinWrap = $('<span>', {class: "cp-spinner"}).hide().append(Icons.get('loading'));
 
         var state = false;
         var to;

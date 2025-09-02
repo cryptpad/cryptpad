@@ -242,23 +242,17 @@ define([
                 'class': 'btn btn-primary'
             }).text(Messages.settings_logoutEverywhereButton)
             .appendTo($div);
-        var $ok = $(Icons.get('check', { title: Messages.saved })).hide().appendTo($div);
-        var $spinner = $(Icons.get('loading')).hide().appendTo($div);
+        var spinner = UI.makeSpinner($div);
 
         $button.click(function() {
 
             UI.confirm(Messages.settings_logoutEverywhereConfirm, function(yes) {
                 if (!yes) { return; }
-                $spinner.show();
-                $ok.hide();
+                spinner.spin();
 
                 Feedback.send('LOGOUT_EVERYWHERE');
                 sframeChan.query('Q_SETTINGS_LOGOUT', null, function() {
-                    $spinner.hide();
-                    $ok.show();
-                    window.setTimeout(function() {
-                        $ok.fadeOut(1500);
-                    }, 2500);
+                    spinner.done();
                 });
             });
         });
@@ -273,9 +267,7 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .append(Messages.settings_autostoreHint).appendTo($div);
 
-        var $ok = $(Icons.get('check', { title: Messages.saved }));
-        var $spinner = $(Icons.get('loading'));
-
+        var spinner;
         var opt1 = UI.createRadio('cp-settings-autostore', 'cp-settings-autostore-no',
             Messages.settings_autostoreNo, false, {
                 input: { value: -1 },
@@ -296,20 +288,16 @@ define([
             opt2,
             opt1
         ])).appendTo($div);
+        spinner = UI.makeSpinner($div2);
 
         $div.find('input[type="radio"]').on('change', function() {
-            $spinner.show();
-            $ok.hide();
+            spinner.spin();
             var val = $('input:radio[name="cp-settings-autostore"]:checked').val();
             val = Number(val) || 0;
             common.setAttribute(['general', 'autostore'], val, function() {
-                $spinner.hide();
-                $ok.show();
+                spinner.done();
             });
         });
-
-        $ok.hide().appendTo($div2);
-        $spinner.hide().appendTo($div2);
 
         common.getAttribute(['general', 'autostore'], function(err, val) {
             if (val === 1) { return void $('#cp-settings-autostore-yes').prop('checked', true); }
@@ -330,26 +318,20 @@ define([
             Messages.settings_userFeedbackHint2,
         ]));
 
-        var $ok = $(Icons.get('check', { title: Messages.saved }));
-        var $spinner = $(Icons.get('loading'));
 
         var $cbox = $(UI.createCheckbox('cp-settings-userfeedback',
             Messages.settings_userFeedback,
             false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
         var $checkbox = $cbox.find('input').on('change', function() {
-            $spinner.show();
-            $ok.hide();
+            spinner.spin();
             var val = $checkbox.is(':checked') || false;
             common.setAttribute(['general', 'allowUserFeedback'], val, function() {
-                $spinner.hide();
-                $ok.show();
+                spinner.done();
             });
         });
 
         $cbox.appendTo($div);
-
-        $ok.hide().appendTo($cbox);
-        $spinner.hide().appendTo($cbox);
 
         if (privateData.feedbackAllowed) {
             $checkbox[0].checked = true;
@@ -966,25 +948,18 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_driveDuplicateHint).appendTo($div);
 
-        var $ok = $(Icons.get('check', { title: Messages.saved }));
-        var $spinner = $(Icons.get('loading'));
-
         var $cbox = $(UI.createCheckbox('cp-settings-drive-duplicate',
             Messages.settings_driveDuplicateLabel,
             false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox); 
         var $checkbox = $cbox.find('input').on('change', function() {
-            $spinner.show();
-            $ok.hide();
+            spinner.spin();
             var val = $checkbox.is(':checked');
             common.setAttribute(['drive', 'hideDuplicate'], val, function() {
-                $spinner.hide();
-                $ok.show();
+                spinner.done();
             });
         });
         $cbox.appendTo($div);
-
-        $ok.hide().appendTo($cbox);
-        $spinner.hide().appendTo($cbox);
 
         common.getAttribute(['drive', 'hideDuplicate'], function(e, val) {
             if (e) { return void console.error(e); }
@@ -1005,19 +980,15 @@ define([
             class: 'cp-sidebarlayout-description',
         }, Messages.settings_driveRedirectHint));
 
-        var $ok = $(Icons.get('check', { title: Messages.saved }));
-        var $spinner = $(Icons.get('loading'));
-
         var $cbox = $(UI.createCheckbox('cp-settings-redirect',
             Messages.settings_driveRedirect,
             false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);     
         var $checkbox = $cbox.find('input').on('change', function() {
-            $spinner.show();
-            $ok.hide();
+            spinner.spin();
             var val = $checkbox.is(':checked') || false;
             common.setAttribute(['general', Constants.prefersDriveRedirectKey], val, function() {
-                $spinner.hide();
-                $ok.show();
+                spinner.done();
                 sframeChan.query("Q_SET_DRIVE_REDIRECT_PREFERENCE", {
                     value: val,
                 }, console.log);
@@ -1025,9 +996,6 @@ define([
         });
 
         $cbox.appendTo($div);
-
-        $ok.hide().appendTo($cbox);
-        $spinner.hide().appendTo($cbox);
 
         if (privateData.prefersDriveRedirect === true) {
             $checkbox[0].checked = true;
@@ -1064,26 +1032,19 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_disableThumbnailsDescription).appendTo($div);
 
-        var $ok = $(Icons.get('check', { title: Messages.saved }));
-        var $spinner = $(Icons.get('loading'));
-
         var $cbox = $(UI.createCheckbox('disableThumbnails',
             Messages.settings_disableThumbnailsAction,
             false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
         var $checkbox = $cbox.find('input').on('change', function() {
-            $spinner.show();
-            $ok.hide();
+            spinner.spin();
             var val = $checkbox.is(':checked') || false;
             common.setAttribute(['general', 'disableThumbnails'], val, function() {
-                $spinner.hide();
-                $ok.show();
+                spinner.done();
             });
         });
 
         $cbox.appendTo($div);
-
-        $ok.hide().appendTo($cbox);
-        $spinner.hide().appendTo($cbox);
 
         common.getAttribute(['general', 'disableThumbnails'], function(e, val) {
             $checkbox[0].checked = typeof(val) === "undefined" || val;
@@ -1128,15 +1089,17 @@ define([
             });
         };
         var importFile = function(content) {
-            var $spinner = Icons.get('loading').appendTo($div);
+            var spinner = UI.makeSpinner($div);
+            spinner.spin();
             try {
                 var data = JSON.parse(content);
                 sframeChan.query("Q_SETTINGS_DRIVE_SET", data, function(e) {
                     if (e) { console.error(e); }
-                    $spinner.remove();
+                    spinner.done();
                 });
             } catch (e) {
                 console.error(e);
+                spinner.hide();
             }
         };
 
@@ -1203,17 +1166,13 @@ define([
             'id': 'cp-settings-import-local-pads',
             'class': 'btn btn-primary'
         }).text(Messages.settings_import).appendTo($div);
-        var $ok = $(Icons.get('check', { title: Messages.saved })).hide().appendTo($div);
-        var $spinner = $(Icons.get('loading')).hide().appendTo($div);
-
+        var spinner = UI.makeSpinner($div);
         $button.click(function() {
             UI.confirm(Messages.settings_importConfirm, function(yes) {
                 if (!yes) { return; }
-                $spinner.show();
-                $ok.hide();
+                spinner.spin();
                 sframeChan.query('Q_SETTINGS_IMPORT_LOCAL', null, function() {
-                    $spinner.hide();
-                    $ok.show();
+                    spinner.done();
                     UI.alert(Messages.settings_importDone);
                 });
             }, undefined, true);
@@ -1336,22 +1295,18 @@ define([
         var $inputBlock = $('<div>').appendTo($div);
 
         var $colorPicker = $("<div>", { class: "cp-settings-cursor-color-picker" });
-        var $ok = $(Icons.get('check', { title: Messages.saved }));
-        var $spinner = $(Icons.get('loading'));
-
+        var spinner;
         // when jscolor picker value change
         var _onchange = function(colorL) {
             var val = "#" + colorL.toString();
             if (!/^#[0-9a-fA-F]{6}$/.test(val)) { return; }
             common.setAttribute(['general', 'cursor', 'color'], val, function() {
-                $spinner.hide();
-                $ok.show();
+                spinner.done();
             });
         };
         var to;
         var onchange = function(colorL) {
-            $spinner.show();
-            $ok.hide();
+            spinner.spin();
 
             if (to) { clearTimeout(to); }
             to = setTimeout(function() {
@@ -1373,8 +1328,7 @@ define([
         });
 
         $colorPicker.appendTo($inputBlock);
-        $ok.hide().appendTo($inputBlock);
-        $spinner.hide().appendTo($inputBlock);
+        spinner = UI.makeSpinner($inputBlock);
 
         return $div;
     };
@@ -1387,25 +1341,18 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_cursorShareHint).appendTo($div);
 
-        var $ok = $(Icons.get('check', { title: Messages.saved }));
-        var $spinner = $(Icons.get('loading'));
-
         var $cbox = $(UI.createCheckbox('cp-settings-cursor-share',
             Messages.settings_cursorShareLabel,
             false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
         var $checkbox = $cbox.find('input').on('change', function() {
-            $spinner.show();
-            $ok.hide();
+            spinner.spin();
             var val = $checkbox.is(':checked');
             common.setAttribute(['general', 'cursor', 'share'], val, function() {
-                $spinner.hide();
-                $ok.show();
+                spinner.done();
             });
         });
         $cbox.appendTo($div);
-
-        $ok.hide().appendTo($cbox);
-        $spinner.hide().appendTo($cbox);
 
         common.getAttribute(['general', 'cursor', 'share'], function(e, val) {
             if (e) { return void console.error(e); }
@@ -1424,25 +1371,18 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_cursorShowHint).appendTo($div);
 
-        var $ok = $(Icons.get('check', { title: Messages.saved }));
-        var $spinner = $(Icons.get('loading'));
-
         var $cbox = $(UI.createCheckbox('cp-settings-cursor-show',
             Messages.settings_cursorShowLabel,
             false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
         var $checkbox = $cbox.find('input').on('change', function() {
-            $spinner.show();
-            $ok.hide();
+            spinner.spin();
             var val = $checkbox.is(':checked');
             common.setAttribute(['general', 'cursor', 'show'], val, function() {
-                $spinner.hide();
-                $ok.show();
+                spinner.done();
             });
         });
         $cbox.appendTo($div);
-
-        $ok.hide().appendTo($cbox);
-        $spinner.hide().appendTo($cbox);
 
         common.getAttribute(['general', 'cursor', 'show'], function(e, val) {
             if (e) { return void console.error(e); }
@@ -1464,9 +1404,6 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_padWidthHint).appendTo($div);
 
-        var $ok = $(Icons.get('check', { title: Messages.saved }));
-        var $spinner = $(Icons.get('loading'));
-
         var store = window.cryptpadStore;
         var key = 'pad-small-width';
         var isHidden = store.store[key] === '1';
@@ -1474,19 +1411,15 @@ define([
         var $cbox = $(UI.createCheckbox('cp-settings-padwidth',
             Messages.settings_padWidthLabel,
             isHidden, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
         var $checkbox = $cbox.find('input').on('change', function() {
-            $spinner.show();
-            $ok.hide();
+            spinner.spin();
             var val = $checkbox.is(':checked');
             store.put(key, val ? '1' : '0', function () {
-                $spinner.hide();
-                $ok.show();
+                spinner.done();
             });
         });
         $cbox.appendTo($div);
-
-        $ok.hide().appendTo($cbox);
-        $spinner.hide().appendTo($cbox);
 
         return $div;
     };
@@ -1499,25 +1432,18 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_padSpellcheckHint).appendTo($div);
 
-        var $ok = $(Icons.get('check', { title: Messages.saved }));
-        var $spinner = $(Icons.get('loading'));
-
         var $cbox = $(UI.createCheckbox('cp-settings-pad-spellcheck',
             Messages.settings_padSpellcheckLabel,
             false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
         var $checkbox = $cbox.find('input').on('change', function() {
-            $spinner.show();
-            $ok.hide();
+            spinner.spin();
             var val = $checkbox.is(':checked');
             common.setAttribute(['pad', 'spellcheck'], val, function() {
-                $spinner.hide();
-                $ok.show();
+                spinner.done();
             });
         });
         $cbox.appendTo($div);
-
-        $ok.hide().appendTo($cbox);
-        $spinner.hide().appendTo($cbox);
 
         common.getAttribute(['pad', 'spellcheck'], function(e, val) {
             if (e) { return void console.error(e); }
@@ -1562,25 +1488,18 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_padOpenLinkHint).appendTo($div);
 
-        var $ok = $(Icons.get('check', { title: Messages.saved }));
-        var $spinner = $(Icons.get('loading'));
-
         var $cbox = $(UI.createCheckbox('cp-settings-pad-openlink',
             Messages.settings_padOpenLinkLabel,
             false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
         var $checkbox = $cbox.find('input').on('change', function() {
-            $spinner.show();
-            $ok.hide();
+            spinner.spin();
             var val = $checkbox.is(':checked');
             common.setAttribute(['pad', 'openLink'], val, function() {
-                $spinner.hide();
-                $ok.show();
+                spinner.done();
             });
         });
         $cbox.appendTo($div);
-
-        $ok.hide().appendTo($cbox);
-        $spinner.hide().appendTo($cbox);
 
         common.getAttribute(['pad', 'openLink'], function(e, val) {
             if (e) { return void console.error(e); }
@@ -1735,25 +1654,18 @@ define([
         //$('<span>', {'class': 'cp-sidebarlayout-description'})
         //    .text(Messages.settings_padSpellcheckHint).appendTo($div);
 
-        var $ok = $(Icons.get('check', { title: Messages.saved }));
-        var $spinner = $(Icons.get('loading'));
-
         var $cbox = $(UI.createCheckbox('cp-settings-code-spellcheck',
             Messages.settings_codeSpellcheckLabel,
             false, { label: { class: 'noTitle' } }));
+        var spinner = UI.makeSpinner($cbox);
         var $checkbox = $cbox.find('input').on('change', function() {
-            $spinner.show();
-            $ok.hide();
+            spinner.spin();
             var val = $checkbox.is(':checked');
             common.setAttribute(['codemirror', 'spellcheck'], val, function() {
-                $spinner.hide();
-                $ok.show();
+                spinner.done();
             });
         });
         $cbox.appendTo($div);
-
-        $ok.hide().appendTo($cbox);
-        $spinner.hide().appendTo($cbox);
 
         common.getAttribute(['codemirror', 'spellcheck'], function(e, val) {
             if (e) { return void console.error(e); }
