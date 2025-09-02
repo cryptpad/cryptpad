@@ -1970,6 +1970,7 @@ define([
                 title: Messages.profile_remove_avatar
             }, Icons.get('close'));
             $avatar.append(delButton);
+            Lucide.createIcons();
             $(delButton).click(() => {
                 const old = APP.profileData?.avatar;
                 APP.profile.execCommand("SET", {
