@@ -331,13 +331,13 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
                     $('<button>', {
                         'class': 'cp-toolbar-userlist-button',
                         'title': Messages.profile_friendRequestSent
-                    }, Icons.get('timer')).appendTo($nameSpan);
+                    }).append(Icons.get('timer')).appendTo($nameSpan);
                 } else if (friendRequests[data.curvePublic]) {
                     $('<button>', {
                         'class': ' cp-toolbar-userlist-button',
                         'data-cptippy-html': true,
                         'title': Messages._getKey('friendRequest_received', [safeName]),
-                    }, Icons.get('notification')).appendTo($nameSpan).click(function (e) {
+                    }).append(Icons.get('notification')).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
                         UIElements.displayFriendRequestModal(Common, friendRequests[data.curvePublic]);
                     });
@@ -349,7 +349,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
                         'title': Messages._getKey('userlist_addAsFriendTitle', [
                             safeName,
                         ])
-                    }, Icons.get('add-friend')).appendTo($nameSpan).click(function (e) {
+                    }).append(Icons.get('add-friend').appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
                         Common.sendFriendRequest(data, function (err, obj) {
                             if (err || (obj && obj.error)) {
@@ -363,7 +363,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
                 $('<button>', {
                     'class': 'cp-toolbar-userlist-button',
                     'title': Messages.contact_chat
-                }, Icons.get('comment')).appendTo($nameSpan).click(function (e) {
+                }).append(Icons.get('chat')).appendTo($nameSpan).click(function (e) {
                     e.stopPropagation();
                     Common.openURL('/contacts/');
                 });
