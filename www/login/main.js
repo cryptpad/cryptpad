@@ -18,6 +18,8 @@ define([
 ], function (Config, $, h, Cryptpad, Login, UI, Realtime, Feedback, LocalStore /*, Test */) {
     if (window.top !== window) { return; }
     $(function () {
+        const debug = window.location.hash === "#debug";
+
         var $checkImport = $('#import-recent');
         if (LocalStore.isLoggedIn()) {
             // already logged in, redirect to drive
@@ -84,7 +86,8 @@ define([
                 uname,
                 passwd,
                 shouldImport,
-                onOTP: UI.getOTPScreen
+                onOTP: UI.getOTPScreen,
+                debug
             });
         });
         $('#register').on('click', function () {

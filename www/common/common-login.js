@@ -288,7 +288,7 @@ define([
     };
 
     Exports.loginOrRegister = function (config, cb) {
-        let { uname, passwd, token, isRegister, onOTP, ssoAuth } = config;
+        let { uname, passwd, token, isRegister, onOTP, ssoAuth, debug } = config;
         if (typeof(cb) !== 'function') { return; }
 
         // Usernames are all lowercase. No going back on this one
@@ -328,6 +328,8 @@ define([
 
             // determine where a block for your set of keys would be stored
             blockUrl = Block.getBlockUrl(res.opt.blockKeys);
+
+            if (debug) { console.warn('Block', blockUrl); }
 
             var TOTP_prompt = function (err, ssoSession, cb) {
                 onOTP(function (code) {
@@ -477,6 +479,15 @@ define([
             if (res.blockInfo) { return; }
 
             var opt = res.opt;
+
+            if (debug) {
+                console.warn('Legacy', {
+                    drive: opt.channelHex,
+                    edPublic: opt.edPublic,
+                    curvePublic: opt.curvePublic,
+                    blockHash: opt.blockHash.replace(/(#.+)$/, '')
+                });
+            }
 
             // load the user's object using the legacy credentials
             legacyLogin(opt, isRegister, waitFor(function (err, data) {
