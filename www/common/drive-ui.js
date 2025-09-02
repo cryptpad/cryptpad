@@ -97,7 +97,7 @@ define([
     var folderOpen = 'folder-open';
     var sharedFolder = 'drive-shared-folder';
     var expandAll = 'expand';
-    var collapseAll = 'collapse-all';
+    var collapseAll = 'collapse';
     var readOnly = 'read-only';
     var preview = 'preview';
     var rename = 'rename';
