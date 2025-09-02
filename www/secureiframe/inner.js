@@ -263,6 +263,7 @@ define([
             $('button.cancel').click(); // Close any existing alertify
             displayed = undefined;
             create[type](data);
+            Lucide.createIcons();
         });
 
         UI.removeLoadingScreen();

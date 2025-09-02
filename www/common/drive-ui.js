@@ -97,7 +97,7 @@ define([
     var folderOpen = 'folder-open';
     var sharedFolder = 'drive-shared-folder';
     var expandAll = 'expand';
-    var collapseAll = 'collapse-all';
+    var collapseAll = 'collapse';
     var readOnly = 'read-only';
     var preview = 'preview';
     var rename = 'rename';
@@ -362,8 +362,7 @@ define([
         APP.premiumPlan = priv.plan;
         var getOpenIn = function (app) {
             var icon = AppConfig.applicationsIcon[app];
-            var cls = icon.indexOf('cptools') === 0 ? 'cptools '+icon : 'fa '+icon;
-            var html = '<i class="'+cls+'"></i>' + Messages.type[app];
+            var html = '<i data-lucide="'+icon+'"></i>' + Messages.type[app];
             return Messages._getKey('fc_openIn', [html]);
         };
         var restricted = {};
