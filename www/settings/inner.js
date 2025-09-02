@@ -2041,7 +2041,7 @@ define([
         security: 'lock',
         kanban: 'kanban',
         style: 'color-palette',
-        notifications: 'notification'
+        notifications: 'notifications'
     };
     let SIDEBAR_NAMES = {}; // for extension points
 
