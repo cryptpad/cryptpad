@@ -349,7 +349,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
                         'title': Messages._getKey('userlist_addAsFriendTitle', [
                             safeName,
                         ])
-                    }).append(Icons.get('add-friend').appendTo($nameSpan).click(function (e) {
+                    }).append(Icons.get('add-friend')).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
                         Common.sendFriendRequest(data, function (err, obj) {
                             if (err || (obj && obj.error)) {
