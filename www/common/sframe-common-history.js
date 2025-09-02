@@ -291,7 +291,9 @@ define([
         $bottom.hide();
         $cke.hide();
 
-        UI.spinner($hist).get().show();
+        var spinner = UI.makeSpinner($hist);
+        spinner.spin();
+        Lucide.createIcons();
 
         let closeAll = () => {
             History.state = false;
