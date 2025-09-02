@@ -193,6 +193,7 @@ define([
         "save": "save",
         "loading": "loader",
         "notification" : "bell",
+        "notifications" : "notebook-text",
         "mute": "bell-off",
         "cursor": "text-cursor",
         // Settings + Admin

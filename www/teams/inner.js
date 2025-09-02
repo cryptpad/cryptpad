@@ -605,8 +605,9 @@ define([
         content.push(h('br'));
         content.push(h('br'));
         content.push(button);
-        var $spinner = $('<span>', {'class': 'cp-team-spinner'}).hide().append(Icons.get('loading'));
-        content.push($spinner[0]);
+        var spinnerContainer = h('span', { class: 'cp-team-spinner' });
+        content.push(spinnerContainer);
+        var spinner = UI.makeSpinner($(spinnerContainer));
         var state = false;
         $(button).click(function () {
             if (state) { return; }
@@ -614,12 +615,12 @@ define([
             if (!name.trim()) { return; }
             if(name.length > 50) { return UI.warn(Messages.team_nameTooLong); }
             state = true;
-            $spinner.show();
+            spinner.spin();
             APP.module.execCommand('CREATE_TEAM', {
                 name: name
             }, function (obj) {
                 if (obj && obj.error) {
-                    $spinner.hide();
+                    spinner.hide();
                     state = false;
                     if (obj.error === "OFFLINE") { return UI.warn(Messages.disconnected); }
                     console.error(obj.error);
@@ -634,7 +635,7 @@ define([
                 refreshList(common, function (content) {
                     state = false;
                     $div.append(content);
-                    $spinner.hide();
+                    spinner.done();
                     $('div.cp-team-cat-list').click();
                 });
                 var $divLink = $('div.cp-team-link').empty();
@@ -1119,9 +1120,8 @@ define([
             'id': 'cp-settings-displayname',
             'placeholder': Messages.anonymous}).appendTo($inputBlock);
         var $save = $('<button>', {'class': 'cp-online-alt btn btn-primary'}).text(Messages.settings_save).appendTo($inputBlock);
-
-        var $ok = $(Icons.get('check', {title: Messages.saved})).hide();
-        var $spinner = $(Icons.get('loading')).hide();
+        var spinnerContainer = h('span', {class: 'cp-team-spinner'});
+        var spinner = UI.makeSpinner($(spinnerContainer));
 
         var todo = function () {
             var newName = $input.val();
@@ -1136,22 +1136,22 @@ define([
                 if (obj.name === newName) {
                     return void UI.warn(Messages._getKey('team_nameAlreadySet', [Util.fixHTML(newName)]));
                 }
-                $spinner.show();
+                spinner.spin();
                 var oldName = obj.name;
                 obj.name = newName;
                 APP.module.execCommand('SET_TEAM_METADATA', {
                     teamId: APP.team,
                     metadata: obj
                 }, function (res) {
-                    $spinner.hide();
                     if (res && res.error) {
+                        spinner.hide();
                         $input.val(oldName);
                         if (res.error === 'OFFLINE') {
                             return void UI.warn(Messages.disconnected);
                         }
                         return void UI.warn(Messages.error);
                     }
-                    $ok.show();
+                    spinner.done(); 
                 });
             });
         };
@@ -1164,14 +1164,12 @@ define([
             }
             $input.val(obj.name);
             $input.on('keyup', function (e) {
-                if ($input.val() !== obj.name) { $ok.hide(); }
                 if (e.which === 13) { todo(); }
             });
             $save.click(todo);
             var content = [
                 $inputBlock[0],
-                $ok[0],
-                $spinner[0]
+                spinnerContainer
             ];
             cb(content);
         });
@@ -1271,8 +1269,8 @@ define([
     makeBlock('delete', function (common, cb, $div) { // Msg.team_deleteHint, .team_deleteTitle
         $div.addClass('cp-online');
         var deleteTeam = h('button.btn.btn-danger', Messages.team_deleteButton);
-        var $ok = $(Icons.get('check', {title: Messages.saved})).hide();
-        var $spinner = $(Icons.get('loading')).hide();
+        var spinnerContainer = h('span', {class: 'cp-team-spinner'});
+        var spinner = UI.makeSpinner($(spinnerContainer));
 
         var deleting = false;
         $(deleteTeam).click(function () {
@@ -1281,16 +1279,16 @@ define([
                 if (!yes) { return; }
                 if (deleting) { return; }
                 deleting = true;
-                $spinner.show();
+                spinner.spin();
                 APP.module.execCommand("DELETE_TEAM", {
                     teamId: APP.team
                 }, function (obj) {
-                    $spinner.hide();
                     deleting = false;
                     if (obj && obj.error) {
+                        spinner.hide();
                         return void UI.warn(obj.error);
                     }
-                    $ok.show();
+                    spinner.done();
                     UI.log(Messages.deleted);
                 });
             });
@@ -1298,8 +1296,7 @@ define([
 
         cb([
             deleteTeam,
-            $ok[0],
-            $spinner[0]
+            spinnerContainer
         ]);
     }, true);
 
