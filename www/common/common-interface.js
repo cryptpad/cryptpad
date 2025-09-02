@@ -340,7 +340,7 @@ define([
                 if (!$tokens.length) {
                     $container.prepend(h('span.tokenfield-empty', Messages.kanban_noTags));
                 }
-                $tokens.find('.close').attr('tabindex', 0).on('keydown', e => {
+                $tokens.find('.close').attr('tabindex', 0).empty().append(Icons.get('delete-token')).on('keydown', e => {
                     e.stopPropagation();
                 });
                 $tokens.find('.token-label').attr('tabindex', 0).on('keydown', function (e) {
