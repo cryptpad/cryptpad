@@ -1196,6 +1196,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
             $n.text(n).show();
             $icon.css('fill', 'currentColor');
         };
+        refresh();
 
         Common.mailbox.subscribe(['notifications', 'team', 'broadcast', 'reminders', 'supportteam'], {
             onMessage: function (data, el) {
