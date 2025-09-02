@@ -4345,7 +4345,8 @@ define([
                     if (!val) { return true; }
                     $container.html('').append(h('div.cp-snapshot-spinner'));
                     var to = setTimeout(function () {
-                        UI.spinner($container.find('div')).get().show();
+                        var spinner = UI.makeSpinner($container.find('div'));
+                        spinner.spin();
                     });
                     make(val, function (err) {
                         clearTimeout(to);

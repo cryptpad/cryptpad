@@ -1065,29 +1065,6 @@ define([
         return q;
     };
 
-    /*
-     *  spinner
-     */
-    UI.spinner = function (parent) {
-        var $target = $(Icons.get('loading')).hide();
-
-        $(parent).append($target);
-
-        return {
-            show: function () {
-                $target.css('display', 'inline');
-                return this;
-            },
-            hide: function () {
-                $target.hide();
-                return this;
-            },
-            get: function () {
-                return $target;
-            },
-        };
-    };
-
     var LOADING = 'cp-loading';
 
     UI.addLoadingScreen = function (config) {

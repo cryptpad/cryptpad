@@ -148,7 +148,8 @@ define([
         $hist.html('').css('display', 'flex');
         $bottom.hide();
 
-        UI.spinner($hist).get().show();
+        var spinner = UI.makeSpinner($hist);
+        spinner.spin();
 
         var $fastPrev, $fastNext, $next;
 
