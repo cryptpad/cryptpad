@@ -838,11 +838,16 @@
                 cursor: pointer;
                 display: inline-flex;
                 text-decoration: none;
+                position: absolute;
                 height: auto;
                 padding: 10px;
                 color: @toolbar-bg-color;
                 color: var(--toolbar-bg-color);
                 border-radius: @variables_radius;
+                width: 3rem;
+                height: 3rem;
+                padding: 0;
+                line-height: 0;
                 svg {
                     height: 3rem;
                     width: 3rem;
@@ -865,6 +870,9 @@
                 //     width: 100%;
                 // }
             }
+            a.cp-toolbar-link-logo > svg:nth-of-type(2){ display: none; }
+            a.cp-toolbar-link-logo:hover > svg:nth-of-type(1){ display: none; }
+            a.cp-toolbar-link-logo:hover > svg:nth-of-type(2){ display: block; }
         }
         .cp-toolbar-user {
             height: @toolbar_top-height;

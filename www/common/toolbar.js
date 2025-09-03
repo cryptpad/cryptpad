@@ -900,7 +900,8 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
             'class': "cp-toolbar-link-logo",
             'role': 'button',
             'aria-label': buttonTitle
-        }).append(UI.getIcon(privateData.app));
+        }).append(UI.getIcon(privateData.app)).append(Icons.get(toMain ? 'homepage' : 'drive')); //append both icons
+        Lucide.createIcons();
 
         var onClick = function (e) {
             e.preventDefault();
