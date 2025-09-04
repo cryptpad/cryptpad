@@ -400,7 +400,7 @@ define([
             common.setHash(active);
 
             setTimeout(() => { sidebar.openCategory(active); });
-            setTimeout( () => Lucide.createIcons());
+            Lucide.createIcons();
             $leftside.append(container);
         };
 

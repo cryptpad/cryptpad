@@ -356,7 +356,7 @@ define([
                 $container.append($form);
                 isEdit = false;
                 called = false;
-                setTimeout( () => Lucide.createIcons(), 0);
+                Lucide.createIcons();
             });
         };
         resetUI();
@@ -996,7 +996,6 @@ define([
     };
 
     UI.passwordInput = function (opts, displayEye) {
-        setTimeout( () => Lucide.createIcons(), 0);
         opts = opts || {};
         var attributes = merge({
             type: 'password',
@@ -1046,6 +1045,7 @@ define([
             });
         }
 
+        Lucide.createIcons();
         return h('span.cp-password-container', [
             input,
             eye

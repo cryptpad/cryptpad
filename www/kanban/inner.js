@@ -185,7 +185,6 @@ define([
     var createEditModal = function (framework, kanban) {
         if (framework.isReadOnly()) { return; }
         if (editModal) { return editModal; }
-        setTimeout( () => Lucide.createIcons(), 0);
 
         var dataObject = {};
         var isBoard, id;
@@ -521,6 +520,7 @@ define([
             });
         });
 
+        Lucide.createIcons();
         return {
             modal: modal,
             setId: setId,
@@ -1185,7 +1185,7 @@ define([
                             $tag.attr('aria-pressed', 'true');
                         }
                         commitTags();
-                        setTimeout( () => Lucide.createIcons(), 0);
+                        Lucide.createIcons();
                     }).keydown(function (e) {
                         if (e.which === 13 || e.which === 32) {
                             $tag.click();
