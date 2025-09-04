@@ -18,7 +18,7 @@ define([
         "folder-open": "folder-open",
         "folder-nocolor": "folder-minus",
         "folder-check": "folder-check",
-        "file-template": "file-cog",
+        "file-template": "file-plus",
         "file-pad": "file-text",
         "grid": "layout-grid",
         "list": "list",

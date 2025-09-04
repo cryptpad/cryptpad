@@ -1181,24 +1181,29 @@
             .cp-toolbar-icon-pad_toc {
                 order: 8;
             }
-            .cp-toolbar-file {
-                li, button {
-                    .fa-plus { order: 0; }
-                    .fa-history { order: 5; }
-                    .fa-hashtag { order: 10; }
-                    .fa-bookmark { order: 15; }
-                    .fa-upload { order: 20; }
-                    .fa-files-o { order: 25; }
-                    .fa-download { order: 30; }
-                    .fa-print { order: 35; }
-                    .fa-trash { order: 40; }
-                    .cp-toolbar-icon-pad-settings { order: 75; }
-                    .fa-info-circle { order: 100; }
+            .cp-toolbar-file ul {
+                display: flex;
+                flex-direction: column;
+                > li { display: contents; }
+            }
+            .cp-toolbar-file li > a {
+                &.cp-toolbar-icon-newpad        { order: 0; }
+                &.cp-toolbar-icon-snapshots     { order: 5; }
+                &.cp-toolbar-icon-template      { order: 10; }
+                &.cp-toolbar-icon-pad-settings { order: 15; }
+                &.cp-toolbar-icon-history       { order: 20; }
+                &.cp-toolbar-icon-hashtag       { order: 25; }
+                &.cp-toolbar-icon-import-template{ order: 30; }
+                &.cp-toolbar-icon-import        { order: 35; }
+                &.cp-toolbar-icon-copy          { order: 40; }
+                &.cp-toolbar-icon-export        { order: 45; }
+                &.cp-toolbar-icon-print         { order: 50; }
+                &.cp-toolbar-icon-forget        { order: 60; }
 
-                    .fa-question { order: 150; }
+                &.cp-toolbar-icon-properties    { order: 100; }
+                &.cp-toolbar-icon-help          { order: 150; }
 
-                    span { order: 1000; } // text always after icon
-                }
+                > span { order: 1000; } // text always after icon
             }
 
             .cp-toolbar-drawer-contentsss:empty ~ .cp-toolbar-drawer-button {

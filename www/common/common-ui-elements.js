@@ -758,7 +758,7 @@ define([
                 });
                 break;
             case 'copy':
-                button = makeButton('copy', 'cp-toolbar-icon-import', '', Messages.makeACopy);
+                button = makeButton('copy', 'cp-toolbar-icon-copy', '', Messages.makeACopy);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -769,7 +769,7 @@ define([
             case 'importtemplate':
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
-                button = makeButton('upload', 'cp-toolbar-icon-import', '', Messages.template_import);
+                button = makeButton('upload', 'cp-toolbar-icon-import-template', '', Messages.template_import);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
