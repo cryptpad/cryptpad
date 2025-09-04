@@ -249,7 +249,6 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
         var $spansmall = $('<span>').append($editIcon, $editCount, $separator, $viewIcon, $viewCount);
         $userButtons.find('.cp-toolbar-userlist-button').empty().append($spansmall);
 
-        setTimeout( () => Lucide.createIcons(), 0);
         if (!online || toolbar.isDeleted) { return; }
 
         if (metadataMgr.isDegraded() === true) { return; }
@@ -432,6 +431,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
             viewText += numberOfViewUsers + ' ' + viewerText + '</div>';
             $editUsers.append(viewText);
         }
+        Lucide.createIcons();
     };
 
     var initUserList = function (toolbar, config) {

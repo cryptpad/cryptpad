@@ -2961,7 +2961,6 @@ define([
                 icon: UI.getFileIcon({type: type})
             });
             var redraw = function (index) {
-                setTimeout( ()=> Lucide.createIcons());
                 if (index < 0) { i = 0; }
                 else if (index > allData.length - 1) { return; }
                 else { i = index; }
@@ -3013,6 +3012,7 @@ define([
                     $('.cp-creation-template-container').find('[tabindex]:not([tabindex="-1"])').filter(':visible').first().focus();
                 });
                 if (i < TEMPLATES_DISPLAYED) { $(left).addClass('hidden'); }
+                Lucide.createIcons();
             };
             if (fromFileData) {
                 var todo = function (thumbnail) {

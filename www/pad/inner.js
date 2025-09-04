@@ -214,7 +214,6 @@ define([
 
     var mkSettingsMenu = function(framework) {
         var getSettings = function () {
-            setTimeout( () => Lucide.createIcons(), 0);
             var $d = $(h('div.cp-pad-settings-dialog'));
             var common = framework._.sfCommon;
             var metadataMgr = common.getMetadataMgr();
@@ -339,6 +338,7 @@ define([
                 $comments[0],
             ]);
 
+            Lucide.createIcons();
             return $d[0];
         };
 
@@ -647,7 +647,6 @@ define([
     };
 
     var andThen2 = function(editor, Ckeditor, framework) {
-        setTimeout(() => Lucide.createIcons());
         var mediaTagMap = {};
         var $contentContainer = $('#cke_1_contents');
         var $html = $('html');
@@ -1330,6 +1329,7 @@ define([
             }
         });
 
+        Lucide.createIcons();
         framework.start();
     };
 
