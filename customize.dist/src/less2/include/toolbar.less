@@ -51,10 +51,6 @@
     @toolbar_top-height: 76px;
     @toolbar_button-font: @colortheme_app-font;
 
-    // if we spell 'share' correctly, then adblock plus hides the share button
-    // this is a workaround
-    .fa-shhare-alt:before { content: "\f1e0"; }
-
     .ckeditor_fix();
 
     .cp-burn-after-reading {
@@ -319,7 +315,7 @@
         .cp-modal {
             display: flex;
             flex-flow: column;
-            li, li .fa {
+            li {
                 cursor: pointer;
             }
             &> p {
