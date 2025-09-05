@@ -1098,11 +1098,13 @@ define([
                     Array.prototype.push.apply(changes, data.msg.changes);
                 });
                 ooChannel.ready = true;
+                console.log("oochannelq", ooChannel.queue)
 
                 ooChannel.cpIndex += ooChannel.queue.length;
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
             }
+            console.log("changes", changes)
             return changes;
         };
 
@@ -3161,9 +3163,27 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // We want to load a checkpoint:
                     loadCp(cp);
                 };
-                var onPatchBack = function (cp, queue) {
+                var onPatchBack = function (cp, msgs) {
                     // We want to load a checkpoint:
-                    ooChannel.queue = queue;
+                    msgsFormatted = []
+                    msgs.forEach(function(msg) {
+                        var parsedMsg = JSON.parse(msg.msg);
+    
+                        // Create the new format2 object structure
+                        var formattedMsg = {
+                            msg: parsedMsg,
+                            hash: msg.serverHash, // Map serverHash to hash
+                            author: msg.author,
+                            time: msg.time
+                        };
+                        
+                        msgsFormatted.push(formattedMsg)
+
+                    })
+                    ooChannel.queue = msgsFormatted;
+                    console.log("q1", ooChannel.queue)
+                    console.log("q2", msgs)
+                    // console.log("q2", queue)
                     loadCp(cp, true);
                 };
                 var setHistoryMode = function (bool) {
@@ -3232,6 +3252,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     Feedback.send('OO_HISTORY');
                     var histConfig = {
                         onPatch: onPatch,
+                        onPatchBack: onPatchBack,
                         onCheckpoint: onCheckpoint,
                         onRevert: commit,
                         setHistory: setHistoryMode,

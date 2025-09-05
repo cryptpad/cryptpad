@@ -82,6 +82,38 @@ define([
             else { $time.text(''); }
         };
 
+        function getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, callback) {
+            sframeChan.query('Q_GET_HISTORY_RANGE', {
+                channel: config.onlyoffice.channel,
+                lastKnownHash: fromHash,
+                toHash: toHash,
+            }, function (err, data) {
+                if (err) {
+                    console.error(err);
+                    callback(err);
+                    return;
+                }
+
+                if (!Array.isArray(data.messages)) {
+                    return;
+                }
+
+                let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
+
+                const messages = (data.messages || []).slice(initialCp ? 0 : 1);
+
+                if (config.debug) {
+                    console.log(data.messages);
+                }
+
+                fillOO(id, messages);
+                loading = false;
+                // $share.show();
+
+                callback(null, messages);
+            });
+        }
+
         // We want to load a checkpoint (or initial state)
         var loadMoreOOHistory = function () {
             if (!Array.isArray(sortedCp)) { return void console.error("Wrong type"); }
@@ -105,7 +137,7 @@ define([
             // We need to get all the patches between the current cp hash and the next cp hash
 
             // Current cp or initial hash (invalid hash ==> initial hash)
-            var toHash = cp.hash || 'NONE';
+            var toHash = cp?.hash || 'NONE';
             // Next cp or last hash
             var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
 
@@ -118,27 +150,21 @@ define([
                 return void config.onCheckpoint(cp);
             }
 
-            sframeChan.query('Q_GET_HISTORY_RANGE', {
-                channel: config.onlyoffice.channel,
-                lastKnownHash: fromHash,
-                toHash: toHash,
-            }, function (err, data) {
-                if (err) { return void console.error(err); }
-                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
-
-                // The first "cp" in history is the empty doc. It doesn't include the first patch
-                // of the history
-                var initialCp = cpIndex === sortedCp.length || !cp.hash;
-
-                var messages = (data.messages || []).slice(initialCp ? 0 : 1);
-
-                if (config.debug) { console.log(data.messages); }
-                fillOO(id, messages);
-                loading = false;
-                config.onCheckpoint(cp);
-                $share.show();
+            getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, function (err, messages) {
+                if (err) {
+                    return;
+                }
             });
+
+            
         };
+
+        getMessages(config.onlyoffice.lastHash, 'NONE', cpIndex, sortedCp, undefined, -1, config, fillOO, $share, function (err, messages) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+        });
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
@@ -188,7 +214,7 @@ define([
             msgIndex++;
             var patch = msgs[msgIndex];
             if (!patch) { loading = false; return; }
-            config.onPatch(patch);
+            config.onPatchBack(patch);
             showVersion();
             setTimeout(function () {
                 $('iframe').blur();
@@ -197,16 +223,17 @@ define([
         };
 
         var prev = function () {
-            // Load checkpoint data if needed
-
 
             var id = getId();
             var msgs = ooMessages[id];
-            console.log("msgs", id, ooMessages, msgs)
+            console.log("msgs", id, msgIndex, ooMessages, msgs)
             var cp = ooCheckpoints[id];
-            msgIndex--;
+            console.log("msgs", id, msgIndex, ooMessages, msgs)
+
             var queue = msgs.slice(0, msgIndex);
-            config.onPatchBack(cp, msgs);
+            config.onPatchBack(cp, queue);
+            msgIndex--;
+
 
         };
 
@@ -306,14 +333,15 @@ define([
 
             // Push one patch
             $next.click(function () {
-                if (loading) { return; }
+                // if (loading) { return; }
                 loading = true;
                 next();
                 update();
             });
             $prev.click(function () {
-                if (loading) { return; }
+                // if (loading) { return; }
                 loading = true;
+                // loadMoreOOHistory();
                 prev();
                 update();
             });
