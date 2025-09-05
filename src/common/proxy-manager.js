@@ -313,10 +313,16 @@ const factory = (UserObject, Util, Hash,
     };
 
     var _getFileData = function (Env, id, editable) {
+        console.log("beep?", Env, id, editable)
         var userObjects = _getUserObjects(Env);
         var data = {};
+                console.log("beep?", _getUserObjects(Env))
+
         userObjects.some(function (uo) {
+
             data = uo.getFileData(id, editable);
+                    console.log("beep???", data)
+
             if (data && Object.keys(data).length) { return true; }
         });
         return data;
@@ -408,12 +414,16 @@ const factory = (UserObject, Util, Hash,
 
     // Get the owned files in the main drive that are also duplicated in shared folders
     var _isDuplicateOwned = function (Env, path, id) {
-        if (path && _isInSharedFolder(Env, path)) { return; }
+        // if (path && _isInSharedFolder(Env, path)) { console.log ("beep!!")
+        //     return true; }
         var data = _getFileData(Env, id || Env.user.userObject.find(path));
-        if (!data) { return; }
-        if (!_ownedByMe(Env, data.owners)) { return; }
+        if (!data) { console.log("beep!!!1", Env, id, path, Env.user.userObject.find(path)) 
+            return; }
+        if (!_ownedByMe(Env, data.owners)) { console.log("beep!!!2") 
+            return; }
         var channel = data.channel;
-        if (!channel) { return; }
+        if (!channel) { console.log("beep!!!3") 
+            return; }
         var foldersUO = Object.keys(Env.folders).map(function (k) {
             return Env.folders[k].userObject;
         });

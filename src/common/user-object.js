@@ -426,6 +426,7 @@ const factory = (Util, Hash,
         // FIND
 
         var findElement = function (root, pathInput) {
+            // console.log("beep :(", root, pathInput)
             if (!pathInput) {
                 error("Invalid path:\n", pathInput, "\nin root\n", root);
                 return;

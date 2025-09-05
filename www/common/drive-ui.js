@@ -1236,6 +1236,15 @@ define([
             }
 
             var href = isRo ? data.roHref : (data.href || data.roHref);
+
+            if (!data.href && manager.isInSharedFolder($(el).data('path'))) {
+                Object.keys(files.filesData).forEach(function (file) {
+                    if (files.filesData[file].channel === data.channel && files.filesData[file].href) {
+                        href = files.filesData[file].href;
+                    }
+                })
+            }
+
             var parsed = Hash.parsePadUrl(href);
 
             if (parsed.hashData && parsed.hashData.type === 'file' && !app
@@ -2215,6 +2224,16 @@ define([
             var hrefData = Hash.parsePadUrl(href);
             if (hrefData.type) {
                 $element.addClass('cp-border-color-'+hrefData.type);
+            }
+
+            if (!data.href && manager.isInSharedFolder($element.data('path'))) {
+                console.log("beepf", data, edPublic)
+                Object.keys(files.filesData).forEach(function (file) {
+                    console.log("beepfile", files.filesData[file].channel)
+                    if (files.filesData[file].channel === data.channel && files.filesData[file].href) {
+                        href = files.filesData[file].href;
+                    }
+                })
             }
 
             var $state = $('<span>', {'class': 'cp-app-drive-element-state'});
@@ -3962,6 +3981,7 @@ define([
                 filesList.forEach(function (r) {
                     // if r.id === null, then it's a folder, not a file
                     r.paths.forEach(function (path) {
+                        console.log("beep hidden", manager.isDuplicateOwned(path))
                         if (!r.inSharedFolder &&
                             APP.hideDuplicateOwned && manager.isDuplicateOwned(path)) { return; }
                         var _path = path.slice();
@@ -4411,6 +4431,7 @@ define([
                     if (manager.isFolder(root[key])) { return; }
                     var p = path.slice();
                     p.push(key);
+                    console.log("beep hidden2", p, manager.isDuplicateOwned(p))
                     if (APP.hideDuplicateOwned && manager.isDuplicateOwned(p)) { return; }
                     var $element = createElement(path, key, root, false);
                     if (!$element) { return; }
