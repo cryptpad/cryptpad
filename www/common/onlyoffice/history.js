@@ -153,7 +153,7 @@ define([
         var spinner = UI.makeSpinner($hist);
         spinner.spin();
 
-        var $fastPrev, $fastNext, $next;
+        var $fastPrev, $fastNext, $next, $prev;
 
         var getId = function () {
             var cps = sortedCp.length;
@@ -164,6 +164,7 @@ define([
             var cps = sortedCp.length;
             $fastPrev.show();
             $next.show();
+            $prev.show();
             $fastNext.show();
             $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous')
                 .prop('disabled', '');
@@ -195,12 +196,13 @@ define([
             }, 200);
         };
 
-        var back = function () {
+        var prev = function () {
             // Load checkpoint data if needed
 
 
             var id = getId();
             var msgs = ooMessages[id];
+            console.log("msgs", id, ooMessages, msgs)
             var cp = ooCheckpoints[id];
             msgIndex--;
             var queue = msgs.slice(0, msgIndex);
@@ -222,7 +224,11 @@ define([
             var _next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
                 Icons.get('history-next'),
             ]);
+            var _prev = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
+                h('i.fa.fa-step-forward')
+            ]);
             $fastPrev = $(fastPrev);
+            $prev = $(_prev);
             $fastNext = $(fastNext).prop('disabled', 'disabled');
             $next = $(_next).prop('disabled', 'disabled');
 
@@ -239,6 +245,7 @@ define([
                 h('div.cp-history-timeline-actions', [
                     h('span.cp-history-timeline-prev', [
                         fastPrev,
+                        _prev
                     ]),
                     time,
                     version,
@@ -302,6 +309,12 @@ define([
                 if (loading) { return; }
                 loading = true;
                 next();
+                update();
+            });
+            $prev.click(function () {
+                if (loading) { return; }
+                loading = true;
+                prev();
                 update();
             });
             // Go to previous checkpoint
