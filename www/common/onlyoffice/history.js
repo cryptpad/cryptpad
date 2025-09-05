@@ -211,10 +211,14 @@ define([
             var id = getId();
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
+            var cp = ooCheckpoints[id];
+
             msgIndex++;
-            var patch = msgs[msgIndex];
-            if (!patch) { loading = false; return; }
-            config.onPatchBack(patch);
+            // var patch = msgs[msgIndex];
+            // if (!patch) { loading = false; return; }
+            // config.onPatchBack(patch);
+            var queue = msgs.slice(0, msgIndex);
+            config.onPatchBack(cp, queue);
             showVersion();
             setTimeout(function () {
                 $('iframe').blur();
@@ -228,6 +232,7 @@ define([
             var msgs = ooMessages[id];
             console.log("msgs", id, msgIndex, ooMessages, msgs)
             var cp = ooCheckpoints[id];
+            console.log("cp", cp, ooCheckpoints)
             console.log("msgs", id, msgIndex, ooMessages, msgs)
 
             var queue = msgs.slice(0, msgIndex);
