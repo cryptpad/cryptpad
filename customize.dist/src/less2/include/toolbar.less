@@ -364,10 +364,6 @@
                         width: 200px;
                         display: flex;
                         align-items: center;
-                        .fa, .cptools {
-                            font-size: 32px;
-                            min-width: 50px;
-                        }
                         .cp-icons-name {
                             height: auto;
                             text-align: left;
@@ -1216,9 +1212,6 @@
                 z-index: 10000; //Z cp-toolbar-drawer-content
                 color: @cp_dropdown-fg;
                 .tools_unselectable();
-                .fa {
-                    font-size: 17px;
-                }
                 &> span {
                     order: 8;
                     box-sizing: border-box;
@@ -1266,26 +1259,11 @@
         min-width: 200px;
         box-sizing: border-box;
         margin-bottom: 5px;
-        &> span.fa {
-            height: 20px;
-            width: 20px;
-            //margin: 8px;
-            line-height: 20px;
-            font-size: 20px;
-            text-align: center;
-        }
     }
     .cp-toolbar-readonly {
         margin-right: 5px;
         font-weight: bold;
         text-transform: uppercase;
-    }
-    .cp-toolbar-share {
-        a {
-            .fa {
-                margin-right: 5px;
-            }
-        }
     }
 }
 
