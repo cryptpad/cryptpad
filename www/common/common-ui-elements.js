@@ -781,7 +781,7 @@ define([
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
-                button = makeButton('file-template', 'cp-toolbar-icon-template', '', Messages.saveTemplateButton);
+                button = makeButton('file-save-template', 'cp-toolbar-icon-template', '', Messages.saveTemplateButton);
                 if (data.rt || data.callback) {
                     button
                     .click(function () {
