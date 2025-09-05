@@ -751,7 +751,9 @@ define([
             // Ctrl || Meta (mac)
             if (e.ctrlKey || (navigator.platform === "MacIntel" && e.metaKey)) {
                 // Ctrl+E: New pad modal
+                var priv = ctx.metadataMgr.getPrivateData();
                 if (e.which === 69 && isApp) {
+                    if (priv.app === 'form' && !priv.canEdit && !priv.form_auditorKey) { return; }
                     e.preventDefault();
                     return void funcs.createNewPadModal();
                 }
