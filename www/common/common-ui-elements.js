@@ -2951,7 +2951,7 @@ define([
                     name: Messages.creation_newTemplate,
                     id: -1,
                     //icon: h('span.fa.fa-bookmark')
-                    icon: h('span.cptools.cptools-new-template')
+                    icon: Icons.get('file-template')
                 });
             }*/
             allData.unshift({
