@@ -584,7 +584,9 @@ define([
             };
 
             // Version buttons
-            $prev.click(function () { render(get(c - 1)); });
+            $prev.click(function () { 
+                console.log(c, get(c-1))
+                render(get(c - 1)); });
             $next.click(function () { render(get(c + 1)); });
             if (config.drive) {
                 $fastPrev.click(function () { render(get(c - 10)); });
