@@ -156,20 +156,20 @@ define([
     var onRemoteChange = Util.mkEvent();
     var now = function () { return +new Date(); };
     var _lastUpdate = 0;
-    var _updateBoards = function (framework, kanban, boards) {
+    var _updateBoards = function (framework, kanban, boards, fixCursor) {
         _lastUpdate = now();
-        var cursor = getCursor();
+        let cursor;
+        if (fixCursor) { cursor = getCursor(); }
         kanban.setBoards(Util.clone(boards));
         kanban.inEditMode = false;
         addEditItemButton(framework, kanban);
         addMoveElementButton(framework, kanban);
-        restoreCursor(cursor);
-        onRemoteChange.fire();
+        if (cursor) { restoreCursor(cursor); }
     };
     var _updateBoardsThrottle = Util.throttle(_updateBoards, 1000);
-    var updateBoards = function (framework, kanban, boards) {
+    var updateBoards = function (framework, kanban, boards, fixCursor) {
         if ((now() - _lastUpdate) > 5000 || framework.isLocked()) {
-            _updateBoards(framework, kanban, boards);
+            _updateBoards(framework, kanban, boards, fixCursor);
             return;
         }
         _updateBoardsThrottle(framework, kanban, boards);
@@ -320,6 +320,9 @@ define([
         SFCodeMirror.mkIndentSettings(editor, framework._.cpNfInner.metadataMgr);
         editor.on('change', function () {
             var val = editor.getValue();
+            if (!dataObject) {
+                return editor.toTextArea();
+            }
             if (dataObject.body === val) { return; }
             dataObject.body = val;
             commit();
@@ -1056,7 +1059,7 @@ define([
             // If the rendering has changed, update the value and redraw
             kanban.options.tagsAnd = tagsAnd;
             _tagsAnd = tagsAnd;
-            updateBoards(framework, kanban, kanban.options.boards);
+            updateBoards(framework, kanban, kanban.options.boards, false);
         });
 
         if (migrated) { framework.localChange(); }
@@ -1503,7 +1506,8 @@ define([
             if (Sortify(currentContent) !== Sortify(remoteContent)) {
                 verbose("Content is different.. Applying content");
                 kanban.options.boards = remoteContent;
-                updateBoards(framework, kanban, remoteContent);
+                updateBoards(framework, kanban, remoteContent, true);
+                onRemoteChange.fire();
             }
         });
 
