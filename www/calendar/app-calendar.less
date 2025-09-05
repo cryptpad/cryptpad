@@ -171,16 +171,16 @@
             color: @cryptpad_text_col;
             border-radius: @variables_radius_L;
             font-weight: normal;
-            .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox):not(.fa-map-marker):not(.fa-align-left) {
+            .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox):not(.fa-map-marker):not(.fa-align-left):not(.tui-full-calendar-dropdown-arrow-custom) {
                 display: none;
             }
             .tui-full-calendar-icon {
                 text-align:center;
                 flex-shrink: 0;
             }
-            .tui-full-calendar-calendar-dot {
-                margin-right: 10px;
-                top: 0;
+            .tui-full-calendar-dropdown-arrow-custom i{
+                font-size: 14px;
+                color: @cryptpad_text_col;
             }
             .tui-full-calendar-popup-detail-item {
                 display: flex;
@@ -241,7 +241,7 @@
             margin: 0;
             &:not(li):not(button) {
                 padding: 0;
-                margin-top: 5px;
+                margin-top: 0.5rem;
             }
             #tui-full-calendar-schedule-calendar {
                 width: 179px;
@@ -278,6 +278,17 @@
             width: 221px; // same as button
             background-color: @cp_dropdown-bg;
             color: @cp_dropdown-fg;
+            border-radius: 0 0 @variables_radius @variables_radius;
+            li.tui-full-calendar-dropdown-menu-item {
+                span.tui-full-calendar-content {
+                    font-size: 14px;
+                }
+            }
+        }
+        button.tui-full-calendar-popup-section-item.btn.btn-secondary {
+            &[aria-expanded="true"] {
+                border-radius: @variables_radius @variables_radius 0 0;
+            }
         }
         .tui-full-calendar-section-state, #tui-full-calendar-schedule-private {
             display: none !important;
@@ -291,6 +302,7 @@
                 display: flex;
                 align-items: center;
                 flex-wrap: wrap;
+                min-height: 0; // override default tui 40px
                 .tui-full-calendar-section-start-date, .tui-full-calendar-section-end-date {
                     flex: 1;
                 }
@@ -307,7 +319,7 @@
                     }
                 }
                 .CodeMirror {
-                    margin-top: 5px;
+                    margin-top: 0.5rem;
                     background: @cp_forms-bg !important;
                     color: @cryptpad_text_col;
                     border: 1px solid @cp_forms-border;
