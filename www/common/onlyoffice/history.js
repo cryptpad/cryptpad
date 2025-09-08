@@ -19,7 +19,7 @@ define([
         var $toolbar = config.$toolbar;
         var sframeChan = common.getSframeChannel();
         History.readOnly = common.getMetadataMgr().getPrivateData().readOnly || !common.isLoggedIn();
-
+        console.log("HOR", common.getMetadataMgr().getPrivateData().readOnly, !common.isLoggedIn())
         if (!config.onlyoffice || !config.setHistory || !config.onCheckpoint || !config.onPatch || !config.makeSnapshot) {
             throw new Error("Missing config element");
         }
@@ -202,7 +202,10 @@ define([
             }
             var id = getId();
             var msgs = (ooMessages[id] || []).length;
+                            console.log("next mgsi", msgIndex, msgs)
+
             if (msgIndex >= (msgs-1)) {
+                console.log("next disabled")
                 $next.prop('disabled', 'disabled');
             }
         };
@@ -256,8 +259,8 @@ define([
             var _next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
                 Icons.get('history-next'),
             ]);
-            var _prev = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
-                h('i.fa.fa-step-forward')
+            var _prev = h('button.cp-toolbar-history-previous', { title: Messages.history_next }, [
+                h('i.fa.fa-step-backward')
             ]);
             $fastPrev = $(fastPrev);
             $prev = $(_prev);
