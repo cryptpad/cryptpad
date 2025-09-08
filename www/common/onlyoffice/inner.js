@@ -568,7 +568,8 @@ define([
             startOO(blob, type, true);
         };
 
-        var saveToServer = function (blob, title) {
+        var saveToServer = function (blob, title, msgs) {
+            APP.msgs = msgs
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
             var text = !blob && getContent();
             if (!text && !blob) {
@@ -595,7 +596,7 @@ define([
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
             ooChannel.ready = false;
-            ooChannel.queue = [];
+            // ooChannel.queue = [];
             data.callback = function () {
                 if (APP.template) { APP.template = false; }
                 resetData(blob, file);
@@ -606,7 +607,7 @@ define([
 
         var noLogin = false;
 
-        var makeCheckpoint = function (force) {
+        var makeCheckpoint = function (force, msgs) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
 
             var locked = content.saveLock;
@@ -642,7 +643,7 @@ define([
                 content.saveLock = myOOId;
                 APP.onLocal();
                 APP.realtime.onSettle(function () {
-                    saveToServer();
+                    saveToServer(null, null, msgs);
                 });
             }
         };
@@ -1073,19 +1074,35 @@ define([
 
         const getInitialChanges = function() {
             const changes = [];
+            if (APP.msgs) {
+                    msgsFormatted = []
+                    APP.msgs.forEach(function(msg) {
+                        var parsedMsg = JSON.parse(msg.msg);
+                            var formattedMsg = {
+                            msg: parsedMsg,
+                            hash: msg.serverHash, 
+                            author: msg.author,
+                            time: msg.time
+                        };
+                        
+                        msgsFormatted.push(formattedMsg)
+
+                    })
+                ooChannel.queue = msgsFormatted
+            }
             if (content.version > 2) {
                 ooChannel.queue.forEach(function (data) {
                     Array.prototype.push.apply(changes, data.msg.changes);
                 });
                 ooChannel.ready = true;
-                console.log("oochannelq", ooChannel.queue)
 
                 ooChannel.cpIndex += ooChannel.queue.length;
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
             }
-            console.log("changes", changes)
-            return changes;
+            APP.msgs = false
+            return changes
+            
         };
 
         const onAuth = function () {
@@ -3124,12 +3141,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             if (!privateData.ooVersionHash) {
             (function () {
                 /* add a history button */
-                var commit = function () {
+                var commit = function (msgs) {
                     // Wait for the checkpoint to be uploaded before leaving history mode
                     // (race condition). We use "stopHistory" to remove the history
                     // flag only when the checkpoint is ready.
                     APP.stopHistory = true;
-                    makeCheckpoint(true);
+                    makeCheckpoint(true, msgs);
                 };
                 var onPatch = function (patch) {
                     // Patch on the current cp
@@ -3139,7 +3156,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // We want to load a checkpoint:
                     loadCp(cp);
                 };
-                var onPatchBack = function (cp, msgs) {
+                var onPatchBack = function (cp, msgs, newlyLoaded) {
+                    var originalHistory
+                    if (newlyLoaded) {
+                        originalHistory = ooChannel.queue
+                    }
                     // We want to load a checkpoint:
                     msgsFormatted = []
                     msgs.forEach(function(msg) {
@@ -3157,9 +3178,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                     })
                     ooChannel.queue = msgsFormatted;
-                    console.log("q1", ooChannel.queue)
-                    console.log("q2", msgs)
-                    // console.log("q2", queue)
                     loadCp(cp, true);
                 };
                 var setHistoryMode = function (bool) {
