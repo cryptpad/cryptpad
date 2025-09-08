@@ -1790,7 +1790,8 @@ define([
             var topPos = button.bottom;
             $button.attr('aria-expanded', 'true');
             $innerblock.css('bottom', '');
-            $innerblock.show();
+            $innerblock.css('display', 'flex'); // for the css order rules to apply
+            $innerblock.css('flex-direction', 'column');
             if ($parentMenu) {
                 // keep parent open when recursive
                 $parentMenu.show();
