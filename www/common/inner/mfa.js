@@ -240,6 +240,7 @@ define([
                     $content.find('.alert-danger').removeClass('alert-danger').addClass('alert-success');
                     $(button).prop('disabled', 'disabled');
                     $(nextButton).removeAttr('disabled');
+                    Lucide.createIcons();
                 });
             }).nThen(function () {
                 var randomSecret = function () {

@@ -29,7 +29,7 @@ define([
         "teams": "users-round",
         "promote": "chevrons-up",
         "downgrade": "chevrons-down",
-        // CryptPad apps - icons to be changed
+        // CryptPad apps
         // Pad
         "pad": "file-text",
         "pad-settings": "file-cog",
