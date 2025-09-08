@@ -28,8 +28,29 @@
     }
     .cp-spinner, .cp-ok {
         svg {
-            margin: 0.5rem;
+            width: 1rem;
+            height: 1rem;
         }
+    }
+    .cp-checkmark.noTitle:not(.cp-settings-radio-container .cp-checkmark.noTitle, .cp-settings-code-spellcheck .noTitle.cp-checkmark) {
+        height: 1rem;
+    }
+    .cp-checkmark.noTitle, .cp-sidebarlayout-input-block {
+        svg {
+            margin-left: 0.5rem;
+        }
+    }
+    .cp-settings-colortheme .cp-settings-radio-container {
+        height: 1.5rem;
+    }
+    .cp-spinner, .cp-ok{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: middle;
+    }
+    .cp-spinner svg {
+        animation: spin 10s linear infinite;
     }
 
     div.alert {
