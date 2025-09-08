@@ -2904,8 +2904,8 @@ define([
             'aria-label': Messages.page_previous
         }, Icons.get('chevron-left'));
         if (!big) {
-            $(left).removeClass('fa-chevron-left').addClass('fa-chevron-up');
-            $(right).removeClass('fa-chevron-right').addClass('fa-chevron-down');
+            $(left).empty().append(Icons.get('chevron-up'));
+            $(right).empty().append(Icons.get('chevron-down'));
         }
         var templates = h('div.cp-creation-template', [
             left,
@@ -2951,14 +2951,12 @@ define([
                 allData.unshift({
                     name: Messages.creation_newTemplate,
                     id: -1,
-                    //icon: h('span.fa.fa-bookmark')
                     icon: Icons.get('file-template')
                 });
             }*/
             allData.unshift({
                 name: Messages.creation_noTemplate,
                 id: 0,
-                //icon: h('span.fa.fa-file')
                 icon: UI.getFileIcon({type: type})
             });
             var redraw = function (index) {
@@ -3048,11 +3046,11 @@ define([
                 if (big === _big) { return; }
                 big = _big;
                 if (!big) {
-                    $(left).removeClass('fa-chevron-left').addClass('fa-chevron-up');
-                    $(right).removeClass('fa-chevron-right').addClass('fa-chevron-down');
+                    $(left).empty().append(Icons.get('chevron-up'));
+                    $(right).empty().append(Icons.get('chevron-down'));
                 } else {
-                    $(left).removeClass('fa-chevron-up').addClass('fa-chevron-left');
-                    $(right).removeClass('fa-chevron-down').addClass('fa-chevron-right');
+                    $(left).empty().append(Icons.get('chevron-left'));
+                    $(right).empty().append(Icons.get('chevron-right'));
                 }
                 TEMPLATES_DISPLAYED = big ? 6 : 3;
                 redraw(0);
