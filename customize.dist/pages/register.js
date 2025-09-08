@@ -60,18 +60,16 @@ define([
                         h('ul.cp-notes-list', [
                             h('li', [
                                 Icons.get('alert'),
-                                Msg.register_password_note1,
-                                h('span.red', Msg.register_password_note2)
+                                Msg.password_note1,
+                                h('span.red', Msg.password_note2)
                             ]),
                             h('li', [
                                 Icons.get('alert'),
-                                Msg.register_computer_note1,
-                                h('span.red', Msg.register_computer_note2),
-                                Msg.register_computer_note3
+                                Pages.setHTML(h('span'), Msg._getKey('computer_note', ['<span class="red">','</span>']))
                             ]),
                             h('li', [
                                 Icons.get('alert'),
-                                Msg.register_import_note1
+                                Msg.import_note
                             ])
                         ])
                     ])
