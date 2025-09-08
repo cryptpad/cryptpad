@@ -19,7 +19,6 @@ define([
         var $toolbar = config.$toolbar;
         var sframeChan = common.getSframeChannel();
         History.readOnly = common.getMetadataMgr().getPrivateData().readOnly || !common.isLoggedIn();
-        console.log("HOR", common.getMetadataMgr().getPrivateData().readOnly, !common.isLoggedIn())
         if (!config.onlyoffice || !config.setHistory || !config.onCheckpoint || !config.onPatch || !config.makeSnapshot) {
             throw new Error("Missing config element");
         }
@@ -31,6 +30,7 @@ define([
         var loading = false;
         var update = function () {};
         var currentTime;
+        var newlyLoaded = true;
 
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
@@ -167,8 +167,8 @@ define([
         });
 
         var onClose = function () { config.setHistory(false); };
-        var onRevert = function () {
-            config.onRevert();
+        var onRevert = function (msgs) {
+            config.onRevert(msgs);
         };
 
         config.setHistory(true);
@@ -194,6 +194,7 @@ define([
             $fastNext.show();
             $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous')
                 .prop('disabled', '');
+
             if (cpIndex >= cps && msgIndex === 0) {
                 $fastPrev.prop('disabled', 'disabled');
             }
@@ -202,24 +203,19 @@ define([
             }
             var id = getId();
             var msgs = (ooMessages[id] || []).length;
-                            console.log("next mgsi", msgIndex, msgs)
-
-            if (msgIndex >= (msgs-1)) {
-                console.log("next disabled")
+            var v = getVersion()
+            if (msgIndex >= (msgs-1) || v === '1.0') {
                 $next.prop('disabled', 'disabled');
             }
         };
 
         var next = function () {
-            var id = getId();
+            var id = -1
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
             var cp = ooCheckpoints[id];
 
             msgIndex++;
-            // var patch = msgs[msgIndex];
-            // if (!patch) { loading = false; return; }
-            // config.onPatchBack(patch);
             var queue = msgs.slice(0, msgIndex);
             config.onPatchBack(cp, queue);
             showVersion();
@@ -232,14 +228,13 @@ define([
         var prev = function () {
 
             var id = getId();
-            var msgs = ooMessages[id];
-            console.log("msgs", id, msgIndex, ooMessages, msgs)
+            var msgs = ooMessages[-1];
             var cp = ooCheckpoints[id];
-            console.log("cp", cp, ooCheckpoints)
-            console.log("msgs", id, msgIndex, ooMessages, msgs)
-
             var queue = msgs.slice(0, msgIndex);
-            config.onPatchBack(cp, queue);
+            config.onPatchBack(cp, queue, newlyLoaded);
+            newlyLoaded = false
+            showVersion();
+
             msgIndex--;
 
 
@@ -439,7 +434,8 @@ define([
                     if (!yes) { return; }
                     closeUI();
                     History.loading = false;
-                    onRevert();
+                    console.log("messages2", ooMessages[-1])
+                    onRevert(ooMessages[-1]);
                     UI.log(Messages.history_restoreDone);
                 });
             });
