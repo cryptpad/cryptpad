@@ -381,6 +381,7 @@ define([
                         avatars[friend.avatar] = $img[0].outerHTML;
                     }
                     $(rightCol).insertAfter($avatar);
+                    Lucide.createIcons();
                 }, friend.uid, friend.badge);
             }
 
@@ -636,6 +637,7 @@ define([
                         avatars[friendData.avatar] = $img[0].outerHTML;
                     }
                     $room.append(rightCol);
+                    Lucide.createIcons();
                 }, friendData.uid, friendData.badge);
             }
             $room.append(status);
