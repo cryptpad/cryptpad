@@ -93,7 +93,7 @@ main() {
                 rm -rf "$OO_DIR/v7/dictionaries/"
                 ;;
             v8)  install_version v8 v8.3.3.23+4 01abfb3e13dae2066c9fcdc9fd3a3a21cd08212feb7ee2f927d8acaa5c3e560f8ce7c78c533c6aad7048aaecc14f7445891f06cb38a1720e1637a971c0a02295 ;;
-            x2t) install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1 ;;
+            x2t) install_x2t v8.3.0+0 4c78faa9e38d5fd316e8143fa2d3d21e650380b39f5da6157d368a7ffc89f8782bb769f7b3a2bfe54717b703bc22ad846b58058286318d8193b65a652ab9209a  ;;
             *)
                 echo "Unknown version: $version"
                 exit 1
