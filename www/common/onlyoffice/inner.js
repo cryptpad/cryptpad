@@ -588,7 +588,6 @@ define([
         };
 
         var saveToServer = function (blob, title, msgs) {
-            APP.msgs = msgs
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
             var text = !blob && getContent();
             if (!text && !blob) {
@@ -1094,22 +1093,7 @@ define([
 
         const getInitialChanges = function() {
             const changes = [];
-            if (APP.msgs) {
-                    msgsFormatted = []
-                    APP.msgs.forEach(function(msg) {
-                        var parsedMsg = JSON.parse(msg.msg);
-                            var formattedMsg = {
-                            msg: parsedMsg,
-                            hash: msg.serverHash, 
-                            author: msg.author,
-                            time: msg.time
-                        };
-                        
-                        msgsFormatted.push(formattedMsg)
 
-                    })
-                ooChannel.queue = msgsFormatted
-            }
             if (content.version > 2) {
                 ooChannel.queue.forEach(function (data) {
                     Array.prototype.push.apply(changes, data.msg.changes);
@@ -1120,7 +1104,6 @@ define([
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
             }
-            APP.msgs = false
             return changes
             
         };
@@ -3185,15 +3168,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     if (newlyLoaded) {
                         originalHistory = ooChannel.queue
                     }
-                    // We want to load a checkpoint:
                     msgsFormatted = []
                     msgs.forEach(function(msg) {
                         var parsedMsg = JSON.parse(msg.msg);
     
-                        // Create the new format2 object structure
                         var formattedMsg = {
                             msg: parsedMsg,
-                            hash: msg.serverHash, // Map serverHash to hash
+                            hash: msg.serverHash, 
                             author: msg.author,
                             time: msg.time
                         };
