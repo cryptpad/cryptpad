@@ -213,23 +213,24 @@ define([
         };
 
         var next = function () {
+
             var id = getId()
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
-            var cp = ooCheckpoints[id];
-
             msgIndex++;
-            var queue = msgs.slice(0, msgIndex);
-            config.onPatchBack(cp, queue);
+            if (msgIndex < 0) {
+                var patch = msgs[msgs.length + msgIndex];
+            }
+            config.onPatch(patch)
             showVersion();
             setTimeout(function () {
                 $('iframe').blur();
                 loading = false;
             }, 200);
+
         };
 
         var prev = function () {
-
             var id = getId();
             var msgs = ooMessages[id];
             var cp = ooCheckpoints[id];
