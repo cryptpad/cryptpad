@@ -25,12 +25,13 @@ define([
 
         var cpIndex = -1;
         var msgIndex = -1;
+        
+
         var ooMessages = {};
         var ooCheckpoints = {};
         var loading = false;
         var update = function () {};
         var currentTime;
-        var newlyLoaded = true;
 
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
@@ -38,14 +39,26 @@ define([
             return hashes[a].index - hashes[b].index;
         });
 
+        var getId = function () {
+            var cps = sortedCp.length;
+            return sortedCp[cps-1] || -1;
+        };
+
+        var id = getId();
+
         var endWithCp = sortedCp.length &&
                         config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
 
-        var fillOO = function (id, messages) {
+        var fillOO = function (id, messages, ooCheckpoints) {
             if (!id) { return; }
-            // if (ooMessages[id]) { return; }
-
-            ooMessages[id] = messages;
+            var checkpoints = []
+            Object.keys(ooCheckpoints).forEach(function(key) {
+                checkpoints.push(ooCheckpoints[key].index)
+            })
+            checkpoints.forEach((current, index) => {
+                var preceding = index > 0 ? checkpoints[index - 1] : 1;
+                ooMessages[index+1] = messages.slice(preceding-1, current-1)
+            });
 
             update();
         };
@@ -84,7 +97,7 @@ define([
             else { $time.text(''); }
         };
 
-        function getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, callback) {
+        function getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, ooCheckpoints, callback) {
             sframeChan.query('Q_GET_HISTORY_RANGE', {
                 channel: config.onlyoffice.channel,
                 lastKnownHash: fromHash,
@@ -108,7 +121,7 @@ define([
                     console.log(data.messages);
                 }
                 id = getId()
-                fillOO(id, messages);
+                fillOO(id, messages, ooCheckpoints);
                 loading = false;
                 // $share.show();
 
@@ -117,7 +130,8 @@ define([
         }
 
         // We want to load a checkpoint (or initial state)
-        var loadMoreOOHistory = function () {
+        var loadMoreOOHistory = function (cb) {
+                            console.log("oomessages!", ooMessages)
 
             if (!Array.isArray(sortedCp)) { return void console.error("Wrong type"); }
 
@@ -145,6 +159,7 @@ define([
             var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
 
             // msgIndex = -1;
+            cb()
 
             showVersion();
             if (ooMessages[id]) {
@@ -152,17 +167,19 @@ define([
                 loading = false;
                 return void config.onCheckpoint(cp);
             }
+            // getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, function (err, messages) {
+            //     if (err) {
+            //         return;
+            //     }
+            // });
 
-            getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, function (err, messages) {
-                if (err) {
-                    return;
-                }
-            });
+            
 
             
         };
+        console.log("oom cp", ooCheckpoints, hashes)
 
-        getMessages(config.onlyoffice.lastHash, 'NONE', cpIndex, sortedCp, undefined, -1, config, fillOO, $share, function (err, messages) {
+        getMessages(config.onlyoffice.lastHash, 'NONE', cpIndex, sortedCp, undefined, -1, config, fillOO, $share, hashes, function (err, messages) {
             if (err) {
                 console.error(err);
                 return;
@@ -184,10 +201,6 @@ define([
 
         var $fastPrev, $fastNext, $next, $prev;
 
-        var getId = function () {
-            var cps = sortedCp.length;
-            return sortedCp[cps-1] || -1;
-        };
 
         update = function () {
             var cps = sortedCp.length;
@@ -230,15 +243,29 @@ define([
 
         };
 
+        var msgs
         var prev = function () {
-            var id = getId();
-            var msgs = ooMessages[id];
-            var cp = ooCheckpoints[id];
-            var queue = msgs.slice(0, msgIndex);
-            config.onPatchBack(cp, queue, newlyLoaded);
-            newlyLoaded = false
-            showVersion();
-            msgIndex--;
+            loadMoreOOHistory(function() {
+                console.log("ooms!", msgs?.length, msgIndex)
+
+                if (Math.abs(msgIndex) > msgs?.length) {
+                    id--
+                    msgIndex = ooMessages[id].length
+                }
+
+                msgs = ooMessages[id];
+                cp = hashes[id-1] ? hashes[id-1] : {}
+                                                console.log("ooms!2", id, hashes, cp)
+
+                var queue = msgs.slice(0, msgIndex);
+                // console.log("ooms!", ooMessages, id, cp, ooCheckpoints, hashes, msgs, msgIndex, queue)
+
+                config.onPatchBack(cp, queue);
+                showVersion();
+                msgIndex--;
+
+            });
+            
 
         };
 
@@ -346,7 +373,7 @@ define([
             $prev.click(function () {
                 // if (loading) { return; }
                 loading = true;
-                loadMoreOOHistory();
+                // loadMoreOOHistory();
                 prev();
                 update();
             });
