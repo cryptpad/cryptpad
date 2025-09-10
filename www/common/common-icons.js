@@ -107,6 +107,7 @@ define([
         "square": "square",
         "timer": "hourglass",
         "map-pin": "map-pin",
+        "pin": "pin",
         "checked-box": "square-check",
         "unchecked-box": "square",
         "table": "table",
