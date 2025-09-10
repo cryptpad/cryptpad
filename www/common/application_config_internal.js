@@ -199,7 +199,7 @@ const factory = () => {
         folderupload: 'drive-upload-folder',
         link: 'link',
         pad: 'pad',
-        code: 'code-file',
+        code: 'code-pad',
         slide: 'slide',
         poll: 'poll',
         form: 'form',
@@ -216,7 +216,7 @@ const factory = () => {
         teams: 'teams',
         admin: 'administration',
         settings: 'settings',
-        moderation: 'support-mailbox',
+        moderation: 'moderation',
         profile: 'user-profile',
         support: 'support',
         accounts: 'support-ticket'

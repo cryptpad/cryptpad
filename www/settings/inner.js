@@ -2036,7 +2036,7 @@ define([
         profile: 'user-profile',
         drive: 'drive',
         cursor: 'cursor',
-        code: 'code-file',
+        code: 'code-pad',
         pad: 'pad',
         security: 'lock',
         kanban: 'kanban',

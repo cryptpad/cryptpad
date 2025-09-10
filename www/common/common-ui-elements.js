@@ -622,7 +622,7 @@ define([
         // Create modal
         var tabs = [{
             title: Messages.share_contactCategory,
-            icon: "contact-request",
+            icon: "contacts-book",
             content: frameContacts,
             active: hasFriends
         }, {
@@ -995,7 +995,7 @@ define([
                 //updateIcon(data.element.is(':visible'));
                 break;
             case 'properties':
-                button = makeButton('features', 'cp-toolbar-icon-properties', Messages.propertiesButtonTitle, Messages.propertiesButton);
+                button = makeButton('properties', 'cp-toolbar-icon-properties', Messages.propertiesButtonTitle, Messages.propertiesButton);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -1375,7 +1375,7 @@ define([
 
         var apps = {
             pad: 'richtext',
-            code: 'code-file',
+            code: 'code-pad',
             slide: 'slides',
             sheet: 'sheets',
             poll: 'poll',
@@ -1703,7 +1703,7 @@ define([
         ]));
 
         if (config.caretDown) {
-            $button.prepend(Icons.get('chevron-down')); // XXX
+            $button.prepend(Icons.get('chevron-down'));
         }
         if (config.angleDown) {
             $button.prepend(Icons.get('chevron-down'));
@@ -2236,7 +2236,7 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-admin'},
-                content: h('span', [Icons.get('support-mailbox')], Messages.moderationPage || 'Support mailbox'),
+                content: h('span', [Icons.get('moderation')], Messages.moderationPage || 'Support mailbox'),
                 action: function () {
                     Common.openURL(origin+'/moderation/');
                     return true;
@@ -2272,7 +2272,7 @@ define([
             attributes: {
                 'class': 'cp-toolbar-about',
             },
-            content: h('span', [Icons.get('features')], Messages.user_about),
+            content: h('span', [Icons.get('properties')], Messages.user_about),
             action: function () {
                 UIElements.displayInfoMenu(Common, metadataMgr);
             },
@@ -3019,7 +3019,7 @@ define([
                         name: fromFileData.title,
                         id: 0,
                         thumbnail: thumbnail,
-                        icon: Icons.get('file'),// XXX
+                        icon: Icons.get('file'),
                     }];
                     redraw(0);
                 };

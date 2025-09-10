@@ -106,12 +106,12 @@ define([
     var copy = 'copy';
     var destroy = 'destroy';
     var access = 'access';
-    var properties = 'features';
+    var properties = 'properties';
     var tags = 'tag';
     var uploadFile = 'drive-upload-file';
     var uploadFolder = 'drive-upload-folder';
     var trashEmpty = 'trash-empty';
-    var restore = 'restore'; // XXX
+    var restore = 'restore';
     var showParent = 'location';
     var download = 'download';
     var $folderIcon = $(Icons.get(folder,{"class": "cp-app-drive-icon-folder cp-app-drive-content-icon"}));
@@ -121,7 +121,7 @@ define([
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
     var $sharedFolderIcon = $(Icons.get('drive-shared-folder', {"class": "cp-app-drive-icon-folder"}));
     var $sharedFolderOpenedIcon = $(Icons.get('folder-open', {"class": "cp-app-drive-icon-folder"}));
-    var $unsortedIcon = $(Icons.get('copy')); // XXX
+    var $unsortedIcon = $(Icons.get('copy'));
     var $templateIcon = $(Icons.get('file-template'));
     var $recentIcon = $(Icons.get('drive-recent'));
     var $trashIcon = $(Icons.get('trash-full'));

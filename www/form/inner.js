@@ -2879,7 +2879,7 @@ define([
         }, {
             tag: 'a',
             attributes: {'class': 'cp-form-export-json'},
-            content: h('span', [Icons.get('code-file'), Messages.form_exportJSON]),
+            content: h('span', [Icons.get('code-pad'), Messages.form_exportJSON]),
             action: function () {
                 var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), "json");
                 if (!arr) { return void UI.warn(Messages.error); }
@@ -3158,7 +3158,7 @@ define([
                     if (ud.profile) {
                         if (priv && priv.friends[curve]) {
                             badge = h('span.cp-form-friend', [
-                                Icons.get('contact-request'),
+                                Icons.get('contacts-book'),
                                 Messages._getKey('isContact', [ud.name || Messages.anonymous])
                             ]);
                         }
