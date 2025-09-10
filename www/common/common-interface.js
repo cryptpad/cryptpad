@@ -1181,6 +1181,7 @@ define([
                 }
             });
         }
+        Lucide.createIcons();
     };
 
     UI.getNewIcon = function (type) {
