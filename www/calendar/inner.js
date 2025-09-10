@@ -692,7 +692,7 @@ define([
 
             options.push({
                 tag: 'a',
-                content: h('span', Icons.get('features'), Messages.propertiesButton),
+                content: h('span', Icons.get('properties'), Messages.propertiesButton),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];

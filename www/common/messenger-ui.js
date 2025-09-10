@@ -243,10 +243,10 @@ define([
             $(getChat(id)).find('.cp-app-contacts-messages').html('');
         };
         markup.chatbox = function (id, data, curvePublic) {
-            var moreHistory = h('span', Icons.get('history', {
+            var moreHistory = h('span', {
                 class: 'cp-app-contacts-more-history',
-                title: Messages.contacts_fetchHistory,
-            }));
+            });
+            moreHistory.append(Icons.get('history', {title: Messages.contacts_fetchHistory}));
 
             var chan = state.channels[id];
             var displayName = UI.getDisplayName(chan.name || chan.displayName);
@@ -308,10 +308,10 @@ define([
                 });
             });
 
-            var removeHistory = h('span', Icons.get('remove-history', {
-                'class': 'cp-app-contacts-remove-history',
-                title: Messages.contacts_removeHistoryTitle
-            }));
+            var removeHistory = h('span', {
+                'class': 'cp-app-contacts-remove-history'
+            });
+            removeHistory.append(Icons.get('remove-history', {title: Messages.contacts_removeHistoryTitle}));
 
             $(removeHistory).click(function () {
                 UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
@@ -381,6 +381,7 @@ define([
                         avatars[friend.avatar] = $img[0].outerHTML;
                     }
                     $(rightCol).insertAfter($avatar);
+                    Lucide.createIcons();
                 }, friend.uid, friend.badge);
             }
 
@@ -636,6 +637,7 @@ define([
                         avatars[friendData.avatar] = $img[0].outerHTML;
                     }
                     $room.append(rightCol);
+                    Lucide.createIcons();
                 }, friendData.uid, friendData.badge);
             }
             $room.append(status);

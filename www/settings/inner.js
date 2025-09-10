@@ -2032,11 +2032,11 @@ define([
     };
 
     var SIDEBAR_ICONS = {
-        account: 'account',
+        account: 'user-account',
         profile: 'user-profile',
         drive: 'drive',
         cursor: 'cursor',
-        code: 'code-file',
+        code: 'code-pad',
         pad: 'pad',
         security: 'lock',
         kanban: 'kanban',

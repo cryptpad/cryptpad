@@ -192,7 +192,7 @@ define([
 
         if (!ApiConfig.restrictRegistration) {
             registerLink = h('a.nav-item.nav-link.cp-register-btn', { href: '/register/', role: 'button'}, [
-                Icons.get('account'),
+                Icons.get('user-account'),
                 Msg.login_register
             ]);
         }
@@ -235,7 +235,7 @@ define([
             [
                 !isHome? homeLink: undefined,
                 h('a.nav-item.nav-link', { href: '/features.html', role: 'button'}, [
-                    Icons.get('features'),
+                    Icons.get('properties'),
                     pricingName
                 ]),
                 h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.org'}, [

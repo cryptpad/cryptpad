@@ -567,7 +567,7 @@ define([
                     h('button.btn.redo', {title: Messages.redo}, Icons.get('redo')),
                 ]),
                 h('div.cp-whiteboard-text', [
-                    h('button.btn', Icons.get('type')), // XXX add title
+                    h('button.btn', Icons.get('type')),
                 ]),
                 h('button.btn#cp-app-whiteboard-delete', {
                     disabled: 'disabled',

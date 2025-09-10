@@ -18,7 +18,8 @@ define([
         "folder-open": "folder-open",
         "folder-nocolor": "folder-minus",
         "folder-check": "folder-check",
-        "file-template": "file-plus",
+        "file-template": "file-cog",
+        "file-save-template": "file-plus",
         "file-pad": "file-text",
         "grid": "layout-grid",
         "list": "list",
@@ -28,7 +29,7 @@ define([
         "teams": "users-round",
         "promote": "chevrons-up",
         "downgrade": "chevrons-down",
-        // CryptPad apps - icons to be changed
+        // CryptPad apps
         // Pad
         "pad": "file-text",
         "pad-settings": "file-cog",
@@ -56,7 +57,7 @@ define([
         // Diagram
         "diagram": "cp-file-diagram",
         // Code
-        "code-file": "file-code", // change name
+        "code-pad": "file-code",
         "todo": "file",
         // Kanban
         "kanban": "cp-file-kanban",
@@ -92,9 +93,8 @@ define([
         // General
         "trash-empty": "trash",
         "trash-full": "trash-2",
-        "features": "info", // XXX
+        "properties": "info",
         "documentation": "book-open-text",
-        "user-profile": "circle-user-round",
         "language": "languages",
         "link": "link",
         "external-link": "external-link",
@@ -104,10 +104,10 @@ define([
         "chevron-up": "chevron-up",
         "copy": "files",
         "close": "x",
-        "users": "users-round",
         "square": "square",
         "timer": "hourglass",
         "map-pin": "map-pin",
+        "pin": "pin",
         "checked-box": "square-check",
         "unchecked-box": "square",
         "table": "table",
@@ -118,12 +118,11 @@ define([
         "sort-amount-desc": "arrow-down-wide-narrow",
         "export-sheet": "sheet",
         "announcement": "megaphone",
-        "reply": "message-square-reply",
-        "comment": "message-square",
+        "reply": "reply",
+        "comment": "message-square-text",
         "file-image": "file-image",
         "snapshot": "camera",
         "certificate": "shield-check",
-        "secret-user": "venetian-mask",
         "circle-question": "circle-question-mark",
         "list-ol": "list-ordered",
         "list-todo": "list-todo",
@@ -135,7 +134,11 @@ define([
         "logout": "log-out",
         "logout-everywhere": "unplug",
         "register": "user-round-plus",
-        "account": "user", // XXX change name
+        // User
+        "user-profile": "circle-user-round",
+        "users": "users-round",
+        "secret-user": "venetian-mask",
+        "user-account": "user",
         // History
         "history": "history",
         "history-prev": 'arrow-left',
@@ -155,7 +158,7 @@ define([
         "calendar-description": "align-justify",
         // Contacts
         "contacts": "contact-round",
-        "contact-request": "book-user", // XXX change name
+        "contacts-book": "book-user",
         "unfriend": "user-round-x",
         "add-friend": "user-round-plus",
         "sort-asc": "chevron-down",
@@ -168,7 +171,6 @@ define([
         "read-only": "pen-off",
         "preview": "eye",
         "tag": "hash",
-        "default-error": "circle-x",
         "password-reveal": "eye",
         "password-hide": "eye-closed",
         "arrow-left": "arrow-left",
@@ -187,7 +189,7 @@ define([
         "restore": "rotate-cw",
         "all": "menu",
         "chat": "message-circle-more",
-        "mail": "mail", // XXX
+        "mail": "mail",
         "upload-avatar": "image-up",
         "edit": "pencil",
         "save": "save",
@@ -198,11 +200,11 @@ define([
         "cursor": "text-cursor",
         // Settings + Admin
         "settings": "settings",
+        "apps-settings": "wrench",
         "administration": "monitor-cog",
         "support": "life-buoy",
-        "support-mailbox": "ambulance", // XXX
+        "moderation": "ambulance",
         "broadcast": "radio",
-        "apps-settings": "wrench", // XXX multiple usages
         "support-ticket": "ticket",
         "user-directory": "id-card",
         "database": "database",
@@ -231,11 +233,10 @@ define([
     };
 
     Icons.get = (name, attrs = {}) => {
-        // if (!map[name]) {
-        //     throw new Error(`Invalid icon: ${name}`);
-        // }
-        const iconName = map[name] ? name : 'default-error';
-        attrs['data-lucide'] = map[iconName];
+        if (!map[name]) {
+            throw new Error(`Invalid icon: ${name}`);
+        }
+        attrs['data-lucide'] = map[name];
         attrs['aria-hidden'] = "true";
 
         return h('i', attrs);

@@ -64,7 +64,7 @@ define([
         // UNUSED-TRANSLATIONS:START
         var categories = {
             'general': { // Msg.admin_cat_general
-                icon: 'account',
+                icon: 'user-account',
                 content: [
                     'instance-info-notice',
                     'name',
@@ -137,7 +137,7 @@ define([
                 ]
             },
             'support' : { // Msg.admin_cat_support
-                icon : 'support-mailbox', // XXX
+                icon : 'moderation',
                 content : [
                     'support-setup',
                     'support-team',

@@ -622,7 +622,7 @@ define([
         // Create modal
         var tabs = [{
             title: Messages.share_contactCategory,
-            icon: "contact-request",
+            icon: "contacts-book",
             content: frameContacts,
             active: hasFriends
         }, {
@@ -781,7 +781,7 @@ define([
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
-                button = makeButton('file-template', 'cp-toolbar-icon-template', '', Messages.saveTemplateButton);
+                button = makeButton('file-save-template', 'cp-toolbar-icon-template', '', Messages.saveTemplateButton);
                 if (data.rt || data.callback) {
                     button
                     .click(function () {
@@ -995,7 +995,7 @@ define([
                 //updateIcon(data.element.is(':visible'));
                 break;
             case 'properties':
-                button = makeButton('features', 'cp-toolbar-icon-properties', Messages.propertiesButtonTitle, Messages.propertiesButton);
+                button = makeButton('properties', 'cp-toolbar-icon-properties', Messages.propertiesButtonTitle, Messages.propertiesButton);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -1375,7 +1375,7 @@ define([
 
         var apps = {
             pad: 'richtext',
-            code: 'code-file',
+            code: 'code-pad',
             slide: 'slides',
             sheet: 'sheets',
             poll: 'poll',
@@ -1703,7 +1703,7 @@ define([
         ]));
 
         if (config.caretDown) {
-            $button.prepend(Icons.get('chevron-down')); // XXX
+            $button.prepend(Icons.get('chevron-down'));
         }
         if (config.angleDown) {
             $button.prepend(Icons.get('chevron-down'));
@@ -1790,7 +1790,8 @@ define([
             var topPos = button.bottom;
             $button.attr('aria-expanded', 'true');
             $innerblock.css('bottom', '');
-            $innerblock.show();
+            $innerblock.css('display', 'flex'); // for the css order rules to apply
+            $innerblock.css('flex-direction', 'column');
             if ($parentMenu) {
                 // keep parent open when recursive
                 $parentMenu.show();
@@ -2235,7 +2236,7 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-admin'},
-                content: h('span', [Icons.get('support-mailbox')], Messages.moderationPage || 'Support mailbox'),
+                content: h('span', [Icons.get('moderation')], Messages.moderationPage || 'Support mailbox'),
                 action: function () {
                     Common.openURL(origin+'/moderation/');
                     return true;
@@ -2271,7 +2272,7 @@ define([
             attributes: {
                 'class': 'cp-toolbar-about',
             },
-            content: h('span', [Icons.get('features')], Messages.user_about),
+            content: h('span', [Icons.get('properties')], Messages.user_about),
             action: function () {
                 UIElements.displayInfoMenu(Common, metadataMgr);
             },
@@ -2903,8 +2904,8 @@ define([
             'aria-label': Messages.page_previous
         }, Icons.get('chevron-left'));
         if (!big) {
-            $(left).removeClass('fa-chevron-left').addClass('fa-chevron-up');
-            $(right).removeClass('fa-chevron-right').addClass('fa-chevron-down');
+            $(left).empty().append(Icons.get('chevron-up'));
+            $(right).empty().append(Icons.get('chevron-down'));
         }
         var templates = h('div.cp-creation-template', [
             left,
@@ -2950,14 +2951,12 @@ define([
                 allData.unshift({
                     name: Messages.creation_newTemplate,
                     id: -1,
-                    //icon: h('span.fa.fa-bookmark')
-                    icon: h('span.cptools.cptools-new-template')
+                    icon: Icons.get('file-template')
                 });
             }*/
             allData.unshift({
                 name: Messages.creation_noTemplate,
                 id: 0,
-                //icon: h('span.fa.fa-file')
                 icon: UI.getFileIcon({type: type})
             });
             var redraw = function (index) {
@@ -3020,7 +3019,7 @@ define([
                         name: fromFileData.title,
                         id: 0,
                         thumbnail: thumbnail,
-                        icon: Icons.get('file'),// XXX
+                        icon: Icons.get('file'),
                     }];
                     redraw(0);
                 };
@@ -3047,11 +3046,11 @@ define([
                 if (big === _big) { return; }
                 big = _big;
                 if (!big) {
-                    $(left).removeClass('fa-chevron-left').addClass('fa-chevron-up');
-                    $(right).removeClass('fa-chevron-right').addClass('fa-chevron-down');
+                    $(left).empty().append(Icons.get('chevron-up'));
+                    $(right).empty().append(Icons.get('chevron-down'));
                 } else {
-                    $(left).removeClass('fa-chevron-up').addClass('fa-chevron-left');
-                    $(right).removeClass('fa-chevron-down').addClass('fa-chevron-right');
+                    $(left).empty().append(Icons.get('chevron-left'));
+                    $(right).empty().append(Icons.get('chevron-right'));
                 }
                 TEMPLATES_DISPLAYED = big ? 6 : 3;
                 redraw(0);

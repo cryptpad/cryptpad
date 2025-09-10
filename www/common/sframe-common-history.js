@@ -445,7 +445,7 @@ define([
             ]);
             var userPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_userPrev }, [
                 Icons.get('history-prev'),
-                Icons.get('account')
+                Icons.get('user-account')
             ]);
             var prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
                 Icons.get('history-prev'),
@@ -455,7 +455,7 @@ define([
                 Icons.get('history-fast-next'),
             ]);
             var userNext = h('button.cp-toolbar-history-next', { title: Messages.history_userNext }, [
-                Icons.get('account'),
+                Icons.get('user-account'),
                 Icons.get('history-next'),
             ]);
             var next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
@@ -489,7 +489,7 @@ define([
                 h('div.cp-history-timeline-line', [
                     h('span.cp-history-timeline-legend', [
                         Icons.get('users'),
-                        Icons.get('account')
+                        Icons.get('user-account')
                     ]),
                     h('span.cp-history-timeline-loadmore', _loadMore),
                     h('span.cp-history-timeline-container', [

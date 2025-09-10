@@ -224,7 +224,7 @@ define([
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category', 'tabindex': 0, 'role': 'menuitem'}).appendTo($categories);
             if (key === 'all') { $category.append($(Icons.get('all'))); }
-            if (key === 'friends') { $category.append($(Icons.get('contact-request'))); }
+            if (key === 'friends') { $category.append($(Icons.get('contacts-book'))); }
             if (key === 'pads') { $category.append($(Icons.get('file-pad'))); }
             if (key === 'archived') { $category.append($(Icons.get('history'))); }
 

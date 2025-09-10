@@ -51,10 +51,6 @@
     @toolbar_top-height: 76px;
     @toolbar_button-font: @colortheme_app-font;
 
-    // if we spell 'share' correctly, then adblock plus hides the share button
-    // this is a workaround
-    .fa-shhare-alt:before { content: "\f1e0"; }
-
     .ckeditor_fix();
 
     .cp-burn-after-reading {
@@ -319,7 +315,7 @@
         .cp-modal {
             display: flex;
             flex-flow: column;
-            li, li .fa {
+            li {
                 cursor: pointer;
             }
             &> p {
@@ -368,10 +364,6 @@
                         width: 200px;
                         display: flex;
                         align-items: center;
-                        .fa, .cptools {
-                            font-size: 32px;
-                            min-width: 50px;
-                        }
                         .cp-icons-name {
                             height: auto;
                             text-align: left;
@@ -772,8 +764,13 @@
                 font-size: 1em;
                 height: @toolbar_top-height - 10px;
                 border-radius: @variables_radius;
-                padding: 0;
+                padding: 0px;
                 margin: 0;
+                &::before {
+                    width: 100%;
+                    text-align: center;
+                    padding-top: 4px;
+                }
                 &:hover {
                     border-color: transparent;
                     background-color: @cp_toolbar-fade1;
@@ -834,16 +831,18 @@
                 color: @toolbar-bg-color;
                 color: var(--toolbar-bg-color);
                 border-radius: @variables_radius;
-                width: 3rem;
-                height: 3rem;
                 padding: 0;
                 line-height: 0;
                 svg {
                     height: 3rem;
                     width: 3rem;
                     margin: 0;
+                    stroke-width: 3;
                 }
 
+                .lucide * {
+                    vector-effect: non-scaling-stroke;
+                }
                 // svg {
                 //     #outline, #squares {
                 //         fill: @toolbar-bg-color;
@@ -1172,8 +1171,6 @@
                 order: 8;
             }
             .cp-toolbar-file ul {
-                display: flex;
-                flex-direction: column;
                 > li { display: contents; }
             }
             .cp-toolbar-file li > a {
@@ -1219,9 +1216,6 @@
                 z-index: 10000; //Z cp-toolbar-drawer-content
                 color: @cp_dropdown-fg;
                 .tools_unselectable();
-                .fa {
-                    font-size: 17px;
-                }
                 &> span {
                     order: 8;
                     box-sizing: border-box;
@@ -1269,26 +1263,11 @@
         min-width: 200px;
         box-sizing: border-box;
         margin-bottom: 5px;
-        &> span.fa {
-            height: 20px;
-            width: 20px;
-            //margin: 8px;
-            line-height: 20px;
-            font-size: 20px;
-            text-align: center;
-        }
     }
     .cp-toolbar-readonly {
         margin-right: 5px;
         font-weight: bold;
         text-transform: uppercase;
-    }
-    .cp-toolbar-share {
-        a {
-            .fa {
-                margin-right: 5px;
-            }
-        }
     }
 }
 

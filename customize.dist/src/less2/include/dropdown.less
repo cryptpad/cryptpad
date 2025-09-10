@@ -58,14 +58,7 @@
             }
         }
 
-        .fa {
-            font-family: FontAwesome;
-        }
-
         button {
-            .fa-caret-down {
-                margin-right: 0.5em !important;
-            }
             * {
                 .tools_unselectable();
             }
@@ -126,25 +119,8 @@
                         display: inline-flex;
                         align-items: center;
                     }
-                    &:not(.fa) {
+                    &:not(svg) {
                         font: @dropdown_font;
-                    }
-                    &.fa, &.cptools {
-                        font-size: 18px;
-                        &::before {
-                            width: 40px;
-                            margin-left: -10px;
-                            text-align: center;
-                        }
-                        * {
-                            font: @dropdown_font;
-                        }
-                    }
-
-                    .fa, .cptools {
-                        width: 20px;
-                        text-align: center;
-                        margin-right: 5px !important;
                     }
 
                     &.cp-dropdown-element-active {

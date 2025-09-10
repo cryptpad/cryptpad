@@ -205,7 +205,7 @@ define([
         if (friends[data.curvePublic]) {
             // Add friend message
             APP.$friend.append(h('p.cp-app-profile-friend', [
-                Icons.get('contact-request'),
+                Icons.get('contacts-book'),
                 Messages._getKey('isContact', [name])
             ]));
             if (!friends[data.curvePublic].notifications) { return; }
@@ -481,7 +481,7 @@ define([
     var createLeftside = function () {
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'}).appendTo(APP.$leftside);
         var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
-        $category.append(Icons.get('account'));
+        $category.append(Icons.get('user-account'));
         $category.addClass('cp-leftside-active');
         $category.text(Messages.profileButton);
     };

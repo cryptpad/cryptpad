@@ -247,9 +247,9 @@ define([
             if (key === 'admin' && !teamAdmin) { return; }
 
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-'+key, 'tabindex': 0}).appendTo($categories);
-            if (key === 'general') { $category.append($(Icons.get('features'))); }
+            if (key === 'general') { $category.append($(Icons.get('properties'))); }
             if (key === 'list') { $category.append($(Icons.get('list',{class: 'cp-team-cat-list'}))); }
-            if (key === 'create') { $category.append($(Icons.get('add'))); } // XXX icon to be changed
+            if (key === 'create') { $category.append($(Icons.get('add'))); }
             if (key === 'back') { $category.append($(Icons.get('chevron-left'))); }
             if (key === 'members') { $category.append($(Icons.get('users'))); }
             if (key === 'chat') { $category.append($(Icons.get('chat'))); }
@@ -514,7 +514,7 @@ define([
                 var createCls = '';
                 if (team.empty && created < createSlots) {
                     createBtn = h('div.cp-team-list-team-create', [
-                        Icons.get('add'), // XXX to be updated
+                        Icons.get('add'),
                         h('span', Messages.team_cat_create)
                     ]);
                     createCls = '.create';

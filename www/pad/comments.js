@@ -321,7 +321,7 @@ define([
         var showBtn = h('button.cp-pad-show.btn.btn-default', {
             title: Messages.poll_comment_list
         }, [
-            Icons.get('chat') // XXX can be changed, there are multiple alternatives
+            Icons.get('chat')
         ]);
 
 

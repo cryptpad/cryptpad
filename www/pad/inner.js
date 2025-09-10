@@ -968,6 +968,7 @@ define([
                 content.push(h('p.cp-pad-toc-'+level, a));
             });
             $toc.html('').append(content);
+            Lucide.createIcons();
         }, 400);
 
         // apply patches, and try not to lose the cursor in the process!
