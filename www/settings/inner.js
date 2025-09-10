@@ -2032,7 +2032,7 @@ define([
     };
 
     var SIDEBAR_ICONS = {
-        account: 'account',
+        account: 'user-account',
         profile: 'user-profile',
         drive: 'drive',
         cursor: 'cursor',

@@ -171,7 +171,6 @@ define([
         "read-only": "pen-off",
         "preview": "eye",
         "tag": "hash",
-        "default-error": "circle-x",
         "password-reveal": "eye",
         "password-hide": "eye-closed",
         "arrow-left": "arrow-left",
@@ -234,11 +233,10 @@ define([
     };
 
     Icons.get = (name, attrs = {}) => {
-        // if (!map[name]) {
-        //     throw new Error(`Invalid icon: ${name}`);
-        // }
-        const iconName = map[name] ? name : 'default-error';
-        attrs['data-lucide'] = map[iconName];
+        if (!map[name]) {
+            throw new Error(`Invalid icon: ${name}`);
+        }
+        attrs['data-lucide'] = map[name];
         attrs['aria-hidden'] = "true";
 
         return h('i', attrs);
