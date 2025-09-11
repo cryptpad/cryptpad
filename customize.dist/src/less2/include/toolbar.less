@@ -162,6 +162,9 @@
         box-sizing: border-box;
         order: 100;
         z-index: 1;
+        span.cp-badge > svg.lucide {
+            width: 0.625rem; // ~10px
+        }
         .cp-toolbar-userlist-drawer-close {
             position: absolute;
             margin-top: -10px;
@@ -255,6 +258,10 @@
                             border: none;
                             height: 20px;
                             cursor: pointer;
+                            svg {
+                                width: 1rem;
+                                margin: 0 0 0.5rem 0;
+                            }
                         }
                     }
                     .cp-toolbar-userlist-name-input {
