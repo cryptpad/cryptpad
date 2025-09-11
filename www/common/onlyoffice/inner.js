@@ -1093,7 +1093,6 @@ define([
 
         const getInitialChanges = function() {
             const changes = [];
-            console.log("oom2", ooChannel.queue)
 
             if (content.version > 2) {
                 ooChannel.queue.forEach(function (data) {
@@ -1105,7 +1104,6 @@ define([
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
             }
-            console.log("oom2", changes)
             return changes
             
         };
@@ -2167,7 +2165,6 @@ define([
 
         const createOOConfig = function(blob, file, lock, fromContent, lang, force) {
             const url = URL.createObjectURL(blob);
-            console.log("beep blob", blob, url)
             let username = Util.find(privateData, ['integrationConfig', 'user', 'name'])
                             || metadataMgr.getUserData().name
                             || Messages.anonymous;
@@ -2938,15 +2935,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             try {
                 const {blob, fileType} = await loadLastDocument(cp);
                 if (!keepQueue) { ooChannel.queue = []; }
-                console.log("beep1", ooChannel.queue, cp, blob)
                 resetData(blob, fileType);
             } catch (e) {
                 var file = getFileType();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
                 if (!keepQueue) { ooChannel.queue = []; }
-                                console.log("beep2", ooChannel.queue, blob)
-
                 resetData(blob, file);
             }
         };
@@ -2998,8 +2992,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 });
                 ooChannel.historyLastHash = ooChannel.lastHash;
                 ooChannel.currentIndex = ooChannel.cpIndex;
-                                    console.log("beep - 3")
-
                 loadCp(lastCp, true);
             });
         };
@@ -3187,7 +3179,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                     })
                     ooChannel.queue = msgsFormatted;
-                    console.log("oom", msgsFormatted, ooChannel.queue)
                     setTimeout(() => {
                     loadCp(cp, true);
                     }, 100);
@@ -3206,8 +3197,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // Fill the queue and then load the last CP
                     rtChannel.getHistory(function () {
                         var lastCp = getLastCp();
-                                            console.log("beep - 2")
-
                         loadCp(lastCp, true);
                     });
                 };

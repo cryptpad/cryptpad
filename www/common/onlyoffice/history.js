@@ -131,8 +131,6 @@ define([
 
         // We want to load a checkpoint (or initial state)
         var loadMoreOOHistory = function (cb) {
-                            console.log("oomessages!", ooMessages)
-
             if (!Array.isArray(sortedCp)) { return void console.error("Wrong type"); }
 
             var cp = {};
@@ -177,7 +175,6 @@ define([
 
             
         };
-        console.log("oom cp", ooCheckpoints, hashes)
 
         getMessages(config.onlyoffice.lastHash, 'NONE', cpIndex, sortedCp, undefined, -1, config, fillOO, $share, hashes, function (err, messages) {
             if (err) {
@@ -218,22 +215,31 @@ define([
                 $fastNext.prop('disabled', 'disabled');
             }
             var id = getId();
-            var msgs = (ooMessages[id] || []).length;
-            var v = getVersion()
-            if (msgIndex >= (msgs-1)) {
+            if (msgIndex === -1 && cps === id) {
                 $next.prop('disabled', 'disabled');
             }
         };
 
+        
         var next = function () {
-
-            var id = getId()
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
+
             msgIndex++;
-            if (msgIndex < 0) {
+            if (msgIndex < msgs.length && Math.sign(msgIndex) === -1) {
                 var patch = msgs[msgs.length + msgIndex];
-            }
+            } else if (msgIndex < msgs.length && Math.sign(msgIndex) === 1) {
+                var patch = msgs[msgIndex];
+            } else if (msgIndex === msgs.length) {
+                id++;
+                var msgs = ooMessages[id];
+                msgIndex = 0;
+                var patch = msgs[msgIndex];
+                cp = hashes[id-1];
+                config.onPatchBack(cp, [patch]);
+                return;
+            }    
+
             config.onPatch(patch)
             showVersion();
             setTimeout(function () {
@@ -243,23 +249,16 @@ define([
 
         };
 
-        var msgs
+        var msgs;
         var prev = function () {
             loadMoreOOHistory(function() {
-                console.log("ooms!", msgs?.length, msgIndex)
-
                 if (Math.abs(msgIndex) > msgs?.length) {
-                    id--
-                    msgIndex = ooMessages[id].length
+                    id--;
+                    msgIndex = ooMessages[id].length;
                 }
-
                 msgs = ooMessages[id];
-                cp = hashes[id-1] ? hashes[id-1] : {}
-                                                console.log("ooms!2", id, hashes, cp)
-
+                cp = hashes[id-1] ? hashes[id-1] : {};
                 var queue = msgs.slice(0, msgIndex);
-                // console.log("ooms!", ooMessages, id, cp, ooCheckpoints, hashes, msgs, msgIndex, queue)
-
                 config.onPatchBack(cp, queue);
                 showVersion();
                 msgIndex--;
