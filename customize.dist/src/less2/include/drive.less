@@ -935,7 +935,7 @@
         flex: 1;
         .cp-app-drive-element-row.cp-app-drive-element-file > svg.lucide *,
         .cp-app-drive-element-row.cp-app-drive-element-folder > svg.lucide * {
-            stroke-width: 2.7;
+            stroke-width: 3.5;
             vector-effect: non-scaling-stroke;
         }
     }
@@ -952,11 +952,13 @@
             li, li svg.lucide {
                 cursor: pointer;
                 border-radius: @variables_radius;
-                stroke-width: 1.7;
-                vector-effect: non-scaling-stroke;
                 &:focus {
                     outline: @cryptpad_color_brand solid 2px;
                 }
+            }
+            li svg.lucide * {
+                stroke-width: 3.5;
+                vector-effect: non-scaling-stroke;
             }
             ul {
                 display: flex;
