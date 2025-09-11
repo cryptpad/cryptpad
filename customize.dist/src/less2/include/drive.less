@@ -933,6 +933,11 @@
     #cp-app-drive-content-folder {
         padding-right: 10px;
         flex: 1;
+        .cp-app-drive-element-row.cp-app-drive-element-file > svg.lucide *,
+        .cp-app-drive-element-row.cp-app-drive-element-folder > svg.lucide * {
+            stroke-width: 2.7;
+            vector-effect: non-scaling-stroke;
+        }
     }
 
     #cp-app-drive-new-ghost-dialog.cp-modal-container {
