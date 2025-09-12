@@ -26,6 +26,7 @@ define([
         
 
         var ooMessages = {};
+        var currentMessages = []
         var ooCheckpoints = {};
         var loading = false;
         var update = function () {};
@@ -55,9 +56,19 @@ define([
             })
             checkpoints.forEach((current, index) => {
                 var preceding = index > 0 ? checkpoints[index - 1] : 1;
+                // console.log("next fill!", preceding, current, index)
+                
                 ooMessages[index+1] = messages.slice(preceding-1, current-1)
             });
+            var cpMessages = Object.values(ooMessages)
+            .flat()
+            .length;
+            var messageDiff = messages.length - cpMessages
+            if (messageDiff !== 0) {
+                currentMessages = messages.slice(-messageDiff)
 
+            }
+            console.log("next fill", messageDiff, cpMessages, currentMessages, ooMessages, messages, hashes)
             update();
         };
 
@@ -72,10 +83,27 @@ define([
 
         var getVersion = function () {
             if (Object.keys(ooMessages).length) {
-                var major = sortedCp.length - cpIndex;
-                console.log("version", major, sortedCp.length, cpIndex, msgIndex, ooMessages, id )
-                // console.log("version2", ooMessages )
-                return major-1 + '.' + (ooMessages[id]?.length-Math.abs(msgIndex+1));
+                var major;
+                var minor;
+
+                if (id === 0 && msgIndex === 0) {
+                    major = 0
+                    minor = 0
+                } else if (id === 0 || id === 1) {
+                    major = 0
+                    minor = msgIndex+1
+                    console.log("version1", id, msgIndex)
+                } else if (Math.sign(msgIndex) !== -1) {
+                    major = id-1
+                    minor = msgIndex+1
+
+                } else {
+                    major = id-1
+                    minor = ooMessages[id]?.length-Math.abs(msgIndex+1)
+                    console.log("version2", id, msgIndex)
+
+                }
+                return major + '.' + minor;
             }
 
         };
@@ -101,9 +129,12 @@ define([
         };
 
         function getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, ooCheckpoints, callback) {
+            // fromHash = 
+            var lastValue = config.onlyoffice.hashes[Object.keys(config.onlyoffice.hashes).pop()];
+            console.log("FILL", lastValue, id)
             sframeChan.query('Q_GET_HISTORY_RANGE', {
                 channel: config.onlyoffice.channel,
-                lastKnownHash: fromHash,
+                lastKnownHash: lastValue,
                 toHash: toHash,
             }, function (err, data) {
                 if (err) {
@@ -138,40 +169,16 @@ define([
 
             var cp = {};
 
-            // Get the checkpoint ID
-            // var id = -1;
-            // if (cpIndex < sortedCp.length) {
-            //     id = sortedCp[sortedCp.length - 1 - cpIndex];
-            //     cp = hashes[id];
-            // }
-            // var nextId = sortedCp[sortedCp.length - cpIndex];
-
-            // ooCheckpoints[id] = cp;
-
-            // Get the history between "toHash" and "fromHash". This function is using
-            // "getOlderHistory", that's why we start from the more recent hash
-            // and we go back in time to an older hash
-
-            // We need to get all the patches between the current cp hash and the next cp hash
-
-            // Current cp or initial hash (invalid hash ==> initial hash)
-            // var toHash = cp?.hash || 'NONE';
-            // // Next cp or last hash
-            // var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
-
-            console.log("hashes,",  cb)
             if (cb) {
                 cb()
             }
             
-
             showVersion();
             if (ooMessages[id] || id === 0) {
                 // Cp already loaded: reload OO
                 loading = false;
                 return void config.onCheckpoint(cp);
             }
-
             
         };
 
@@ -185,6 +192,7 @@ define([
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
             config.onRevert();
+            console.log("next !", hashes)
         };
 
         config.setHistory(true);
@@ -222,30 +230,53 @@ define([
 
         
         var next = function () {
+            console.log("next", id, ooMessages, msgIndex, hashes)
             if (!ooMessages[id] && (id !== 0 && id !== 0)) { loading = false; return; }
-            console.log("next", hashes, cpIndex, id, ooMessages, msgIndex)
-
-            
             if (id === 0 && msgIndex === 0) {
                 id++
                 msgIndex = -1
             }
             var msgs = ooMessages[id];
             msgIndex++;
-            
-            if (msgIndex < msgs.length && Math.sign(msgIndex) === -1) {
+            console.log("NEXT", msgIndex, id, msgs.length, currentMessages, (msgIndex === msgs.length || msgIndex < msgs.length && msgIndex === -1) && currentMessages.length === 0)
+            if (msgIndex < msgs.length && Math.sign(msgIndex) === -1 ) {
+            // && msgIndex !== -1) {
                 var patch = msgs[msgs.length + msgIndex];
             } else if (msgIndex < msgs.length && (Math.sign(msgIndex) === 1 || msgIndex === 0)) {
+
                 var patch = msgs[msgIndex];
-            } else if (msgIndex === msgs.length) {
-                id++;
+            } 
+            else if ((msgIndex === msgs.length || msgIndex < msgs.length && msgIndex === -1) && currentMessages.length) {
+                // if (id < ooMessages.length) {
+                    id++;
+                // }
+                
                 var msgs = ooMessages[id];
+
                 msgIndex = 0;
                 var patch = msgs[msgIndex];
-                cp = hashes[id-1];
-                config.onPatchBack(cp, [patch]);
+
+                if (patch) {
+                                    cp = hashes[id-1];
+
+                    config.onPatchBack(cp, [patch]);
+                } else {
+                                    cp = hashes[id];
+
+                    config.onPatchBack(cp);
+                }
+                
+                showVersion();
+
                 return;
-            }    
+            } 
+            // else if ((msgIndex === msgs.length || msgIndex < msgs.length && msgIndex === -1) && currentMessages.length === 0) {
+            //     cp = hashes[id]
+            //     var msgs = ooMessages[id];
+            //     var patch = msgs[msgIndex];
+
+
+            // }
 
             config.onPatch(patch)
             showVersion();
@@ -263,8 +294,16 @@ define([
                     id--;
                     msgIndex = ooMessages[id].length;
                 }
-                msgs = ooMessages[id];
-                cp = hashes[id-1] ? hashes[id-1] : {};
+                console.log("nextprev fill", ooMessages, currentMessages, hashes, id)
+                if (currentMessages.length) {
+                                    msgs = currentMessages
+                                    cp = hashes[id+1]
+
+                } else {
+                            msgs = ooMessages[id];
+                                    cp = hashes[id-1] ? hashes[id-1] : {};
+
+                }
                 var queue = msgs.slice(0, msgIndex);
                 config.onPatchBack(cp, queue);
                 showVersion();

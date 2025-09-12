@@ -420,6 +420,7 @@ define([
                 }
                 var _content = ev.newTemplate;
                 _content.hashes = {};
+                console.log("nexxt1")
                 _content.hashes[1] = {
                     file: data.url,
                     index: 0,
@@ -475,6 +476,8 @@ define([
             var current = all[all.length - 1] || 0;
 
             var i = current + 1;
+                            console.log("nexxt2", ev.index)
+
             content.hashes[i] = {
                 file: data.url,
                 hash: ev.hash,
@@ -556,7 +559,8 @@ define([
                     APP.oldCursor = d.GetSelectionState();
                 }
             }
-            if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
+            console.log("EDITOR", APP.docEditor)
+            if (APP.docEditor.origEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
             $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
             ooLoaded = false;
             oldLocks = {};
@@ -585,9 +589,11 @@ define([
             blob = blob || new Blob([text], {type: 'plain/text'});
             var file = getFileType();
             blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
+                            console.log("nexxt3", (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex, ooChannel.currentIndex, ooChannel.cpIndex)
+
             var data = {
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
-                index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex
+                index: ooChannel.cpIndex
             };
             fixSheets();
 
@@ -606,7 +612,7 @@ define([
 
         var noLogin = false;
 
-        var makeCheckpoint = function (force, msgs) {
+        var makeCheckpoint = function (force, restore) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
 
             var locked = content.saveLock;
@@ -614,6 +620,7 @@ define([
 
             var currentIdx = ooChannel.cpIndex;
             var needCp = force || (currentIdx - (lastCp.index || 0)) > FORCE_CHECKPOINT_INTERVAL;
+            console.log("next index", currentIdx, ooChannel.currentIndex, needCp)
 
             if (!needCp) { return; }
 
@@ -642,13 +649,15 @@ define([
                 content.saveLock = myOOId;
                 APP.onLocal();
                 APP.realtime.onSettle(function () {
-                    saveToServer(null, null, msgs);
+                    saveToServer();
                 });
             }
         };
         var restoreLastCp = function () {
             content.saveLock = myOOId;
             APP.onLocal();
+                            console.log("nexxt4")
+
             APP.realtime.onSettle(function () {
                 onUploaded({
                     hash: ooChannel.lastHash,
@@ -3133,7 +3142,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onPatch = function (patch) {
                     // Patch on the current cp
-                    ooChannel.send(JSON.parse(patch.msg));
+                    if (patch) {
+                        ooChannel.send(JSON.parse(patch.msg));
+                    }
+                    
                 };
                 var onCheckpoint = function (cp) {
                     // We want to load a checkpoint:
@@ -3141,7 +3153,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onPatchBack = function (cp, msgs) {
                     msgsFormatted = []
-                    msgs.forEach(function(msg) {
+                    if (msgs) {
+                        msgs.forEach(function(msg) {
                         var parsedMsg = JSON.parse(msg.msg);
     
                         var formattedMsg = {
@@ -3155,8 +3168,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                     })
                     ooChannel.queue = msgsFormatted;
-                    setTimeout(() => {
                     loadCp(cp, true);
+                    } else {
+                        loadCp(cp);
+                    }
+                    
+                    setTimeout(() => {
+                    
                     }, 100);
                     
                 };
