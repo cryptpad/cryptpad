@@ -509,8 +509,7 @@ define([
         var complete = function(h, err) {
             if (completed) { return; }
             completed = true;
-            $(progress).find('.fa-square-o').removeClass('fa-square-o')
-                .addClass('fa-check-square-o');
+            $(progress).find('svg').empty().append(Icons.get('checked-box'));
             $(cancel).text(Messages.filePicker_close).off('click').click(function() {
                 _onCancel.forEach(function(h) { h(); });
             });
@@ -527,8 +526,7 @@ define([
 
             // New step
             if (!done[step]) {
-                $(progress).find('.fa-square-o').removeClass('fa-square-o')
-                    .addClass('fa-check-square-o');
+                $(progress).find('svg').empty().append(Icons.get('checked-box'));
                 $(progress).append(h('p', [
                     Icons.get('checked-box'),
                     h('span.text', Messages['settings_export_' + step] || step)

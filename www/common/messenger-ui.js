@@ -130,7 +130,7 @@ define([
                 toolbar['chat'].find('button').addClass('cp-toolbar-notification');
             }
             if (!toolbar['chat'].hasClass('cp-leftside-active')) {
-                toolbar['chat'].find('span.fa').addClass('cp-team-chat-notification');
+                toolbar['chat'].find('span .lucide').addClass('cp-team-chat-notification');
             }
         };
 
