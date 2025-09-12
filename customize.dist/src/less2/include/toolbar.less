@@ -862,6 +862,15 @@
                 //     width: 100%;
                 // }
             }
+            @media screen and (max-height: @browser_media-medium-screen),
+            screen and (max-width: @browser_media-medium-screen) {
+                a.cp-toolbar-link-logo {
+                    svg {
+                        width: @variables_icon_width;
+                        height: @variables_icon_height;
+                    }
+                }
+            }
             a.cp-toolbar-link-logo > svg:nth-of-type(2){ display: none; }
             a.cp-toolbar-link-logo:hover > svg:nth-of-type(1){ display: none; }
             a.cp-toolbar-link-logo:hover > svg:nth-of-type(2){ display: block; }
