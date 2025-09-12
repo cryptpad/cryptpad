@@ -26,7 +26,9 @@ define([
 
     '/common/onlyoffice/current-version.js',
     '/common/onlyoffice/broken-formats.js',
+    '/components/pdf-lib/dist/pdf-lib.js',
     '/components/file-saver/FileSaver.min.js',
+    
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'less!/components/components-font-awesome/css/font-awesome.min.css',
@@ -53,7 +55,8 @@ define([
     EmptySlide,
     Channel,
     OOCurrentVersion,
-    BrokenFormats)
+    BrokenFormats,
+    PDFLib)
 {
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
@@ -2556,6 +2559,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             });
         };
 
+        
+
+
+
         APP.printPdf = function (obj, cb) {
             var bin = getContent();
             x2tConvertData({
@@ -2566,7 +2573,123 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var md = common.getMetadataMgr().getMetadataLazy();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var title = md.title || md.defaultTitle || type;
-                var blob = new Blob([xlsData], {type: "application/pdf"});
+                var extractLinks = function () {
+                    var results = [];
+                    var m_aPairs = getEditor().WordControl.m_oDrawingDocument
+                        ?.m_oLogicDocument?.
+                        TableId?.m_aPairs;
+
+                    if (!m_aPairs || typeof m_aPairs !== 'object') {
+                        return results;
+                    }
+
+                    var parseContent = function (contentArray, context = {}) {
+                        if (!Array.isArray(contentArray)) return;
+
+                        contentArray.forEach((contentItem, contentIndex) => {
+                            var path = { ...context, contentIndex };
+
+                            if (typeof contentItem?.Value === "string" && contentItem.Value.trim() !== "") {
+                                results.push(
+                                    contentItem.Value
+                                );
+                            }
+
+                            if (Array.isArray(contentItem?.Content)) {
+                                parseContent(contentItem.Content, path);
+                            }
+                        });
+                    }
+
+                    for (const pairKey in m_aPairs) {
+                        var pair = m_aPairs[pairKey];
+                        var spTreeArray = pair?.cSld?.spTree;
+
+                        if (!Array.isArray(spTreeArray)) continue;
+
+                        spTreeArray.forEach((spTreeItem, spTreeIndex) => {
+                            var contentArray = spTreeItem?.txBody?.content?.Content;
+                            var context = { pairKey, spTreeIndex };
+                            parseContent(contentArray, context);
+                        });
+                    }
+
+                    return results;
+                }
+                var links = extractLinks()
+
+                var fixLinkAnnotations = async function (pdfBin, links) {
+                    var {
+                        PDFDocument,
+                        PDFName,
+                        PDFString,
+                        PDFNumber,
+                    } = PDFLib;
+
+                    var pdfDoc = await PDFDocument.load(pdfBin);
+                    var pages = pdfDoc.getPages();
+
+                    let linkIndex = 0;
+
+                    for (const page of pages) {
+                        var annotsRef = page.node.get(PDFName.of('Annots'));
+                        if (!annotsRef) continue;
+
+                        var annots = pdfDoc.context.lookup(annotsRef);
+                        if (!annots?.asArray) continue;
+
+                        for (const annotRef of annots.asArray()) {
+                            if (linkIndex >= links.length) break; 
+
+                            var annot = pdfDoc.context.lookup(annotRef);
+                            var subtype = annot.get(PDFName.of('Subtype'));
+                            if (!subtype || subtype.value() !== '/Link') continue;
+                            let actionDict = annot.get(PDFName.of('A'));
+                            if (!actionDict) {
+                                actionDict = pdfDoc.context.obj({});
+                                annot.set(PDFName.of('A'), actionDict);
+                            }
+
+                            var uriString = links[linkIndex];
+                            actionDict.set(PDFName.of('S'), PDFName.of('URI'));
+                            actionDict.set(PDFName.of('URI'), PDFString.of(uriString));
+
+                            if (!annot.get(PDFName.of('Rect'))) {
+                                annot.set(
+                                    PDFName.of('Rect'),
+                                    pdfDoc.context.obj([
+                                        PDFNumber.of(50),
+                                        PDFNumber.of(750),
+                                        PDFNumber.of(200),
+                                        PDFNumber.of(770),
+                                    ]),
+                                );
+                            }
+
+                            if (!annot.get(PDFName.of('Border'))) {
+                                annot.set(
+                                    PDFName.of('Border'),
+                                    pdfDoc.context.obj([PDFNumber.of(0), PDFNumber.of(0), PDFNumber.of(0)]),
+                                );
+                            }
+
+                            linkIndex++;
+                        }
+                    }
+
+                    return await pdfDoc.save();
+                }
+
+
+                var run = async function () {
+                    return updatedpdfBin = await fixLinkAnnotations(xlsData, links);
+                }
+
+                var blob;
+                run().then(function (updatedpdfBin) {
+                    blob = new Blob([updatedpdfBin], { type: "application/pdf" });
+                    saveAs(blob, APP.exportPdfName || title+'.pdf');
+                });
                 UI.removeModals();
                 cb();
                 saveAs(blob, APP.exportPdfName || title+'.pdf');
