@@ -145,7 +145,7 @@ define([
         "history-next": "arrow-right",
         "history-fast-next": "arrow-right-to-line",
         "history-fast-prev": "arrow-left-to-line",
-        "history-timeline-position": "flag-triangle-right",
+        "history-timeline-position": "chevron-down",
         "history-restore": "archive-restore",
         "remove-history": "eraser",
         // Calendar
