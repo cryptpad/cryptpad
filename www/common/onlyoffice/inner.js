@@ -606,7 +606,7 @@ define([
             blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var data = {
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
-                index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex
+                index:  ooChannel.cpIndex
             };
             fixSheets();
 
@@ -1460,7 +1460,7 @@ define([
                 return;
             }
 
-            debug(obj, 'toOOClient');
+            // debug(obj, 'toOOClient');
             APP.docEditor.sendMessageToOO(obj);
             if (obj && obj.type === "saveChanges") {
                 evIntegrationSave.fire();
@@ -1468,7 +1468,7 @@ define([
         };
 
         const fromOOHandler = function (obj) {
-            debug(obj, 'fromOOClient');
+            // debug(obj, 'fromOOClient');
             switch (obj.type) {
                 case "auth":
                     // Handled by onlyoffice-editor now
@@ -3164,7 +3164,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     loadCp(cp, true);
                 };
                 var onPatchBack = function (cp, msgs) {
-                    msgsFormatted = []
+                    if (msgs) {
+                        msgsFormatted = []
                     msgs.forEach(function(msg) {
                         var parsedMsg = JSON.parse(msg.msg);
     
@@ -3182,6 +3183,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     setTimeout(() => {
                     loadCp(cp, true);
                     }, 100);
+                    } else {
+                        loadCp(cp)
+                    }
+                    
                     
                 };
                 var setHistoryMode = function (bool) {

@@ -29,6 +29,7 @@ define([
 
         var ooMessages = {};
         var ooCheckpoints = {};
+        var currentMessages = {}
         var loading = false;
         var update = function () {};
         var currentTime;
@@ -59,6 +60,13 @@ define([
                 var preceding = index > 0 ? checkpoints[index - 1] : 1;
                 ooMessages[index+1] = messages.slice(preceding-1, current-1)
             });
+            var cpMessages = Object.values(ooMessages).flat().length;
+            var messageDiff = messages.length - cpMessages
+            if (messageDiff !== 0) {
+                currentMessages = messages.slice(-messageDiff)
+
+            }
+            console.log("next fill", messageDiff, cpMessages, currentMessages, ooMessages, messages, hashes)
 
             update();
         };
@@ -266,10 +274,18 @@ define([
                     id--;
                     msgIndex = ooMessages[id].length;
                 }
+                console.log("prev", ooMessages, hashes, id, Object.keys(hashes).length > id, hashes[Object.keys(hashes).length].length === 0, hashes[Object.keys(hashes).length], Math.abs(msgIndex) === -1, msgIndex)
                 msgs = ooMessages[id];
-                cp = hashes[id-1] ? hashes[id-1] : {};
-                var queue = msgs.slice(0, msgIndex);
-                config.onPatchBack(cp, queue);
+                if (Object.keys(hashes).length > id && ooMessages[Object.keys(hashes).length].length === 0 && Math.sign(msgIndex) === -1) {
+                    console.log("kurwa", currentMessages, msgIndex)
+                    cp = hashes[id+1]
+                    config.onPatchBack(cp, currentMessages.slice(0, msgIndex))
+                } else {
+                    cp = hashes[id-1] ? hashes[id-1] : {};
+                    var queue = msgs.slice(0, msgIndex);
+                    config.onPatchBack(cp, queue);
+                }
+                
                 showVersion();
                 msgIndex--;
 
