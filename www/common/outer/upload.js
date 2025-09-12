@@ -41,6 +41,7 @@ define([
         };
 
 
+        const prefix = id.slice(0,2);
         let uploadUrl = '/upload-blob';
         let keys, cookie;
         if (ApiConfig.fileHost) {
@@ -60,7 +61,7 @@ define([
                 edPublic: keys.edPublic
             };
 
-            fetch(uploadUrl, {
+            fetch(`${uploadUrl}/${prefix}/${id}`, {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json'
