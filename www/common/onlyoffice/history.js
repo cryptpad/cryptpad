@@ -233,30 +233,39 @@ define([
 
         
         var next = function () {
-            if (!ooMessages[id] && (id !== 0 && id !== 0)) { loading = false; return; }
-            console.log("next", hashes, cpIndex, id, ooMessages, msgIndex)
 
-            
-            if (id === 0 && msgIndex === 0) {
-                id++
-                msgIndex = -1
-            }
-            var msgs = ooMessages[id];
-            msgIndex++;
-            
-            if (msgIndex < msgs.length && Math.sign(msgIndex) === -1) {
-                var patch = msgs[msgs.length + msgIndex];
-            } else if (msgIndex < msgs.length && (Math.sign(msgIndex) === 1 || msgIndex === 0)) {
-                var patch = msgs[msgIndex];
-            } else if (msgIndex === msgs.length) {
-                id++;
+            //hashes
+            if (Object.keys(hashes).length) {
+                if (!ooMessages[id] && (id !== 0 && id !== 0)) { loading = false; return; }
+                // console.log("next", hashes, cpIndex, id, ooMessages, msgIndex)
+                console.log("next", currentMessages, msgIndex)
+                
+                if (id === 0 && msgIndex === 0) {
+                    id++
+                    msgIndex = -1
+                }
                 var msgs = ooMessages[id];
-                msgIndex = 0;
-                var patch = msgs[msgIndex];
-                cp = hashes[id-1];
-                config.onPatchBack(cp, [patch]);
-                return;
-            }    
+                msgIndex++;
+                
+                if (msgIndex < msgs.length && Math.sign(msgIndex) === -1) {
+                    var patch = msgs[msgs.length + msgIndex];
+                } else if (msgIndex < msgs.length && (Math.sign(msgIndex) === 1 || msgIndex === 0)) {
+                    var patch = msgs[msgIndex];
+                } else if (msgIndex === msgs.length) {
+                    id++;
+                    var msgs = ooMessages[id];
+                    msgIndex = 0;
+                    var patch = msgs[msgIndex];
+                    cp = hashes[id-1];
+                    config.onPatchBack(cp, [patch]);
+                    return;
+                } 
+            } else {
+                msgIndex++
+                var patch = currentMessages[currentMessages.length + msgIndex]
+                
+            }
+   
 
             config.onPatch(patch)
             showVersion();
@@ -274,17 +283,26 @@ define([
                     id--;
                     msgIndex = ooMessages[id].length;
                 }
-                console.log("prev", ooMessages, hashes, id, Object.keys(hashes).length > id, hashes[Object.keys(hashes).length].length === 0, hashes[Object.keys(hashes).length], Math.abs(msgIndex) === -1, msgIndex)
+                // console.log("prev", ooMessages, hashes, id, Object.keys(hashes).length > id, hashes[Object.keys(hashes).length].length === 0, hashes[Object.keys(hashes).length], Math.abs(msgIndex) === -1, msgIndex)
                 msgs = ooMessages[id];
-                if (Object.keys(hashes).length > id && ooMessages[Object.keys(hashes).length].length === 0 && Math.sign(msgIndex) === -1) {
-                    console.log("kurwa", currentMessages, msgIndex)
-                    cp = hashes[id+1]
-                    config.onPatchBack(cp, currentMessages.slice(0, msgIndex))
-                } else {
-                    cp = hashes[id-1] ? hashes[id-1] : {};
-                    var queue = msgs.slice(0, msgIndex);
-                    config.onPatchBack(cp, queue);
-                }
+                console.log("prev", hashes, ooMessages, id, msgIndex, currentMessages)
+                // if (Object.keys(hashes).length > id && ooMessages[Object.keys(hashes).length].length === 0 && Math.sign(msgIndex) === -1) {
+                //     cp = hashes[id+1]
+                //     config.onPatchBack(cp, currentMessages.slice(0, msgIndex))
+                // } else {
+
+                    //two hashes, no current msgs
+                    if (Object.keys(hashes).length) {
+                        cp = hashes[id-1] ? hashes[id-1] : {};
+                        var queue = msgs.slice(0, msgIndex);
+                        config.onPatchBack(cp, queue);
+                    //no hashes, current messages    
+                    } else {
+                        var queue = currentMessages.slice(0, msgIndex)
+                        config.onPatchBack({}, queue)
+                    }
+                    
+                // }
                 
                 showVersion();
                 msgIndex--;
