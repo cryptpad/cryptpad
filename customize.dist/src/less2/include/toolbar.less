@@ -259,8 +259,8 @@
                             height: 20px;
                             cursor: pointer;
                             svg {
-                                width: 1rem;
-                                margin: 0 0 0.5rem 0;
+                                width: @variables_icon_width;
+                                margin: 0 0 @variables_icon_margin 0;
                             }
                         }
                     }
@@ -434,8 +434,8 @@
                 background: transparent;
             }
             svg {
-                height: 1.125em;
-                width: 1.125em;
+                height: @variables_icon_height;
+                width: @variables_icon_width;
                 margin-right: @variables_icon_margin;
             }
         }
@@ -610,8 +610,8 @@
                     }
                     .cp-toolbar-notifications {
                         svg {
-                            height:1.5rem;
-                            width:1.5rem;
+                            width: @variables_icon_width;
+                            height: @variables_icon_height;
                         }
                     }
                 }
@@ -1111,7 +1111,7 @@
                 .cp-toolbar-name, .cp-button-name, .cp-dropdown-button-title {
                     display: none;
                 }
-                i, span, svg {
+                span, svg {
                     margin-right: 0;
                 }
             }

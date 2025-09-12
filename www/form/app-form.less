@@ -482,8 +482,8 @@
                     .cp-form-creator-inline-add {
                         svg {
                             margin: 0;
-                            width: 1.5rem;
-                            height: 1.5rem;
+                            width: @variables_icon_width;
+                            height: @variables_icon_height;
                         }
                         .add-close { display: none; }
                         &.displayed {
@@ -750,7 +750,7 @@
                             text-align: center;
                             padding: 10px;
                             svg {
-                                margin-right: 5px;
+                                margin-right: @variables_icon_margin;
                             }
                         }
                         .cp-form-edit-buttons-container {
@@ -1418,7 +1418,7 @@
                 line-height: 40px;
                 margin-top: -12px;
                 svg {
-                    margin-right: 5px;
+                    margin-right: @variables_icon_margin;
                 }
             }
             & > *:not(h2) {
