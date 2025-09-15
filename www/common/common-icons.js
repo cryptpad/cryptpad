@@ -129,6 +129,7 @@ define([
         "ellipsis-vertical": "ellipsis-vertical",
         "ellipsis-horizontal": 'ellipsis',
         "toolbar-insert": "image-plus",
+        "features": "info",
         // Login + Register
         "login": "log-in",
         "logout": "log-out",
