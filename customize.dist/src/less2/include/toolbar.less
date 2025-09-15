@@ -324,6 +324,19 @@
             flex-flow: column;
             li {
                 cursor: pointer;
+                svg.lucide * {
+                    stroke-width: 3.5;
+                    vector-effect: non-scaling-stroke;
+                }
+                @media screen and (max-width: @browser_media-medium-screen) {
+                    svg {
+                        margin: 0 @variables_icon_margin 0 @variables_icon_margin;
+                        width: 2.5rem;
+                    }
+                    svg.lucide, svg.lucide * {
+                        stroke-width: 2;
+                    }
+                }
             }
             &> p {
                 text-align: center;
