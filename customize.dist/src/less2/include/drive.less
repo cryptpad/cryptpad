@@ -729,6 +729,12 @@
                 display: flex;
                 align-items: center;
                 border-radius: @variables_radius;
+                 &.cp-app-drive-element-row:not(.cp-app-drive-element-header) {
+                    svg * {
+                        stroke-width: 1.5;
+                        vector-effect: non-scaling-stroke;
+                    }
+                }
                 input {
                     border: 1px solid transparent;
                     margin: 0;
