@@ -25,6 +25,7 @@ define([
 
         var cpIndex = -1;
         var msgIndex = -1;
+        var APP = window.APP
         
 
         var ooMessages = {};
@@ -36,13 +37,11 @@ define([
 
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
-        var sortedCp = Object.keys(hashes).map(Number).sort(function (a, b) {
-            return hashes[a].index - hashes[b].index;
-        });
+        var sortedCp = Object.keys(hashes).map(Number);
 
         var getId = function () {
             var cps = sortedCp.length;
-            return sortedCp[cps-1] || -1;
+            return sortedCp[cps-1] || 1;
         };
 
         var id = getId();
@@ -62,11 +61,14 @@ define([
             });
             var cpMessages = Object.values(ooMessages).flat().length;
             var messageDiff = messages.length - cpMessages
-            if (messageDiff !== 0) {
-                currentMessages = messages.slice(-messageDiff)
-
+            if (messageDiff !== 0 && cpMessages) {
+                var keys = Object.keys(ooMessages)
+                var currentM = parseInt(keys[keys.length - 1]);
+                ooMessages[currentM+1] = messages.slice(-messageDiff)
+            } else if (messageDiff !== 0 && !cpMessages) {
+                ooMessages[1] = messages
             }
-            console.log("next fill", messageDiff, cpMessages, currentMessages, ooMessages, messages, hashes)
+            console.log("next fill", messageDiff, cpMessages, ooMessages, messages, hashes)
 
             update();
         };
@@ -83,7 +85,7 @@ define([
         var getVersion = function () {
             if (Object.keys(ooMessages).length) {
                 var major = sortedCp.length - cpIndex;
-                console.log("version", major, sortedCp.length, cpIndex, msgIndex, ooMessages, id )
+                // console.log("version", major, sortedCp.length, cpIndex, msgIndex, ooMessages, id )
                 // console.log("version2", ooMessages )
                 return major-1 + '.' + (ooMessages[id]?.length-Math.abs(msgIndex+1));
             }
@@ -148,32 +150,9 @@ define([
 
             var cp = {};
 
-            // Get the checkpoint ID
-            // var id = -1;
-            // if (cpIndex < sortedCp.length) {
-            //     id = sortedCp[sortedCp.length - 1 - cpIndex];
-            //     cp = hashes[id];
-            // }
-            // var nextId = sortedCp[sortedCp.length - cpIndex];
-
-            // ooCheckpoints[id] = cp;
-
-            // Get the history between "toHash" and "fromHash". This function is using
-            // "getOlderHistory", that's why we start from the more recent hash
-            // and we go back in time to an older hash
-
-            // We need to get all the patches between the current cp hash and the next cp hash
-
-            // Current cp or initial hash (invalid hash ==> initial hash)
-            // var toHash = cp?.hash || 'NONE';
-            // // Next cp or last hash
-            // var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
-
-            console.log("hashes,",  cb)
             if (cb) {
                 cb()
             }
-            
 
             showVersion();
             if (ooMessages[id] || id === 0) {
@@ -181,7 +160,6 @@ define([
                 loading = false;
                 return void config.onCheckpoint(cp);
             }
-
             
         };
 
@@ -194,6 +172,7 @@ define([
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
+            APP.revert = true
             config.onRevert();
         };
 
@@ -237,29 +216,52 @@ define([
             //hashes
             if (Object.keys(hashes).length) {
                 if (!ooMessages[id] && (id !== 0 && id !== 0)) { loading = false; return; }
-                // console.log("next", hashes, cpIndex, id, ooMessages, msgIndex)
-                console.log("next", currentMessages, msgIndex)
+                console.log("next", hashes, cpIndex, id, ooMessages, msgIndex, currentMessages)
+                // console.log("next", currentMessages, msgIndexm)
                 
                 if (id === 0 && msgIndex === 0) {
                     id++
                     msgIndex = -1
                 }
-                var msgs = ooMessages[id];
-                msgIndex++;
+                if (Object.keys(hashes).length === id && currentMessages.length) {
+                    console.log("next!")
+                    var msgs = currentMessages
+                    msgIndex++;
+                } else {
+                                        console.log("next!?", id, ooMessages, msgIndex)
+
+                    var msgs = ooMessages[id+1];
+                    msgIndex++;
+                }
+
+                // if (msgIndex-1 === msgs.length) {
+                //     msgsid++
+                //     msgIndex = -1
+                // }
+                
                 
                 if (msgIndex < msgs.length && Math.sign(msgIndex) === -1) {
+                    console.log("next1")
                     var patch = msgs[msgs.length + msgIndex];
                 } else if (msgIndex < msgs.length && (Math.sign(msgIndex) === 1 || msgIndex === 0)) {
+                                        console.log("next2", msgs)
+                    // var cp = hashes[id]
                     var patch = msgs[msgIndex];
+                    // config.onPatchBack(cp, [patch]);
+                    // return
                 } else if (msgIndex === msgs.length) {
+                                        console.log("next3")
+
                     id++;
                     var msgs = ooMessages[id];
                     msgIndex = 0;
                     var patch = msgs[msgIndex];
+                    // cp = hashes[id]
                     cp = hashes[id-1];
                     config.onPatchBack(cp, [patch]);
                     return;
                 } 
+            //no hashes, current msgs   
             } else {
                 msgIndex++
                 var patch = currentMessages[currentMessages.length + msgIndex]
@@ -277,33 +279,43 @@ define([
         };
 
         var msgs;
+
         var prev = function () {
             loadMoreOOHistory(function() {
-                if (Math.abs(msgIndex) > msgs?.length) {
+                console.log("PREV", id, msgIndex)
+                if (Math.abs(msgIndex) > msgs?.length || msgIndex === 0) {
                     id--;
-                    msgIndex = ooMessages[id].length;
+                    console.log("prevhere", id, ooMessages)
+                    msgIndex = ooMessages[id+1].length;
                 }
-                // console.log("prev", ooMessages, hashes, id, Object.keys(hashes).length > id, hashes[Object.keys(hashes).length].length === 0, hashes[Object.keys(hashes).length], Math.abs(msgIndex) === -1, msgIndex)
-                msgs = ooMessages[id];
-                console.log("prev", hashes, ooMessages, id, msgIndex, currentMessages)
-                // if (Object.keys(hashes).length > id && ooMessages[Object.keys(hashes).length].length === 0 && Math.sign(msgIndex) === -1) {
-                //     cp = hashes[id+1]
-                //     config.onPatchBack(cp, currentMessages.slice(0, msgIndex))
-                // } else {
 
-                    //two hashes, no current msgs
-                    if (Object.keys(hashes).length) {
+                console.log("prev", hashes, ooMessages, id, msgIndex, currentMessages)
+
+                    //2CPs + CM
+                    if (Object.keys(hashes).length && Object.keys(ooMessages).length > Object.keys(hashes).length) {
+                        cp = hashes[id] ? hashes[id] : {};
+                        msgs = ooMessages[id+1];
+                        var queue = msgs.slice(0, msgIndex);
+                        console.log("prev1", queue, msgs)
+                        config.onPatchBack(cp, queue);
+                    } 
+                    //2CPS + no CM
+                    else if (Object.keys(hashes).length) {
+                        console.log("prev2")
                         cp = hashes[id-1] ? hashes[id-1] : {};
+                        msgs = ooMessages[id];
                         var queue = msgs.slice(0, msgIndex);
                         config.onPatchBack(cp, queue);
-                    //no hashes, current messages    
-                    } else {
-                        var queue = currentMessages.slice(0, msgIndex)
+                    }
+
+                    //no hashes, current messages 
+                    else if (!Object.keys(hashes).length) {
+                        msgs = ooMessages[id]
+                        console.log("here!", id, ooMessages)
+                        var queue = msgs.slice(0, msgIndex)
                         config.onPatchBack({}, queue)
                     }
-                    
-                // }
-                
+                                    
                 showVersion();
                 msgIndex--;
 
