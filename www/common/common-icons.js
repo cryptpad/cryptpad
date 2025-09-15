@@ -178,6 +178,7 @@ define([
         "code": "code-xml",
         "qr-code": "qr-code",
         "lock": "lock",
+        "unlocked": "lock-open",
         "help": "info",
         "expand-menu": "chevron-right",
         "location": "navigation",
