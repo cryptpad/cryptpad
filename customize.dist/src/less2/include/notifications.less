@@ -29,13 +29,14 @@
         .cp-notification {
             min-height: @notif-height;
             display: flex;
+            align-items: center;
             svg {
                 margin: 0;
             }
             .cp-broadcast {
                 margin: 0.5rem;
-                width: 2rem;
-                height: 2rem;
+                width: var(--avatar-width);
+                height: var(--avatar-width);
                 color: @cp_dropdown-fg;
                 &.preview:not(.lucide-calendar-days) {
                     color: @cryptpad_color_red;
