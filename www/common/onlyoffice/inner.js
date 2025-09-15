@@ -585,10 +585,14 @@ define([
             blob = blob || new Blob([text], {type: 'plain/text'});
             var file = getFileType();
             blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
+            console.log("FILL index", ooChannel)
             var data = {
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
-                index:  ooChannel.cpIndex
+                index:  APP.revert ? ooChannel.currentIndex : ooChannel.cpIndex
             };
+            if (APP.revert) {
+                APP.revert = false;
+            }
             fixSheets();
 
             if (!isLockedModal.modal) {
@@ -607,6 +611,7 @@ define([
         var noLogin = false;
 
         var makeCheckpoint = function (force, msgs) {
+            console.log("revert", APP.revert)
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
 
             var locked = content.saveLock;
