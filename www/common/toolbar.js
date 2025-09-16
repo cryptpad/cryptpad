@@ -750,7 +750,7 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
             $text.addClass("cp-toolbar-title-editable");
             var $icon = Icons.get('edit', {class: 'cp-toolbar-title-icon-readonly'});
             $pencilIcon.append($icon).appendTo($hoverable);
-            var $icon2 = Icons.get('check', {class: 'cp-toolbar-title-icon-readonly'})
+            var $icon2 = Icons.get('check', {class: 'cp-toolbar-title-icon-readonly'});
             $saveIcon.append($icon2).appendTo($hoverable);
         }
 

@@ -663,7 +663,7 @@ define([
             tag: 'a',
             attributes: attributes,
             content: [
-                $icon.length ? $icon.clone()[0] : null,,
+                $icon.length ? $icon.clone()[0] : null,
                 h('span', $button.text())
             ],
             action: function () {
