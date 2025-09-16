@@ -172,6 +172,10 @@
                 text-align:center;
                 flex-shrink: 0;
             }
+            .tui-full-calendar-calendar-dot {
+                margin-right: 10px;
+                top: 0;
+            }
             .tui-full-calendar-popup-detail-item {
                 display: flex;
                 margin-bottom: 0.3rem;
@@ -195,7 +199,6 @@
                     }
                 }
                 a {
-                    margin:0.1rem;
                     border-radius: @variables_radius;
                     color: @cryptpad_color_link;
                     text-decoration: underline;
@@ -313,6 +316,9 @@
                         font-family: inherit;
                         font-size: inherit;
                         line-height: inherit;
+                    }
+                    * {
+                        box-sizing: content-box;
                     }
                 }
                 .CodeMirror-placeholder {

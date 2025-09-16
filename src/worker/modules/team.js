@@ -107,6 +107,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         try { team.roster.stop(); } catch (e) {}
         team.proxy = {};
         team.stopped = true;
+        team?.rpc?.destroy();
         delete ctx.teams[teamId];
         delete ctx.cache[teamId];
         delete ctx.store.proxy.teams[teamId];

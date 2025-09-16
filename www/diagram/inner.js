@@ -63,9 +63,11 @@ define([
 
         var onDrawioInit = function() {
             drawIoInitalized = true;
-            var readOnly = framework.isReadOnly() || framework.isLocked();
-            var grid = readOnly ? 0 : 1;
-            lastContent.mxfile.diagram.mxGraphModel._grid = grid;
+            if (lastContent?.mxfile?.diagram?.mxGraphModel) {
+                let readOnly = framework.isReadOnly() || framework.isLocked();
+                let grid = readOnly ? 0 : 1;
+                lastContent.mxfile.diagram.mxGraphModel._grid = grid;
+            }
             var xmlStr = DiagramUtil.jsonContentAsXML(lastContent);
             postMessageToDrawio({
                 action: 'load',
