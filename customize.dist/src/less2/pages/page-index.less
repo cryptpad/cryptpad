@@ -133,6 +133,13 @@
             flex-wrap: wrap;
             justify-content: center;
             padding: 0 0.8rem;
+            svg {
+                margin: 0;
+            }
+            .lucide * {
+                stroke-width: 2.7;
+                vector-effect: non-scaling-stroke;
+            }
         }
         a {
             margin: 10px;
@@ -248,6 +255,10 @@
                 color: @cryptpad_color_brand;
                 margin-right: 10px;
             }
+            svg.lucide, svg.lucide * {
+                stroke-width: 2;
+                vector-effect: non-scaling-stroke;
+            }
         }
         .cp-sub-prompt {
             * {
@@ -289,7 +300,8 @@
             svg {
                 font-size: inherit;
                 padding: 0;
-                width: 1em;
+                width: @variables_icon_width;
+                height: @variables_icon_height;
                 padding-left: 5px;
             }
         }

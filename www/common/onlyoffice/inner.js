@@ -2163,7 +2163,7 @@ define([
                     url: url,
                     permissions: {
                         download: dc?.permissions?.download || false,
-                        print: dc?.permissions?.print || true,
+                        print: dc?.permissions?.print !== false,
                         protect: file.type === 'xlsx',
                     }
                 },

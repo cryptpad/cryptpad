@@ -191,9 +191,6 @@
             position: relative;
             .cp-markdown-toggle-button {
                 .markdown-toolbar-button-style();
-                &.cp-toolbar-button-active {
-                    //background-color: transparent !important;
-                }
             }
         }
 
@@ -482,8 +479,8 @@
                     .cp-form-creator-inline-add {
                         svg {
                             margin: 0;
-                            width: 1.5rem;
-                            height: 1.5rem;
+                            width: @variables_icon_width;
+                            height: @variables_icon_height;
                         }
                         .add-close { display: none; }
                         &.displayed {
@@ -750,7 +747,7 @@
                             text-align: center;
                             padding: 10px;
                             svg {
-                                margin-right: 5px;
+                                margin-right: @variables_icon_margin;
                             }
                         }
                         .cp-form-edit-buttons-container {
@@ -869,7 +866,6 @@
                     }
                     .cp-markdown-toolbar {
                         display: block;
-                        padding: 0.1rem 0;
                         border-radius: @variables_radius 0;
                         width: 100%;
                         background-color: transparent;
@@ -1418,7 +1414,7 @@
                 line-height: 40px;
                 margin-top: -12px;
                 svg {
-                    margin-right: 5px;
+                    margin-right: @variables_icon_margin;
                 }
             }
             & > *:not(h2) {

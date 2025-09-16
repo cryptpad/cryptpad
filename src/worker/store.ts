@@ -78,6 +78,7 @@ let start = (cfg: StoreConfig):void => {
         Store,
         Account,
         Mailbox,
+        Messenger,
         Badge
     ].forEach(dep => {
         if (typeof(dep.setCustomize) === "function") {

@@ -729,6 +729,12 @@
                 display: flex;
                 align-items: center;
                 border-radius: @variables_radius;
+                 &.cp-app-drive-element-row:not(.cp-app-drive-element-header) {
+                    svg * {
+                        stroke-width: 1.5;
+                        vector-effect: non-scaling-stroke;
+                    }
+                }
                 input {
                     border: 1px solid transparent;
                     margin: 0;
@@ -933,6 +939,11 @@
     #cp-app-drive-content-folder {
         padding-right: 10px;
         flex: 1;
+        .cp-app-drive-element-row.cp-app-drive-element-file > svg.lucide *,
+        .cp-app-drive-element-row.cp-app-drive-element-folder > svg.lucide * {
+            stroke-width: 3.5;
+            vector-effect: non-scaling-stroke;
+        }
     }
 
     #cp-app-drive-new-ghost-dialog.cp-modal-container {
@@ -947,11 +958,13 @@
             li, li svg.lucide {
                 cursor: pointer;
                 border-radius: @variables_radius;
-                stroke-width: 1.7;
-                vector-effect: non-scaling-stroke;
                 &:focus {
                     outline: @cryptpad_color_brand solid 2px;
                 }
+            }
+            li svg.lucide * {
+                stroke-width: 3.5;
+                vector-effect: non-scaling-stroke;
             }
             ul {
                 display: flex;

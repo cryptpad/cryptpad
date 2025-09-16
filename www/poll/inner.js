@@ -202,15 +202,15 @@ define([
         var $input = $(table).find('input[disabled="disabled"][data-rt-id^="' + id + '"]')
             .removeAttr('disabled');
         $input.closest('td').addClass('cp-app-poll-table-editing');
-        $(table).find('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-unlock')
-            .removeClass('fa-lock').attr('title', Messages.poll_unlocked);
+        $(table).find('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').empty().append(Icons.get('unlock'))
+            .attr('title', Messages.poll_unlocked);
     };
     var disableColumn = function (id) {
         var $input = $('input[data-rt-id^="' + id + '"]')
             .attr('disabled', 'disabled');
         $input.closest('td').removeClass('cp-app-poll-table-editing');
-        $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-lock')
-            .removeClass('fa-unlock').attr('title', Messages.poll_locked);
+        $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').empty().append(Icons.get('lock'))
+            .attr('title', Messages.poll_locked);
     };
     var enableRow = APP.enableRow = function (id, table) {
         table = table || $('body');
@@ -466,7 +466,7 @@ define([
             .indexOf('cp-app-poll-table-bookmark') !== -1;
         var isLock = span.className && span.className.split(' ')
             .indexOf('cp-app-poll-table-lock') !== -1;
-        var isLocked = span.className && span.className.split(' ').indexOf('fa-lock') !== -1;
+        var isLocked = span.querySelector('[data-lucide="lock"]') !== null;
         if (type === 'row') {
             if (isRemove) {
                 UI.confirm(Messages.poll_removeOption, function (res) {
@@ -578,10 +578,10 @@ define([
         var msg = (p ? Messages.poll_edit : Messages.poll_publish_button);
         APP.$publishButton.find('.cp-toolbar-name').text(msg);
         if (p) {
-            APP.$publishButton.find('i').removeClass('fa-check').addClass('fa-pencil');
+            APP.$publishButton.find('.lucide').empty().append(Icons.get('edit'));
             return;
         }
-        APP.$publishButton.find('i').addClass('fa-check').removeClass('fa-pencil');
+        APP.$publishButton.find('.lucide').empty().append(Icons.get('check'));
     };
     var publish = APP.publish = function (bool) {
         if (!APP.readOnly) {
@@ -609,7 +609,7 @@ define([
             // disable all the things
             $('.cp-app-poll-realtime input, .cp-app-poll-realtime button, .cp-app-poll-upper button, .cp-app-poll-realtime textarea').attr('disabled', true);
             $('span.cp-app-poll-table-edit, span.cp-app-poll-table-remove').hide();
-            $('span.cp-app-poll-table-lock').addClass('fa-lock').removeClass('fa-unlock')
+            $('span.cp-app-poll-table-lock').empty().append(Icons.get('lock'))
                 .attr('title', Messages.poll_locked)
                 .css({'cursor': 'default'});
         } else {
@@ -709,7 +709,6 @@ define([
                     'data-rt-id': k
                 }, Icons.get('close')).appendTo($actions).click(function () { removeComment(k); });
                 /*$('<button>', {
-                    'class': 'fa fa-pencil',
                     'title': 'TODO: edit comment',
                     'data-rt-id': c.uid
                 }).appendTo($actions).click(editComment);*/

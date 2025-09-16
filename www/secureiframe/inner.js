@@ -32,8 +32,8 @@ define([
     h,
     Sortify,
     Messages,
-    Lucide,
-    Icons)
+    Lucide
+)
 {
     var APP = window.APP = {};
 

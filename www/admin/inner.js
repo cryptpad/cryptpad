@@ -1054,7 +1054,9 @@ define([
             redraw();
 
             var upload = blocks.button('primary', '', Messages.admin_logoButton);
+            upload.prepend(Icons.get('upload'));
             var remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+            remove.prepend(Icons.get('restore'));
 
             let spinnerBlock = blocks.inline();
             let spinner = UI.makeSpinner($(spinnerBlock));
@@ -1147,6 +1149,7 @@ define([
             let $preview = $(preview);
 
             let remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+            remove.prepend(Icons.get('restore'));
             let $remove = $(remove);
 
             let setColor = (color, done) => {
@@ -1191,6 +1194,7 @@ define([
                 let color = $input.val();
                 setColor(color, done);
             });
+            btn.prepend(Icons.get('color-palette'));
 
 
             UI.confirmButton($remove, {

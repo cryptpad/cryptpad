@@ -82,7 +82,6 @@ define([
             href: ref,
             role: 'button',
         };
-        var iconName = '';
         if (!/^\//.test(ref)) {
             attrs.target = '_blank';
             attrs.rel = 'noopener noreferrer';

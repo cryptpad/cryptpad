@@ -2529,7 +2529,7 @@ define([
                 return;
             }
 
-            $element.find('.fa').on('mouseenter', function (e) {
+            $element.find('.lucide').on('mouseenter', function (e) {
                 if ($element[0] && $element[0]._tippy) {
                     $element[0]._tippy.destroy();
                 }
@@ -3358,11 +3358,13 @@ define([
         var SORT_FILE_BY = 'sortFilesBy';
         var SORT_FILE_DESC = 'sortFilesDesc';
 
-        var getSortFileDesc = function () {
-            return APP.store[SORT_FILE_DESC]+"" === "true";
+        var getSortFolderDesc = function () { // this way the icon change is triggered
+            var v = APP.store[SORT_FOLDER_DESC];
+            return v === true;
         };
-        var getSortFolderDesc = function () {
-            return APP.store[SORT_FOLDER_DESC]+"" === "true";
+        var getSortFileDesc = function () {
+            var v = APP.store[SORT_FILE_DESC];
+            return v === true;
         };
 
         var onSortByClick = function () {
@@ -4647,7 +4649,7 @@ define([
                     (isRootOpened ? $folderOpenedIcon : $folderIcon);
                 var $rootElement = createTreeElement(rootName, $rootIcon.clone(), path.slice(), false, true, true, isRootOpened);
                 if (!manager.hasSubfolder(root)) {
-                    $rootElement.find('.cp-app-drive-icon-expcol').addClass('cp-icon-hidden');
+                    $rootElement.find('.cp-app-drive-icon-expcol').addClass('cp-icon-hidden').attr('tabindex','-1');
                 }
                 $rootElement.addClass('cp-app-drive-tree-root');
                 $rootElement.find('>.cp-app-drive-element-row')

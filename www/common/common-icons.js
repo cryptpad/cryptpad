@@ -129,6 +129,7 @@ define([
         "ellipsis-vertical": "ellipsis-vertical",
         "ellipsis-horizontal": 'ellipsis',
         "toolbar-insert": "image-plus",
+        "features": "info",
         // Login + Register
         "login": "log-in",
         "logout": "log-out",
@@ -145,7 +146,7 @@ define([
         "history-next": "arrow-right",
         "history-fast-next": "arrow-right-to-line",
         "history-fast-prev": "arrow-left-to-line",
-        "history-timeline-position": "flag-triangle-right",
+        "history-timeline-position": "chevron-down",
         "history-restore": "archive-restore",
         "remove-history": "eraser",
         // Calendar
@@ -178,6 +179,7 @@ define([
         "code": "code-xml",
         "qr-code": "qr-code",
         "lock": "lock",
+        "unlocked": "lock-open",
         "help": "info",
         "expand-menu": "chevron-right",
         "location": "navigation",
@@ -198,6 +200,7 @@ define([
         "notifications" : "notebook-text",
         "mute": "bell-off",
         "cursor": "text-cursor",
+        "import": "import",
         // Settings + Admin
         "settings": "settings",
         "apps-settings": "wrench",

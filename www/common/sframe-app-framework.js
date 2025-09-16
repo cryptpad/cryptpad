@@ -670,6 +670,10 @@ define([
 
                 UI.removeLoadingScreen(emitResize);
 
+                if (integrationChannel) {
+                    integrationChannel.event('EV_INTEGRATION_READY');
+                }
+
                 if (AppConfig.textAnalyzer && textContentGetter) {
                     AppConfig.textAnalyzer(textContentGetter, privateDat.channel);
                 }

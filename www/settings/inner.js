@@ -242,6 +242,7 @@ define([
                 'class': 'btn btn-primary'
             }).text(Messages.settings_logoutEverywhereButton)
             .appendTo($div);
+        $button.prepend(Icons.get('logout-everywhere'));
         var spinner = UI.makeSpinner($div);
 
         $button.click(function() {
@@ -485,6 +486,7 @@ define([
         if (!common.isLoggedIn()) { return cb(false); }
 
         var button = h('button.btn.btn-danger', Messages.settings_deleteButton);
+        button.prepend(Icons.get('trash-full'));
         var form = h('div', [
             UI.passwordInput({
                 id: 'cp-settings-delete-account',
@@ -1055,7 +1057,7 @@ define([
             .text(Messages.settings_resetThumbnailsDescription).appendTo($div);
         var $button = $('<button>', { 'id': 'resetThumbnails', 'class': 'btn btn-primary' })
             .text(Messages.settings_resetThumbnailsAction).appendTo($div);
-
+        $button.prepend(Icons.get('clear-canvas'));
         $button.click(function() {
             sframeChan.query("Q_THUMBNAIL_CLEAR", null, function(err) {
                 if (err) { return void console.error("Cannot clear localForage"); }
@@ -1151,6 +1153,7 @@ define([
             .text(Messages.settings_backupHint2).appendTo($div);
         var $export2 = common.createButton('export', true, {}, exportDrive);
         $export2.attr('class', 'btn btn-success').text(Messages.settings_backup2);
+        $export2.prepend(Icons.get('download'));
         $div.append($export2);
 
         return $div;
@@ -1166,6 +1169,7 @@ define([
             'id': 'cp-settings-import-local-pads',
             'class': 'btn btn-primary'
         }).text(Messages.settings_import).appendTo($div);
+        $button.prepend(Icons.get('import'));
         var spinner = UI.makeSpinner($div);
         $button.click(function() {
             UI.confirm(Messages.settings_importConfirm, function(yes) {
@@ -1186,6 +1190,7 @@ define([
         var button = h('button.btn.btn-danger-alt', {
             disabled: 'disabled'
         }, Messages.trimHistory_button);
+        button.prepend(Icons.get('trash-full'));
         var currentSize = h('p', $(spinner.spinner).clone()[0]);
         var content = h('div#cp-settings-trim-container', [
             currentSize,

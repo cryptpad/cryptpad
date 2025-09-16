@@ -30,6 +30,7 @@
         svg {
             width: 1.2rem;
             height: 1.2rem;
+            margin: @variables_icon_margin;
         }
     }
     .cp-checkmark.noTitle:not(.cp-settings-radio-container .cp-checkmark.noTitle, .cp-settings-code-spellcheck .noTitle.cp-checkmark) {
@@ -137,7 +138,7 @@
                     padding-bottom:0.5rem;
                 }
                 svg {
-                    margin: 0 0 0.5rem;
+                    margin: 0 0 @variables_icon_margin;
                 }
             }
 
@@ -346,6 +347,9 @@
                         font-family: inherit;
                         font-size: inherit;
                         line-height: inherit;
+                    }
+                    * {
+                        box-sizing: content-box;
                     }
                 }
                 .cp-markdown-toggle-button {

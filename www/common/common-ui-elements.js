@@ -663,7 +663,7 @@ define([
             tag: 'a',
             attributes: attributes,
             content: [
-                $icon.length ? $icon.clone()[0] : null,,
+                $icon.length ? $icon.clone()[0] : null,
                 h('span', $button.text())
             ],
             action: function () {
@@ -4467,9 +4467,8 @@ define([
                     let nodeWithOrder;
                     if (isDrawer) { // HACK: the order is set on their inner "a" tag
                         let $n = $(node);
-                        if (!$n.attr('class') &&
-                            ($n.find('.fa').length || $n.find('.cptools').length)) {
-                            nodeWithOrder = $n.find('.fa')[0] || $n.find('.cptools')[0];
+                        if (!$n.attr('class') && $n.find('.lucide').length) {
+                            nodeWithOrder = $n.find('.lucide')[0];
                         }
                     }
                     var order = getComputedStyle(nodeWithOrder || node).getPropertyValue("order");

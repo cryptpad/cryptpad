@@ -1269,6 +1269,7 @@ define([
     makeBlock('delete', function (common, cb, $div) { // Msg.team_deleteHint, .team_deleteTitle
         $div.addClass('cp-online');
         var deleteTeam = h('button.btn.btn-danger', Messages.team_deleteButton);
+        deleteTeam.prepend(Icons.get('trash-full'));
         var spinnerContainer = h('span', {class: 'cp-team-spinner'});
         var spinner = UI.makeSpinner($(spinnerContainer));
 
