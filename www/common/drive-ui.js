@@ -3358,11 +3358,13 @@ define([
         var SORT_FILE_BY = 'sortFilesBy';
         var SORT_FILE_DESC = 'sortFilesDesc';
 
-        var getSortFileDesc = function () {
-            return APP.store[SORT_FILE_DESC]+"" === "true";
+        var getSortFolderDesc = function () { // this way the icon change is triggered
+            var v = APP.store[SORT_FOLDER_DESC];
+            return v === true;
         };
-        var getSortFolderDesc = function () {
-            return APP.store[SORT_FOLDER_DESC]+"" === "true";
+        var getSortFileDesc = function () {
+            var v = APP.store[SORT_FILE_DESC];
+            return v === true;
         };
 
         var onSortByClick = function () {
