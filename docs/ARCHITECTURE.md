@@ -69,7 +69,7 @@ This means that using chainpad, clients can collaborate in realtime while using 
 
 ## Datastore
 
-While it's possible for messages to propogate using a [gossip protocol](https://en.wikipedia.org/wiki/Gossip_protocol) and therefore not rely on havinga centralized service for storing messages, it's possible for the members of a gossip network to [Netsplit](https://en.wikipedia.org/wiki/Netsplit).
+While it's possible for messages to propagate using a [gossip protocol](https://en.wikipedia.org/wiki/Gossip_protocol) and therefore not rely on having a centralized service for storing messages, it's possible for the members of a gossip network to [Netsplit](https://en.wikipedia.org/wiki/Netsplit).
 Chainpad currently has no mechanism for resolving such an event.
 
 If a member of a session disconnects (as defined by not responding to a ping with a pong in a specified timeframe) any revisions that they make to their version of a document will be ignored.
@@ -128,7 +128,7 @@ If an interface is interactive, which they typically are, then the user will lik
 If the interface is a plain text editor, maintaining the location of the cursor while updating the contents of the editor is not especially difficult.
 The process involves checking where the user's selection is located (possibly a start and end), determining whether the changes to the document occurred before or after those points, and updating the selection boundaries if necessary.
 
-If the interface is a WYSIWYG editor, maintaining the location of the cursor is more difficult, as the number of characters changed in the authoratative document does not correspond directly to the number of characters which the user perceives.
+If the interface is a WYSIWYG editor, maintaining the location of the cursor is more difficult, as the number of characters changed in the authoritative document does not correspond directly to the number of characters which the user perceives.
 It is the application developers' responsibility to infer from the new content where the cursor should be, and to render the modified content in such a way that it does not disrupt user experience.
 In the process of developing its [Realtime CKEditor](https://cryptpad.fr) XWiki Labs discovered that many of the [existing Javascript libraries](https://github.com/Matt-Esch/virtual-dom) for updating a **DOM** are very destructive, and replace elements completely once a difference is detected within the tree (when scanning left to right).
 
@@ -213,7 +213,7 @@ The encryption scheme employed by CryptPad is a [symmetric encryption](https://e
 Encryption is complex, and poorly understood by the majority of those who use it on a daily basis.
 Pre-shared-keys are among the weakest possible cryptographic tools available today, however, few if any other encryption schemes scale to any number of users.
 
-For our purposes, we would like our application to offerthe benefits of encryption without being any more difficult to use.
+For our purposes, we would like our application to offer the benefits of encryption without being any more difficult to use.
 Since the method of collaborating on any web resource typically involves sharing the URL, we use the hash of the URl to share the pre-shared-key.
 Anything in a URL which follows a `#` is not sent to the server, meaning that our web app will store your users' messages without ever knowing their content.
 
