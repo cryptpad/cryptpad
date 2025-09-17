@@ -1109,6 +1109,7 @@ define([
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
             }
+            console.log(ooChannel.queue)
             return changes
             
         };
@@ -2229,7 +2230,7 @@ define([
                 c.forcesave = true;
             }
 
-            console.error('updated config', ooconfig);
+            // console.error('updated config', ooconfig);
             return ooconfig;
         };
 
@@ -3171,23 +3172,24 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var onPatchBack = function (cp, msgs) {
                     if (msgs) {
                         msgsFormatted = []
-                    msgs.forEach(function(msg) {
-                        var parsedMsg = JSON.parse(msg.msg);
-    
-                        var formattedMsg = {
-                            msg: parsedMsg,
-                            hash: msg.serverHash, 
-                            author: msg.author,
-                            time: msg.time
-                        };
-                        
-                        msgsFormatted.push(formattedMsg)
+                        msgs.forEach(function(msg) {
+                            var parsedMsg = JSON.parse(msg.msg);
+        
+                            var formattedMsg = {
+                                msg: parsedMsg,
+                                hash: msg.serverHash, 
+                                author: msg.author,
+                                time: msg.time
+                            };
+                            
+                            msgsFormatted.push(formattedMsg)
 
-                    })
-                    ooChannel.queue = msgsFormatted;
-                    setTimeout(() => {
-                    loadCp(cp, true);
-                    }, 100);
+                        })
+                        ooChannel.queue = msgsFormatted;
+                        console.log("patch", ooChannel.queue)
+                        setTimeout(() => {
+                            loadCp(cp, true);
+                        }, 100);
                     } else {
                         loadCp(cp)
                     }
