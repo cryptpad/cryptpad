@@ -21,6 +21,7 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
     "ckeditor",
     "codemirror",
     "croppie",
+    "drawio",
     "file-saver",
     "hyper-json",
     "jquery",
@@ -32,21 +33,20 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
     "marked",
     "mathjax",
     "open-sans-fontface",
-    "tweetnacl",
-    "tweetnacl-util",
     "require-css",
     "requirejs",
     "requirejs-plugins",
     "scrypt-async",
     "sortablejs",
+    "tweetnacl",
+    "tweetnacl-util",
+    "pako",
+    "x2js",
     // both client and server:
-    "chainpad-crypto",
     "saferphore",
+    "chainpad-crypto",
     "nthen",
     "netflux-websocket",
-    "drawio",
-    "pako",
-    "x2js"
 ].forEach(l => {
     let s = l;
     if (s === 'tweetnacl') {
