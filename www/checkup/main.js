@@ -82,7 +82,7 @@ define([
     var trimmedSafe = trimSlashes(ApiConfig.httpSafeOrigin);
     var trimmedUnsafe = trimSlashes(ApiConfig.httpUnsafeOrigin);
     var fileHost = ApiConfig.fileHost;
-    var accounts_api = ApiConfig.accounts_api || AppConfig.accounts_api || undefined;
+    var accounts_api = ApiConfig.accounts_api || undefined;
 
     var getAPIPlaceholderPath = function (relative) {
         var absolute;
@@ -111,15 +111,6 @@ define([
             httpApi.protocol = API_URL.protocol === 'wss:' ? 'https:' : 'http:';
             HTTP_API_URL = httpApi.origin;
         } catch (e) {}
-    }
-
-    var ACCOUNTS_URL;
-    try {
-        if (typeof(AppConfig.upgradeURL) === 'string') {
-            ACCOUNTS_URL = new URL(AppConfig.upgradeURL, trimmedUnsafe).origin;
-        }
-    } catch (err) {
-        console.error(err);
     }
 
     var debugOrigins = {
@@ -1026,8 +1017,7 @@ define([
                     (HTTP_API_URL && HTTP_API_URL !== $outer) ? HTTP_API_URL : undefined,
                     isHTTPS(fileHost)? fileHost: undefined,
                     // support for cryptpad.fr configuration
-                    accounts_api,
-                    ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
+                    accounts_api
                 ],
 
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
@@ -1066,8 +1056,7 @@ define([
                     API_URL.origin,
                     (HTTP_API_URL && HTTP_API_URL !== $outer) ? HTTP_API_URL : undefined,
                     isHTTPS(fileHost)? fileHost: undefined,
-                    accounts_api,
-                    ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
+                    accounts_api
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],
@@ -1657,6 +1646,27 @@ define([
 
             // else call back with the value
             cb(HSTS);
+        });
+    });
+
+    // confirm that POST requests to the `/upload-blob` endpoint
+    // return something other than a 404, which would probably indicate
+    // a reverse proxy misconfiguration
+    assert(function (cb, msg) {
+        msg.appendChild(h('span', [
+            `The server returned a 404 error when attempting to reach the `,
+            h('code', `/upload-blob`),
+            ` endpoint. This can be caused by an incorrectly configured reverse proxy.`,
+        ]));
+
+        fetch('/upload-blob', {
+            method: 'POST',
+        }).then(res => {
+            console.log({ upload_fetch_response: res });
+            cb(res.status !== 404);
+        }).catch(err => {
+            console.error(err);
+            cb(false);
         });
     });
 

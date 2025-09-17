@@ -51,6 +51,14 @@
                 margin-right: 0px !important;
             }
         }
+        &:not(.radio) {
+            .cp-usergrid-user {
+                transition: order 0.5s, background-color 0.5s;
+                &.cp-selected {
+                    order: -1 !important;
+                }
+            }
+        }
         .cp-usergrid-user {
             width: 70px;
             height: 70px;
@@ -62,14 +70,12 @@
             border-radius: @variables_radius;
             margin: 3px !important;
             cursor: default;
-            transition: order 0.5s, background-color 0.5s;
             margin-top: 1px;
             .tools_unselectable();
 
             &.cp-selected {
                 background-color: @cp_usergrid-selected-bg;
                 color: @cp_usergrid-selected-fg;
-                order: -1 !important;
                 .cp-usergrid-avatar {
                     media-tag, .cp-avatar-default {
                         opacity: 0.7;

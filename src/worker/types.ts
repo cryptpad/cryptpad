@@ -89,6 +89,7 @@ export interface PadObject {
     onCorruptedCache: RpcCall,
     getChannels: () => string[],
     onJoined: any,
+    onCacheReady: any,
 }
 export interface Pad {
     init: (config: PadConfig) => PadObject

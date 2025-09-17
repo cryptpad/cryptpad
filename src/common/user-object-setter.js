@@ -48,6 +48,12 @@ const factory = (Util, Hash, Realtime) => {
                 var oldHref = exp.getHref(data);
                 if (oldHref === href) { return; }
                 data.href = exp.cryptor.encrypt(href);
+                // Recompute roHref for form (auditor link)
+                const parsed = Hash.parsePadUrl(href);
+                if (parsed.type !== "form") { return; }
+                const secret = Hash.getSecrets(parsed.type,
+                                parsed.hash, data.password);
+                data.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
             });
         };
 

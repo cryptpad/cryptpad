@@ -99,7 +99,7 @@ const factory = (Util, Hash, Constants, Realtime, Cache, Rec,
 
         var all = [ev];
         Array.prototype.push.apply(all, toAdd);
-        return Rec.applyUpdates(all);
+        return all;
     };
     var clearDismissed = function (ctx, uid) {
         var h = Util.find(ctx, ['store', 'proxy', 'hideReminders']) || {};

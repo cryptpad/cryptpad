@@ -120,9 +120,31 @@
         }
         margin-bottom: 5px;
     }
+    .cp-markdown-label-row {
+        margin-bottom: 0.5rem;
+        position: relative;
+    }
+    .cp-markdown-label-row label {
+        display: inline-block;
+        margin: 0;
+        vertical-align: middle;
+    }
+
+    .cp-markdown-toggle-button {
+        .markdown-toolbar-button-style();
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        &.cp-toolbar-button-active {
+            background-color: transparent;
+        }
+    }
+
     #cp-kanban-edit-body {
         border: 1px solid @cp_forms-border;
         border-radius: @variables_radius;
+        overflow: hidden;
         .CodeMirror {
             height: 105px;
             resize: vertical;
@@ -132,15 +154,23 @@
             box-sizing: content-box;
         }
         .cp-markdown-toolbar {
-            background-color: @cp_kanban-conflict-bg;
+            background-color: transparent;
             color: @cp_kanban-fg;
             border-radius: @variables_radius @variables_radius 0px 0px;
-            button {
-                &:hover {
-                    background-color: @cp_kanban-fg;
-                    color: @cp_kanban-conflict-bg;
-                }
+            .btn {
+            outline: 0;
+            border-radius: @variables_radius;
+            .fa {
+                font: normal normal normal 14px/1 FontAwesome;
+                font-family: FontAwesome;
             }
+            &:hover {
+                background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
+            }
+            &:focus-visible {
+                outline: @variables_focus_style;
+            }
+        }
         }
         margin-bottom: 15px;
     }
@@ -241,9 +271,8 @@
         background: @cp_kanban-item-bg;
         box-shadow: @cryptpad_ui_shadow;
         .tools_unselectable();
-        touch-action: none;
         &:not(.no-drag) {
-            cursor: move;
+            touch-action: none;
             cursor: grab;
         }
 
@@ -514,6 +543,9 @@
                     &.active {
                         background-color: @cp_kanban-fg;
                         color: @cp_kanban-item-bg;
+                    }
+                    &:focus-visible {
+                        outline: @variables_focus_style;
                     }
                 }
             }

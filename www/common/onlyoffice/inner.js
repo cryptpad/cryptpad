@@ -1090,6 +1090,7 @@ define([
             if (content.version <= 2) {
                 setEditable(false, true);
             }
+            console.log("OO loading");
         };
 
 
@@ -2124,6 +2125,7 @@ define([
                 }];
                 common.checkTrimHistory(channels);
             }
+            console.log("OO ready");
         };
 
         const copy = (a, b) => {
@@ -2157,7 +2159,7 @@ define([
                     url: url,
                     permissions: {
                         download: dc?.permissions?.download || false,
-                        print: dc?.permissions?.print || true,
+                        print: dc?.permissions?.print !== false,
                         protect: file.type === 'xlsx',
                     }
                 },

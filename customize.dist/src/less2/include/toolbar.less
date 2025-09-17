@@ -64,7 +64,10 @@
     }
 
     .cp-markdown-toolbar {
-        height: @toolbar_line-height;
+        min-height: @toolbar_line-height;
+        padding: 0.15rem 0.20rem;
+        height: auto;
+        flex-wrap: wrap;
         background-color: @cp_toolbar-bg;
         color: @cp_toolbar-fg;
         display: none;
@@ -74,7 +77,7 @@
             border-radius: @variables_radius;
             color: @toolbar-color;
             .toolbar_button;
-            font: normal normal normal 14px/1 FontAwesome;
+            padding: 3px 9px;
             &:hover {
                 background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
             }
@@ -82,8 +85,10 @@
                 outline: @variables_focus_style;
             }
         }
-        button:nth-of-type(1) {
-            margin-left: 0.3rem;
+        @media screen and (max-width: @browser_media-medium-screen) {
+            button:nth-of-type(1) {
+                margin-left: 0;
+            }
         }
     }
 
@@ -108,7 +113,7 @@
         border: 1px solid transparent;
         color: inherit;
         font: @toolbar_button-font;
-        * {
+        *:not(i) {
             color: inherit;
             font: @toolbar_button-font;
         }
@@ -152,8 +157,8 @@
     }
     .cp-toolbar-userlist-drawer {
         font: @colortheme_app-font-size @colortheme_font;
-        min-width: 175px;
-        width: 175px;
+        min-width: 200px;
+        width: 200px;
         display: block;
         overflow-y: auto;
         overflow-x: hidden;
@@ -203,20 +208,30 @@
             flex-flow: column;
             margin: 10px 0;
             margin-bottom: 20px;
+            .cp-userlist-entry {
+                display: flex;
+                align-items: center;
+            }
             &>span {
                 height: 48px;
                 padding: 5px;
                 margin: 2px 0;
-                background: @cp_toolbar-fade1;
+                background: @cp_toolbar-bg2;
+                border-radius: @variables_radius;
                 border-right: 3px solid transparent;
-                .avatar_main(30px);
-                .cp-avatar-default, media-tag {
-                    margin-right: 5px;
+                .avatar_main(35px);
+                i.cp-badge {
+                    color: @cp_toolbar-bg2;
+                    border-color: @cp_toolbar-bg2;
                 }
                 &.cp-userlist-clickable {
                     cursor: pointer;
                     &:hover {
-                        background: @cp_toolbar-fade3;
+                        background: @cp_toolbar-bg3;
+                        i.cp-badge {
+                            color: @cp_toolbar-bg3;
+                            border-color: @cp_toolbar-bg3;
+                        }
                     }
                 }
                 .cp-toolbar-userlist-rightcol {
@@ -224,6 +239,7 @@
                     flex: 1;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    margin-left: 5px;
                     white-space: nowrap;
                     display: flex;
                     flex-flow: column;
@@ -398,7 +414,6 @@
 
         .fa {
             font: normal normal normal 14px/1 FontAwesome;
-            font-family: FontAwesome;
         }
 
         .tools_unselectable();

@@ -8,6 +8,8 @@
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 @import (reference) '../../customize/src/less2/include/variables.less';
 @import (reference) '../../customize/src/less2/include/badges.less';
+@import (reference) '../../customize/src/less2/include/avatar.less';
+@import (reference) "../../customize/src/less2/include/markdown.less";
 
 &.cp-app-profile {
 
@@ -22,38 +24,19 @@
     #cp-sidebarlayout-leftside {
         display: none !important;
     }
+    div#cp-sidebarlayout-container #cp-sidebarlayout-rightside {
+        padding: 1rem 2rem;
+    }
 
     .cp-app-profile-section:first-child {
         margin-top: 1rem;
-    }
-
-    .cp-profile-badges {
-        display: flex;
-        align-items: center;
-        & > span {
-            margin-right: 1em;
-        }
-        .cp-profile-badges-list {
-            .badges_main(40px);
-            i {
-                cursor: pointer;
-                &:focus-visible {
-                    outline: @variables_focus_style;
-                }
-                &:not(:last-child) {
-                    margin-right: 0.5em;
-                }
-                &.cp-selected {
-                    border-color: @cryptpad_color_brand;
-                }
-            }
-        }
     }
 
     #cp-app-profile-header {
         display: flex;
         flex-flow: row wrap;
         justify-content: center;
+        gap: 2rem;
         #cp-app-profile-rightside {
             flex: 1;
             display: flex;
@@ -63,20 +46,25 @@
         }
     }
     #cp-app-profile-avatar {
-        margin: 10px;
         margin-right: 20px;
         text-align: center;
         max-width: 300px;
         max-height: 300px;
         margin-bottom: 3.5rem;
+        margin-right: 0;
         &> span {
-            display: inline-block;
+            .avatar_main(300px);
+            display: flex;
             text-align: center;
             border-radius: 4px;
-            overflow: hidden;
+            overflow: visible;
             position: relative;
+            i.cp-badge {
+                border-width: 3px;
+            }
             .cp-app-profile-avatar-delete {
                 right: 0;
+                top: 0;
                 position: absolute;
                 opacity: 1;
                 &:hover {
@@ -88,6 +76,9 @@
             max-width: 100%;
             max-height: 100%;
             vertical-align: top;
+            border-radius: @variables_radius_L;
+        }
+        .cp-avatar-default {
             border-radius: @variables_radius_L;
         }
         media-tag {
@@ -108,6 +99,12 @@
             min-width: 40px;
             height: 40px;
             margin: 5px !important;
+        }
+    }
+    .cp-markdown-toggle-row {
+        margin-bottom: 0.5rem;
+        .btn.cp-markdown-toggle-button {
+            .markdown-toolbar-button-style() !important;
         }
     }
 
@@ -170,14 +167,13 @@
             .cp-app-profile-link-code {
                 min-width: 0;
             }
-        }    
+        }
     }
 
     div.cp-app-profile-mute-container.cp-app-profile-section {
         p {
             margin-bottom: 0;
         }
-    
     }
     .cp-app-profile-friend {
         display: flex;
@@ -201,12 +197,13 @@
         font-size: 16px;
         max-width: 100%;
         //margin-bottom: 20px;
+        .markdown_cryptpad();
         .cp-app-profile-description-code {
             display: none;
             .cp-markdown-toolbar {
-                display: flex;
-                height: auto;
-                flex-wrap: wrap;
+                max-width: 31rem;
+                background-color: @cp_toolbar-bg;
+                border-radius: @variables_radius @variables_radius 0 0;
             }
         }
         #cp-app-profile-description-info {
@@ -229,6 +226,7 @@
             font-size: 16px;
             line-height: initial;
             max-width: 31rem;
+            border-radius: 0 0 @variables_radius @variables_radius;
             pre {
                 margin: 0;
                 font-family: inherit;

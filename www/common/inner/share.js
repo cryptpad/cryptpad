@@ -631,6 +631,7 @@ define([
                             labelEdit, false, { mark: {tabindex:0} }),
             auditor]),
             burnAfterReading,
+
         ]);
 
         // Burn after reading
@@ -693,6 +694,9 @@ define([
                                                                        : hashes.viewHash;
             if (formAuditor && opts.auditorHash) {
                 hash = opts.auditorHash;
+                if (opts.hasPassword) {
+                    hash += '/p';
+                }
             }
             var href = burnAfterReading ? opts.burnAfterReadingUrl
                                              : (origin + pathname + '#' + hash);
@@ -705,21 +709,24 @@ define([
             });
             return '<iframe src="' + url + '"></iframe>';
         };
-
         // disable edit share options if you don't have edit rights
         if (versionHash) {
             $rights.find('#cp-share-editable-false').attr('checked', true);
             $rights.find('#cp-share-present').removeAttr('checked').attr('disabled', true);
             $rights.find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
         } else if (!hashes.editHash) {
-            $rights.find('#cp-share-editable-false').attr('checked', true);
+            if (opts.auditorHash) {
+              $rights.find('#cp-share-editable-false').attr('checked', false).attr('disabled', true);
+            } else {
+                $rights.find('#cp-share-editable-false').attr('checked', true);
+            }
             $rights.find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
         } else if (!hashes.viewHash) {
             $rights.find('#cp-share-editable-false').removeAttr('checked').attr('disabled', true);
             $rights.find('#cp-share-present').removeAttr('checked').attr('disabled', true);
             $rights.find('#cp-share-editable-true').attr('checked', true);
         }
-        if (isForm && !opts.auditorHash) {
+        if (isForm && !opts.auditorHash && opts.auditorHash) {
             $rights.find('#cp-share-form').removeAttr('checked').attr('disabled', true);
         }
 
@@ -769,7 +776,12 @@ define([
                 $rights.find('#cp-share-editable-true').prop('checked', false);
                 $rights.find('#cp-share-present').prop('checked', true);
             } else if ((val.edit === false && hashes.viewHash) || !hashes.editHash) {
-                $rights.find('#cp-share-editable-false').prop('checked', true);
+                if (opts.auditorHash) {
+                    $rights.find('#cp-share-editable-false').prop('checked', false);
+                    $rights.find('#cp-share-form').prop('checked', true);
+                } else {
+                    $rights.find('#cp-share-editable-false').prop('checked', true);
+                }
                 $rights.find('#cp-share-editable-true').prop('checked', false);
                 $rights.find('#cp-share-present').prop('checked', false);
             } else {
@@ -786,6 +798,9 @@ define([
         common.getMetadataMgr().onChange(function () {
             // "hashes" is only available is the secure "share" app
             var _hashes = common.getMetadataMgr().getPrivateData().hashes;
+            const h = _hashes.editHash || _hashes.viewHash;
+            const c = Hash.getSecrets('pad', h, opts.password).channel;
+            if (channel !== c) { return; }
             if (!_hashes) { return; }
             hashes = _hashes;
             getLink().val(opts.getLinkValue());

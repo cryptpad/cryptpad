@@ -80,7 +80,7 @@ More information about this can be found in [our translation guide](/customize.d
 
 The best places to reach the development team and the community are the [CryptPad Forum](https://forum.cryptpad.org) and the [Matrix chat](https://matrix.to/#/#cryptpad:matrix.xwiki.com)
 
-The team is also on the fediverse: [@cryptpad@fosstodon.org](https://fosstodon.org/@cryptpad)
+The team is also on the fediverse: [@cryptpad@xwiki.com](https://social.xwiki.com/@CryptPad)
 
 # Team
 
