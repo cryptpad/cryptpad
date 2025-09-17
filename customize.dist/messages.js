@@ -151,6 +151,18 @@ define(req, function(AppConfig, Default, Language) {
     Messages.forms_pollOptionNo = 'No';
     Messages.forms_pollOptionYes = 'Yes';
     Messages.forms_pollOptionMaybe = 'Maybe';
+
+    // to be changed with the actual color name (for forms)
+    Messages.color0 = 'No color';
+    Messages.color1 = 'Red';
+    Messages.color2 = 'Orange';
+    Messages.color3 = 'Yellow';
+    Messages.color4 = 'Green';
+    Messages.color5 = 'Dark green';
+    Messages.color6 = 'Turquoise'
+    Messages.color7 = 'Blue';
+    Messages.color8 = 'Purple';
+
     return Messages;
 
 });

@@ -5198,7 +5198,9 @@ define([
                     if (i === 5) { currentContainer = colorLine2; }
                     var $color = $(h('span.cp-form-palette.fa'));
                     $color.addClass('cp-form-palette-'+(_color || 'nocolor'));
-                    $color.attr('tabindex', i === 0 ? 0 : -1).attr('role', 'button').attr('aria-label', 'Color'); // XXX needs to change label according to each color
+                    var colorKey = _color === 'nocolor' ? 'color0' : _color;
+                    var colorLabel = Messages[colorKey] || Messages.color0;
+                    $color.attr('tabindex', i === 0 ? 0 : -1).attr('role', 'button').attr('aria-label', colorLabel);
                     if (selectedColor === _color) { $color.addClass('fa-check'); }
                     $color.on('keydown', function(e) {
                         handleColorNavigation(e, $color);
