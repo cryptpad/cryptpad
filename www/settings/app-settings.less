@@ -29,20 +29,12 @@
     .cp-spinner, .cp-ok {
         svg {
             width: 1.2rem;
-            height: 1.2rem;
-            margin: @variables_icon_margin;
         }
-    }
-    .cp-checkmark.noTitle:not(.cp-settings-radio-container .cp-checkmark.noTitle, .cp-settings-code-spellcheck .noTitle.cp-checkmark) {
-        height: 1rem;
     }
     .cp-checkmark.noTitle, .cp-sidebarlayout-input-block {
         svg {
-            margin-left: 0.5rem;
+            margin-left: @variables_icon_margin;
         }
-    }
-    .cp-settings-colortheme .cp-settings-radio-container {
-        height: 1.5rem;
     }
     .cp-spinner, .cp-ok{
         display: inline-flex;
@@ -117,11 +109,15 @@
                         margin-right: 100%;
                     }
                 }
-                & > svg {
+                & > svg,
+                & > .cp-spinner,
+                & > .cp-ok {
+                    position: absolute;
                     align-self: center;
-                    margin-right: -16px;
+                    margin-right: 16px;   /* same as before */
                 }
             }
+
             .cp-settings-info-block {
                 [type="text"] {
                     width: @sidebar_block-width;
