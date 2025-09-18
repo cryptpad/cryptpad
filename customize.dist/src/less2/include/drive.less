@@ -226,16 +226,18 @@
     #cp-app-drive-search {
         display: inline-flex;
         align-items: center;
-        max-width: 400px;
+        max-width: 500px;
         font-size: 30px;
         margin: 15px;
+        height: 2.5rem;
         input {
             background: transparent;
             color: @cp_drive-fg;
+            width: 20rem;
             .tools_placeholder-color();
             outline-width: 0px;
             border-radius: 0;
-            width: 100%;
+            max-width: 100%;
             border: 0;
             border-bottom: 3px solid @cp_drive-fg;
             margin: 0 5px;
@@ -279,6 +281,26 @@
         color: fade(@cryptpad_text_col, 80%);
     }
 
+    //make search drive component responsive
+    @media screen and (max-width: @browser_media-medium-screen) {
+        #cp-app-drive-search {
+            max-width: 100%;
+            font-size: 22px;
+            margin: 10px;
+            input {
+                border-bottom-width: 2px;
+                width: 17rem;
+            }
+        }
+        .cp-app-drive-search-spinner svg {
+            width: 1.5rem;
+            margin-bottom: 1rem;          
+        }
+        .cp-app-drive-search-noresult {
+            font-size: 22px;
+            padding: 10px;
+        }
+    }
 
     /* TREE */
 

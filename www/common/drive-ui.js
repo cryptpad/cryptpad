@@ -3999,8 +3999,8 @@ define([
             });
             $div.append(cancel);
 
+            $div.append($spinnerContainer);
             $list.append($div);
-            $spinnerContainer.appendTo($list);
             setTimeout(function () {
                 $input.focus();
             });
