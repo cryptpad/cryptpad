@@ -130,6 +130,7 @@ define([
         "ellipsis-horizontal": 'ellipsis',
         "toolbar-insert": "image-plus",
         "features": "info",
+        "report": "clipboard-plus",
         // Login + Register
         "login": "log-in",
         "logout": "log-out",
@@ -150,6 +151,7 @@ define([
         "history-restore": "archive-restore",
         "remove-history": "eraser",
         "history-moderation": "archive",
+        "archive": "archive",
         // Calendar
         "calendar": "calendar-days",
         "calendar-inactive": "calendar",

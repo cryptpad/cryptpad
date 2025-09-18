@@ -511,7 +511,7 @@ define([
         };
 
         var copyToClipboard = (content) => {
-            var button = blocks.activeButton('primary','', Messages.copyToClipboard, () => {
+            var button = blocks.activeButton('primary','copy', Messages.copyToClipboard, () => {
                 var toCopy = JSON.stringify(content, null, 2);
                 Clipboard.copy(toCopy, (err) => {
                     if (err) { return UI.warn(Messages.error); }
@@ -712,7 +712,7 @@ define([
                     h('br'),
                     h('small', Messages.admin_archiveAccountInfo)
                 ]);
-                let archiveAccountButton = blocks.activeButton('danger', '',
+                let archiveAccountButton = blocks.activeButton('danger', 'archive',
                                 Messages.admin_archiveButton, archiveHandler, true);
                 row(archiveAccountLabel, archiveAccountButton);
 
@@ -1056,10 +1056,8 @@ define([
             };
             redraw();
 
-            var upload = blocks.button('primary', '', Messages.admin_logoButton);
-            upload.prepend(Icons.get('upload'));
-            var remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
-            remove.prepend(Icons.get('restore'));
+            var upload = blocks.button('primary', 'upload', Messages.admin_logoButton);
+            var remove = blocks.button('danger', 'restore', Messages.admin_logoRemoveButton);
 
             let spinnerBlock = blocks.inline();
             let spinner = UI.makeSpinner($(spinnerBlock));
@@ -1151,8 +1149,7 @@ define([
             let labelPreview = blocks.labelledInput(Messages.admin_colorPreview, preview);
             let $preview = $(preview);
 
-            let remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
-            remove.prepend(Icons.get('restore'));
+            let remove = blocks.button('danger', 'restore', Messages.admin_logoRemoveButton);
             let $remove = $(remove);
 
             let setColor = (color, done) => {
@@ -1293,7 +1290,7 @@ define([
 
         // Msg.admin_invitationHint, admin_invitationTitle
         sidebar.addItem('invitation', function(cb){
-            var button = blocks.button('primary', '', Messages.admin_invitationCreate);
+            var button = blocks.button('primary', 'link', Messages.admin_invitationCreate);
             var $b = $(button);
 
             var inputAlias = blocks.input({
@@ -1307,7 +1304,7 @@ define([
             var blockEmail = blocks.labelledInput(Messages.admin_invitationEmail, inputEmail);
 
             var refreshInvite = function () {};
-            var refreshButton = blocks.button('secondary', '', Messages.oo_refresh);
+            var refreshButton = blocks.button('secondary', 'refresh', Messages.oo_refresh);
             Util.onClickEnter($(refreshButton), function () {
                 refreshInvite();
             });
@@ -1606,7 +1603,7 @@ define([
             });
             var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
 
-            var button = blocks.button('primary', '', Messages.admin_usersAdd);
+            var button = blocks.button('primary', 'add', Messages.admin_usersAdd);
             var $b = $(button);
 
             var userAlias = blocks.input({ type: 'text' });
@@ -1622,7 +1619,7 @@ define([
             var blockUser = blocks.labelledInput(Messages.admin_usersBlock, userBlock);
 
             var refreshUsers = function () {};
-            var refreshButton = blocks.button('secondary', '', Messages.oo_refresh);
+            var refreshButton = blocks.button('secondary', 'refresh', Messages.oo_refresh);
             Util.onClickEnter($(refreshButton), function () {
                 refreshUsers();
             });
@@ -1725,8 +1722,8 @@ define([
                             var emailInput = h('input');
                             $(aliasInput).val(data.alias);
                             $(emailInput).val(data.email);
-                            var save = blocks.button('primary', '', Messages.settings_save);
-                            var cancel = blocks.button('secondary', '', Messages.cancel);
+                            var save = blocks.button('primary', 'save', Messages.settings_save);
+                            var cancel = blocks.button('secondary', 'close', Messages.cancel);
                             Util.onClickEnter($(save), function () {
                                 var aliasVal = $(aliasInput).val().trim();
                                 if (!aliasVal) { return void UI.warn(Messages.error); }
@@ -1754,6 +1751,7 @@ define([
                                     wide: true,
                                 });
                             });
+                            Lucide.createIcons();
                         });
                         newEntries.push([
                             aliasCell,
@@ -1877,7 +1875,7 @@ define([
             var noteBlock = blocks.labelledInput(Messages.admin_limitSetNote, note);
             var $note = $(note);
 
-            var remove = blocks.button('danger', '', Messages.fc_remove );
+            var remove = blocks.button('danger', 'restricted', Messages.fc_remove );
             var set = blocks.button('primary', '', Messages.admin_setlimitButton);
 
             var nav = blocks.nav([set, remove]);
@@ -2006,6 +2004,7 @@ define([
                                     wide: true,
                                  });
                              });
+                             Lucide.createIcons();
                         });
 
                         var keyEl = h('code.cp-limit-key', key);
@@ -2041,7 +2040,7 @@ define([
             });
             var $input = $(input);
 
-            var btn = blocks.button('primary', '', Messages.ui_generateReport);
+            var btn = blocks.button('primary', 'report', Messages.ui_generateReport);
             var $btn = $(btn);
 
             var nav = blocks.nav([btn]);
@@ -2108,6 +2107,7 @@ define([
                     results.innerHTML = '';
                     results.appendChild(table);
                 });
+                Lucide.createIcons();
             });
 
             cb(form);
@@ -2532,7 +2532,7 @@ define([
 
             var results = blocks.inline([]);
 
-            var btn = blocks.button('primary', '', Messages.ui_generateReport);
+            var btn = blocks.button('primary', 'report', Messages.ui_generateReport);
             var $btn = $(btn);
 
             var nav = blocks.nav([btn]);
@@ -2637,7 +2637,7 @@ define([
             row(Messages.admin_totpRecoveryMethod, data.totp.recovery);
 
             if (data.live) {
-                var archiveButton = blocks.activeButton('danger', '', Messages.ui_archive, function () {
+                var archiveButton = blocks.activeButton('danger', 'archive', Messages.ui_archive, function () {
                     justifyArchivalDialog('', reason => {
                         sframeCommand('ARCHIVE_BLOCK', {
                             key: data.key,
@@ -2692,7 +2692,7 @@ define([
                 value: ''
             });
             var $input = $(input);
-            var btn = blocks.button('primary', '', Messages.ui_generateReport);
+            var btn = blocks.button('primary', 'report', Messages.ui_generateReport);
             var $btn = $(btn);
             disable($btn);
 
@@ -2783,7 +2783,7 @@ define([
             if (!data.totpCheck || !data.totp.enabled) { return tableObj.table; }
 
             // TOTP is enabled and the signature is correct: display "disable TOTP" button
-            var disableButton = blocks.button('danger', '', Messages.admin_totpDisableButton);
+            var disableButton = blocks.button('danger', 'restricted', Messages.admin_totpDisableButton);
             UI.confirmButton(disableButton, { classes: 'btn-danger' }, () => {
                 sframeCommand('DISABLE_MFA', data.key, (err, res) => {
                     if (err) {
@@ -2819,7 +2819,7 @@ define([
                 'aria-labelledby': 'cp-admin-totp-recovery'
             });
             var $input = $(textarea);
-            var btn = blocks.button('primary','', Messages.admin_totpDisable);
+            var btn = blocks.button('primary','restricted', Messages.admin_totpDisable);
             var $btn = $(btn);
             var results = blocks.inline([]);
 
@@ -2889,7 +2889,7 @@ define([
         var onRefreshStats = Util.mkEvent();
 
         sidebar.addItem('refresh-stats', function(cb){
-            var btn = blocks.button('primary', '',  Messages.oo_refresh);
+            var btn = blocks.button('primary', 'refresh',  Messages.oo_refresh);
             var $btn = $(btn);
             Util.onClickEnter($btn, function () {
                 onRefreshStats.fire();
@@ -3437,7 +3437,7 @@ define([
             let send = function () {};
             var refresh = getApi(function (Broadcast) {
                 $active.empty();
-                var removeButton = blocks.button('danger', '', Messages.admin_maintenanceCancel);
+                var removeButton = blocks.button('danger', 'close', Messages.admin_maintenanceCancel);
 
                 if (Broadcast && Broadcast.maintenance) {
                     var m = Broadcast.maintenance;
@@ -3624,7 +3624,7 @@ define([
             var refresh = getApi(function(Broadcast) {
                 var button = blocks.button('primary', '', Messages.admin_broadcastButton);
                 var $button = $(button);
-                var removeButton = blocks.button('danger', '', Messages.admin_broadcastCancel);
+                var removeButton = blocks.button('danger', 'close', Messages.admin_broadcastCancel);
                 var activeContent = Messages.admin_broadcastActive;
                 var active = blocks.block(blocks.inline(activeContent), 'cp-broadcast-active');
                 var $active = $(active);
@@ -3850,7 +3850,7 @@ define([
         var onRefreshPerformance = Util.mkEvent();
 
         sidebar.addItem('refresh-performance', function(cb){
-            var btn = blocks.button('primary', '', Messages.oo_refresh);
+            var btn = blocks.button('primary', 'refresh', Messages.oo_refresh);
             Util.onClickEnter($(btn), function () {
                 onRefreshPerformance.fire();
             });
