@@ -74,8 +74,9 @@
         }
         .cp-checkmark {
             color: @cryptpad_text_col;
+            height: 1.5rem;
             svg {
-                margin: 0;
+                margin-left: @variables_icon_margin;
             }
         }
 
@@ -351,6 +352,11 @@
                 margin: 6px 8px;
                 min-height: 36px;
                 min-width: 88px;
+            }
+            .cp-spinner {
+                svg {
+                    animation: spin 10s linear infinite;
+                }
             }
 
             nav {
