@@ -102,7 +102,7 @@ define([
         "chevron-right": "chevron-right",
         "chevron-down": "chevron-down",
         "chevron-up": "chevron-up",
-        "copy": "files",
+        "copy": "copy",
         "close": "x",
         "square": "square",
         "timer": "hourglass",
