@@ -696,7 +696,7 @@ define([
 
         switch (type) {
             case 'export':
-                button = makeButton('download', 'cp-toolbar-icon-export', Messages.exportButtonTitle, Messages.exportButton);
+                button = makeButton('export', 'cp-toolbar-icon-export', Messages.exportButtonTitle, Messages.exportButton);
                 button
                 .click(common.prepareFeedback(type))
                 .click(UI.clearTooltipsDelay);
@@ -705,7 +705,7 @@ define([
                 }
                 break;
             case 'import':
-                button = makeButton('upload', 'cp-toolbar-icon-import', Messages.importButtonTitle, Messages.importButton);
+                button = makeButton('import', 'cp-toolbar-icon-import', Messages.importButtonTitle, Messages.importButton);
                 var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
                     accept: data ? data.accept : undefined,
                     binary: data ? data.binary : undefined
@@ -769,7 +769,7 @@ define([
             case 'importtemplate':
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
-                button = makeButton('upload', 'cp-toolbar-icon-import-template', '', Messages.template_import);
+                button = makeButton('import-template', 'cp-toolbar-icon-import-template', '', Messages.template_import);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {

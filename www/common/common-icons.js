@@ -201,6 +201,8 @@ define([
         "mute": "bell-off",
         "cursor": "text-cursor",
         "import": "download",
+        "import-template": "file-down",
+        "export": "upload",
         // Settings + Admin
         "settings": "settings",
         "apps-settings": "wrench",
