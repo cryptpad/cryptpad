@@ -3063,6 +3063,7 @@ define([
                 }));
             }).nThen(() => {
                 onRefreshSupportEvt.fire({moderators, supportKey});
+                Lucide.createIcons();
             });
         };
         const getMyData = () => {
@@ -3145,7 +3146,7 @@ define([
                 });
                 const $button = $(button).appendTo($div);
 
-                const delButton = blocks.activeButton('danger', '',
+                const delButton = blocks.activeButton('danger', 'restricted',
                                     Messages.admin_supportDelete, done => {
                     UI.confirm(Messages.admin_supportConfirm, function (yes) {
                         if (!yes) { return void done(false); }
@@ -3164,7 +3165,7 @@ define([
                 });
                 const $delButton = $(delButton).hide();
 
-                const openButton = blocks.button('primary', '', Messages.admin_supportOpen);
+                const openButton = blocks.button('primary', 'external-link', Messages.admin_supportOpen);
                 const $openButton = $(openButton).hide();
                 Util.onClickEnter($(openButton), () => {
                     common.openURL('/moderation/');
@@ -3277,7 +3278,7 @@ define([
                         data: friends
                     }, function () {});
 
-                    let addBtn = blocks.button('primary', '', Messages.tag_add);
+                    let addBtn = blocks.button('primary', 'add', Messages.tag_add);
                     Util.onClickEnter($(addBtn), () => {
                         var $sel = $(contactsGrid.div).find('.cp-usergrid-user.cp-selected');
                         nThen((waitFor) => {
