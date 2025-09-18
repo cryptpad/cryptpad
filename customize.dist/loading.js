@@ -20,7 +20,7 @@ define([
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',
-                '<span class="cp-spinner"></span>',
+                '<span class="cp-spinner-main"></span>',
             '</div>',
             '<div class="cp-loading-progress" aria-hidden="true" role="presentation">',
                 '<div class="cp-loading-progress-list"></div>',

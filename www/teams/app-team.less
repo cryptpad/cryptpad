@@ -50,7 +50,11 @@
             margin: @variables_icon_margin;
         }
     }
-
+    .cp-spinner {
+        svg {
+            animation: spin 10s linear infinite;
+        }
+    }
     #cp-sidebarlayout-container {
         @media screen and (max-width: 900px) {
             .cp-app-drive-toolbar-leftside {

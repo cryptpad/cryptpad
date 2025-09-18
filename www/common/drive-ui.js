@@ -3991,7 +3991,7 @@ define([
             $input[0].selectionStart = search.cursor || 0;
             $input[0].selectionEnd = search.cursor || 0;
 
-            var cancel = Icons.get('close', {class: 'cp-app-drive-search-cancel',title:Messages.cancel});
+            var cancel = Icons.get('close', {class: 'cp-app-drive-search-cancel',title:Messages.cancel}); // not visible
             cancel.addEventListener('click', function () {
                 $input.val('');
                 search.cursor = 0;

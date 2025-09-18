@@ -213,7 +213,7 @@ define([
             }
 
             var $container = $(h('span.cp-filepicker-content', [
-                h('div.cp-loading-spinner-container', h('span.cp-spinner'))
+                h('div.cp-loading-spinner-container', h('span.cp-spinner-main'))
             ])).appendTo($block);
 
             // Update the files list when needed
