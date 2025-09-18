@@ -200,7 +200,7 @@ define([
         "notifications" : "notebook-text",
         "mute": "bell-off",
         "cursor": "text-cursor",
-        "import": "import",
+        "import": "download",
         // Settings + Admin
         "settings": "settings",
         "apps-settings": "wrench",
