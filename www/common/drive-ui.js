@@ -2834,6 +2834,10 @@ define([
             var showMode = function (mode) {
                 var $gridIcon = $button.find('svg.lucide-layout-grid');
                 var $listIcon = $button.find('svg.lucide-list');
+                if (!$gridIcon.length &&  !$listIcon.length) {
+                    $gridIcon = $button.find('[data-lucide=layout-grid]');
+                    $listIcon = $button.find('[data-lucide=list]');
+                }
                 if (mode === 'grid') {
                     $gridIcon.hide();
                     $listIcon.show();
@@ -2843,7 +2847,7 @@ define([
                 }
             };
             setViewMode(viewMode || 'grid');
-            setTimeout(() => showMode(viewMode),0);
+            showMode(viewMode);
 
             $button.click(function () {
                 var viewMode = getViewMode();

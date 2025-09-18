@@ -413,8 +413,11 @@
         .cp-app-drive-icon-expcol {
             display: inline-flex;
             &:focus-visible {
-                outline: @variables_focus_style;
-                border-radius: @variables_radius_S;
+                outline: none;
+                svg {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius_S;
+                }
             }
         }
         .cp-app-drive-tree-docs {
