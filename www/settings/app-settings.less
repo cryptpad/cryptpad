@@ -96,6 +96,7 @@
                 }
             }
             .cp-sidebarlayout-input-block {
+                position: relative;
                 input {
                     border-top-right-radius: 0;
                     border-bottom-right-radius: 0;
@@ -109,15 +110,15 @@
                         margin-right: 100%;
                     }
                 }
-                & > svg,
                 & > .cp-spinner,
                 & > .cp-ok {
                     position: absolute;
-                    align-self: center;
-                    margin-right: 16px;   /* same as before */
+                    right: -16px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    margin-right: -16px;
                 }
             }
-
             .cp-settings-info-block {
                 [type="text"] {
                     width: @sidebar_block-width;
