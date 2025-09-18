@@ -623,22 +623,22 @@ define([
         });
     };
 
-    common.uploadStatus = function (teamId, size, cb) {
-        postMessage("UPLOAD_STATUS", {teamId: teamId, size: size}, function (obj) {
+    common.uploadStatus = function (teamId, id, size, cb) {
+        postMessage("UPLOAD_STATUS", {teamId, id, size}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
     };
 
-    common.uploadCancel = function (teamId, size, cb) {
-        postMessage("UPLOAD_CANCEL", {teamId: teamId, size: size}, function (obj) {
+    common.uploadCancel = function (teamId, id, size, cb) {
+        postMessage("UPLOAD_CANCEL", {teamId, id, size}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
     };
 
-    common.uploadChunk = function (teamId, data, cb) {
-        postMessage("UPLOAD_CHUNK", {teamId: teamId, chunk: data}, function (obj) {
+    common.uploadChunk = function (teamId, id, data, cb) {
+        postMessage("UPLOAD_CHUNK", {teamId, id, chunk: data}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });

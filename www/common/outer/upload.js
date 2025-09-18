@@ -35,7 +35,7 @@ define([
 
         var sendChunkWs = function (box, cb) {
             var enc = Util.encodeBase64(box);
-            common.uploadChunk(teamId, enc, function (e, msg) {
+            common.uploadChunk(teamId, id, enc, function (e, msg) {
                 cb(e, msg);
             });
         };
@@ -140,7 +140,7 @@ define([
             });
         };
 
-        common.uploadStatus(teamId, estimate, function (e, pending) {
+        common.uploadStatus(teamId, id, estimate, function (e, pending) {
             if (e) {
                 console.error(e);
                 onError(e);
@@ -150,7 +150,7 @@ define([
             if (pending) {
                 return void onPending(function () {
                     // if the user wants to cancel the pending upload to execute that one
-                    common.uploadCancel(teamId, estimate, function (e) {
+                    common.uploadCancel(teamId, id, estimate, function (e) {
                         if (e) {
                             return void console.error(e);
                         }
