@@ -355,7 +355,7 @@ define([
                 ]
             },
             'closed': { // Msg.support_cat_closed
-                icon: 'history',
+                icon: 'history-moderation',
                 content: [
                     'refresh',
                     'filter',

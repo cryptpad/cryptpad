@@ -141,7 +141,7 @@ define([
         "secret-user": "venetian-mask",
         "user-account": "user",
         // History
-        "history": "archive",
+        "history": "history",
         "history-prev": 'arrow-left',
         "history-next": "arrow-right",
         "history-fast-next": "arrow-right-to-line",
@@ -149,6 +149,7 @@ define([
         "history-timeline-position": "chevron-down",
         "history-restore": "archive-restore",
         "remove-history": "eraser",
+        "history-moderation": "archive",
         // Calendar
         "calendar": "calendar-days",
         "calendar-inactive": "calendar",
