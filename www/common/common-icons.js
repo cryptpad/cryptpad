@@ -141,7 +141,7 @@ define([
         "secret-user": "venetian-mask",
         "user-account": "user",
         // History
-        "history": "history",
+        "history": "archive",
         "history-prev": 'arrow-left',
         "history-next": "arrow-right",
         "history-fast-next": "arrow-right-to-line",
@@ -210,7 +210,7 @@ define([
         "support": "life-buoy",
         "moderation": "ambulance",
         "broadcast": "radio",
-        "support-ticket": "ticket",
+        "support-ticket": "mail",
         "user-directory": "id-card",
         "database": "database",
         "stats": "chart-line",
