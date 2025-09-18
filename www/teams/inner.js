@@ -994,7 +994,7 @@ define([
         // If you're an admin or an owner, you can invite your friends to the team
         // TODO and acquaintances later?
         if (me && (me.role === 'ADMIN' || me.role === 'OWNER')) {
-            var invite = h('button.cp-online.btn.btn-primary', Messages.team_inviteButton);
+            var invite = h('button.cp-online.btn.btn-primary', [Icons.get('send'), Messages.team_inviteButton]);
             var inviteFriends = common.getFriends();
             Object.keys(inviteFriends).forEach(function (curve) {
                 // Keep only friends that are not already in the team and that you can contact
@@ -1015,7 +1015,7 @@ define([
             $header.append(invite);
         }
 
-        var leave = h('button.cp-online.btn.btn-danger', Messages.team_leaveButton);
+        var leave = h('button.cp-online.btn.btn-danger', [Icons.get('logout'),Messages.team_leaveButton]);
         $(leave).click(function () {
             if (me && me.role === 'OWNER') {
                 return void UI.alert(Messages.team_leaveOwner);
@@ -1033,7 +1033,7 @@ define([
         });
         $header.append(leave);
 
-        var table = h('button.btn.btn-primary', Messages.teams_table);
+        var table = h('button.btn.btn-primary', [Icons.get('teams'), Messages.teams_table]);
         $(table).click(function (e) {
             e.stopPropagation();
             makePermissions();
