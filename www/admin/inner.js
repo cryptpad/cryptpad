@@ -291,6 +291,7 @@ define([
                     return [name, edPublic, action];
                 });
                 list.updateContent(newRows);
+                Lucide.createIcons();
             };
             refreshTable();
             evRefreshAdmins.reg(() => {
@@ -388,6 +389,7 @@ define([
                     }).nThen(() => {
                         APP.updateStatus(function () {
                             evRefreshAdmins.fire();
+                            Lucide.createIcons();
                         });
                     });
                 });
@@ -415,6 +417,7 @@ define([
                         // refresh
                         APP.updateStatus(function () {
                             evRefreshAdmins.fire();
+                            Lucide.createIcons();
                         });
                     });
                 });
