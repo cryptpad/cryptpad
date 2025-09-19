@@ -203,9 +203,9 @@ define([
         "notifications" : "notebook-text",
         "mute": "bell-off",
         "cursor": "text-cursor",
-        "import": "download",
-        "import-template": "file-down",
-        "export": "upload",
+        "import": "upload",
+        "import-template": "file-up",
+        "export": "download",
         // Settings + Admin
         "settings": "settings",
         "apps-settings": "wrench",

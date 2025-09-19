@@ -1011,7 +1011,7 @@ define([
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_resetTipsButton).appendTo($div);
         var $button = $('<button>', { 'id': 'cp-settings-resettips', 'class': 'btn btn-primary' })
-            .text(Messages.settings_resetTipsAction).appendTo($div);
+            .text(Messages.settings_resetTipsAction).prepend(Icons.get('refresh')).appendTo($div);
 
         var localStore = window.cryptpadStore;
         $button.click(function() {
@@ -1111,11 +1111,13 @@ define([
         /* add an export button */
         var $export = common.createButton('export', true, {}, exportFile);
         $export.attr('class', 'btn btn-success').text(Messages.settings_backup);
+        $export.prepend(Icons.get('export'));
         $div.append($export);
 
         /* add an import button */
         var $import = common.createButton('import', true, {}, importFile);
         $import.attr('class', 'btn btn-success').text(Messages.settings_restore);
+        $import.prepend(Icons.get('import'));
         $div.append($import);
 
         // Backup all the pads
