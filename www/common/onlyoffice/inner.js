@@ -1713,17 +1713,17 @@ define([
                             }
                             break;
                         case "cursor":
-                            if (cursor && cursor.updateCursor) {
-                                cursor.updateCursor({
-                                    type: "cursor",
-                                    messages: [{
-                                        cursor: obj.cursor,
-                                        time: +new Date(),
-                                        user: myUniqueOOId,
-                                        useridoriginal: myOOId
-                                    }]
-                                });
-                            }
+                            // if (cursor && cursor.updateCursor) {
+                            //     cursor.updateCursor({
+                            //         type: "cursor",
+                            //         messages: [{
+                            //             cursor: obj.cursor,
+                            //             time: +new Date(),
+                            //             user: myUniqueOOId,
+                            //             useridoriginal: myOOId
+                            //         }]
+                            //     });
+                            // }
                             break;
                         case "forceSaveStart":
                             if (APP.integrationSave) {
