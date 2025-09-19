@@ -291,7 +291,6 @@ define([
                     return [name, edPublic, action];
                 });
                 list.updateContent(newRows);
-                Lucide.createIcons();
             };
             refreshTable();
             evRefreshAdmins.reg(() => {
@@ -458,7 +457,6 @@ define([
                     h('td', value)
                 ]));
             };
-
             return {
                 row: row,
                 table: table,
@@ -670,7 +668,7 @@ define([
                 };
 
                 // get full pin list
-                row(Messages.admin_getPinList, blocks.activeButton('primary', '', Messages.ui_fetch, getPins));
+                row(Messages.admin_getPinList, blocks.activeButton('primary', 'export', Messages.ui_fetch, getPins));
 
                 // get full pin history
                 var getHistoryHandler = (done) => {
@@ -683,7 +681,7 @@ define([
                         UI.alert(history); // TODO NOT_IMPLEMENTED
                     });
                 };
-                var pinHistoryButton = blocks.activeButton('primary', '', Messages.ui_fetch, getHistoryHandler);
+                var pinHistoryButton = blocks.activeButton('primary', 'export', Messages.ui_fetch, getHistoryHandler);
                 disable($(pinHistoryButton));
 
                 // TODO pin history is not implemented
@@ -737,7 +735,7 @@ define([
             }
 
             row(reportContentLabel, copyToClipboard(data));
-
+            setTimeout(() => Lucide.createIcons());
             return tableObj.table;
         };
 
@@ -1751,7 +1749,6 @@ define([
                                     wide: true,
                                 });
                             });
-                            Lucide.createIcons();
                         });
                         newEntries.push([
                             aliasCell,
@@ -2107,7 +2104,6 @@ define([
                     results.innerHTML = '';
                     results.appendChild(table);
                 });
-                Lucide.createIcons();
             });
 
             cb(form);
@@ -2220,7 +2216,7 @@ define([
 
                 // actions
                 // get raw metadata history
-                var metadataHistoryButton = blocks.activeButton('primary', '', Messages.ui_fetch, done => {
+                var metadataHistoryButton = blocks.activeButton('primary', 'export', Messages.ui_fetch, done => {
                     sframeCommand('GET_METADATA_HISTORY', data.id, (err, result) => {
                         done(!err);
                         if (err) {
@@ -2355,7 +2351,7 @@ define([
                 ]));
             } else if (data.live) {
             // archive
-                var archiveDocumentButton = blocks.activeButton('danger', '' ,Messages.admin_archiveButton, function () {
+                var archiveDocumentButton = blocks.activeButton('danger', 'archive' ,Messages.admin_archiveButton, function () {
                     justifyArchivalDialog('', result => {
                         sframeCommand('ARCHIVE_DOCUMENT', {
                             id: data.id,
@@ -2397,7 +2393,7 @@ define([
             }
 
             row(reportContentLabel, copyToClipboard(data));
-
+            setTimeout(() => Lucide.createIcons());
             return tableObj.table;
         };
 
@@ -2407,7 +2403,7 @@ define([
                 'aria-labelledby': 'cp-admin-documents-deletion'
             });
             const $textarea = $(textarea);
-            const archiveButton = blocks.activeButton('danger', '',
+            const archiveButton = blocks.activeButton('danger', 'archive',
                     Messages.admin_archiveButton, () => {
                 const $btn = $(archiveButton);
                 justifyArchivalDialog('', result => {
