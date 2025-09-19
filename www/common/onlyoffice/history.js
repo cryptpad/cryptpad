@@ -246,7 +246,7 @@ define([
             var restore = h('button', {
                 title: Messages.history_restoreTitle,
             }, [
-                Icons.get('check'),
+                Icons.get('history-restore'),
                 h('span', Messages.history_restore)
             ]);
             var close = h('button', { title: Messages.history_closeTitle }, [
