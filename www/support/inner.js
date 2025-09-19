@@ -230,7 +230,7 @@ define([
         Pages.documentationLink($div.find('a')[0], 'https://docs.cryptpad.org/en/user_guide/index.html');
 
         var form = APP.support.makeForm();
-
+        $div.find('button').prepend(Icons.get('send'));
         $div.find('button').click(function () {
             var data = APP.support.getFormData(form);
             APP.supportModule.execCommand('MAKE_TICKET', {

@@ -167,7 +167,7 @@ define([
         cb = cb && Util.once(cb);
 
         if (typeof(cb) === "function") {
-            button = h('button.btn.btn-primary.cp-support-list-send', Messages.contacts_send);
+            button = h('button.btn.btn-primary.cp-support-list-send', [Icons.get('send'), Messages.contacts_send]);
             $(button).click(cb);
         }
 
@@ -317,7 +317,7 @@ define([
             recordedContent,
             h('label', Messages.support_attachments),
             attachments = h('div.cp-support-attachments'),
-            addAttachment = h('button.btn', Messages.support_addAttachment),
+            addAttachment = h('button.btn', [Icons.get('add'),Messages.support_addAttachment]),
             h('hr'),
             button,
             cancel,
@@ -388,11 +388,11 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
 
-        var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer);
-        var close = h('button.btn.btn-danger.cp-support-close', Messages.support_close);
-        var remove = h('button.btn.btn-danger.cp-support-hide', Messages.support_remove);
+        var answer = h('button.btn.btn-primary.cp-support-answer', [Icons.get('reply'), Messages.support_answer]);
+        var close = h('button.btn.btn-danger.cp-support-close', [Icons.get('close'), Messages.support_close]);
+        var remove = h('button.btn.btn-danger.cp-support-hide', [Icons.get('close'), Messages.support_remove]);
         var _actions = [answer, close];
-
+        setTimeout(()=> Lucide.createIcons());
         if (content.closed && !ctx.isAdmin) {
             _actions = [remove]; // XXX update key to "Delete permanently" ?
         }
@@ -449,7 +449,7 @@ define([
                     if (typeof(cb) === "function") { cb(); }
                 });
             };
-            Util.onClickEnter($show, () => { adminOpen(); });
+            Util.onClickEnter($show, () => { adminOpen();});
             if (!onShow) { show = undefined; }
 
             // Move active/pending
@@ -591,6 +591,7 @@ define([
             });
             $(newForm).attr('data-id', id);
             $ticket.append(newForm);
+            Lucide.createIcons();
         };
         if (form) { addForm(); }
         Util.onClickEnter($(answer), addForm);
