@@ -38,19 +38,21 @@ define([
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
         var sortedCp = Object.keys(hashes).map(Number);
+        var id
 
         var getId = function () {
+            id = Object.keys(ooMessages).length
             var cps = sortedCp.length;
-            return sortedCp[cps-1] || 1;
+            console.log("ooMSGID", ooMessages)
+            return id
         };
 
-        var id = getId();
 
         var endWithCp = sortedCp.length &&
                         config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
 
         var fillOO = function (id, messages, ooCheckpoints) {
-            if (!id) { return; }
+            // if (!id) { return; }
             var checkpoints = []
             Object.keys(ooCheckpoints).forEach(function(key) {
                 checkpoints.push(ooCheckpoints[key].index)
@@ -68,10 +70,16 @@ define([
             } else if (messageDiff !== 0 && !cpMessages) {
                 ooMessages[1] = messages
             }
-            console.log("next fill", messageDiff, cpMessages, ooMessages, messages, hashes)
 
+            id = id ? id : getId()
             update();
+            console.log("next fill", id, ooMessages, messages, hashes)
+
         };
+
+
+
+        // var id = getId();
 
         if (endWithCp) { cpIndex = 0; }
 
@@ -100,7 +108,7 @@ define([
 
             var $pos = $hist.find('.cp-history-timeline-pos');
             var cps = sortedCp.length;
-            var id = sortedCp[cps - cpIndex -1] || -1;
+            // var id = getId()
             if (!ooMessages[id]) { return; }
             var msgs = ooMessages[id];
             var p = 100*((msgIndex+1) / (msgs.length));
@@ -202,15 +210,17 @@ define([
             if (cpIndex === 0) {
                 $fastNext.prop('disabled', 'disabled');
             }
-            var msgLength = Object.keys(ooMessages)           
-            if (ooMessages[id].length === msgIndex-1) {
-                $next.prop('disabled', 'disabled');
-            }
-            if ((id+1) === parseInt(msgLength[msgLength.length - 1]) && msgIndex === -1) {
-                console.log("hello")
-                // $next.prop('disabled', 'disabled');
-            }
-            console.log("NEXT DISABLE", id, msgIndex, ooMessages[id].length === msgIndex-1, (id+1), msgLength[msgLength.length - 1], (id+1) === parseInt(msgLength[msgLength.length - 1]), msgIndex === -1)
+            // var msgLength = Object.keys(ooMessages)           
+            // if (ooMessages[id].length === msgIndex-1) {
+            //     $next.prop('disabled', 'disabled');
+            // }
+            // if (ooMessages[id].length && msgIndex === (msgIndex+1)) {
+            //     console.log("hello")
+            //     $next.prop('disabled', 'disabled');
+            // }
+            // console.log("NEXT DISABLE", ooMessages[id], msgIndex)
+
+            // console.log("NEXT DISABLE1", id, msgIndex, ooMessages[id].length === msgIndex-1, (id+1), msgLength[msgLength.length - 1], (id+1) === parseInt(msgLength[msgLength.length - 1]), msgIndex === -1)
             if (id === 0 && msgIndex === 0) {
                 $prev.prop('disabled', 'disabled');
             }
@@ -221,57 +231,30 @@ define([
             msgIndex++;
             msgs = ooMessages[id]
             if (Object.keys(hashes).length) {
-                if (!ooMessages[id] && id !== 0) { loading = false; return; }
-                if (id === 0 && msgIndex === 0|| msgIndex === msgs?.length || id === 0 && ooMessages[id+1].length === msgIndex) {
-                    id++;
-                    msgIndex = 0;
-                    console.log("next0")
-
-                }
-                if (Object.keys(hashes).length && msgIndex === 0) {
-                    console.log("next1", hashes, ooMessages, id, msgIndex, cp)
+                if (msgIndex === 0) {
+                    id++ 
                     msgs = ooMessages[id]
-                    var patch = msgs[msgIndex]; 
-                    // cp = hashes[id-1];
-                    if (id === 1) {
-                        cp = hashes[id];
-                    } else {
-                        cp = hashes[id-1];
-                    }
-                    
-
-                    config.onPatchBack(cp, [patch]);
-                }
-                else if (Object.keys(hashes).length && msgIndex > 0) {
-                    console.log("next2", hashes, ooMessages, id, msgIndex)
-                    if (id === 0) {
-                        msgs = ooMessages[id+1]
-                    }
-                    var patch = msgs[msgIndex]; 
-                }
-                else if (Object.keys(hashes).length && Math.sign(msgIndex) === -1) {
-                    if (Object.keys(ooMessages) > Object.keys(hashes) && !hashes[id+1]) {
-                        msgs = ooMessages[id+1]
-                        console.log("next3.25")
-
-                    } 
-                    else if (Object.keys(ooMessages) > Object.keys(hashes) && !ooMessages[id+1].length) {
-                        cp = hashes[id+1]
-                        config.onPatchBack(cp)
-                        id++
+                    if (msgs.length) {
+                        msgIndex = -msgs.length
+                        msgs = ooMessages[id]
+                        var patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined
+                        var cp = hashes[id-1]
+                        config.onPatchBack(cp, [patch])
                         return
+                    } else {
+                        id++
+                        msgs = ooMessages[id]
+
+                        msgIndex = -msgs.length
+                        var patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined
+                        var cp = hashes[id-1]
+                    
+                        config.onPatchBack(cp, [patch])
                     }
-                    else {
-                                            msgs = ooMessages[id]
-                                                                    console.log("next3.5")
 
-
-                    }
-                    console.log("next3", hashes, ooMessages, id, cpIndex, msgIndex)
-                    // msgs = ooMessages[id+1]
-
-                    var patch = msgs[msgs.length + msgIndex];
                 }
+                msgs = ooMessages[id]
+                var patch = msgs[msgs.length + msgIndex];
             } else {
                 var patch = msgs[msgs.length + msgIndex];
             }
@@ -289,57 +272,30 @@ define([
 
         var prev = function () {
             loadMoreOOHistory(function() {
-                if (Math.abs(msgIndex) > msgs?.length && id > 1 || msgIndex === 0 && id > 0) {
-                    id--;
-
-                    if (id === 1 || id === 0) {
-                                                console.log("prev?")
-
-                        msgIndex = ooMessages[id+1].length-1;
-
-                    } else {
-                        console.log("prev!")
-                        msgIndex = ooMessages[id+1].length-2;
-
-                    }
-                    console.log("prev0", id, )
-                }
-                if (Object.keys(hashes).length && Object.keys(ooMessages).length > Object.keys(hashes).length) {
-                    console.log("prev1", hashes, ooMessages, id, msgIndex)
-                    cp = hashes[id] ? hashes[id] : {};
-                    msgs = ooMessages[id+1];
-                    var queue = msgs.slice(0, msgIndex);
-                    config.onPatchBack(cp, queue);
-                } 
-                else if (Object.keys(hashes).length) {
-                    console.log("prev2", hashes, ooMessages, id, msgIndex)
-
-                    cp = hashes[id-1] ? hashes[id-1] : {};
-                    msgs = ooMessages[id];
-                    console.log("prev2.25", msgs.length)
-                    if (msgIndex === msgs.length) {
-                        msgIndex--
-                    } 
-                    msgIndex = msgIndex === msgs.length ? msgIndex-- : msgIndex
-                    console.log("prev2.5", hashes, ooMessages, id, msgIndex)
-
-                    var queue = msgs.slice(0, msgIndex);
-                    config.onPatchBack(cp, queue);
-                }
-                else if (!Object.keys(hashes).length) {
-                    console.log("prev3", hashes, ooMessages, id, msgIndex)
-
+                if (!Object.keys(hashes).length) {
                     msgs = ooMessages[id]
                     var queue = msgs.slice(0, msgIndex)
                     config.onPatchBack({}, queue)
-                }
-                                    
+                } else {
+                    msgs = ooMessages[id]
+                    if (msgs.length+1 === Math.abs(msgIndex) && id !== 0) {
+                        id--
+                        msgIndex = -1
+                        msgs = ooMessages[id]
+                    }
+                    if (!msgs.length && msgIndex < -1) {
+                        id--
+                        msgIndex = -1
+                        msgs = ooMessages[id]
+                    } 
+                    var queue = msgs.slice(0, msgIndex)
+                    var cp = hashes[id-1]
+                    config.onPatchBack(cp, queue)
+                }                 
                 showVersion();
                 msgIndex--;
 
             });
-            
-
         };
 
 

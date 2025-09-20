@@ -2026,16 +2026,16 @@ define([
                 }, cb);
             });
             sframeChan.on('Q_CURSOR_OPENCHANNEL', function (data, cb) {
-                Cryptpad.universal.execCommand({
-                    type: 'cursor',
-                    data: {
-                        cmd: 'INIT_CURSOR',
-                        data: {
-                            channel: data,
-                            secret: secret
-                        }
-                    }
-                }, cb);
+                // Cryptpad.universal.execCommand({
+                //     type: 'cursor',
+                //     data: {
+                //         cmd: 'INIT_CURSOR',
+                //         data: {
+                //             channel: data,
+                //             secret: secret
+                //         }
+                //     }
+                // }, cb);
             });
 
             Cryptpad.onTimeoutEvent.reg(function () {
