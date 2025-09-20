@@ -568,7 +568,7 @@ define([
             startOO(blob, type, true);
         };
 
-        var saveToServer = function (blob, title, msgs) {
+        var saveToServer = function (blob, title ) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
             var text = !blob && getContent();
             if (!text && !blob) {
@@ -585,7 +585,6 @@ define([
             blob = blob || new Blob([text], {type: 'plain/text'});
             var file = getFileType();
             blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
-            console.log("FILL index", ooChannel)
             var data = {
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
                 index:  APP.revert ? ooChannel.currentIndex : ooChannel.cpIndex
@@ -611,7 +610,6 @@ define([
         var noLogin = false;
 
         var makeCheckpoint = function (force, msgs) {
-            console.log("revert", APP.revert)
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
 
             var locked = content.saveLock;
@@ -1078,7 +1076,6 @@ define([
 
         const getInitialChanges = function() {
             const changes = [];
-
             if (content.version > 2) {
                 ooChannel.queue.forEach(function (data) {
                     Array.prototype.push.apply(changes, data.msg.changes);
@@ -1089,7 +1086,6 @@ define([
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
             }
-            console.log(ooChannel.queue)
             return changes
             
         };
@@ -3130,12 +3126,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             if (!privateData.ooVersionHash) {
             (function () {
                 /* add a history button */
-                var commit = function (msgs) {
+                var commit = function () {
                     // Wait for the checkpoint to be uploaded before leaving history mode
                     // (race condition). We use "stopHistory" to remove the history
                     // flag only when the checkpoint is ready.
                     APP.stopHistory = true;
-                    makeCheckpoint(true, msgs);
+                    makeCheckpoint(true);
                 };
                 var onPatch = function (patch) {
                     // Patch on the current cp
@@ -3147,30 +3143,22 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onPatchBack = function (cp, msgs) {
                     if (msgs) {
-                        msgsFormatted = []
+                        msgsFormatted = [];
                         msgs.forEach(function(msg) {
                             var parsedMsg = JSON.parse(msg.msg);
-        
                             var formattedMsg = {
                                 msg: parsedMsg,
                                 hash: msg.serverHash, 
                                 author: msg.author,
                                 time: msg.time
                             };
-                            
-                            msgsFormatted.push(formattedMsg)
-
+                            msgsFormatted.push(formattedMsg);
                         })
                         ooChannel.queue = msgsFormatted;
-                        console.log("patch", ooChannel.queue)
-                        setTimeout(() => {
-                            loadCp(cp, true);
-                        }, 100);
+                        loadCp(cp, true);
                     } else {
-                        loadCp(cp)
+                        loadCp(cp);
                     }
-                    
-                    
                 };
                 var setHistoryMode = function (bool) {
                     if (bool) {

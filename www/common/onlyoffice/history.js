@@ -17,19 +17,18 @@ define([
         var $toolbar = config.$toolbar;
         var sframeChan = common.getSframeChannel();
         History.readOnly = common.getMetadataMgr().getPrivateData().readOnly || !common.isLoggedIn();
+
         if (!config.onlyoffice || !config.setHistory || !config.onCheckpoint || !config.onPatch || !config.makeSnapshot) {
             throw new Error("Missing config element");
         }
 
         var cpIndex = -1;
         var msgIndex = -1;
-        var APP = window.APP
-        
-
         var ooMessages = {};
         var loading = false;
         var update = function () {};
         var currentTime;
+        var APP = window.APP;
 
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
@@ -64,7 +63,6 @@ define([
             }
             id = id ? id : getId();
             update();
-
         };
 
         if (endWithCp) { cpIndex = 0; }
@@ -93,8 +91,6 @@ define([
             $version.text(Messages.oo_version + v);
 
             var $pos = $hist.find('.cp-history-timeline-pos');
-            var cps = sortedCp.length;
-            // var id = getId()
             if (!ooMessages[id]) { return; }
             var msgs = ooMessages[id];
             var p = 100*((msgIndex+1) / (msgs.length));
@@ -188,7 +184,6 @@ define([
             $fastNext.show();
             $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous')
                 .prop('disabled', '');
-
             if (cpIndex >= cps && msgIndex === 0) {
                 $fastPrev.prop('disabled', 'disabled');
             }
@@ -211,7 +206,6 @@ define([
             }
         };
 
-        
         var next = function () {
             msgIndex++;
             msgs = ooMessages[id];
@@ -236,7 +230,6 @@ define([
                 msgs = ooMessages[id];
             } 
             var patch = msgs[msgs.length + msgIndex];
-
             config.onPatch(patch);
             showVersion();
             setTimeout(function () {
@@ -267,7 +260,6 @@ define([
                 }                 
                 showVersion();
                 msgIndex--;
-
             });
         };
 
@@ -292,7 +284,6 @@ define([
             $prev = $(_prev);
             $fastNext = $(fastNext).prop('disabled', 'disabled');
             $next = $(_next).prop('disabled', 'disabled');
-
 
             var pos = h('span.cp-history-timeline-pos.fa.fa-caret-down');
             var time = h('div.cp-history-timeline-time');
