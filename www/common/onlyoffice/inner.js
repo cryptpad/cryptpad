@@ -645,7 +645,7 @@ define([
                 content.saveLock = myOOId;
                 APP.onLocal();
                 APP.realtime.onSettle(function () {
-                    saveToServer(null, null, msgs);
+                    saveToServer();
                 });
             }
         };
@@ -1086,7 +1086,7 @@ define([
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
             }
-            return changes
+            return changes;
             
         };
 
@@ -1689,17 +1689,17 @@ define([
                             }
                             break;
                         case "cursor":
-                            // if (cursor && cursor.updateCursor) {
-                            //     cursor.updateCursor({
-                            //         type: "cursor",
-                            //         messages: [{
-                            //             cursor: obj.cursor,
-                            //             time: +new Date(),
-                            //             user: myUniqueOOId,
-                            //             useridoriginal: myOOId
-                            //         }]
-                            //     });
-                            // }
+                            if (cursor && cursor.updateCursor) {
+                                cursor.updateCursor({
+                                    type: "cursor",
+                                    messages: [{
+                                        cursor: obj.cursor,
+                                        time: +new Date(),
+                                        user: myUniqueOOId,
+                                        useridoriginal: myOOId
+                                    }]
+                                });
+                            }
                             break;
                         case "forceSaveStart":
                             if (APP.integrationSave) {
