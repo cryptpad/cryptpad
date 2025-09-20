@@ -27,8 +27,6 @@ define([
         
 
         var ooMessages = {};
-        var ooCheckpoints = {};
-        var currentMessages = {}
         var loading = false;
         var update = function () {};
         var currentTime;
@@ -36,48 +34,38 @@ define([
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
         var sortedCp = Object.keys(hashes).map(Number);
-        var id
+        var id;
 
         var getId = function () {
-            id = Object.keys(ooMessages).length
-            var cps = sortedCp.length;
-            console.log("ooMSGID", ooMessages)
-            return id
+            id = Object.keys(ooMessages).length;
+            return id;
         };
-
 
         var endWithCp = sortedCp.length &&
                         config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
 
         var fillOO = function (id, messages, ooCheckpoints) {
-            // if (!id) { return; }
-            var checkpoints = []
+            var checkpoints = [];
             Object.keys(ooCheckpoints).forEach(function(key) {
-                checkpoints.push(ooCheckpoints[key].index)
+                checkpoints.push(ooCheckpoints[key].index);
             })
             checkpoints.forEach((current, index) => {
                 var preceding = index > 0 ? checkpoints[index - 1] : 1;
-                ooMessages[index+1] = messages.slice(preceding-1, current-1)
+                ooMessages[index+1] = messages.slice(preceding-1, current-1);
             });
             var cpMessages = Object.values(ooMessages).flat().length;
-            var messageDiff = messages.length - cpMessages
+            var messageDiff = messages.length - cpMessages;
             if (messageDiff !== 0 && cpMessages) {
-                var keys = Object.keys(ooMessages)
+                var keys = Object.keys(ooMessages);
                 var currentM = parseInt(keys[keys.length - 1]);
-                ooMessages[currentM+1] = messages.slice(-messageDiff)
+                ooMessages[currentM+1] = messages.slice(-messageDiff);
             } else if (messageDiff !== 0 && !cpMessages) {
-                ooMessages[1] = messages
+                ooMessages[1] = messages;
             }
-
-            id = id ? id : getId()
+            id = id ? id : getId();
             update();
-            console.log("next fill", id, ooMessages, messages, hashes)
 
         };
-
-
-
-        // var id = getId();
 
         if (endWithCp) { cpIndex = 0; }
 
@@ -157,7 +145,7 @@ define([
             var cp = {};
 
             if (cb) {
-                cb()
+                cb();
             }
 
             showVersion();
@@ -226,37 +214,30 @@ define([
         
         var next = function () {
             msgIndex++;
-            msgs = ooMessages[id]
+            msgs = ooMessages[id];
             if (Object.keys(hashes).length) {
-                if (msgIndex === 0) {
-                    id++ 
-                    msgs = ooMessages[id]
-                    if (msgs.length) {
-                        msgIndex = -msgs.length
-                        msgs = ooMessages[id]
-                        var patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined
-                        var cp = hashes[id-1]
-                        config.onPatchBack(cp, [patch])
-                        return
-                    } else {
-                        id++
-                        msgs = ooMessages[id]
-
-                        msgIndex = -msgs.length
-                        var patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined
-                        var cp = hashes[id-1]
-                    
-                        config.onPatchBack(cp, [patch])
-                    }
-
+                if (msgIndex === 0) { 
+                    id++;
+                    msgs = ooMessages[id];
+                    if (!msgs.length) {
+                        var cp = hashes[id];
+                        config.onPatchBack(cp);
+                        id++;
+                        msgs = ooMessages[id];
+                        msgIndex = -msgs.length-1;
+                        return;
+                    } 
+                        msgIndex = -msgs.length;
+                        var patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined;
+                        var cp = hashes[id-1];
+                        config.onPatchBack(cp, [patch]);
+                        return;
                 }
-                msgs = ooMessages[id]
-                var patch = msgs[msgs.length + msgIndex];
-            } else {
-                var patch = msgs[msgs.length + msgIndex];
-            }
+                msgs = ooMessages[id];
+            } 
+            var patch = msgs[msgs.length + msgIndex];
 
-            config.onPatch(patch)
+            config.onPatch(patch);
             showVersion();
             setTimeout(function () {
                 $('iframe').blur();
@@ -270,21 +251,16 @@ define([
         var prev = function () {
             loadMoreOOHistory(function() {
                 if (!Object.keys(hashes).length) {
-                    msgs = ooMessages[id]
-                    var queue = msgs.slice(0, msgIndex)
-                    config.onPatchBack({}, queue)
+                    msgs = ooMessages[id];
+                    var queue = msgs.slice(0, msgIndex);
+                    config.onPatchBack({}, queue);
                 } else {
-                    msgs = ooMessages[id]
-                    if (msgs.length+1 === Math.abs(msgIndex) && id !== 0) {
-                        id--
-                        msgIndex = -1
-                        msgs = ooMessages[id]
+                    msgs = ooMessages[id];
+                    if (msgs.length+1 === Math.abs(msgIndex) && id !== 0 || !msgs.length && msgIndex < -1) {
+                        id--;
+                        msgIndex = -1;
+                        msgs = ooMessages[id];
                     }
-                    if (!msgs.length && msgIndex < -1) {
-                        id--
-                        msgIndex = -1
-                        msgs = ooMessages[id]
-                    } 
                     var queue = msgs.slice(0, msgIndex)
                     var cp = hashes[id-1]
                     config.onPatchBack(cp, queue)
