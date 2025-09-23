@@ -222,41 +222,27 @@ define([
         
         var next = function () {
             msgIndex++;
-            msgs = ooMessages[id]
+            msgs = ooMessages[id];
             if (Object.keys(hashes).length) {
                 if (msgIndex === 0) {
-                    id++ 
-                    msgs = ooMessages[id]
-                    if (msgs.length) {
-                        msgIndex = -msgs.length
-                        msgs = ooMessages[id]
-                        var patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined
-                        var cp = hashes[id-1]
-                        config.onPatchBack(cp, [patch])
-                        loadingFalse()
-                        return
-                    } else {
-                        id++
-                        msgs = ooMessages[id]
-
-                        msgIndex = -msgs.length
-                        var patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined
-                        var cp = hashes[id-1]
-                        config.onPatchBack(cp, [patch])
-                    }
-
+                    id++;
+                    msgs = ooMessages[id];
+                    if (!msgs.length) {
+                        id++;
+                        msgs = ooMessages[id];
+                    } 
+                    msgIndex = -msgs.length;
+                    var patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined;
+                    var cp = hashes[id-1];
+                    config.onPatchBack(cp, [patch]);
+                    loadingFalse();
+                    return;
                 }
-                msgs = ooMessages[id]
-                // var patch = msgs[msgs.length + msgIndex];
             } 
-            // else {
-                var patch = msgs[msgs.length + msgIndex];
-            // }
-
-            config.onPatch(patch)
+            var patch = msgs[msgs.length + msgIndex];
+            config.onPatch(patch);
             showVersion();
-            loadingFalse()
-
+            loadingFalse();
         };
 
         var msgs;
@@ -265,7 +251,6 @@ define([
             loadMoreOOHistory(function() {
                 msgs = ooMessages[id];
                 if (!Object.keys(hashes).length) {
-
                     var cp = {};
                 } else {
                     if ((msgs.length+1 === Math.abs(msgIndex) && id !== 0) || (!msgs.length && msgIndex < -1)) {
@@ -274,12 +259,8 @@ define([
                         msgs = ooMessages[id];
                     }
                     var cp = hashes[id-1];
-                    console.log("prev", ooMessages, id, msgs, cp)
-
                 } 
                 var queue = msgs.slice(0, msgIndex);
-                console.log("prev0", ooMessages, id, msgs, cp, queue)
-
                 config.onPatchBack(cp, queue); 
                 showVersion();
                 msgIndex--;

@@ -1712,17 +1712,17 @@ define([
                             }
                             break;
                         case "cursor":
-                            // if (cursor && cursor.updateCursor) {
-                            //     cursor.updateCursor({
-                            //         type: "cursor",
-                            //         messages: [{
-                            //             cursor: obj.cursor,
-                            //             time: +new Date(),
-                            //             user: myUniqueOOId,
-                            //             useridoriginal: myOOId
-                            //         }]
-                            //     });
-                            // }
+                            if (cursor && cursor.updateCursor) {
+                                cursor.updateCursor({
+                                    type: "cursor",
+                                    messages: [{
+                                        cursor: obj.cursor,
+                                        time: +new Date(),
+                                        user: myUniqueOOId,
+                                        useridoriginal: myOOId
+                                    }]
+                                });
+                            }
                             break;
                         case "forceSaveStart":
                             if (APP.integrationSave) {
@@ -3183,7 +3183,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                             msgsFormatted.push(formattedMsg);
                         })
                         ooChannel.queue = msgsFormatted;
-                        loadCp(cp, true);
+                        setTimeout(function () {
+                            loadCp(cp, true);
+                        }, 200);
                     } else {
                         loadCp(cp);
                     }
