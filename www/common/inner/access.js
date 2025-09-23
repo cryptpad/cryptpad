@@ -944,7 +944,7 @@ define([
                     pLocked = true;
                     UI.confirm(changePwConfirm, function (yes) {
                         if (!yes) { pLocked = false; return; }
-                        $(passwordOk).html('').append(Icons.get('loading', {style: 'margin-left: 0'}));
+                        $(passwordOk).html('').append(Icons.get('loading', {style: 'margin: 0; animation: spin 10s linear infinite;'}));
                         var q = isFile ? 'Q_BLOB_PASSWORD_CHANGE' :
                                     (isOO ? 'Q_OO_PASSWORD_CHANGE' : 'Q_PAD_PASSWORD_CHANGE');
 
@@ -1044,6 +1044,7 @@ define([
                                 }
                             });
                         });
+                        Lucide.createIcons();
                     });
                 });
                 $(passwordOk).on('keydown', function (e) {
