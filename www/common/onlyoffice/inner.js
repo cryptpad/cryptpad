@@ -556,7 +556,7 @@ define([
                     APP.oldCursor = d.GetSelectionState();
                 }
             }
-            if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
+            if (APP.docEditor && APP.docEditor.destroyEditor() ) { APP.docEditor.destroyEditor(); } // Kill the old editor
             $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
             ooLoaded = false;
             oldLocks = {};
@@ -568,7 +568,7 @@ define([
             startOO(blob, type, true);
         };
 
-        var saveToServer = function (blob, title, msgs) {
+        var saveToServer = function (blob, title) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
             var text = !blob && getContent();
             if (!text && !blob) {
@@ -610,8 +610,7 @@ define([
 
         var noLogin = false;
 
-        var makeCheckpoint = function (force, msgs) {
-            console.log("revert", APP.revert)
+        var makeCheckpoint = function (force) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
 
             var locked = content.saveLock;
@@ -647,7 +646,7 @@ define([
                 content.saveLock = myOOId;
                 APP.onLocal();
                 APP.realtime.onSettle(function () {
-                    saveToServer(null, null, msgs);
+                    saveToServer();
                 });
             }
         };
@@ -3130,12 +3129,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             if (!privateData.ooVersionHash) {
             (function () {
                 /* add a history button */
-                var commit = function (msgs) {
+                var commit = function () {
                     // Wait for the checkpoint to be uploaded before leaving history mode
                     // (race condition). We use "stopHistory" to remove the history
                     // flag only when the checkpoint is ready.
                     APP.stopHistory = true;
-                    makeCheckpoint(true, msgs);
+                    makeCheckpoint(true);
                 };
                 var onPatch = function (patch) {
                     // Patch on the current cp
@@ -3147,7 +3146,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onPatchBack = function (cp, msgs) {
                     if (msgs) {
-                        msgsFormatted = []
+                        msgsFormatted = [];
                         msgs.forEach(function(msg) {
                             var parsedMsg = JSON.parse(msg.msg);
         
@@ -3157,20 +3156,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                                 author: msg.author,
                                 time: msg.time
                             };
-                            
-                            msgsFormatted.push(formattedMsg)
-
+                            msgsFormatted.push(formattedMsg);
                         })
                         ooChannel.queue = msgsFormatted;
-                        console.log("patch", ooChannel.queue)
-                        setTimeout(() => {
-                            loadCp(cp, true);
-                        }, 100);
+                        loadCp(cp, true);
                     } else {
-                        loadCp(cp)
+                        loadCp(cp);
                     }
-                    
-                    
                 };
                 var setHistoryMode = function (bool) {
                     if (bool) {
