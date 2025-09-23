@@ -2993,7 +2993,7 @@ define([
 
         // Msg.admin_diskUsageHint, .admin_diskUsageTitle, .admin_diskUsageButton
         sidebar.addItem('disk-usage', function(cb){
-            var button = blocks.button('primary', '', Messages.admin_diskUsageButton);
+            var button = blocks.button('primary', 'report', Messages.admin_diskUsageButton);
             var $button = $(button);
             var called = false;
             var nav = blocks.nav([button]);
