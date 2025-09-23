@@ -233,6 +233,7 @@ define([
         "quote": "quote",
         "toc": "newspaper",
         "embed": "image-plus",
+        "pricing": "circle-star",
         // Badges
         "badge-admin": "star",
         "badge-moderator": "life-buoy",
