@@ -1078,17 +1078,17 @@
                 border-color: @cryptpad_text_col;
                 color: @cryptpad_text_col;
             }
+            .cp-toolbar-userlist-button {
+                svg {
+                    margin: 0;
+                }
+            }
             &.cp-toolbar-button-active {
                 background-color: @cp_toolbar-bg;
                 border-color: @cp_toolbar-fg;
                 color: @cp_toolbar-fg;
                 &:hover {
                     background-color: fade(@cryptpad_text_col, 20%);
-                }
-                .cp-toolbar-userlist-button {
-                    svg {
-                        margin: 0;
-                    }
                 }
             }
         }
