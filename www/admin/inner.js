@@ -1816,7 +1816,7 @@ define([
                 value: _limitMB,
                 'aria-labelledby': 'cp-admin-defaultlimit'
             });
-            var button = blocks.button('primary', '', Messages.admin_setlimitButton);
+            var button = blocks.button('primary', 'limit', Messages.admin_setlimitButton);
             var nav = blocks.nav([button]);
             var text = blocks.inline(Messages._getKey('admin_limit', [limit]));
 
@@ -1873,7 +1873,7 @@ define([
             var $note = $(note);
 
             var remove = blocks.button('danger', 'restricted', Messages.fc_remove );
-            var set = blocks.button('primary', '', Messages.admin_setlimitButton);
+            var set = blocks.button('primary', 'limit', Messages.admin_setlimitButton);
 
             var nav = blocks.nav([set, remove]);
             var form = blocks.form([
@@ -3940,7 +3940,7 @@ define([
                 min: 0,
                 value: duration
             });
-            var set = blocks.button('primary', '', Messages.admin_setDuration);
+            var set = blocks.button('primary', 'duration', Messages.admin_setDuration);
             var label = blocks.labelledInput( Messages.ui_ms, newDuration);
             var nav = blocks.nav([set]);
             var form = blocks.form([
@@ -3996,7 +3996,7 @@ define([
 
         // Messages.admin_checkupButton.admin_checkupHint.admin_checkupTitle
         sidebar.addItem('checkup', function(cb){
-            var button = blocks.button('primary', '', Messages.admin_checkupButton);
+            var button = blocks.button('primary', 'checkup', Messages.admin_checkupButton);
             Util.onClickEnter($(button), function () {
                 common.openURL('/checkup/');
             });

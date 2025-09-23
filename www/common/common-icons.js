@@ -131,6 +131,9 @@ define([
         "toolbar-insert": "image-plus",
         "features": "info",
         "report": "clipboard-plus",
+        "limit": "settings-2",
+        "duration": "timer-reset",
+        "checkup": "monitor-cog",
         // Login + Register
         "login": "log-in",
         "logout": "log-out",
