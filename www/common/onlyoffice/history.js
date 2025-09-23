@@ -17,6 +17,7 @@ define([
         var $toolbar = config.$toolbar;
         var sframeChan = common.getSframeChannel();
         History.readOnly = common.getMetadataMgr().getPrivateData().readOnly || !common.isLoggedIn();
+        
         if (!config.onlyoffice || !config.setHistory || !config.onCheckpoint || !config.onPatch || !config.makeSnapshot) {
             throw new Error("Missing config element");
         }
@@ -74,25 +75,21 @@ define([
         var $bottom = $toolbar.find('.cp-toolbar-bottom');
         var Messages = common.Messages;
 
-        var getVersion = function () {
+        var getVersion = function (position) {
             if (Object.keys(ooMessages).length) {
-                var major = sortedCp.length - cpIndex;
-                // console.log("version", major, sortedCp.length, cpIndex, msgIndex, ooMessages, id )
-                // console.log("version2", ooMessages )
-                return major-1 + '.' + (ooMessages[id]?.length-Math.abs(msgIndex+1));
+                var major = id === 0 ? 0 : id-1;
+                return major + '.' + position;
             }
 
         };
-        var showVersion = function (initial) {
-            var v = getVersion();
+        var showVersion = function (initial, position) {
+            var v = getVersion(position);
             if (initial) {
                 v = Messages.oo_version_latest;
             }
             $version.text(Messages.oo_version + v);
 
             var $pos = $hist.find('.cp-history-timeline-pos');
-            var cps = sortedCp.length;
-            // var id = getId()
             if (!ooMessages[id]) { return; }
             var msgs = ooMessages[id];
             var p = 100*((msgIndex+1) / (msgs.length));
@@ -146,7 +143,6 @@ define([
                 cb();
             }
 
-            showVersion();
             if (ooMessages[id] || id === 0) {
                 // Cp already loaded: reload OO
                 loading = false;
@@ -190,20 +186,13 @@ define([
             if (cpIndex >= cps && msgIndex === 0) {
                 $fastPrev.prop('disabled', 'disabled');
             }
-            if (cpIndex === 0) {
+            var msgLength = Object.keys(ooMessages).length   
+            if (id === msgLength) {
                 $fastNext.prop('disabled', 'disabled');
+            }        
+            if (msgLength === id && msgIndex === -1) {
+                $next.prop('disabled', 'disabled');
             }
-            // var msgLength = Object.keys(ooMessages)           
-            // if (ooMessages[id].length === msgIndex-1) {
-            //     $next.prop('disabled', 'disabled');
-            // }
-            // if (ooMessages[id].length && msgIndex === (msgIndex+1)) {
-            //     console.log("hello")
-            //     $next.prop('disabled', 'disabled');
-            // }
-            // console.log("NEXT DISABLE", ooMessages[id], msgIndex)
-
-            // console.log("NEXT DISABLE1", id, msgIndex, ooMessages[id].length === msgIndex-1, (id+1), msgLength[msgLength.length - 1], (id+1) === parseInt(msgLength[msgLength.length - 1]), msgIndex === -1)
             if (id === 0 && msgIndex === 0) {
                 $prev.prop('disabled', 'disabled');
             }
@@ -232,13 +221,14 @@ define([
                     var patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined;
                     var cp = hashes[id-1];
                     config.onPatchBack(cp, [patch]);
+                    showVersion(false, msgs.indexOf(patch)+1);
                     loadingFalse();
                     return;
                 }
             } 
             var patch = msgs[msgs.length + msgIndex];
             config.onPatch(patch);
-            showVersion();
+            showVersion(false, msgs.indexOf(patch)+1);
             loadingFalse();
         };
 
@@ -259,7 +249,7 @@ define([
                 } 
                 var queue = msgs.slice(0, msgIndex);
                 config.onPatchBack(cp, queue); 
-                showVersion();
+                showVersion(false, queue.length);
                 msgIndex--;
             });
             loadingFalse();
@@ -376,20 +366,24 @@ define([
             $fastNext.click(function () {
                 if (loading) { return; }
                 loading = true;
-                cpIndex--;
-                loadMoreOOHistory();
-                update();
+                id++;
+                var cp = hashes[id];
+                config.loadCp(cp);
+                setTimeout(function () {
+                    update();
+                    loading = false;
+                }, 100);
             });
             // Go to next checkpoint
             $fastPrev.click(function () {
                 if (loading) { return; }
                 loading = true;
-                id = 0
-                msgIndex = 0
-                console.log("prev0", id, msgIndex)
-                loadMoreOOHistory();
+                id--;
+                var cp = hashes[id];
+                config.loadCp(cp);
                 setTimeout(function () {
                     update();
+                    loading = false;
                 }, 100);
                 
             });
