@@ -21,7 +21,6 @@ define([
     '/common/common-icons.js',
 
     'less!/install/onboarding.less',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages, Rpc, OnboardScreen, Lucide, Icons) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;

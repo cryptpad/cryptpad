@@ -34,7 +34,6 @@ define([
     '/components/file-saver/FileSaver.min.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/poll/app-poll.less',
 ], function (
     $,

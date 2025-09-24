@@ -22,7 +22,6 @@ define([
 
     '/components/file-saver/FileSaver.min.js',
 
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/moderation/app-moderation.less',
 ], function (
     $,

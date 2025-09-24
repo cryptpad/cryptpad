@@ -19,8 +19,6 @@ define([
     '/customize/pages.js',
     '/customize/fonts/lucide.js',
     '/common/common-icons.js',
-
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function (Config, $, Login, Cryptpad, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Extensions, Pages, Lucide, Icons) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;
