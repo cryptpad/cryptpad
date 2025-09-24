@@ -338,7 +338,6 @@ define([
                 $comments[0],
             ]);
 
-            Lucide.createIcons();
             return $d[0];
         };
 
@@ -349,6 +348,7 @@ define([
             icon: 'pad-settings',
         }, function () {
             UI.alert(getSettings());
+            Lucide.createIcons();
         });
 
         var $settings = UIElements.getEntryFromButton($settingsButton);
