@@ -609,7 +609,7 @@ define([
                     $list.find('span').removeClass('active');
                     commitTags();
                 });
-
+                setTimeout(() => Lucide.createIcons());
                 $container.append(tags);
             };
             events.REFRESH_TAGS.reg(redrawTags);

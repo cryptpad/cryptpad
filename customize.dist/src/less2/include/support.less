@@ -45,6 +45,7 @@
         display: flex;
         svg {
             cursor: pointer;
+            vertical-align: middle;
         }
         &> span {
             border: 1px solid @fromme-bg;
@@ -157,6 +158,9 @@
                         display: none;
                         cursor: default;
                         position: relative;
+                        button svg {
+                            margin-right: 0;
+                        }
                         .cp-support-copydata {
                             position: absolute;
                             right: 0;
