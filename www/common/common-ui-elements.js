@@ -384,6 +384,7 @@ define([
             $div.append(list.div);
             var contactsButtons = [{
                 className: 'primary',
+                iconClass: 'send',
                 name: Messages.team_inviteModalButton,
                 onClick: function () {
                     var $sel = $div.find('.cp-usergrid-user.cp-selected');
@@ -433,7 +434,7 @@ define([
         var linkForm, linkSpin, linkResult, linkUses, linkRole;
         var linkWarning;
         // Invite from link
-        var dismissButton = Icons.get('close');
+        var dismissButton = h('span', Icons.get('close'));
 
         var roleViewer = UI.createRadio('cp-team-role', 'cp-team-role-viewer',
                 Messages.team_viewers, true, {
@@ -598,6 +599,7 @@ define([
         }, {
             className: 'primary cp-teams-invite-create',
             name: Messages.team_inviteLinkCreate,
+            iconClass: 'link',
             onClick: function () {
                 return process();
             },
@@ -605,6 +607,7 @@ define([
         }, {
             className: 'primary cp-teams-invite-copy',
             name: Messages.team_inviteLinkCopy,
+            iconClass: 'copy',
             onClick: function () {
                 if (!href) { return; }
                 Clipboard.copy(href, (err) => {
