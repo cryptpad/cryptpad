@@ -408,7 +408,7 @@ define([
         // to avoid alert fatigue
         if (!opts.versionHash && !opts.static) {
             var localStore = window.cryptpadStore;
-            var dismissButton = Icons.get('close');
+            var dismissButton = h('span', [Icons.get('close')]);
             var shareLinkWarning = h('div.alert.alert-warning.dismissable',
                 { style: 'display: none;' },
                 [
