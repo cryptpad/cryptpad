@@ -440,7 +440,7 @@ define([
             $hist.removeClass('cp-history-init');
 
             var fastPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_fastPrev }, [
-                Icons.get('history-prev'),
+                Icons.get('history-fast-prev'),
                 Icons.get('users')
             ]);
             var userPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_userPrev }, [
