@@ -140,7 +140,7 @@ define(req, function(AppConfig, Default, Language) {
     Messages.password_note3 = "Your password is the secret key that encrypts all of your documents and administrator privileges on this instance.";
     Messages.computer_note = 'If you are using a shared computer, {0}remember to log out{1} when you are done. Only closing the browser window leaves your account exposed.';
     Messages.import_note = 'To keep the documents you created and/or stored without being logged in, tick "Import documents from your guest session".';
-    Messages.admin_note =  "Create your first administrator account on this page. Administrators manage instance settings including storage quotas, and have access to moderation tools.";
+    Messages.admin_creation_note =  "Create your first administrator account on this page. Administrators manage instance settings including storage quotas, and have access to moderation tools.";
 
     return Messages;
 
