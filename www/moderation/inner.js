@@ -728,7 +728,7 @@ define([
             let send = blocks.button('primary', 'send', Messages.support_formButton);
             let nav = blocks.nav([send]);
 
-            let reset = blocks.button('danger-alt', 'close', Messages.form_reset);
+            let reset = blocks.button('danger-alt', 'restore', Messages.form_reset);
 
             let paste = blocks.textarea({
                 class: 'cp-support-newticket-paste',
