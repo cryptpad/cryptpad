@@ -548,7 +548,12 @@ define([
                 var app = common.getMetadataMgr().getPrivateData().ooType;
                 var d;
                 if (app === 'doc') {
-                    d = editor.GetDocument().Document;
+                    if (editor.GetDocument()) {
+                        d = editor.GetDocument().Document
+                    } else {
+                        d = undefined
+                    }
+                    // d = editor.GetDocument() ? editor.GetDocument().Document : undefined;
                 } else if (app === 'presentation') {
                     d = editor.GetPresentation().Presentation;
                 }
@@ -585,7 +590,6 @@ define([
             blob = blob || new Blob([text], {type: 'plain/text'});
             var file = getFileType();
             blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
-            console.log("FILL index", ooChannel)
             var data = {
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
                 index:  APP.revert ? ooChannel.currentIndex : ooChannel.cpIndex
@@ -1088,9 +1092,7 @@ define([
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
             }
-            console.log(ooChannel.queue)
-            return changes
-            
+            return changes;
         };
 
         const onAuth = function () {
