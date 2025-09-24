@@ -38,34 +38,44 @@ define([
         var sortedCp = Object.keys(hashes).map(Number);
         var id;
 
+        var sortedCp = Object.keys(hashes).map(Number).sort(function (a, b) {
+            return hashes[a].index - hashes[b].index;
+        });
+
+        console.log("hashescp", sortedCp)
         var getId = function () {
-            id = Object.keys(ooMessages).length;
-            return id;
+            var cps = sortedCp.length;
+            id = sortedCp[cps -1] || -1;
+            return sortedCp[cps -1] || -1;
         };
 
         var endWithCp = sortedCp.length &&
                         config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
 
         var fillOO = function (id, messages, ooCheckpoints) {
-            var checkpoints = [];
-            Object.keys(ooCheckpoints).forEach(function(key) {
-                checkpoints.push(ooCheckpoints[key].index);
-            })
-            checkpoints.forEach((current, index) => {
-                var preceding = index > 0 ? checkpoints[index - 1] : 1;
-                ooMessages[index+1] = messages.slice(preceding-1, current-1);
-            });
-            var cpMessages = Object.values(ooMessages).flat().length;
-            var messageDiff = messages.length - cpMessages;
-            if (messageDiff !== 0 && cpMessages) {
-                var keys = Object.keys(ooMessages);
-                var currentM = parseInt(keys[keys.length - 1]);
-                ooMessages[currentM+1] = messages.slice(-messageDiff);
-            } else if (messageDiff !== 0 && !cpMessages) {
-                ooMessages[1] = messages;
-            }
-            id = id ? id : getId();
+            if (!id) { return; }
+            if (ooMessages[id]) { return; }
+            ooMessages[id] = messages;
             update();
+            // var checkpoints = [];
+            // Object.keys(ooCheckpoints).forEach(function(key) {
+            //     checkpoints.push(ooCheckpoints[key].index);
+            // })
+            // checkpoints.forEach((current, index) => {
+            //     var preceding = index > 0 ? checkpoints[index - 1] : 1;
+            //     ooMessages[index+1] = messages.slice(preceding-1, current-1);
+            // });
+            // var cpMessages = Object.values(ooMessages).flat().length;
+            // var messageDiff = messages.length - cpMessages;
+            // if (messageDiff !== 0 && cpMessages) {
+            //     var keys = Object.keys(ooMessages);
+            //     var currentM = parseInt(keys[keys.length - 1]);
+            //     ooMessages[currentM+1] = messages.slice(-messageDiff);
+            // } else if (messageDiff !== 0 && !cpMessages) {
+            //     ooMessages[1] = messages;
+            // }
+            // id = id ? id : getId();
+            // update();
         };
 
         if (endWithCp) { cpIndex = 0; }
@@ -122,7 +132,7 @@ define([
                 let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
 
                 const messages = (data.messages || []).slice(initialCp ? 0 : 1);
-
+                console.log("hashmes", messages)
                 if (config.debug) {
                     console.log(data.messages);
                 }
@@ -138,27 +148,34 @@ define([
         // We want to load a checkpoint (or initial state)
         var loadMoreOOHistory = function (cb) {
             if (!Array.isArray(sortedCp)) { return void console.error("Wrong type"); }
+                        var id = id ? id : getId()
 
-            var cp = {};
+            console.log("hashes2", hashes)
+            var cp = hashes[id];
 
             if (cb) {
                 cb();
             }
 
-            if (ooMessages[id] || id === 0) {
-                // Cp already loaded: reload OO
-                loading = false;
-                return void config.onCheckpoint(cp);
-            }
+            // if (ooMessages[id] || id === 0) {
+            //     // Cp already loaded: reload OO
+            //     loading = false;
+            //     return void config.onCheckpoint(cp);
+            // }
+
+            console.log("hashes", config.onlyoffice, hashes, id)
+            getMessages(config.onlyoffice.lastHash, cp.hash, cpIndex, sortedCp, undefined, -1, config, fillOO, $share, hashes, function (err, messages) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+        });
             
         };
 
-        getMessages(config.onlyoffice.lastHash, 'NONE', cpIndex, sortedCp, undefined, -1, config, fillOO, $share, hashes, function (err, messages) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-        });
+        loadMoreOOHistory()
+
+        
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
@@ -239,16 +256,19 @@ define([
 
         var prev = function () {
             loadMoreOOHistory(function() {
+                console.log("hash messages", ooMessages, id, msgIndex)
                 msgs = ooMessages[id];
+
+
                 if (!Object.keys(hashes).length) {
                     var cp = {};
                 } else {
-                    if ((msgs.length+1 === Math.abs(msgIndex) && id !== 0) || (!msgs.length && msgIndex < -1)) {
-                        id--;
-                        msgIndex = -1;
-                        msgs = ooMessages[id];
-                    }
-                    var cp = hashes[id-1];
+                    // if ((msgs.length+1 === Math.abs(msgIndex) && id !== 0) || (!msgs.length && msgIndex < -1)) {
+                    //     id--;
+                    //     msgIndex = -1;
+                    //     msgs = ooMessages[id];
+                    // }
+                    var cp = hashes[id];
                 } 
                 var queue = msgs.slice(0, msgIndex);
                 config.onPatchBack(cp, queue); 
