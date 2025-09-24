@@ -21,7 +21,6 @@ define([
 
     '/components/tweetnacl/nacl-fast.min.js',
 
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Sortify, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback,
     Clipboard, LocalStore, Block, ServerCommand) {
     if (window.top !== window) { return; }

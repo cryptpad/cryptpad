@@ -44,7 +44,6 @@ define([
     'css!/lib/calendar/tui-calendar.min.css',
     'css!/components/codemirror/lib/codemirror.css',
     'css!/components/codemirror/addon/dialog/dialog.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'less!/calendar/app-calendar.less',
 ], function (

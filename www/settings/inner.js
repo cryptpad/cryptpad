@@ -37,7 +37,6 @@ define([
     'css!/components/codemirror/addon/dialog/dialog.css',
     'css!/components/codemirror/addon/fold/foldgutter.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/settings/app-settings.less',
 ], function(
     $,
