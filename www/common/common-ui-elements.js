@@ -318,6 +318,7 @@ define([
                 buttons: [{
                     className: 'secondary',
                     name: Messages.share_copyProfileLink,
+                    iconClass: 'copy',
                     onClick: function () {
                         var profile = data.profile ? (origin + '/profile/#' + data.profile) : '';
                         Clipboard.copy(profile, (err) => {
