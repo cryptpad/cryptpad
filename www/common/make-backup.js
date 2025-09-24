@@ -19,7 +19,7 @@ define([
     '/common/common-icons.js',
     '/components/jszip/dist/jszip.min.js',
 ], function ($, FileCrypto, Hash, Util, UI, h, Feedback, UO,
-             Cache, Messages, nThen, Saferphore, Lucide, Icons) {
+             Cache, Messages, nThen, Saferphore, Lucide, Icons, JsZip) {
     var saveAs = window.saveAs;
 
     var sanitize = function (str) {
