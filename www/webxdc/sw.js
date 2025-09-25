@@ -18,36 +18,40 @@ self.addEventListener('fetch', event => {
     console.log(path);
 
     if (path.startsWith(PATH_PREFIX)) {
-        const zipPath = path.substring(PATH_PREFIX.length);
-        console.log(zipPath);
+      const zipPath = path.substring(PATH_PREFIX.length);
+      console.log(zipPath);
 
 
-         try {
-            let zip = new JSZip();
-            const promise = fetch('http://localhost:3000/webxdc/arcanecircle-chess-v2.4.0.xdc')
-            .then((response) => {
-            if (!response.ok) {
-               throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-               return response.blob();
-            })
-            .then((response) => {
-               //console.log(response);
+      try {
+         let zip = new JSZip();
+         var promise = fetch('http://localhost:3000/webxdc/arcanecircle-chess-v2.4.0.xdc')
+         .then((response) => {
+         if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+         }
+            return response.blob();
+         })
+         .then((response) => {
+            //console.log(response);
+            return zip.loadAsync(response);
+         })
+         .then(function(zip) {
+            //console.log(zip.files);
+            // folder1/folder2/folder3/file1.txt
 
-               return zip.loadAsync(response);
+            return zip.file(zipPath).async("blob");
+         })
+         .then((response) => {
+            console.log(response);
+            return new Response(response);
+         })
 
-            })
-             .then(function(zip) {
-                 console.log(zip.files);
-                 // folder1/folder2/folder3/file1.txt
-                 return new Result(blob from zip);
-             });
-            } catch (error) {
-               console.error(`XXX Unzipping failed w/ error: ${error}`);
-            }
+      } catch (error) {
+         console.error(`XXX Unzipping failed w/ error: ${error}`);
+      }
 
-
-        event.respondWith(promise);
+      console.log(promise)
+      event.respondWith(promise);
     }
 });
 
