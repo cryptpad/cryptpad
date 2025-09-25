@@ -7312,6 +7312,7 @@ console.log("XXX: loaded");
                     }),
                         window.webxdc.setUpdateListener(ut, 0));
                 };
+                window.chessOnload = onload;
             },
         };
     });

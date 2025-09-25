@@ -29,10 +29,23 @@ define([
         return tag;
     }
 
+    function waitFor(contition, callback) {
+        if (contition()) {
+            callback();
+        } else {
+            setTimeout(() => waitFor(contition, callback), 10);
+        }
+    }
     function loadChess() {
         const legacyTag = loadScript('vite-legacy-polyfill', '/webxdc/assets/polyfills-legacy-Op9eHCRg.js');
         legacyTag.addEventListener('load', () => {
             System.import('/webxdc/assets/index-legacy-CpC3q1r5.js');
+            waitFor(() => window.chessOnload, () => window.chessOnload());
+
+            // const legacyTag = loadScript('vite-legacy-entry', '/webxdc/assets/index-legacy-CpC3q1r5.js');
+            // legacyTag.addEventListener('load', () => {
+            //     window.chessOnload();
+            // });
         });
     }
 
