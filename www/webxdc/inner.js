@@ -19,6 +19,22 @@ define([
     h,
     ) {
 
+    function loadScript(id, src) {
+        const tag = document.createElement('script');
+        tag.setAttribute('id', id);
+        tag.setAttribute('src', src);
+        tag.setAttribute('crossorigin', '');
+
+        document.getElementById('cp-app-webxdc-editor').append(tag);
+        return tag;
+    }
+
+    function loadChess() {
+        const legacyTag = loadScript('vite-legacy-polyfill', '/webxdc/assets/polyfills-legacy-Op9eHCRg.js');
+        legacyTag.addEventListener('load', () => {
+            System.import('/webxdc/assets/index-legacy-CpC3q1r5.js');
+        });
+    }
 
     // This is the main initialization loop
     let onFrameworkReady = function (framework) {
@@ -79,6 +95,8 @@ define([
         framework.onReady(function () {
             // Document is ready, you can initialize your app
             console.log('Document is ready:', content);
+
+            loadChess();
         });
 
         // Start the framework
