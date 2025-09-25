@@ -25,20 +25,21 @@ define([
         let $container = $('#cp-app-webxdc-editor');
 
         let $content = $(h('div#cp-webxdc-content')).appendTo($container);
-        let $textarea = $(h('textarea'));
-        $content.append($textarea);
+        // let $textarea = $(h('textarea'));
+        // $content.append($textarea);
         let oldVal = '';
-        $textarea.on('change keyup paste', function () {
-            var currentVal = $textarea.val();
-            if (currentVal === oldVal) { return; } // Nothing to do
-            oldVal = currentVal;
-            framework.localChange();
-        });
+        // $textarea.on('change keyup paste', function () {
+        //     var currentVal = $textarea.val();
+        //     if (currentVal === oldVal) { return; } // Nothing to do
+        //     oldVal = currentVal;
+        //     framework.localChange();
+        // });
         let getContent = () => {
-            return $textarea.val();
+            // return $textarea.val();
         };
         let setContent = (value) => {
-            return $textarea.val(value);
+            // return $textarea.val(value);
+            // return window.webxdc.sendUpdate(value);
         };
 
         let content = {};
