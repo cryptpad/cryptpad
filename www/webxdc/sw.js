@@ -6,28 +6,7 @@ self.addEventListener("install", event => {
 });
 self.addEventListener("activate", event => {
    console.log("Service worker activated");
-      try {
-      let zip = new JSZip();
-      fetch('http://localhost:3000/webxdc/arcanecircle-chess-v2.4.0.xdc')
-      .then((response) => {
-      if (!response.ok) {
-         throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-         return response.blob();
-      })
-      .then((response) => {
-         console.log(response);
-
-         zip.loadAsync(response)
-         .then(function (zip) {
-            console.log(zip.files);
-            // folder1/folder2/folder3/file1.txt
-         });
-
-      });
-   } catch (error) {
-      console.error(`XXX Unzipping failed w/ error: ${error}`);
-   }
+      
 });
 
 const PATH_PREFIX = '/webxdc/chess.xdc/';
@@ -38,11 +17,36 @@ self.addEventListener('fetch', event => {
     const path = url.pathname;
     console.log(path);
 
-    if (path.startsWith('path')) {
+    if (path.startsWith(PATH_PREFIX)) {
         const zipPath = path.substring(PATH_PREFIX.length);
         console.log(zipPath);
 
-        event.respondWith(new Response('Hello'));
+
+         try {
+            let zip = new JSZip();
+            fetch('http://localhost:3000/webxdc/arcanecircle-chess-v2.4.0.xdc')
+            .then((response) => {
+            if (!response.ok) {
+               throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+               return response.blob();
+            })
+            .then((response) => {
+               //console.log(response);
+
+               zip.loadAsync(response)
+               .then(function (zip) {
+                  console.log(zip.files);
+                  // folder1/folder2/folder3/file1.txt
+               });
+
+            });
+            } catch (error) {
+               console.error(`XXX Unzipping failed w/ error: ${error}`);
+            }
+
+
+        event.respondWith('hello');
     }
 });
 
