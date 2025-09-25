@@ -220,7 +220,7 @@ const factory = () => {
         profile: 'fa-user-circle',
         support: 'fa-life-ring',
         accounts: 'fa-ticket',
-        webxdc: 'fa-chess'
+        webxdc: 'fa-fort-awesome'
     };
 
     // Ability to create owned pads and expiring pads through a new pad creation screen.

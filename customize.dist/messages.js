@@ -133,6 +133,7 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
+    Messages.type.webxdc = "Webxdc (chess)"; //XXX
 
     return Messages;
 
