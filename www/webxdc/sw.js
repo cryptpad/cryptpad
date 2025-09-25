@@ -30,7 +30,19 @@ self.addEventListener("activate", event => {
    }
 });
 
+const PATH_PREFIX = '/webxdc/chess.xdc/';
+
 self.addEventListener('fetch', event => {
-   console.log(event.request.url)
+    console.log(event.request.url);
+    const url = new URL(event.request.url);
+    const path = url.pathname;
+    console.log(path);
+
+    if (path.startsWith('path')) {
+        const zipPath = path.substring(PATH_PREFIX.length);
+        console.log(zipPath);
+
+        event.respondWith(new Response('Hello'));
+    }
 });
 
