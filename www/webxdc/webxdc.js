@@ -30,7 +30,13 @@ window.webxdc = (() => {
             // });
             window.cp_updateListener = cb;
             if (window.cp_pendingUpdates) {
-                window.cp_pendingUpdates.forEach(cb);
+                console.log('pending', window.cp_pendingUpdates);
+                const a = window.cp_pendingUpdates;
+                const maxSerial = a[a.length-1].serial;
+                window.cp_pendingUpdates.forEach(update => {
+                    update.max_serial = maxSerial;
+                    cb(update);
+                });
             }
             return Promise.resolve();
         },

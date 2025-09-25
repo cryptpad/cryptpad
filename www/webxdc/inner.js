@@ -24,7 +24,8 @@ define([
     let onFrameworkReady = function (framework) {
         let content = { updates: [] };
 
-        let myName = window.webxdc.selfName = framework._.sfCommon.getMetadataMgr().getUserData().name;
+        let myName = window.webxdc.selfName = framework._.sfCommon.getMetadataMgr().getUserData().name || "Guest";
+        let myAddr = window.webxdc.selfAddr = framework._.sfCommon.getMetadataMgr().getUserData().uid || "Guest";
         console.log("Document is ready. My name is:", myName);
 
         window.webxdc.sendUpdate = (update) => {
@@ -39,19 +40,30 @@ define([
                 href: update.href,
                 document: update.document,
                 serial: serial,
+                max_serial: serial,
             };
             content.updates.push(_update);
+            if (!window.cp_updateListener) {
+                console.log('pushing3', _update);
+                window.cp_pendingUpdates ||= [];
+                window.cp_pendingUpdates.push(_update);
+            }
+            else {
+                window.cp_updateListener(_update);
+            }
             framework.localChange();
         };
 
         framework.onContentUpdate(function (newContent) {
             if (!newContent.updates) { return; }
-            console.log('New content received from others', newContent.content);
+            console.log('New content received from others', newContent);
             const length = content.updates.length;
             const newUpdates = newContent.updates.slice(length);
             newUpdates.forEach(update => {
+                console.log('pushing', update);
                 content.updates.push(update);
                 if (!window.cp_updateListener) {
+                    console.log('pushing2', update);
                     window.cp_pendingUpdates ||= [];
                     window.cp_pendingUpdates.push(update);
                     return;
