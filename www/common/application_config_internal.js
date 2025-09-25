@@ -219,7 +219,7 @@ const factory = () => {
         moderation: 'moderation',
         profile: 'user-profile',
         support: 'support',
-        accounts: 'support-ticket'
+        accounts: 'subscribe'
     };
 
     // Ability to create owned pads and expiring pads through a new pad creation screen.

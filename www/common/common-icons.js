@@ -209,7 +209,6 @@ define([
         "import": "upload",
         "import-template": "file-up",
         "export": "download",
-        "subscribe": "ticket",
         // Settings + Admin
         "settings": "settings",
         "apps-settings": "wrench",
@@ -237,12 +236,19 @@ define([
         "quote": "quote",
         "toc": "newspaper",
         "embed": "image-plus",
-        "pricing": "circle-star",
         // Badges
         "badge-admin": "star",
         "badge-moderator": "life-buoy",
         "badge-premium": "ticket-check",
         "badge-error": "circle-alert",
+        // Accounts
+        "pricing": "circle-star",
+        "subscribe": "ticket",
+        "trophy": "trophy",
+        "credit-card": "credit-card",
+        "circle-left": "circle-chevron-left",
+        "user": "user-round",
+        "notebook":"notepad-text"
     };
 
     Icons.get = (name, attrs = {}) => {
