@@ -77,7 +77,7 @@ define([
         framework.start();
     try {
       const registration = await navigator.serviceWorker.register("http://localhost:3001/webxdc/sw.js", {
-        scope: "http://localhost:3001/webxdc",
+        scope: "http://localhost:3001/webxdc/",
       });
       if (registration.installing) {
         console.log("XXX Service worker installing");
