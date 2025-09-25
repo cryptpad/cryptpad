@@ -209,6 +209,7 @@ define([
         "import": "upload",
         "import-template": "file-up",
         "export": "download",
+        "subscribe": "ticket",
         // Settings + Admin
         "settings": "settings",
         "apps-settings": "wrench",
