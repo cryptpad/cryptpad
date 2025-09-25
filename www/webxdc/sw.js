@@ -1,0 +1,2 @@
+console.log('sw loaded');
+

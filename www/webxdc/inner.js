@@ -21,7 +21,7 @@ define([
 
 
     // This is the main initialization loop
-    let onFrameworkReady = function (framework) {
+    let onFrameworkReady = async function (framework) {
         let $container = $('#cp-app-webxdc-editor');
 
         let $content = $(h('div#cp-webxdc-content')).appendTo($container);
@@ -75,6 +75,20 @@ define([
 
         // Start the framework
         framework.start();
+    try {
+      const registration = await navigator.serviceWorker.register("/webxdc/sw.js", {
+        scope: "/webxdc",
+      });
+      if (registration.installing) {
+        console.log("XXX Service worker installing");
+      } else if (registration.waiting) {
+        console.log("XXX Service worker installed");
+      } else if (registration.active) {
+        console.log("XXX Service worker active");
+      }
+    } catch (error) {
+      console.error(`XXX Registration failed with ${error}`);
+    }
     };
 
     // Framework initialization
