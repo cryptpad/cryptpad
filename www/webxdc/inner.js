@@ -8,6 +8,7 @@ define([
     '/common/sframe-app-framework.js',
     '/customize/messages.js', // translation keys
     '/common/hyperscript.js',
+    '/lib/webxdc.js',
     'less!/webxdc/app-webxdc.less'
     /* Here you can add your own javascript or css to load */
 ], function (
@@ -15,6 +16,7 @@ define([
     Framework,
     Messages,
     h,
+    WebXDC,
     ) {
 
 
