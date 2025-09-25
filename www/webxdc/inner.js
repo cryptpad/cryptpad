@@ -36,19 +36,13 @@ define([
         //     oldVal = currentVal;
         //     framework.localChange();
         // });
-        let content = { text: "" };
         let getContent = () => {
-            return content.text || '';
+            return $content.val() || '';
         };
         let setContent = (value) => {
-            // return $textarea.val(value);
-            // return window.webxdc.sendUpdate(value);
-            if (!content) content = {};
-            content.text = value;
+            $content.val(value || '');
             window.webxdc.sendUpdate(
-                {
-                    payload: { text: value }
-                },
+                {payload: { text: value || '' } },
                 "User update"
             );
         };
@@ -65,12 +59,8 @@ define([
 
         framework.onContentUpdate(function (newContent) {
             console.log('New content received from others', newContent.content);
-            if (newContent && newContent.content) {
-                content = newContent.content;
-            } else {
-                content = { text: "" };
-            }
-            setContent(content.text);
+            if (newContent && newContent.content && newContent.content.text) {
+                $content.val(newContent.content.text);}
         });
 
         window.webxdc.setUpdateListener(function (update) {
@@ -81,10 +71,10 @@ define([
         }, 0);
 
         framework.setContentGetter(function () {
-            let content = getContent();
-            console.log('Sync my content with others', content);
+            let text = getContent();
+            console.log('Sync my content with others', text);
             return {
-                content: content
+                content: { text: text }
             };
         });
 
