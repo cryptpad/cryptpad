@@ -17,3 +17,5 @@ if (typeof(module) !== 'undefined' && module.exports) {
 }
 })();
 
+
+Messages.type.webxdc= "webxdc (chess)"; //XXX
