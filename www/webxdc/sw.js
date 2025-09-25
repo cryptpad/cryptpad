@@ -24,7 +24,7 @@ self.addEventListener('fetch', event => {
 
          try {
             let zip = new JSZip();
-            fetch('http://localhost:3000/webxdc/arcanecircle-chess-v2.4.0.xdc')
+            const promise = fetch('http://localhost:3000/webxdc/arcanecircle-chess-v2.4.0.xdc')
             .then((response) => {
             if (!response.ok) {
                throw new Error(`HTTP error! Status: ${response.status}`);
@@ -34,19 +34,20 @@ self.addEventListener('fetch', event => {
             .then((response) => {
                //console.log(response);
 
-               zip.loadAsync(response)
-               .then(function (zip) {
-                  console.log(zip.files);
-                  // folder1/folder2/folder3/file1.txt
-               });
+               return zip.loadAsync(response);
 
-            });
+            })
+             .then(function(zip) {
+                 console.log(zip.files);
+                 // folder1/folder2/folder3/file1.txt
+                 return new Result(blob from zip);
+             });
             } catch (error) {
                console.error(`XXX Unzipping failed w/ error: ${error}`);
             }
 
 
-        event.respondWith('hello');
+        event.respondWith(promise);
     }
 });
 
