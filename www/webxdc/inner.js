@@ -25,6 +25,8 @@ define([
         let $container = $('#cp-app-webxdc-editor');
 
         let $content = $(h('div#cp-webxdc-content')).appendTo($container);
+        let myName = window.webxdc.selfName;
+        console.log("Document is ready. My name is:", myName);
         // let $textarea = $(h('textarea'));
         // $content.append($textarea);
         let oldVal = '';
@@ -34,15 +36,22 @@ define([
         //     oldVal = currentVal;
         //     framework.localChange();
         // });
+        let content = { text: "" };
         let getContent = () => {
-            // return $textarea.val();
+            return content.text || '';
         };
         let setContent = (value) => {
             // return $textarea.val(value);
             // return window.webxdc.sendUpdate(value);
+            if (!content) content = {};
+            content.text = value;
+            window.webxdc.sendUpdate(
+                {
+                    payload: { text: value }
+                },
+                "User update"
+            );
         };
-
-        let content = {};
 
         // OPTIONAL: cursor management
         framework.setCursorGetter(() => {
@@ -56,9 +65,20 @@ define([
 
         framework.onContentUpdate(function (newContent) {
             console.log('New content received from others', newContent.content);
-            content = newContent.content;
-            setContent(content);
+            if (newContent && newContent.content) {
+                content = newContent.content;
+            } else {
+                content = { text: "" };
+            }
+            setContent(content.text);
         });
+
+        window.webxdc.setUpdateListener(function (update) {
+            console.log("Received update:", update);
+            if (update.payload && update.payload.text) {
+                setContent(update.payload.text);
+            }
+        }, 0);
 
         framework.setContentGetter(function () {
             let content = getContent();
