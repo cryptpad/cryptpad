@@ -40,26 +40,23 @@ define([
             return hashes[a].index - hashes[b].index;
         });
 
-        console.log("hashescp", sortedCp)
         var getId = function () {
             var cps = sortedCp.length;
             id = sortedCp[cps -1] || -1;
-            return sortedCp[cps -1] || -1;
+            return id;
         };
 
         var endWithCp = sortedCp.length &&
                         config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
 
         var fillOO = function (messages, ooCheckpoints) {
-            console.log("fill1", id)
             // if (!id) { return; }
-                        console.log("fill2")
 
             // if (ooMessages[id]) { return; }
-                        console.log("fill3")
+
             ooMessages = {}
             ooMessages[id] = messages;
-            update();
+            // update();
             // var checkpoints = [];
             // Object.keys(ooCheckpoints).forEach(function(key) {
             //     checkpoints.push(ooCheckpoints[key].index);
@@ -133,14 +130,12 @@ define([
                 }
 
                 let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
-                // console.log("hash messss", data)
                 const messages = (data.messages || []).slice(initialCp ? 0 : 1);
-                // console.log("hashmes", messages)
                 if (config.debug) {
                     console.log(data.messages);
                 }
-                console.log("ID HERE", id)
                 id = id !== undefined ? id : getId();
+                console.log("nextmsgs", id)
                 fillOO(messages, ooCheckpoints);
                 loading = false;
                 // $share.show();
@@ -151,24 +146,24 @@ define([
 
         // We want to load a checkpoint (or initial state)
         var loadMoreOOHistory = function (cb) {
-            return new Promise((resolve, reject) => { // Return a promise
+            return new Promise((resolve, reject) => {
                 if (!Array.isArray(sortedCp)) { 
                     console.error("Wrong type");
                     return resolve();
                 }
                 
-                console.log("id", id);
                 id = id !== undefined ? id : getId();
-                console.log("id2", id);
 
-                var cp = hashes[id];
+                if (ooMessages[id-1] && !ooMessages[id-1].length) {
+                    var cp = hashes[id-1];
+                } else {
+                    var cp = hashes[id];
+                }
+                
                 var nextId = hashes[id+1] ? hashes[id+1] : undefined;
                 
                 var toHash = nextId ? nextId.hash : config.onlyoffice.lastHash;
                 var fromHash = cp?.hash || 'NONE';
-
-                console.log("hashes", config.onlyoffice.lastHash, nextId?.hash, hashes, id);
-                console.log("hashes2", toHash, fromHash);
 
                 getMessages(toHash, fromHash, cpIndex, sortedCp, undefined, config, fillOO, $share, hashes, function (err, messages) {
                     if (err) {
@@ -176,15 +171,13 @@ define([
                         reject(err);
                         return;
                     }
-                    resolve(); // Resolve when done
+                    resolve(); 
                 });
             });
             
         };
 
-        loadMoreOOHistory()
-
-        
+        loadMoreOOHistory();
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
@@ -201,8 +194,9 @@ define([
 
         var $fastPrev, $fastNext, $next, $prev;
 
+        var position;
 
-        update = function () {
+        update = function (prev) {
             var cps = sortedCp.length;
             $fastPrev.show();
             $next.show();
@@ -211,19 +205,25 @@ define([
             $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous')
                 .prop('disabled', '');
 
+            var msgLength = Object.keys(hashes).length   
+
             if (cpIndex >= cps && msgIndex === 0) {
                 $fastPrev.prop('disabled', 'disabled');
             }
-            var msgLength = Object.keys(ooMessages).length   
-            if (id === msgLength) {
-                $fastNext.prop('disabled', 'disabled');
-            }        
-            // if (msgLength === id && msgIndex === -1) {
-                // $next.prop('disabled', 'disabled');
-            // }
             if (id === 0 && msgIndex === 0) {
                 $prev.prop('disabled', 'disabled');
             }
+            var msgs = ooMessages[id]?.length;
+            console.log("disable", ooMessages, id, msgLength, msgIndex, (id === msgLength || id === msgLength-1), !prev)
+            console.log("disable2", (id === msgLength) && msgIndex === -1, (id === msgLength || id === msgLength-1), msgIndex === -1, !prev, id === msgLength || (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev)
+
+            if ((id === msgLength) && msgIndex === -1 || (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev) {
+                $fastNext.prop('disabled', 'disabled');
+            }        
+            if ((id === msgLength) && msgIndex === -1 || id === -1 && msgIndex === -1 || (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev) {
+                $next.prop('disabled', 'disabled');
+            }
+            
         };
 
         var loadingFalse = function () {
@@ -233,47 +233,49 @@ define([
             }, 200);
         }
 
-        
-        var next = function () {
+        var next = async function () {
             msgIndex++;
             msgs = ooMessages[id];
             if (Object.keys(hashes).length) {
-                console.log("next", ooMessages, id, msgs, msgIndex)
                 if (msgIndex === 0) {
                     id++;
                     loadMoreOOHistory().then(() => {
                         msgs = ooMessages[id];
-                                        console.log("next2", ooMessages, id, msgs, msgIndex)
-
                         if (!msgs.length) {
                             id++;
-                            msgIndex = -1
                             config.loadCp(hashes[id]);
                             return loadMoreOOHistory().then(() => {
                                 loadingFalse();
+                                msgIndex = -ooMessages[id].length-1;
+                                showVersion(false, msgs.indexOf(patch)+1);
+                                // position = msgs.indexOf(patch)+1
+                                                                console.log("disable patch", msgIndex)
+
                                 return;
                             });
                         }
-                        
-                        msgIndex = -msgs.length;
-                                        console.log("next3", ooMessages, id, msgs, msgIndex)
+                                        console.log("next5", hashes, ooMessages, id, msgIndex)
 
+                        msgIndex = -msgs.length;
                         var patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined;
-                        var cp = hashes[id-1];
+                        var cp = hashes[id];
                         config.onPatchBack(cp, [patch]);
                         showVersion(false, msgs.indexOf(patch)+1);
                         loadingFalse();
-                    }).catch(err => {
-                        console.error(err);
-                        loadingFalse();
-                    });
+                                                        console.log("disable patch", msgIndex)
+
+                        // position = msgs.indexOf(patch)+1
+                    })
                     return;
                 }
             } 
             var patch = msgs[msgs.length + msgIndex];
             config.onPatch(patch);
+                                            console.log("disable patch", msgIndex)
+
             showVersion(false, msgs.indexOf(patch)+1);
             loadingFalse();
+            // position = msgs.indexOf(patch)+1
         };
 
         var msgs;
@@ -299,6 +301,7 @@ define([
                 }
                 var cp = hashes[id];
             } 
+            console.log("prev disable", hashes, ooMessages, id, )
             var queue = msgs.slice(0, msgIndex);
             config.onPatchBack(cp, queue);                                          
             showVersion(false, queue.length);
@@ -326,7 +329,7 @@ define([
             $fastPrev = $(fastPrev);
             $prev = $(_prev);
             $fastNext = $(fastNext).prop('disabled', 'disabled');
-            $next = $(_next)
+            $next = $(_next).prop('disabled', 'disabled');
             // .prop('disabled', 'disabled');
 
 
@@ -405,38 +408,64 @@ define([
             $next.click(function () {
                 // if (loading) { return; }
                 loading = true;
-                next();
-                update();
+                next().then(
+                    update()
+                );
+                // update();
             });
             $prev.click(function () {
                 if (loading) { return; }
                 loading = true;
                 prev();
-                update();
+                update(true)
             });
             // Go to previous checkpoint
             $fastNext.click(function () {
                 if (loading) { return; }
                 loading = true;
-                id++;
-                var cp = hashes[id];
-                config.loadCp(cp);
+                if (id < Object.keys(hashes).length) {
+                    id++;
+                    var cp = hashes[id];
+                    config.loadCp(cp);
+                } else {
+                    var cp = hashes[id];
+                    var msgs = ooMessages[id]
+                    msgIndex = -1
+                    config.onPatchBack(cp, msgs);
+                    console.log("disablemsgs", hashes, ooMessages, id, msgs)
+
+                }
+                
+                
                 setTimeout(function () {
+                                        console.log("disable fastnext", id, ooMessages, msgIndex)
+
                     update();
                     loading = false;
                 }, 100);
             });
             // Go to next checkpoint
             $fastPrev.click(function () {
+                                                    console.log("disable fastprev3", id, ooMessages, msgIndex)
+
                 if (loading) { return; }
                 loading = true;
-                id--;
+                if (!ooMessages[id].length) {
+                    id--;
+                } 
                 var cp = hashes[id];
+                                    console.log("disable fastprev2", id, ooMessages, msgIndex)
+
                 config.loadCp(cp);
-                setTimeout(function () {
-                    update();
+                // setTimeout(function () {
+                    console.log("disable fastprev", id, ooMessages, msgIndex)
+                    update(true);
+                    loadMoreOOHistory().then(() => {
+                        var msgs = ooMessages[id];
+                        msgIndex = -msgs.length-1;
+                    });
                     loading = false;
-                }, 100);
+                // }, 100);
                 
             });
             onKeyDown = function (e) {
