@@ -137,7 +137,6 @@ define([
                     console.log(data.messages);
                 }
                 id = id !== undefined ? id : getId();
-                console.log("nextmsgs", id)
                 fillOO(messages, ooCheckpoints);
                 loading = false;
                 // $share.show();
@@ -197,8 +196,6 @@ define([
 
         var $fastPrev, $fastNext, $next, $prev;
 
-        var position;
-
         update = function (prev) {
             var cps = sortedCp.length;
             $fastPrev.show();
@@ -217,8 +214,6 @@ define([
                 $prev.prop('disabled', 'disabled');
             }
             var msgs = ooMessages[id]?.length;
-            console.log("disable", ooMessages, id, msgLength, msgIndex, (id === msgLength || id === msgLength-1), !prev)
-            console.log("disable2", (id === msgLength) && msgIndex === -1, (id === msgLength || id === msgLength-1), msgIndex === -1, !prev, id === msgLength || (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev)
 
             if ((id === msgLength) && msgIndex === -1 || (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev) {
                 $fastNext.prop('disabled', 'disabled');
@@ -251,34 +246,23 @@ define([
                                 loadingFalse();
                                 msgIndex = -ooMessages[id].length-1;
                                 showVersion(false, msgs.indexOf(patch)+1);
-                                // position = msgs.indexOf(patch)+1
-                                                                console.log("disable patch", msgIndex)
-
                                 return;
                             });
                         }
-                                        console.log("next5", hashes, ooMessages, id, msgIndex)
-
                         msgIndex = -msgs.length;
                         var patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined;
                         var cp = hashes[id];
                         config.onPatchBack(cp, [patch]);
                         showVersion(false, msgs.indexOf(patch)+1);
                         loadingFalse();
-                                                        console.log("disable patch", msgIndex)
-
-                        // position = msgs.indexOf(patch)+1
                     })
                     return;
                 }
             } 
             var patch = msgs[msgs.length + msgIndex];
             config.onPatch(patch);
-                                            console.log("disable patch", msgIndex)
-
             showVersion(false, msgs.indexOf(patch)+1);
             loadingFalse();
-            // position = msgs.indexOf(patch)+1
         };
 
         var msgs;
@@ -304,7 +288,6 @@ define([
                 }
                 var cp = hashes[id];
             } 
-            console.log("prev disable", hashes, ooMessages, id, )
             var queue = msgs.slice(0, msgIndex);
             config.onPatchBack(cp, queue);                                          
             showVersion(false, queue.length);
@@ -435,40 +418,29 @@ define([
                     var msgs = ooMessages[id]
                     msgIndex = -1
                     config.onPatchBack(cp, msgs);
-                    console.log("disablemsgs", hashes, ooMessages, id, msgs)
-
                 }
                 
                 
                 setTimeout(function () {
-                                        console.log("disable fastnext", id, ooMessages, msgIndex)
-
                     update();
                     loading = false;
                 }, 100);
             });
             // Go to next checkpoint
             $fastPrev.click(function () {
-                                                    console.log("disable fastprev3", id, ooMessages, msgIndex)
-
                 if (loading) { return; }
                 loading = true;
                 if (!ooMessages[id].length) {
                     id--;
                 } 
                 var cp = hashes[id];
-                                    console.log("disable fastprev2", id, ooMessages, msgIndex)
-
                 config.loadCp(cp);
-                // setTimeout(function () {
-                    console.log("disable fastprev", id, ooMessages, msgIndex)
-                    update(true);
-                    loadMoreOOHistory().then(() => {
-                        var msgs = ooMessages[id];
-                        msgIndex = -msgs.length-1;
-                    });
-                    loading = false;
-                // }, 100);
+                update(true);
+                loadMoreOOHistory().then(() => {
+                    var msgs = ooMessages[id];
+                    msgIndex = -msgs.length-1;
+                });
+                loading = false;
                 
             });
             onKeyDown = function (e) {
