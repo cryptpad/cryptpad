@@ -1101,6 +1101,7 @@ define([
 
         const getInitialChanges = function() {
             const changes = [];
+                        console.log("prev ooq", ooChannel.queue)
 
             if (content.version > 2) {
                 ooChannel.queue.forEach(function (data) {
@@ -1112,6 +1113,7 @@ define([
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
             }
+            console.log("prev changes", changes)
             return changes;
         };
 
