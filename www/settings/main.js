@@ -23,43 +23,55 @@ define([
                 });
             });
             sframeChan.on('Q_SETTINGS_DRIVE_GET', function (d, cb) {
+                if (d !== "full") {
+                    Cryptpad.getAccountObject(null, function (obj) {
+                        cb(obj);
+                    });
+                    return;
+                }
                 Cryptpad.getUserObject(null, function (obj) {
                     if (obj.error) { return void cb(obj); }
-                    if (d === "full") {
-                        // We want shared folders too
-                        var result = {
-                            uo: obj,
-                            sf: {}
-                        };
-                        if (!obj.drive || !obj.drive.sharedFolders) { return void cb(result); }
-                        Utils.nThen(function (waitFor) {
-                            Object.keys(obj.drive.sharedFolders).forEach(function (id) {
-                                Cryptpad.getSharedFolder({
-                                    id: id
-                                }, waitFor(function (obj) {
-                                    result.sf[id] = obj;
-                                }));
-                            });
-                        }).nThen(function () {
-                            cb(result);
+                    // We want shared folders too
+                    var result = {
+                        uo: obj,
+                        sf: {}
+                    };
+                    if (!obj.drive || !obj.drive.sharedFolders) { return void cb(result); }
+                    Utils.nThen(function (waitFor) {
+                        Object.keys(obj.drive.sharedFolders).forEach(function (id) {
+                            Cryptpad.getSharedFolder({
+                                id: id
+                            }, waitFor(function (obj) {
+                                result.sf[id] = obj;
+                            }));
                         });
-                        return;
-                    }
-                    // We want only the user object
-                    cb(obj);
+                    }).nThen(function () {
+                        cb(result);
+                    });
                 });
             });
             sframeChan.on('Q_SETTINGS_DRIVE_SET', function (data, cb) {
                 if (data && data.uo) { data = data.uo; }
-                var sjson = JSON.stringify(data);
-                require([
-                    '/common/cryptget.js',
-                ], function (Crypt) {
-                    var k = Cryptpad.userHash || Utils.LocalStore.getFSHash();
-                    Crypt.put(k, sjson, function (err) {
-                        cb(err);
+                const drive = JSON.parse(JSON.stringify(data.drive || ''));
+                const todo = () => {
+                    var sjson = JSON.stringify(data);
+                    require([
+                        '/common/cryptget.js',
+                    ], function (Crypt) {
+                        var k = Cryptpad.userHash || Utils.LocalStore.getFSHash();
+                        Crypt.put(k, sjson, function (err) {
+                            cb(err);
+                        });
                     });
-                });
+                };
+                if (Object.keys(data).length === 1 && data.drive) {
+                    return Cryptpad.getAccountObject(null, function (obj) {
+                        data = JSON.parse(JSON.stringify(obj));
+                        data.drive = drive;
+                        todo();
+                    });
+                }
+                todo();
             });
             sframeChan.on('Q_SETTINGS_LOGOUT_PROPERLY', function (data, cb) {
                 Utils.LocalStore.clearLoginToken();
