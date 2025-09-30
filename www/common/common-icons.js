@@ -249,7 +249,9 @@ define([
         "circle-left": "circle-chevron-left",
         "user": "user-round",
         "notebook":"notepad-text",
-        "sso": "id-card"
+        "sso": "id-card",
+        "maintenance": "construction",
+        "release-notes": "notepad-text"
     };
 
     Icons.get = (name, attrs = {}) => {
