@@ -132,6 +132,7 @@ define([
                 };
                 ServerCommand(keys, {
                     command: 'UPLOAD_COOKIE',
+                    id: id
                 }, (err, data) => {
                     cookie = data?.cookie;
                     if (err || !cookie) { return void onError(err || 'NOCOOKIE'); }
