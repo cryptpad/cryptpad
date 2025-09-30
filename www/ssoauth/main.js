@@ -15,7 +15,7 @@ define([
     '/common/outer/local-store.js',
     '/common/outer/login-block.js',
     '/customize/messages.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function (ApiConfig, $, h, Util, Cred, UI, Login, Constants,
         ServerCommand, LocalStore, Block, Messages, Lucide, Icons) {

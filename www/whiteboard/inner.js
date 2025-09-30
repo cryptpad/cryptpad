@@ -18,7 +18,7 @@ define([
     '/customize/application_config.js',
     '/components/chainpad/chainpad.dist.js',
     '/common/common-ui-elements.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/lib/fabric.min.js',

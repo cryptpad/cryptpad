@@ -22,7 +22,7 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/components/marked/marked.min.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',

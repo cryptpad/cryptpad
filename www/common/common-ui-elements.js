@@ -21,7 +21,7 @@ define([
     '/common/inner/invitation.js',
     '/common/visible.js',
     '/common/pad-types.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
 ], function ($, Config, Broadcast, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,

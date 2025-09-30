@@ -11,7 +11,7 @@ define([
     '/common/inner/badges.js',
     '/common/hyperscript.js',
     '/common/diffMarked.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd, Lucide, Icons) {
     'use strict';

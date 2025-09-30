@@ -10,7 +10,7 @@ define([
     '/customize/messages.js',
     '/components/nthen/index.js',
     '/common/common-icons.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     //'/components/chainpad-json-validator/json-ot.js',
 
     '/components/chainpad/chainpad.dist.js',

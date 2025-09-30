@@ -22,7 +22,7 @@ define([
     '/lib/tippy/tippy.min.js',
     '/common/hyperscript.js',
     '/customize/loading.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
     //'/common/test.js',
 

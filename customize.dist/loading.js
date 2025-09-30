@@ -7,7 +7,7 @@
 // text #3F4141
 define([
     '/customize/messages.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     'less!/customize/src/less2/include/loading.less'
 ], function (Messages, Lucide) {
     var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });

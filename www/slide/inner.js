@@ -17,7 +17,7 @@ define([
     '/customize/messages.js',
     'cm/lib/codemirror',
     '/common/common-ui-elements.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',

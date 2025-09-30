@@ -26,7 +26,7 @@ define([
     '/customize/pages.js',
     '/common/pad-types.js',
     '/common/onlyoffice/broken-formats.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js'
 ], function (
     $,

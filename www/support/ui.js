@@ -13,7 +13,7 @@ define([
     '/common/common-ui-elements.js',
     '/customize/messages.js',
     '/customize/pages.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages, Pages, Lucide, Icons) {
 

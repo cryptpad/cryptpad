@@ -10,7 +10,7 @@ define([
     '/common/common-ui-elements.js',
     '/customize/messages.js',
     '/components/nthen/index.js',
-    '/customize/fonts/lucide.js'
+    '/customize/lucide.js'
 ], function ($, Util, Hash, UI, UIElements, Messages, nThen, Lucide) {
     var Modal = {};
 

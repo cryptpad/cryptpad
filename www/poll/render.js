@@ -9,7 +9,7 @@ define([
     '/components/chainpad/chainpad.dist.js',
     '/common/common-util.js',
     '/customize/messages.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/lib/diff-dom/diffDOM.js',

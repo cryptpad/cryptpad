@@ -13,7 +13,7 @@ define([
     '/common/inner/badges.js',
     '/customize/messages.js',
     '/customize/application_config.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/components/croppie/croppie.min.js',

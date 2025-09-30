@@ -12,7 +12,7 @@ define([
     '/api/config',
     '/common/extensions.js',
     'optional!/api/instance',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function (h, Language, Util, AppConfig, Msg, $, ApiConfig,
             Extensions, Instance, Lucide, Icons) {

@@ -8,7 +8,7 @@ define([
     '/common/common-util.js',
     '/common/visible.js',
     '/components/dragula/dist/dragula.min.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function ($, Messages, Util, Visible, Dragula, Lucide, Icons) {
         /**

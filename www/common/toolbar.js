@@ -19,7 +19,7 @@ define([
     '/customize/messages.js',
     '/customize/pages.js',
     '/common/pad-types.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, Badges, h,
 MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {

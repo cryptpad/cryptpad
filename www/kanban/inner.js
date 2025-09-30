@@ -23,7 +23,7 @@ define([
     '/kanban/jkanban_cp.js',
     '/kanban/export.js',
     '/common/TypingTests.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'cm/mode/gfm/gfm',

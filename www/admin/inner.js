@@ -22,7 +22,7 @@ define([
     '/api/instance',
     '/lib/datepicker/flatpickr.js',
     '/install/onboardscreen.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/lib/datepicker/flatpickr.min.css',

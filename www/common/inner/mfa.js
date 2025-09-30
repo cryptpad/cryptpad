@@ -10,7 +10,7 @@ define([
     '/components/nthen/index.js',
     '/customize.dist/login.js',
     '/common/common-util.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
 ], function ($, Messages, h, UI, nThen, Login, Util, Lucide, Icons) {

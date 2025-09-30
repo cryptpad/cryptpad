@@ -12,7 +12,7 @@ define([
     '/common/common-constants.js',
     '/customize/messages.js',
     '/customize/pages.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
     'tui-date-picker'
 ], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages, Lucide, Icons, DatePicker) {

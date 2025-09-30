@@ -6,7 +6,7 @@ define([
     'jquery',
     '/common/common-interface.js',
     '/common/hyperscript.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
 ], function ($, UI, h, Lucide, Icons) {

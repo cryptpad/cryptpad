@@ -15,7 +15,7 @@ define([
     '/common/common-ui-elements.js',
     '/common/notifications.js',
     '/common/common-util.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',

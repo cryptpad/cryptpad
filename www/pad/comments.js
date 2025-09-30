@@ -11,7 +11,7 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/customize/messages.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function($, Sortify, Util, Hash, h, UI, UIElements, Messages, Lucide, Icons) {
     var Comments = {};

@@ -9,7 +9,7 @@ define([
     '/customize/messages.js',
     '/components/nthen/index.js',
     '/components/chainpad/chainpad.dist.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function ($, UI, h, Messages, nThen, ChainPad, Lucide, Icons /* JsonOT */) {
     var Snapshots = {};
