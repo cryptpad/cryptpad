@@ -34,7 +34,7 @@ define([
             }
             if (parsed && parsed.auditorKey) {
                 meta.form_auditorKey = parsed.auditorKey;
-                meta.form_auditorHash = hash;
+                meta.form_auditorHash = hash.charAt(0) === '#' ? hash.slice(1) : hash;
             }
 
             var formData = Utils.Hash.getFormData(Utils.secret);

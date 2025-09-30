@@ -698,12 +698,8 @@ define([
                     hash += '/p';
                 }
             }
-            var href;
-            if (burnAfterReading) {
-                href = opts.burnAfterReadingUrl;
-            } else {
-                href = hash.startsWith('#') ? (origin + pathname + hash) : (origin + pathname + '#' + hash);
-            }
+            var href = burnAfterReading ? opts.burnAfterReadingUrl
+                                             : (origin + pathname + '#' + hash);
             var parsed = Hash.parsePadUrl(href);
             return origin + parsed.getUrl({embed: embed, present: present, versionHash: versionHash});
         };
