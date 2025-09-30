@@ -14,9 +14,10 @@ define([
     '/common/hyperscript.js',
     'json.sortify',
     '/customize/messages.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/secureiframe/app-secure.less',
 ], function (
     $,
@@ -29,7 +30,9 @@ define([
     Hash,
     h,
     Sortify,
-    Messages)
+    Messages,
+    Lucide
+)
 {
     var APP = window.APP = {};
 
@@ -209,7 +212,7 @@ define([
             }
 
             var $container = $(h('span.cp-filepicker-content', [
-                h('div.cp-loading-spinner-container', h('span.cp-spinner'))
+                h('div.cp-loading-spinner-container', h('span.cp-spinner-main'))
             ])).appendTo($block);
 
             // Update the files list when needed
@@ -230,6 +233,7 @@ define([
                             'title': Util.fixHTML(name),
                         }).appendTo($container);
                         $span.append(UI.getFileIcon(data));
+                        Lucide.createIcons();
                         $('<span>', {'class': 'cp-filepicker-content-element-name'}).text(name)
                             .appendTo($span);
                         if (data.static) { $span.attr('title', Util.fixHTML(data.href)); }
@@ -258,6 +262,7 @@ define([
             $('button.cancel').click(); // Close any existing alertify
             displayed = undefined;
             create[type](data);
+            Lucide.createIcons();
         });
 
         UI.removeLoadingScreen();

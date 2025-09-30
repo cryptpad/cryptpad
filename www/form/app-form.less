@@ -99,6 +99,16 @@
     &.cp-form-palette-nocolor {
         background-color: @cp_app-bg !important;
     }
+    .cp-form-color-container {
+        span.cp-form-palette {
+            svg.lucide {
+                margin: 0.2rem;
+            }
+        }
+        .is-hidden {
+            display: none;
+        }
+    }
 
     div.alert.cp-burn-after-reading {
         margin: 10px !important;
@@ -344,7 +354,7 @@
                     &.editable {
                         cursor: pointer;
                     }
-                    .fa-caret-down {
+                    .lucide-chevron-down {
                         margin-left: 5px;
                     }
                 }
@@ -436,6 +446,9 @@
                                     border-radius: @variables_radius;
                                     outline: @variables_focus_style;
                                 }
+                                svg {
+                                    margin: 0;
+                                }
                             }
                         }
                         .cp-form-block-drag-handle {
@@ -459,13 +472,16 @@
                     margin-bottom: 20px;
                     button {
                         width: 50px;
-                        i {
+                        svg {
                             margin-right: 0;
                         }
                     }
                     .cp-form-creator-inline-add {
-                        font-size: 25px;
-                        margin-right: 30px;
+                        svg {
+                            margin: 0;
+                            width: @variables_icon_width;
+                            height: @variables_icon_height;
+                        }
                         .add-close { display: none; }
                         &.displayed {
                             .add-close { display: inline; }
@@ -487,11 +503,10 @@
                                 }
                             }
                             button {
-                                border: 0px;
-                                //padding-bottom: 3px;
-                                i {
-                                    font-size: 35px;
-                                    line-height: 35px;
+                                border: 0;
+                                svg {
+                                    height: 2rem;
+                                    width: 2rem;
                                 }
                             }
                             &:first-child {
@@ -511,10 +526,10 @@
                         align-items: center;
                         padding-right: 10px;
                         margin-bottom: 10px;
-                        i {
+                        svg {
                             color: @cryptpad_text_col;
-                            font-size: 30px;
-                            width: 50px;
+                            width:3rem;
+                            height:3rem;
                             text-align: center;
                         }
                     }
@@ -537,8 +552,9 @@
                                 border: 0px;
                                 padding:5px;
                                 margin-right: 10px;
-                                i {
-                                    font-size: 35px;
+                                svg {
+                                    width: 2rem;
+                                    height: 2rem;
                                     line-height: 35px;
                                 }
                             }
@@ -622,9 +638,8 @@
                         display: flex;
                         height: 38px;
                         align-items: center;
-                        i {
+                        svg {
                             margin-right: 0;
-                            font-size: 25px;
                         }
                     }
                 }
@@ -665,10 +680,9 @@
                         padding-left: 10px;
                         font-size: 20px;
                         color: @cp_sidebar-hint;
-                        i {
+                        svg {
                             cursor: grab;
                             &:first-child {
-                                height: 3px;
                                 margin-bottom: 2px;
                             }
                         }
@@ -732,8 +746,8 @@
                             font-size: 20px;
                             text-align: center;
                             padding: 10px;
-                            i {
-                                margin-right: 5px;
+                            svg {
+                                margin-right: @variables_icon_margin;
                             }
                         }
                         .cp-form-edit-buttons-container {
@@ -894,7 +908,7 @@
                             border-right: 0px;
                         }
                         button {
-                            i { margin: 0 !important; }
+                            svg { margin: 0 !important; }
                         }
 
                     }
@@ -1051,9 +1065,6 @@
                 }
                 .cp-form-friend {
                     color: @cp_profile-hint;
-                    .fa {
-                        margin-right: 5px;
-                    }
                 }
                 a, a:visited {
                     color: @cryptpad_color_link;
@@ -1061,13 +1072,11 @@
             }
         }
         .cp-form-block-type {
-            //float: right;
             padding: 5px;
-            //margin-top: -10px;
-            //margin-right: -10px;
             border-radius: 0px @variables_radius 0px 0px;
-            i { margin-right: 5px; }
             background: fade(@cryptpad_text_col, 10%);
+            display: inline-flex;
+            align-items: center;
         }
     }
 
@@ -1196,8 +1205,9 @@
                 border-top: 0px;
                 border-left: 0px;
                 background-color: @cp_form-bg1;
-                .fa{
+                svg {
                     margin-left:10px;
+                    margin-right: 0;
                     transform: rotate(-45deg);
                 }
             }
@@ -1349,8 +1359,9 @@
             }
         }
         .cp-form-poll-choice, .cp-form-poll-answer {
-            .fa, .cptools {
+            svg {
                 display: none;
+                margin: 0;
             }
             color: @cp_form-poll-color;
             font-size: 25px;
@@ -1375,7 +1386,10 @@
             color: @cryptpad_text_col;
         }
         div.cp-form-poll-answer {
-            color: @cp_form-poll-yes-color;
+            color: @cryptpad_text_col;
+            &[data-value="1"] {
+                color: @cp_form-poll-yes-color;
+            }
         }
     }
     .cp-form-response-modal {
@@ -1394,11 +1408,13 @@
             width: 500px;
             padding: 24px;
             h2 {
+                display: inline-flex;
+                align-items: center;
                 font-size: 20px;
                 line-height: 40px;
                 margin-top: -12px;
-                i {
-                    margin-right: 5px;
+                svg {
+                    margin-right: @variables_icon_margin;
                 }
             }
             & > *:not(h2) {
@@ -1418,6 +1434,9 @@
                     }
                     & > * {
                         margin-right: 10px;
+                    }
+                    svg {
+                        margin: 0;
                     }
                 }
             }

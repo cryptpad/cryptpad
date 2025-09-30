@@ -766,9 +766,9 @@
                     trash.setAttribute('id', 'kanban-trash');
                     trash.setAttribute('class', 'kanban-trash');
                     var trashBg = document.createElement('div');
-                    var trashIcon = document.createElement('i');
-                    trashIcon.setAttribute('class', 'fa fa-trash');
-                    trash.appendChild(trashIcon);
+                    // var trashIcon = document.createElement('i');
+                    // trashIcon.setAttribute('class', 'fa fa-trash');
+                    // trash.appendChild(trashIcon);
                     trash.appendChild(trashBg);
                     self.boardContainer.push(trash);
 

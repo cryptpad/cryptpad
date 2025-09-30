@@ -11,7 +11,9 @@ define([
     '/common/notifications.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
-], function ($, Util, Hash, UI, UIElements, Notifications, h, Messages) {
+    '/common/common-icons.js',
+    '/customize/fonts/lucide.js',
+], function ($, Util, Hash, UI, UIElements, Notifications, h, Messages, Icons, Lucide) {
     var Mailbox = {};
 
     Mailbox.create = function (Common) {
@@ -66,12 +68,12 @@ define([
                 return;
             }
             if (data.type === 'broadcast') {
-                avatar = h('i.fa.fa-bullhorn.cp-broadcast');
+                avatar = Icons.get('announcement', {'class': 'cp-broadcast'});
                 if (/^LOCAL\|/.test(data.content.hash)) {
                     $(avatar).addClass('preview');
                 }
             } else if (data.type === 'reminders') {
-                avatar = h('i.fa.fa-calendar.cp-broadcast.preview');
+                avatar = Icons.get('calendar', {class:'cp-broadcast preview'});
                 if (priv.app !== 'calendar') { avatar.classList.add('cp-reminder'); }
                 $(avatar).click(function (e) {
                     e.stopPropagation();
@@ -143,7 +145,7 @@ define([
                 });
             }
             if (data.content.isDismissible) {
-                var dismissIcon = h('span.fa.fa-times');
+                var dismissIcon = Icons.get('close');
                 var dismiss = h('div.cp-notification-dismiss', {
                     tabindex: 0,
                     title: Messages.notifications_dismiss,
@@ -186,6 +188,7 @@ define([
                     if (isNotification(data.type)) {
                         Notifications.add(Common, data);
                         el = createElement(data);
+                        setTimeout(() => Lucide.createIcons());
                     }
                     f(data, el);
                 } catch (e) {

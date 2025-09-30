@@ -11,7 +11,9 @@ define([
     '/common/inner/badges.js',
     '/common/hyperscript.js',
     '/common/diffMarked.js',
-], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd) {
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
+], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd, Lucide, Icons) {
     'use strict';
 
     var debug = console.log;
@@ -58,7 +60,7 @@ define([
         $container.addClass('cp-app-contacts-initializing');
 
         var messaging = h('div#cp-app-contacts-messaging', [
-            h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw.cp-app-contacts-spinner'),
+            Icons.get('loading', {'class': 'cp-app-contacts-spinner'}),
             h('div.cp-app-contacts-info', [
                 h('h2', Messages.contacts_info1),
                 h('ul', [
@@ -70,13 +72,13 @@ define([
         ]);
 
         var friendList = h('div#cp-app-contacts-friendlist', [
-            h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw.cp-app-contacts-spinner'),
+            Icons.get('loading', {'class': 'cp-app-contacts-spinner'}),
             h('div.cp-app-contacts-padchat.cp-app-contacts-category', [
                 h('div.cp-app-contacts-category-content')
             ]),
             h('div.cp-app-contacts-friends.cp-app-contacts-category', [
                 h('button.btn.btn-default.cp-app-contacts-muted-button', {tabindex:0},[
-                    h('i.fa.fa-bell-slash'),
+                    Icons.get('mute'),
                     Messages.contacts_manageMuted
                 ]), 
                 h('div.cp-app-contacts-category-content.cp-contacts-friends')
@@ -128,7 +130,7 @@ define([
                 toolbar['chat'].find('button').addClass('cp-toolbar-notification');
             }
             if (!toolbar['chat'].hasClass('cp-leftside-active')) {
-                toolbar['chat'].find('span.fa').addClass('cp-team-chat-notification');
+                toolbar['chat'].find('span .lucide').addClass('cp-team-chat-notification');
             }
         };
 
@@ -241,9 +243,10 @@ define([
             $(getChat(id)).find('.cp-app-contacts-messages').html('');
         };
         markup.chatbox = function (id, data, curvePublic) {
-            var moreHistory = h('span.cp-app-contacts-more-history.fa.fa-history', {
-                title: Messages.contacts_fetchHistory,
+            var moreHistory = h('span', {
+                class: 'cp-app-contacts-more-history',
             });
+            moreHistory.append(Icons.get('history', {title: Messages.contacts_fetchHistory}));
 
             var chan = state.channels[id];
             var displayName = UI.getDisplayName(chan.name || chan.displayName);
@@ -305,9 +308,10 @@ define([
                 });
             });
 
-            var removeHistory = h('span.cp-app-contacts-remove-history.fa.fa-eraser', {
-                title: Messages.contacts_removeHistoryTitle
+            var removeHistory = h('span', {
+                'class': 'cp-app-contacts-remove-history'
             });
+            removeHistory.append(Icons.get('remove-history', {title: Messages.contacts_removeHistoryTitle}));
 
             $(removeHistory).click(function () {
                 UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
@@ -341,7 +345,7 @@ define([
 
             var priv = metadataMgr.getPrivateData();
 
-            var closeTips = h('span.fa.fa-times.cp-app-contacts-tips-close');
+            var closeTips = h('span', Icons.get('close', { 'class': 'cp-app-contacts-tips-close'}));
             var tips;
             if (isApp && Util.find(priv.settings, ['general', 'hidetips', 'chat']) !== true) {
                 tips = h('div.cp-app-contacts-tips', [
@@ -358,9 +362,9 @@ define([
             var input = h('textarea', {
                 placeholder: Messages.contacts_typeHere
             });
-            var sendButton = h('button.btn.btn-primary.fa.fa-paper-plane', {
+            var sendButton = h('button.btn.btn-primary', {
                 title: Messages.contacts_send,
-            });
+            }, Icons.get('send'));
 
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', displayName),
@@ -377,6 +381,7 @@ define([
                         avatars[friend.avatar] = $img[0].outerHTML;
                     }
                     $(rightCol).insertAfter($avatar);
+                    Lucide.createIcons();
                 }, friend.uid, friend.badge);
             }
 
@@ -540,21 +545,24 @@ define([
                 curve = __channel.curvePublic;
             }
 
-            var unmute = h('span.cp-app-contacts-remove.fa.fa-bell.cp-unmute-icon', {
+            var unmute = h('span', Icons.get('notification'), {
+                class: 'cp-app-contacts-remove cp-unmute-icon',
                 title: Messages.contacts_unmute || 'unmute',
                 style: (curve && mutedUsers[curve]) ? undefined : 'display: none;'
             });
-            var mute = h('span.cp-app-contacts-remove.fa.fa-bell-slash.cp-mute-icon', {
+            var mute = h('span', Icons.get('mute'), {
+                class: 'cp-app-contacts-remove cp-mute-icon',
                 title: Messages.contacts_mute || 'mute',
                 style: (curve && mutedUsers[curve]) ? 'display: none;' : undefined
             });
-            var remove = h('span.cp-app-contacts-remove.fa.fa-user-times', {
+            var remove = h('span', Icons.get('unfriend', {
+                class: 'cp-app-contacts-remove',
                 title: Messages.contacts_remove
-            });
-            var leaveRoom = h('span.cp-app-contacts-remove.fa.fa-sign-out', {
+            }));
+            var leaveRoom = h('span', Icons.get('logout', {
+                class: 'cp-app-contacts-remove',
                 title: Messages.contacts_leaveRoom
-            });
-
+            }));
             var status = h('span.cp-app-contacts-status', {
                 title: Messages.contacts_online
             });
@@ -629,6 +637,7 @@ define([
                         avatars[friendData.avatar] = $img[0].outerHTML;
                     }
                     $room.append(rightCol);
+                    Lucide.createIcons();
                 }, friendData.uid, friendData.badge);
             }
             $room.append(status);
@@ -818,6 +827,7 @@ define([
                     $container.removeClass('cp-app-contacts-initializing');
                     display(room.id);
                 }
+                setTimeout( () => Lucide.createIcons());
             });
         };
 
@@ -904,7 +914,7 @@ define([
                     var button = h('button.btn', {
                         'data-user': curve
                     }, [
-                        h('i.fa.fa-bell'),
+                        Icons.get('notification'),
                         Messages.contacts_unmute || 'unmute'
                     ]);
                     common.displayAvatar($(avatar), data.avatar, data.name, Util.noop, data.uid, data.badge);
@@ -914,6 +924,8 @@ define([
                             if (e) { return void console.error(e); }
                             $(button).closest('div').remove();
                             if (!data) { $button.hide(); }
+                            $('.cp-app-contacts-friend[data-user="'+curve+'"]')
+                                .find('.cp-unmute-icon').hide();
                             $('.cp-app-contacts-friend[data-user="'+curve+'"]')
                                 .find('.cp-mute-icon').show();
                             if ($('.cp-contacts-muted-table').find('.cp-contacts-muted-user').length === 0) {
@@ -934,6 +946,7 @@ define([
                 $button.off('click');
                 $button.click(function () {
                     UI.alert(content);
+                    Lucide.createIcons();
                 }).show();
             });
         };

@@ -19,8 +19,10 @@ define([
     '/customize/messages.js',
     '/customize/pages.js',
     '/common/pad-types.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 ], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, Badges, h,
-MessengerUI, Messages, Pages, PadTypes) {
+MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
     var Common;
 
     var Bar = {
@@ -107,7 +109,7 @@ MessengerUI, Messages, Pages, PadTypes) {
                 text: Messages.toolbar_file,
                 options: [],
                 common: Common,
-                iconCls: 'fa fa-file-o'
+                iconCls: 'file'
             }).hide();
             $drawer.addClass(FILE_CLS).appendTo($file);
             $drawer.find('.cp-dropdown-content').addClass(DRAWER_CLS);
@@ -238,10 +240,14 @@ MessengerUI, Messages, Pages, PadTypes) {
         }
 
         // Update the buttons
-        var fa_editusers = '<span class="fa fa-users"></span>';
-        var fa_viewusers = numberOfViewUsers === '' ? '' : '<span class="fa fa-eye"></span>';
-        var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
-        $userButtons.find('.cp-toolbar-userlist-button').html('').append($spansmall);
+        var $editIcon = Icons.get('users');
+        var $editCount = $('<span>').text(' ' + numberOfEditUsers);
+        var $separator = $('<span>').html('&nbsp;&nbsp;');
+        var $viewIcon = numberOfViewUsers === '' ? $() : Icons.get('preview');
+        var $viewCount = numberOfViewUsers === '' ? $() : $('<span>').text(' ' + numberOfViewUsers);
+
+        var $spansmall = $('<span>').append($editIcon, $editCount, $separator, $viewIcon, $viewCount);
+        $userButtons.find('.cp-toolbar-userlist-button').empty().append($spansmall);
 
         if (!online || toolbar.isDeleted) { return; }
 
@@ -268,9 +274,9 @@ MessengerUI, Messages, Pages, PadTypes) {
             if (isMe && !priv.readOnly) {
                 if (!Config.disableProfile) {
                     var $button = $('<button>', {
-                        'class': 'fa fa-pencil cp-toolbar-userlist-button',
+                        'class': 'cp-toolbar-userlist-button',
                         title: Messages.user_rename
-                    }).appendTo($nameSpan);
+                    }).append(Icons.get('edit')).appendTo($nameSpan);
                     $button.hover(function (e) { e.preventDefault(); e.stopPropagation(); });
                     $button.mouseenter(function (e) {
                         e.preventDefault();
@@ -322,27 +328,27 @@ MessengerUI, Messages, Pages, PadTypes) {
                 && !priv.readOnly) {
                 if (pendingFriends[data.curvePublic]) {
                     $('<button>', {
-                        'class': 'fa fa-hourglass-half cp-toolbar-userlist-button',
+                        'class': 'cp-toolbar-userlist-button',
                         'title': Messages.profile_friendRequestSent
-                    }).appendTo($nameSpan);
+                    }).append(Icons.get('timer')).appendTo($nameSpan);
                 } else if (friendRequests[data.curvePublic]) {
                     $('<button>', {
-                        'class': 'fa fa-bell cp-toolbar-userlist-button',
+                        'class': ' cp-toolbar-userlist-button',
                         'data-cptippy-html': true,
                         'title': Messages._getKey('friendRequest_received', [safeName]),
-                    }).appendTo($nameSpan).click(function (e) {
+                    }).append(Icons.get('notification')).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
                         UIElements.displayFriendRequestModal(Common, friendRequests[data.curvePublic]);
                     });
 
                 } else {
                     $('<button>', {
-                        'class': 'fa fa-user-plus cp-toolbar-userlist-button',
+                        'class': 'cp-toolbar-userlist-button',
                         'data-cptippy-html': true,
                         'title': Messages._getKey('userlist_addAsFriendTitle', [
                             safeName,
                         ])
-                    }).appendTo($nameSpan).click(function (e) {
+                    }).append(Icons.get('add-friend')).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
                         Common.sendFriendRequest(data, function (err, obj) {
                             if (err || (obj && obj.error)) {
@@ -354,9 +360,9 @@ MessengerUI, Messages, Pages, PadTypes) {
                 }
             } else if (Common.isLoggedIn() && data.curvePublic && friends[data.curvePublic]) {
                 $('<button>', {
-                    'class': 'fa fa-comments-o cp-toolbar-userlist-button',
+                    'class': 'cp-toolbar-userlist-button',
                     'title': Messages.contact_chat
-                }).appendTo($nameSpan).click(function (e) {
+                }).append(Icons.get('chat')).appendTo($nameSpan).click(function (e) {
                     e.stopPropagation();
                     Common.openURL('/contacts/');
                 });
@@ -375,6 +381,7 @@ MessengerUI, Messages, Pages, PadTypes) {
             Common.displayAvatar($avatar, data.avatar, name, function () {
                 $span.append($rightCol);
                 onAvatar.fire();
+                Lucide.createIcons();
             }, data.uid);
             $span.data('uid', data.uid);
             if (data.badge && data.edPublic) {
@@ -424,6 +431,7 @@ MessengerUI, Messages, Pages, PadTypes) {
             viewText += numberOfViewUsers + ' ' + viewerText + '</div>';
             $editUsers.append(viewText);
         }
+        Lucide.createIcons();
     };
 
     var initUserList = function (toolbar, config) {
@@ -452,7 +460,6 @@ MessengerUI, Messages, Pages, PadTypes) {
             e.preventDefault();
             e.stopPropagation();
         });
-        //var $closeIcon = $('<span>', {"class": "fa fa-times cp-toolbar-userlist-drawer-close"}).appendTo($content);
         $('<h2>').text(Messages.users).appendTo($content);
         $('<p>', {'class': USERLIST_CLS}).appendTo($content);
 
@@ -505,32 +512,25 @@ MessengerUI, Messages, Pages, PadTypes) {
     };
 
     var createCollapse = function (toolbar) {
-        var up = h('i.fa.fa-chevron-up', {title: Messages.toolbar_collapse});
-        var down = h('i.fa.fa-chevron-down', {title: Messages.toolbar_expand});
+        var icon = Icons.get('chevron-up', {title: Messages.toolbar_collapse});
         var notif = h('span.cp-collapsed-notif');
 
         var $button = $(h('button.cp-toolbar-collapse',[
-            up,
-            down,
+            icon,
             notif
         ]));
-        var $up = $(up);
-        var $down = $(down);
         toolbar.$bottomR.prepend($button);
-        $down.hide();
         $(notif).hide();
         $button.click(function () {
             toolbar.$top.toggleClass('toolbar-hidden');
             var hidden = toolbar.$top.hasClass('toolbar-hidden');
             $button.toggleClass('cp-toolbar-button-active');
-            if (hidden) {
-                $up.hide();
-                $down.show();
-            } else {
-                $up.show();
-                $down.hide();
-                $(notif).hide();
-            }
+            const newIcon = hidden ?
+                Icons.get('chevron-down', {title: Messages.toolbar_expand}):
+                Icons.get('chevron-up', {title: Messages.toolbar_collapse});
+
+            $button.find('[data-lucide]').replaceWith(newIcon);
+            Lucide.createIcons();
         });
     };
 
@@ -551,7 +551,6 @@ MessengerUI, Messages, Pages, PadTypes) {
             e.preventDefault();
             e.stopPropagation();
         });
-        //var $closeIcon = $('<span>', {"class": "fa fa-times cp-toolbar-chat-drawer-close"}).appendTo($content);
         //$('<h2>').text(Messages.users).appendTo($content);
         //$('<p>', {'class': USERLIST_CLS}).appendTo($content);
 
@@ -560,7 +559,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         var $container = $('<span>', {id: 'cp-toolbar-chat-drawer-open'});
 
         var $button = $(h('button', [
-            h('i.fa.fa-comments'),
+            Icons.get('chat'),
             h('span.cp-button-name', Messages.chatButton)
         ])).appendTo($container);
 
@@ -623,7 +622,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         }
 
         var $shareBlock = $(h('button.cp-toolar-share-button.cp-toolbar-button-primary', [
-            h('i.fa.fa-shhare-alt'),
+            Icons.get('share'),
             h('span.cp-button-name', Messages.shareButton)
         ]));
         Common.getSframeChannel().event('EV_SHARE_OPEN', {
@@ -657,7 +656,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         }
 
         var $accessBlock = $(h('button.cp-toolar-access-button.cp-toolbar-button-primary', [
-            h('i.fa.fa-unlock-alt'),
+            Icons.get('access'),
             h('span.cp-button-name', Messages.accessButton)
         ]));
         $accessBlock.click(function () {
@@ -687,7 +686,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         }
 
         var $shareBlock = $(h('button.cp-toolar-share-button.cp-toolbar-button-primary', [
-            h('i.fa.fa-shhare-alt'),
+            Icons.get('share'),
             h('span.cp-button-name', Messages.shareButton)
         ]));
         Common.getSframeChannel().event('EV_SHARE_OPEN', {
@@ -749,15 +748,9 @@ MessengerUI, Messages, Pages, PadTypes) {
         if (config.readOnly !== 1) {
             $text.attr("title", Messages.clickToEdit);
             $text.addClass("cp-toolbar-title-editable");
-            var $icon = $('<span>', {
-                'class': 'fa fa-pencil cp-toolbar-title-icon-readonly',
-                style: 'font-family: FontAwesome;'
-            });
+            var $icon = Icons.get('edit', {class: 'cp-toolbar-title-icon-readonly'});
             $pencilIcon.append($icon).appendTo($hoverable);
-            var $icon2 = $('<span>', {
-                'class': 'fa fa-check cp-toolbar-title-icon-readonly',
-                style: 'font-family: FontAwesome;'
-            });
+            var $icon2 = Icons.get('check', {class: 'cp-toolbar-title-icon-readonly'});
             $saveIcon.append($icon2).appendTo($hoverable);
         }
 
@@ -905,7 +898,8 @@ MessengerUI, Messages, Pages, PadTypes) {
             'class': "cp-toolbar-link-logo",
             'role': 'button',
             'aria-label': buttonTitle
-        }).append(UI.getIcon(privateData.app));
+        }).append(UI.getIcon(privateData.app)).append(Icons.get(toMain ? 'homepage' : 'drive')); //append both icons
+        Lucide.createIcons();
 
         var onClick = function (e) {
             e.preventDefault();
@@ -994,7 +988,7 @@ MessengerUI, Messages, Pages, PadTypes) {
     };
 
     var createLimit = function (toolbar, config) {
-        var $limitIcon = $('<span>', {'class': 'fa fa-exclamation-triangle'});
+        var $limitIcon = Icons.get('alert');
         var $limit = toolbar.$userAdmin.find('.'+LIMIT_CLS).attr({
             'title': Messages.pinLimitReached
         }).append($limitIcon).hide();
@@ -1058,7 +1052,7 @@ MessengerUI, Messages, Pages, PadTypes) {
 
     var createMaintenance = function (toolbar) {
         var $notif = toolbar.$top.find('.'+MAINTENANCE_CLS);
-        var button = h('button.cp-maintenance-wrench.fa.fa-wrench');
+        var button = h('button.cp-maintenance-wrench', [Icons.get('settings')]);
         $notif.append(button);
 
 
@@ -1161,7 +1155,8 @@ MessengerUI, Messages, Pages, PadTypes) {
             options: options, // Entries displayed in the menu
             container: $notif,
             left: true,
-            common: Common
+            common: Common,
+            iconCls: 'notification'
         };
         var $newPadBlock = UIElements.createDropdown(dropdownConfig);
         var $button = $newPadBlock.find('button');
@@ -1175,8 +1170,7 @@ MessengerUI, Messages, Pages, PadTypes) {
                 $button.attr("aria-expanded", "true");
             }
         });
-        $button.addClass('fa fa-bell-o cp-notifications-bell');
-        $button.addClass('fa fa-bell-o cp-notifications-bell');
+        $button.addClass('cp-notifications-bell');
         $button.attr('aria-label', Messages.notificationsPage);
         var $n = $button.find('.cp-dropdown-button-title').hide();
         var $empty = $(div).find('.cp-notifications-empty');
@@ -1185,12 +1179,13 @@ MessengerUI, Messages, Pages, PadTypes) {
         var refresh = function () {
             updateUserList(toolbar, config);
             var n = $(div).find('.cp-notification').length;
-            $button.removeClass('fa-bell-o').removeClass('fa-bell');
+            let $icon = $button.find('svg');
             $n.removeClass('cp-notifications-small');
             if (n === 0) {
                 $empty.show();
                 $n.hide();
-                return void $button.addClass('fa-bell-o');
+                $icon.css('fill', 'none');
+                return;
             }
             if (n > 99) {
                 n = '99+';
@@ -1198,7 +1193,7 @@ MessengerUI, Messages, Pages, PadTypes) {
             }
             $empty.hide();
             $n.text(n).show();
-            $button.addClass('fa-bell');
+            $icon.css('fill', 'currentColor');
         };
 
         Common.mailbox.subscribe(['notifications', 'team', 'broadcast', 'reminders', 'supportteam'], {

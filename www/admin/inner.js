@@ -22,10 +22,11 @@ define([
     '/api/instance',
     '/lib/datepicker/flatpickr.js',
     '/install/onboardscreen.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/admin/app-admin.less',
 ], function(
     $,
@@ -47,6 +48,8 @@ define([
     Instance,
     Flatpickr,
     Onboarding,
+    Lucide,
+    Icons
 ) {
 
     var APP = window.APP = {};
@@ -60,7 +63,7 @@ define([
         // UNUSED-TRANSLATIONS:START
         var categories = {
             'general': { // Msg.admin_cat_general
-                icon: 'fa fa-user-o',
+                icon: 'user-account',
                 content: [
                     'instance-info-notice',
                     'name',
@@ -71,21 +74,21 @@ define([
                 ]
             },
             'customize': { // Msg.admin_cat_customize
-                icon: 'fa fa-paint-brush',
+                icon: 'customize',
                 content: [
                     'logo',
                     'color',
                 ]
             },
             'admins': {
-                icon: 'fa fa-users',
+                icon: 'users',
                 content: [
                     'list-admins',
                     'add-admins'
                 ]
             },
             'broadcast' : { // Msg.admin_cat_broadcast
-                icon: 'fa fa-bullhorn',
+                icon: 'broadcast',
                 content : [
                     'notice',
                     'maintenance',
@@ -94,20 +97,20 @@ define([
                 ]
             },
             'security': { // Msg.admin_cat_security
-                icon: 'fa fa-lock',
+                icon: 'lock',
                 content: [
                     'enableembeds',
                     'forcemfa',
                 ]
             },
             'apps': { // Msg.admin_cat_apps
-                icon: 'fa fa-wrench',
+                icon: 'apps-settings',
                 content: [
                     'apps',
                 ]
             },
             'users' : { // Msg.admin_cat_users
-                icon : 'fa fa-address-card-o',
+                icon : 'user-directory',
                 content : [
                 'registration',
                 'invitation',
@@ -115,7 +118,7 @@ define([
                 ]
             },
             'quota': { // Msg.admin_cat_quota
-                icon: 'fa fa-hdd-o',
+                icon: 'drive',
                 content: [
                     'defaultlimit',
                     'setlimit',
@@ -123,7 +126,7 @@ define([
                 ]
             },
             'database' : { // Msg.admin_cat_database
-                icon : 'fa fa-database',
+                icon : 'database',
                 content : [
                     'account-metadata',
                     'document-metadata',
@@ -133,14 +136,14 @@ define([
                 ]
             },
             'support' : { // Msg.admin_cat_support
-                icon : 'fa fa-ambulance',
+                icon : 'moderation',
                 content : [
                     'support-setup',
                     'support-team',
                 ]
             },
             'stats' : { // Msg.admin_cat_stats
-                icon : 'fa fa-line-chart',
+                icon : 'stats',
                 content : [
                     'refresh-stats',
                     'uptime',
@@ -152,7 +155,7 @@ define([
                 ]
             },
             'performance' : { // Msg.admin_cat_performance
-                icon : 'fa fa-heartbeat',
+                icon : 'performance',
                 content : [
                     'refresh-performance',
                     'performance-profiling',
@@ -161,7 +164,7 @@ define([
                 ]
             },
             'network' : { // Msg.admin_cat_network
-                icon : 'fa fa-sitemap',
+                icon : 'network',
                 content : [
                     'update-available',
                     'checkup',
@@ -265,7 +268,7 @@ define([
                 const newRows = admins.map(obj => {
                     let { name, edPublic, hardcoded } = obj;
                     name = name || Messages.admin_admin;
-                    let button = blocks.button('danger','fa-ban', Messages.admin_usersRemove);
+                    let button = blocks.button('danger','restricted', Messages.admin_usersRemove);
                     let $b = $(button);
                     Util.onClickEnter($b, () => {
                         $b.prop('disabled', 'disabled');
@@ -323,7 +326,7 @@ define([
                 placeholder: Messages.admin_accountMetadataPlaceholder
             });
             const keyLabel = blocks.labelledInput(Messages.admin_addKeyLabel, keyInput);
-            const keyButton = blocks.button('primary', 'fa-plus', Messages.tag_add);
+            const keyButton = blocks.button('primary', 'add', Messages.tag_add);
             const keyForm = blocks.form([keyLabel], blocks.nav([keyButton]));
             const $keyInput = $(keyInput).on('input', () => {
                 let val = $keyInput.val().trim();
@@ -364,7 +367,7 @@ define([
                     large: true,
                     data: friends
                 }, function () {});
-                let addBtn = blocks.button('primary', 'fa-plus', Messages.tag_add);
+                let addBtn = blocks.button('primary', 'add', Messages.tag_add);
                 Util.onClickEnter($(addBtn), () => {
                     var $sel = $(contactsGrid.div).find('.cp-usergrid-user.cp-selected');
                     if (!$sel.length) {
@@ -384,6 +387,7 @@ define([
                     }).nThen(() => {
                         APP.updateStatus(function () {
                             evRefreshAdmins.fire();
+                            Lucide.createIcons();
                         });
                     });
                 });
@@ -411,6 +415,7 @@ define([
                         // refresh
                         APP.updateStatus(function () {
                             evRefreshAdmins.fire();
+                            Lucide.createIcons();
                         });
                     });
                 });
@@ -451,7 +456,6 @@ define([
                     h('td', value)
                 ]));
             };
-
             return {
                 row: row,
                 table: table,
@@ -504,7 +508,7 @@ define([
         };
 
         var copyToClipboard = (content) => {
-            var button = blocks.activeButton('primary','', Messages.copyToClipboard, () => {
+            var button = blocks.activeButton('primary','copy', Messages.copyToClipboard, () => {
                 var toCopy = JSON.stringify(content, null, 2);
                 Clipboard.copy(toCopy, (err) => {
                     if (err) { return UI.warn(Messages.error); }
@@ -568,7 +572,7 @@ define([
             row(Messages.admin_planName, data.plan || Messages.ui_none);
 
             // plan note
-            row(Messages.admin_note, data.note || Messages.ui_none);
+            row(Messages.admin_creation_note, data.note || Messages.ui_none);
 
             // storage limit
             if (data.limit) { row(Messages.admin_planlimit, getPrettySize(data.limit)); }
@@ -663,7 +667,7 @@ define([
                 };
 
                 // get full pin list
-                row(Messages.admin_getPinList, blocks.activeButton('primary', '', Messages.ui_fetch, getPins));
+                row(Messages.admin_getPinList, blocks.activeButton('primary', 'export', Messages.ui_fetch, getPins));
 
                 // get full pin history
                 var getHistoryHandler = (done) => {
@@ -676,7 +680,7 @@ define([
                         UI.alert(history); // TODO NOT_IMPLEMENTED
                     });
                 };
-                var pinHistoryButton = blocks.activeButton('primary', '', Messages.ui_fetch, getHistoryHandler);
+                var pinHistoryButton = blocks.activeButton('primary', 'export', Messages.ui_fetch, getHistoryHandler);
                 disable($(pinHistoryButton));
 
                 // TODO pin history is not implemented
@@ -705,7 +709,7 @@ define([
                     h('br'),
                     h('small', Messages.admin_archiveAccountInfo)
                 ]);
-                let archiveAccountButton = blocks.activeButton('danger', '',
+                let archiveAccountButton = blocks.activeButton('danger', 'archive',
                                 Messages.admin_archiveButton, archiveHandler, true);
                 row(archiveAccountLabel, archiveAccountButton);
 
@@ -730,7 +734,7 @@ define([
             }
 
             row(reportContentLabel, copyToClipboard(data));
-
+            setTimeout(() => Lucide.createIcons());
             return tableObj.table;
         };
 
@@ -1049,8 +1053,8 @@ define([
             };
             redraw();
 
-            var upload = blocks.button('primary', '', Messages.admin_logoButton);
-            var remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+            var upload = blocks.button('primary', 'upload', Messages.admin_logoButton);
+            var remove = blocks.button('danger', 'restore', Messages.admin_logoRemoveButton);
 
             let spinnerBlock = blocks.inline();
             let spinner = UI.makeSpinner($(spinnerBlock));
@@ -1130,19 +1134,19 @@ define([
             let preview = blocks.block([
                 blocks.block([
                     blocks.link('CryptPad', '/admin/#customize'),
-                    blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
-                    blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
+                    blocks.button('primary', 'save', Messages.settings_save),
+                    blocks.button('secondary', 'save', Messages.settings_save)
                 ], 'cp-admin-color-preview-dark cp-sidebar-flex-block'),
                 blocks.block([
                     blocks.link('CryptPad', '/admin/#customize'),
-                    blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
-                    blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
+                    blocks.button('primary', 'save', Messages.settings_save),
+                    blocks.button('secondary', 'save', Messages.settings_save)
                 ], 'cp-admin-color-preview-light cp-sidebar-flex-block')
             ], 'cp-admin-color-preview');
             let labelPreview = blocks.labelledInput(Messages.admin_colorPreview, preview);
             let $preview = $(preview);
 
-            let remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+            let remove = blocks.button('danger', 'restore', Messages.admin_logoRemoveButton);
             let $remove = $(remove);
 
             let setColor = (color, done) => {
@@ -1187,6 +1191,7 @@ define([
                 let color = $input.val();
                 setColor(color, done);
             });
+            btn.prepend(Icons.get('color-palette'));
 
 
             UI.confirmButton($remove, {
@@ -1282,7 +1287,7 @@ define([
 
         // Msg.admin_invitationHint, admin_invitationTitle
         sidebar.addItem('invitation', function(cb){
-            var button = blocks.button('primary', '', Messages.admin_invitationCreate);
+            var button = blocks.button('primary', 'link', Messages.admin_invitationCreate);
             var $b = $(button);
 
             var inputAlias = blocks.input({
@@ -1296,7 +1301,7 @@ define([
             var blockEmail = blocks.labelledInput(Messages.admin_invitationEmail, inputEmail);
 
             var refreshInvite = function () {};
-            var refreshButton = blocks.button('secondary', '', Messages.oo_refresh);
+            var refreshButton = blocks.button('secondary', 'refresh', Messages.oo_refresh);
             Util.onClickEnter($(refreshButton), function () {
                 refreshInvite();
             });
@@ -1358,7 +1363,7 @@ define([
                         var data = all[key];
                         var url = privateData.origin + Hash.hashToHref(key, 'register');
 
-                        var del = blocks.button('danger', 'fa-trash', Messages.kanban_delete );
+                        var del = blocks.button('danger', 'trash-full', Messages.kanban_delete );
                         var $del = $(del);
                         Util.onClickEnter($del, function () {
                             $del.attr('disabled', 'disabled');
@@ -1368,7 +1373,7 @@ define([
                                 deleteInvite(key);
                             });
                         });
-                        var copy = blocks.button('secondary', 'fa-clipboard', Messages.admin_invitationCopy);
+                        var copy = blocks.button('secondary', 'copy', Messages.admin_invitationCopy);
                         Util.onClickEnter($(copy), function () {
                             Clipboard.copy(url, () => {
                                 UI.log(Messages.genericCopySuccess);
@@ -1595,7 +1600,7 @@ define([
             });
             var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
 
-            var button = blocks.button('primary', '', Messages.admin_usersAdd);
+            var button = blocks.button('primary', 'add', Messages.admin_usersAdd);
             var $b = $(button);
 
             var userAlias = blocks.input({ type: 'text' });
@@ -1611,7 +1616,7 @@ define([
             var blockUser = blocks.labelledInput(Messages.admin_usersBlock, userBlock);
 
             var refreshUsers = function () {};
-            var refreshButton = blocks.button('secondary', '', Messages.oo_refresh);
+            var refreshButton = blocks.button('secondary', 'refresh', Messages.oo_refresh);
             Util.onClickEnter($(refreshButton), function () {
                 refreshUsers();
             });
@@ -1688,7 +1693,7 @@ define([
                     Object.keys(all).sort(sort(all)).forEach(function (key) {
                         var data = all[key];
                         var editUser = () => {};
-                        var del = blocks.button('danger', 'fa fa-trash', Messages.admin_usersRemove);
+                        var del = blocks.button('danger', 'trash-full', Messages.admin_usersRemove);
                         var $del = $(del);
                         Util.onClickEnter($del, function () {
                             $del.attr('disabled', 'disabled');
@@ -1698,7 +1703,7 @@ define([
                                 deleteUser(key);
                             });
                         });
-                        var edit = blocks.activeButton('secondary', 'fa fa-pencil',
+                        var edit = blocks.activeButton('secondary', 'edit',
                                     Messages.tag_edit, () => { editUser(); }, true);
 
                         let aliasCell = blocks.inline(data.alias);
@@ -1714,8 +1719,8 @@ define([
                             var emailInput = h('input');
                             $(aliasInput).val(data.alias);
                             $(emailInput).val(data.email);
-                            var save = blocks.button('primary', '', Messages.settings_save);
-                            var cancel = blocks.button('secondary', '', Messages.cancel);
+                            var save = blocks.button('primary', 'save', Messages.settings_save);
+                            var cancel = blocks.button('secondary', 'close', Messages.cancel);
                             Util.onClickEnter($(save), function () {
                                 var aliasVal = $(aliasInput).val().trim();
                                 if (!aliasVal) { return void UI.warn(Messages.error); }
@@ -1733,7 +1738,7 @@ define([
                             $actions.html('').append([save, cancel]);
                         };
 
-                        let infoBtn = blocks.activeButton('primary', 'fa fa-database',
+                        let infoBtn = blocks.activeButton('primary', 'database',
                                 Messages.admin_diskUsageButton, function (done) {
                             getAccountData(key, (err, data) => {
                                 done(!err);
@@ -1810,7 +1815,7 @@ define([
                 value: _limitMB,
                 'aria-labelledby': 'cp-admin-defaultlimit'
             });
-            var button = blocks.button('primary', '', Messages.admin_setlimitButton);
+            var button = blocks.button('primary', 'limit', Messages.admin_setlimitButton);
             var nav = blocks.nav([button]);
             var text = blocks.inline(Messages._getKey('admin_limit', [limit]));
 
@@ -1866,8 +1871,8 @@ define([
             var noteBlock = blocks.labelledInput(Messages.admin_limitSetNote, note);
             var $note = $(note);
 
-            var remove = blocks.button('danger', '', Messages.fc_remove );
-            var set = blocks.button('primary', '', Messages.admin_setlimitButton);
+            var remove = blocks.button('danger', 'restricted', Messages.fc_remove );
+            var set = blocks.button('primary', 'limit', Messages.admin_setlimitButton);
 
             var nav = blocks.nav([set, remove]);
             var form = blocks.form([
@@ -1995,6 +2000,7 @@ define([
                                     wide: true,
                                  });
                              });
+                             Lucide.createIcons();
                         });
 
                         var keyEl = h('code.cp-limit-key', key);
@@ -2030,7 +2036,7 @@ define([
             });
             var $input = $(input);
 
-            var btn = blocks.button('primary', '', Messages.ui_generateReport);
+            var btn = blocks.button('primary', 'report', Messages.ui_generateReport);
             var $btn = $(btn);
 
             var nav = blocks.nav([btn]);
@@ -2209,7 +2215,7 @@ define([
 
                 // actions
                 // get raw metadata history
-                var metadataHistoryButton = blocks.activeButton('primary', '', Messages.ui_fetch, done => {
+                var metadataHistoryButton = blocks.activeButton('primary', 'export', Messages.ui_fetch, done => {
                     sframeCommand('GET_METADATA_HISTORY', data.id, (err, result) => {
                         done(!err);
                         if (err) {
@@ -2344,7 +2350,7 @@ define([
                 ]));
             } else if (data.live) {
             // archive
-                var archiveDocumentButton = blocks.activeButton('danger', '' ,Messages.admin_archiveButton, function () {
+                var archiveDocumentButton = blocks.activeButton('danger', 'archive' ,Messages.admin_archiveButton, function () {
                     justifyArchivalDialog('', result => {
                         sframeCommand('ARCHIVE_DOCUMENT', {
                             id: data.id,
@@ -2386,7 +2392,7 @@ define([
             }
 
             row(reportContentLabel, copyToClipboard(data));
-
+            setTimeout(() => Lucide.createIcons());
             return tableObj.table;
         };
 
@@ -2396,7 +2402,7 @@ define([
                 'aria-labelledby': 'cp-admin-documents-deletion'
             });
             const $textarea = $(textarea);
-            const archiveButton = blocks.activeButton('danger', '',
+            const archiveButton = blocks.activeButton('danger', 'archive',
                     Messages.admin_archiveButton, () => {
                 const $btn = $(archiveButton);
                 justifyArchivalDialog('', result => {
@@ -2521,7 +2527,7 @@ define([
 
             var results = blocks.inline([]);
 
-            var btn = blocks.button('primary', '', Messages.ui_generateReport);
+            var btn = blocks.button('primary', 'report', Messages.ui_generateReport);
             var $btn = $(btn);
 
             var nav = blocks.nav([btn]);
@@ -2626,7 +2632,7 @@ define([
             row(Messages.admin_totpRecoveryMethod, data.totp.recovery);
 
             if (data.live) {
-                var archiveButton = blocks.activeButton('danger', '', Messages.ui_archive, function () {
+                var archiveButton = blocks.activeButton('danger', 'archive', Messages.ui_archive, function () {
                     justifyArchivalDialog('', reason => {
                         sframeCommand('ARCHIVE_BLOCK', {
                             key: data.key,
@@ -2681,7 +2687,7 @@ define([
                 value: ''
             });
             var $input = $(input);
-            var btn = blocks.button('primary', '', Messages.ui_generateReport);
+            var btn = blocks.button('primary', 'report', Messages.ui_generateReport);
             var $btn = $(btn);
             disable($btn);
 
@@ -2772,7 +2778,7 @@ define([
             if (!data.totpCheck || !data.totp.enabled) { return tableObj.table; }
 
             // TOTP is enabled and the signature is correct: display "disable TOTP" button
-            var disableButton = blocks.button('danger', '', Messages.admin_totpDisableButton);
+            var disableButton = blocks.button('danger', 'restricted', Messages.admin_totpDisableButton);
             UI.confirmButton(disableButton, { classes: 'btn-danger' }, () => {
                 sframeCommand('DISABLE_MFA', data.key, (err, res) => {
                     if (err) {
@@ -2808,7 +2814,7 @@ define([
                 'aria-labelledby': 'cp-admin-totp-recovery'
             });
             var $input = $(textarea);
-            var btn = blocks.button('primary','', Messages.admin_totpDisable);
+            var btn = blocks.button('primary','restricted', Messages.admin_totpDisable);
             var $btn = $(btn);
             var results = blocks.inline([]);
 
@@ -2878,7 +2884,7 @@ define([
         var onRefreshStats = Util.mkEvent();
 
         sidebar.addItem('refresh-stats', function(cb){
-            var btn = blocks.button('primary', '',  Messages.oo_refresh);
+            var btn = blocks.button('primary', 'refresh',  Messages.oo_refresh);
             var $btn = $(btn);
             Util.onClickEnter($btn, function () {
                 onRefreshStats.fire();
@@ -2986,7 +2992,7 @@ define([
 
         // Msg.admin_diskUsageHint, .admin_diskUsageTitle, .admin_diskUsageButton
         sidebar.addItem('disk-usage', function(cb){
-            var button = blocks.button('primary', '', Messages.admin_diskUsageButton);
+            var button = blocks.button('primary', 'report', Messages.admin_diskUsageButton);
             var $button = $(button);
             var called = false;
             var nav = blocks.nav([button]);
@@ -3052,6 +3058,7 @@ define([
                 }));
             }).nThen(() => {
                 onRefreshSupportEvt.fire({moderators, supportKey});
+                Lucide.createIcons();
             });
         };
         const getMyData = () => {
@@ -3134,7 +3141,7 @@ define([
                 });
                 const $button = $(button).appendTo($div);
 
-                const delButton = blocks.activeButton('danger', '',
+                const delButton = blocks.activeButton('danger', 'restricted',
                                     Messages.admin_supportDelete, done => {
                     UI.confirm(Messages.admin_supportConfirm, function (yes) {
                         if (!yes) { return void done(false); }
@@ -3153,7 +3160,7 @@ define([
                 });
                 const $delButton = $(delButton).hide();
 
-                const openButton = blocks.button('primary', '', Messages.admin_supportOpen);
+                const openButton = blocks.button('primary', 'external-link', Messages.admin_supportOpen);
                 const $openButton = $(openButton).hide();
                 Util.onClickEnter($(openButton), () => {
                     common.openURL('/moderation/');
@@ -3170,12 +3177,12 @@ define([
                         $delButton.show();
                         $openButton.show();
                         return $state.append([
-                            blocks.icon('fa-check'),
+                            Icons.get('check'),
                             blocks.inline(Messages.admin_supportEnabled)
                         ]);
                     }
                     $state.append([
-                        blocks.icon('fa-times'),
+                        Icons.get('close'),
                         blocks.inline(Messages.admin_supportDisabled)
                     ]);
                 };
@@ -3227,7 +3234,7 @@ define([
                 const drawModerators = () => {
                     if (!supportKey) {
                         const list = blocks.block([
-                            blocks.icon('fa-times'),
+                            Icons.get('close'),
                             blocks.inline(Messages.admin_supportDisabled)
                         ], 'cp-admin-support-state');
                         $div.append(list);
@@ -3266,7 +3273,7 @@ define([
                         data: friends
                     }, function () {});
 
-                    let addBtn = blocks.button('primary', '', Messages.tag_add);
+                    let addBtn = blocks.button('primary', 'add', Messages.tag_add);
                     Util.onClickEnter($(addBtn), () => {
                         var $sel = $(contactsGrid.div).find('.cp-usergrid-user.cp-selected');
                         nThen((waitFor) => {
@@ -3425,7 +3432,7 @@ define([
             let send = function () {};
             var refresh = getApi(function (Broadcast) {
                 $active.empty();
-                var removeButton = blocks.button('danger', '', Messages.admin_maintenanceCancel);
+                var removeButton = blocks.button('danger', 'close', Messages.admin_maintenanceCancel);
 
                 if (Broadcast && Broadcast.maintenance) {
                     var m = Broadcast.maintenance;
@@ -3612,7 +3619,7 @@ define([
             var refresh = getApi(function(Broadcast) {
                 var button = blocks.button('primary', '', Messages.admin_broadcastButton);
                 var $button = $(button);
-                var removeButton = blocks.button('danger', '', Messages.admin_broadcastCancel);
+                var removeButton = blocks.button('danger', 'close', Messages.admin_broadcastCancel);
                 var activeContent = Messages.admin_broadcastActive;
                 var active = blocks.block(blocks.inline(activeContent), 'cp-broadcast-active');
                 var $active = $(active);
@@ -3838,7 +3845,7 @@ define([
         var onRefreshPerformance = Util.mkEvent();
 
         sidebar.addItem('refresh-performance', function(cb){
-            var btn = blocks.button('primary', '', Messages.oo_refresh);
+            var btn = blocks.button('primary', 'refresh', Messages.oo_refresh);
             Util.onClickEnter($(btn), function () {
                 onRefreshPerformance.fire();
             });
@@ -3932,7 +3939,7 @@ define([
                 min: 0,
                 value: duration
             });
-            var set = blocks.button('primary', '', Messages.admin_setDuration);
+            var set = blocks.button('primary', 'duration', Messages.admin_setDuration);
             var label = blocks.labelledInput( Messages.ui_ms, newDuration);
             var nav = blocks.nav([set]);
             var form = blocks.form([
@@ -3988,7 +3995,7 @@ define([
 
         // Messages.admin_checkupButton.admin_checkupHint.admin_checkupTitle
         sidebar.addItem('checkup', function(cb){
-            var button = blocks.button('primary', '', Messages.admin_checkupButton);
+            var button = blocks.button('primary', 'checkup', Messages.admin_checkupButton);
             Util.onClickEnter($(button), function () {
                 common.openURL('/checkup/');
             });

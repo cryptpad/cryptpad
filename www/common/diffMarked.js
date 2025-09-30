@@ -14,12 +14,13 @@ define([
     '/customize/messages.js',
     '/lib/less.min.js',
     '/customize/pages.js',
+    '/customize/fonts/lucide.js',
 
     '/lib/highlight/highlight.pack.js',
     '/lib/diff-dom/diffDOM.js',
     '/components/tweetnacl/nacl-fast.min.js',
     'css!/lib/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
-],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less, Pages) {
+],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less, Pages, Lucide) {
     var DiffMd = {};
 
     var Highlight = window.hljs;
@@ -214,7 +215,7 @@ define([
             r = r.replace(/<div class="cp-md-toc"><\/div>/g, getTOC());
         }
         toc = [];
-
+        setTimeout(() => Lucide.createIcons());
         return r;
     };
 
@@ -276,16 +277,16 @@ define([
         var isCheckbox = true;
         if (isCheckedTaskItem) {
             text = text.replace(checkedTaskItemPtn,
-                '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square-check" aria-hidden="true"></i>') + '\n';
         } else if (isUncheckedTaskItem) {
             text = text.replace(uncheckedTaskItemPtn,
-                '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square" aria-hidden="true"></i>') + '\n';
         } else if (hasBogusCheckedInput) {
             text = text.replace(bogusCheckPtn,
-                '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square-check" aria-hidden="true"></i>') + '\n';
         } else if (hasBogusUncheckedInput) {
             text = text.replace(bogusUncheckPtn,
-                '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square" aria-hidden="true"></i>') + '\n';
         } else {
             isCheckbox = false;
         }

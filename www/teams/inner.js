@@ -24,10 +24,11 @@ define([
     '/common/clipboard.js',
     '/common/make-backup.js',
     '/customize/messages.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     '/components/file-saver/FileSaver.min.js',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/teams/app-team.less',
 ], function (
     $,
@@ -50,7 +51,9 @@ define([
     InviteInner,
     Clipboard,
     Backup,
-    Messages)
+    Messages,
+    Lucide,
+    Icons)
 {
     var APP = {
         teams: {}
@@ -243,15 +246,15 @@ define([
             if (key === 'admin' && !teamAdmin) { return; }
 
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-'+key, 'tabindex': 0}).appendTo($categories);
-            if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-info-circle'})); }
-            if (key === 'list') { $category.append($('<span>', {'class': 'fa fa-list cp-team-cat-list'})); }
-            if (key === 'create') { $category.append($('<span>', {'class': 'fa fa-plus-circle'})); }
-            if (key === 'back') { $category.append($('<span>', {'class': 'fa fa-arrow-left'})); }
-            if (key === 'members') { $category.append($('<span>', {'class': 'fa fa-users'})); }
-            if (key === 'chat') { $category.append($('<span>', {'class': 'fa fa-comments'})); }
-            if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
-            if (key === 'admin') { $category.append($('<span>', {'class': 'fa fa-cogs'})); }
-            if (key === 'link') { $category.append($('<span>', {'class': 'fa fa-envelope'})); }
+            if (key === 'general') { $category.append($(Icons.get('properties'))); }
+            if (key === 'list') { $category.append($(Icons.get('list',{class: 'cp-team-cat-list'}))); }
+            if (key === 'create') { $category.append($(Icons.get('add'))); }
+            if (key === 'back') { $category.append($(Icons.get('chevron-left'))); }
+            if (key === 'members') { $category.append($(Icons.get('users'))); }
+            if (key === 'chat') { $category.append($(Icons.get('chat'))); }
+            if (key === 'drive') { $category.append($(Icons.get('drive'))); }
+            if (key === 'admin') { $category.append($((Icons.get('administration')))); }
+            if (key === 'link') { $category.append($(Icons.get('mail'))); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
@@ -369,6 +372,7 @@ define([
 
     var loadMain = function (common) {
         buildUI(common);
+        Lucide.createIcons();
         UI.removeLoadingScreen();
     };
 
@@ -423,7 +427,7 @@ define([
                 return;
             }
             var div = h('div.cp-team-trim', [
-                h('span.fa.fa-spin.fa-spinner'),
+                Icons.get('loading'),
                 h('span', Messages.team_autoTrim)
             ]);
             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
@@ -509,7 +513,7 @@ define([
                 var createCls = '';
                 if (team.empty && created < createSlots) {
                     createBtn = h('div.cp-team-list-team-create', [
-                        h('i.fa.fa-plus-circle'),
+                        Icons.get('add'),
                         h('span', Messages.team_cat_create)
                     ]);
                     createCls = '.create';
@@ -559,6 +563,7 @@ define([
             });
             content.push(h('ul.cp-team-list-container', list));
             cb(content);
+            Lucide.createIcons();
         });
         return content;
     };
@@ -599,8 +604,9 @@ define([
         content.push(h('br'));
         content.push(h('br'));
         content.push(button);
-        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
-        content.push($spinner[0]);
+        var spinnerContainer = h('span', { class: 'cp-team-spinner' });
+        content.push(spinnerContainer);
+        var spinner = UI.makeSpinner($(spinnerContainer));
         var state = false;
         $(button).click(function () {
             if (state) { return; }
@@ -608,12 +614,12 @@ define([
             if (!name.trim()) { return; }
             if(name.length > 50) { return UI.warn(Messages.team_nameTooLong); }
             state = true;
-            $spinner.show();
+            spinner.spin();
             APP.module.execCommand('CREATE_TEAM', {
                 name: name
             }, function (obj) {
                 if (obj && obj.error) {
-                    $spinner.hide();
+                    spinner.hide();
                     state = false;
                     if (obj.error === "OFFLINE") { return UI.warn(Messages.disconnected); }
                     console.error(obj.error);
@@ -628,7 +634,7 @@ define([
                 refreshList(common, function (content) {
                     state = false;
                     $div.append(content);
-                    $spinner.hide();
+                    spinner.done();
                     $('div.cp-team-cat-list').click();
                 });
                 var $divLink = $('div.cp-team-link').empty();
@@ -640,10 +646,12 @@ define([
             });
         });
         cb(content);
+        Lucide.createIcons();
     };
     makeBlock('create', function (common, cb) {
         refreshCreate(common, cb);
     });
+
 
     makeBlock('drive', function (common, cb, $div) {
         $('div.cp-team-drive').empty();
@@ -694,16 +702,16 @@ define([
                             Messages.teams_table_admins, Messages.teams_table_owners];
         rows.push(h('tr', makeRow(firstRow, true)));
         rows.push(h('tr', makeRow([
-            Messages.team_viewers, h('span.fa.fa-check'), h('span.fa.fa-times'), h('span.fa.fa-times'), h('span.fa.fa-times')
+            Messages.team_viewers, Icons.get('check'), Icons.get('close'), Icons.get('close'), Icons.get('close')
         ])));
         rows.push(h('tr', makeRow([
-            Messages.team_members, h('span.fa.fa-check'), h('span.fa.fa-check'), h('span.fa.fa-times'), h('span.fa.fa-times')
+            Messages.team_members, Icons.get('check'), Icons.get('check'), Icons.get('close'), Icons.get('close')
         ])));
         rows.push(h('tr', makeRow([
-            Messages.team_admins, h('span.fa.fa-check'), h('span.fa.fa-check'), h('span.fa.fa-check'), h('span.fa.fa-times')
+            Messages.team_admins, Icons.get('check'), Icons.get('check'), Icons.get('check'), Icons.get('close')
         ])));
         rows.push(h('tr', makeRow([
-            Messages.team_owner, h('span.fa.fa-check'), h('span.fa.fa-check'), h('span.fa.fa-check'), h('span.fa.fa-check')
+            Messages.team_owner, Icons.get('check'), Icons.get('check'), Icons.get('check'), Icons.get('check')
         ])));
         var t = h('table.cp-teams-generic', rows);
 
@@ -725,6 +733,7 @@ define([
         APP.module.execCommand('GET_EDITABLE_FOLDERS', {
             teamId: APP.team
         }, function (arr) {
+            setTimeout( () => Lucide.createIcons());
             if (!Array.isArray(arr) || !arr.length) {
                 return void $blockContainer.find('.cp-modal').append(content);
             }
@@ -803,10 +812,11 @@ define([
         var ADMIN = ROLES.indexOf('ADMIN');
         // If they're an admin and I am an owner, I can promote them to owner
         if (!isMe && myRole > theirRole && theirRole === ADMIN && !data.pending) {
-            var promoteOwner = h('span.fa.fa-angle-double-up', {
-                title: Messages.team_rosterPromoteOwner
+            var promoteOwner = h('span', Icons.get('promote'), {
+                title: Messages.team_rosterPromoteOwner,
+                'tabindex': '0'
             });
-            $(promoteOwner).click(function () {
+            Util.onClickEnter($(promoteOwner), function () {
                 UI.confirm(Messages.team_ownerConfirm, function (yes) {
                     if (!yes) { return; }
                     $(promoteOwner).hide();
@@ -826,10 +836,11 @@ define([
         }
         // If they're a viewer/member and I have a higher role than them, I can promote them to admin
         if (!isMe && myRole >= ADMIN && theirRole < ADMIN && !data.pending) {
-            var promote = h('span.fa.fa-angle-double-up', {
-                title: Messages.team_rosterPromote
+            var promote = h('span', Icons.get('promote'), {
+                title: Messages.team_rosterPromote,
+                'tabindex': '0'
             });
-            $(promote).click(function () {
+            Util.onClickEnter($(promote), function () {
                 $(promote).hide();
                 describeUser(common, data.curvePublic, {
                     role: ROLES[theirRole + 1]
@@ -840,10 +851,11 @@ define([
         // If I'm not a member and I have an equal or higher role than them, I can demote them
         // (if they're not already a MEMBER)
         if (myRole >= theirRole && myRole >= ADMIN && theirRole > 0 && !data.pending) {
-            var demote = h('span.fa.fa-angle-double-down', {
-                title: Messages.team_rosterDemote
+            var demote = h('span', Icons.get('downgrade'), {
+                title: Messages.team_rosterDemote,
+                'tabindex': '0'
             });
-            $(demote).click(function () {
+            Util.onClickEnter($(demote), function () {
                 var todo = function () {
                     var role = ROLES[theirRole - 1] || 'VIEWER';
                     $(demote).hide();
@@ -866,10 +878,11 @@ define([
         // If I'm at least an admin and I have an equal or higher role than them, I can remove them
         // Note: we can't remove owners, we have to demote them first
         if (!isMe && myRole >= ADMIN && myRole >= theirRole && theirRole !== ROLES.indexOf('OWNER')) {
-            var remove = h('span.fa.fa-times', {
-                title: Messages.team_rosterKick
+            var remove = h('span', Icons.get('close'), {
+                title: Messages.team_rosterKick,
+                'tabindex': 0
             });
-            $(remove).click(function () {
+            Util.onClickEnter($(remove), function () {
                 UI.confirm(Messages._getKey('team_kickConfirm', [Util.fixHTML(displayName)]), function (yes) {
                     if (!yes) { return; }
                     APP.module.execCommand('REMOVE_USER', {
@@ -897,7 +910,7 @@ define([
         ];
         if (data.inviteChannel) {
             if (data.hash) {
-                var copy = h('span.fa.fa-copy');
+                var copy = Icons.get('copy');
                 $(copy).click(function () {
                     var privateData = common.getMetadataMgr().getPrivateData();
                     var origin = privateData.origin;
@@ -921,6 +934,7 @@ define([
                 common.openURL('/profile/#' + data.profile);
             });
         }
+        setTimeout(() => Lucide.createIcons());
         return div;
     };
     APP.refreshRoster = function (common, roster) {
@@ -979,7 +993,7 @@ define([
         // If you're an admin or an owner, you can invite your friends to the team
         // TODO and acquaintances later?
         if (me && (me.role === 'ADMIN' || me.role === 'OWNER')) {
-            var invite = h('button.cp-online.btn.btn-primary', Messages.team_inviteButton);
+            var invite = h('button.cp-online.btn.btn-primary', [Icons.get('send'), Messages.team_inviteButton]);
             var inviteFriends = common.getFriends();
             Object.keys(inviteFriends).forEach(function (curve) {
                 // Keep only friends that are not already in the team and that you can contact
@@ -1000,7 +1014,7 @@ define([
             $header.append(invite);
         }
 
-        var leave = h('button.cp-online.btn.btn-danger', Messages.team_leaveButton);
+        var leave = h('button.cp-online.btn.btn-danger', [Icons.get('logout'),Messages.team_leaveButton]);
         $(leave).click(function () {
             if (me && me.role === 'OWNER') {
                 return void UI.alert(Messages.team_leaveOwner);
@@ -1018,7 +1032,7 @@ define([
         });
         $header.append(leave);
 
-        var table = h('button.btn.btn-primary', Messages.teams_table);
+        var table = h('button.btn.btn-primary', [Icons.get('teams'), Messages.teams_table]);
         $(table).click(function (e) {
             e.stopPropagation();
             makePermissions();
@@ -1105,9 +1119,8 @@ define([
             'id': 'cp-settings-displayname',
             'placeholder': Messages.anonymous}).appendTo($inputBlock);
         var $save = $('<button>', {'class': 'cp-online-alt btn btn-primary'}).text(Messages.settings_save).appendTo($inputBlock);
-
-        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
-        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+        var spinnerContainer = h('span', {class: 'cp-team-spinner'});
+        var spinner = UI.makeSpinner($(spinnerContainer));
 
         var todo = function () {
             var newName = $input.val();
@@ -1122,22 +1135,22 @@ define([
                 if (obj.name === newName) {
                     return void UI.warn(Messages._getKey('team_nameAlreadySet', [Util.fixHTML(newName)]));
                 }
-                $spinner.show();
+                spinner.spin();
                 var oldName = obj.name;
                 obj.name = newName;
                 APP.module.execCommand('SET_TEAM_METADATA', {
                     teamId: APP.team,
                     metadata: obj
                 }, function (res) {
-                    $spinner.hide();
                     if (res && res.error) {
+                        spinner.hide();
                         $input.val(oldName);
                         if (res.error === 'OFFLINE') {
                             return void UI.warn(Messages.disconnected);
                         }
                         return void UI.warn(Messages.error);
                     }
-                    $ok.show();
+                    spinner.done(); 
                 });
             });
         };
@@ -1150,14 +1163,12 @@ define([
             }
             $input.val(obj.name);
             $input.on('keyup', function (e) {
-                if ($input.val() !== obj.name) { $ok.hide(); }
                 if (e.which === 13) { todo(); }
             });
             $save.click(todo);
             var content = [
                 $inputBlock[0],
-                $ok[0],
-                $spinner[0]
+                spinnerContainer
             ];
             cb(content);
         });
@@ -1190,7 +1201,7 @@ define([
         $upButton.addClass('cp-online');
         $upButton.removeProp('title');
         $upButton.text(Messages.profile_upload);
-        $upButton.prepend($('<span>', {'class': 'fa fa-upload'}));
+        $upButton.prepend($(Icons.get('upload-avatar')));
 
         APP.module.execCommand('GET_TEAM_METADATA', {
             teamId: APP.team
@@ -1244,6 +1255,7 @@ define([
             });
         };
         var button = h('button.btn.btn-primary', Messages.team_exportButton);
+        button.prepend(Icons.get('download'));
         UI.confirmButton(button, {
             classes: 'btn-primary',
             multiple: true
@@ -1256,8 +1268,9 @@ define([
     makeBlock('delete', function (common, cb, $div) { // Msg.team_deleteHint, .team_deleteTitle
         $div.addClass('cp-online');
         var deleteTeam = h('button.btn.btn-danger', Messages.team_deleteButton);
-        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
-        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+        deleteTeam.prepend(Icons.get('trash-full'));
+        var spinnerContainer = h('span', {class: 'cp-team-spinner'});
+        var spinner = UI.makeSpinner($(spinnerContainer));
 
         var deleting = false;
         $(deleteTeam).click(function () {
@@ -1266,16 +1279,16 @@ define([
                 if (!yes) { return; }
                 if (deleting) { return; }
                 deleting = true;
-                $spinner.show();
+                spinner.spin();
                 APP.module.execCommand("DELETE_TEAM", {
                     teamId: APP.team
                 }, function (obj) {
-                    $spinner.hide();
                     deleting = false;
                     if (obj && obj.error) {
+                        spinner.hide();
                         return void UI.warn(obj.error);
                     }
-                    $ok.show();
+                    spinner.done();
                     UI.log(Messages.deleted);
                 });
             });
@@ -1283,8 +1296,7 @@ define([
 
         cb([
             deleteTeam,
-            $ok[0],
-            $spinner[0]
+            spinnerContainer
         ]);
     }, true);
 
@@ -1317,7 +1329,7 @@ define([
         }
 
         var div = h('div', [
-            h('i.fa.fa-spin.fa-spinner')
+            Icons.get('loading')
         ]);
         var $div = $(div);
         var errorBlock;
@@ -1357,7 +1369,7 @@ define([
             var $spinner;
             nThen(function (waitFor) {
                 $inviteDiv.append(h('div', [
-                    h('i.fa.fa-spin.fa-spinner'),
+                    Icons.get('loading'),
                     spinnerText = h('span', Messages.team_invitePasswordLoading || 'Scrypt...')
                 ]));
                 $spinner = $(spinnerText);

@@ -17,9 +17,10 @@ define([
     '/customize/messages.js',
     'cm/lib/codemirror',
     '/common/common-ui-elements.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'css!/customize/src/print-landscape.css',
     'less!/slide/app-slide.less',
 
@@ -63,7 +64,9 @@ define([
     h,
     Messages,
     CMeditor,
-    UIElements)
+    UIElements,
+    Lucide,
+    Icons)
 {
     window.CodeMirror = CMeditor;
 
@@ -112,7 +115,7 @@ define([
             text: Messages.toolbar_theme,
             options: [],
             common: framework._.sfCommon,
-            iconCls: 'cptools cptools-palette'
+            iconCls: 'color-palette'
         });
         framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
         framework._.toolbar.$bottomL.append($drawer);
@@ -235,10 +238,9 @@ define([
                 if (slideOptionsTmp.background && slideOptionsTmp.background.name) {
                     $bgValue.append(Messages._getKey("printBackgroundValue", [Util.fixHTML(slideOptionsTmp.background.name)]));
                     $('<span>', {
-                        'class': 'fa fa-times',
                         title: Messages.printBackgroundRemove,
                         style: 'margin-left: 5px'
-                    }).click(function () {
+                    }, Icons.get('close')).click(function () {
                         slideOptionsTmp.background = false;
                         refreshValue();
                     }).appendTo($bgValue);
@@ -321,7 +323,7 @@ define([
         };
 
         var $optionsButton = framework._.sfCommon.createButton(null, true, {
-            icon: 'fa-cog',
+            icon: 'apps-settings',
             title: Messages.slideOptionsTitle,
             hiddenReadOnly: true,
             text: Messages.slideOptionsText,
@@ -351,13 +353,13 @@ define([
                 textColor = text;
                 $modal.css('color', text);
                 $modal.css('border-color', text);
-                $('#' + SLIDE_COLOR_ID).find('i').css('color', text);
+                $('#' + SLIDE_COLOR_ID).find('svg').css('color', text);
                 slideOptions.textColor = text;
             }
             if (back) {
                 backColor = back;
                 $modal.find('.cp-app-slide-frame').css('background-color', back);
-                $('#' + SLIDE_BACKCOLOR_ID).find('i').css('color', back);
+                $('#' + SLIDE_BACKCOLOR_ID).find('svg').css('color', back).css('fill', back);
                 slideOptions.bgColor = back;
             }
         };
@@ -376,7 +378,7 @@ define([
             .css({ display: 'none', })
             .on('change', function() { updateLocalColors(undefined, this.value); });
         var $back = framework._.sfCommon.createButton(null, true, {
-            icon: 'fa-square',
+            icon: 'square',
             text: Messages.slide_backCol,
             title: Messages.backgroundButtonTitle,
             hiddenReadOnly: true,
@@ -392,7 +394,7 @@ define([
             .css({ display: 'none', })
             .on('change', function() { updateLocalColors(this.value, undefined); });
         var $text = framework._.sfCommon.createButton(null, true, {
-            icon: 'fa-i-cursor',
+            icon: 'cursor',
             text: Messages.slide_textCol,
             title: Messages.colorButtonTitle,
             hiddenReadOnly: true,

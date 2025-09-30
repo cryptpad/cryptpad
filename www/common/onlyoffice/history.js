@@ -6,7 +6,10 @@ define([
     'jquery',
     '/common/common-interface.js',
     '/common/hyperscript.js',
-], function ($, UI, h) {
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
+
+], function ($, UI, h, Lucide, Icons) {
     //var ChainPad = window.ChainPad;
     var History = {};
 
@@ -145,7 +148,8 @@ define([
         $hist.html('').css('display', 'flex');
         $bottom.hide();
 
-        UI.spinner($hist).get().show();
+        var spinner = UI.makeSpinner($hist);
+        spinner.spin();
 
         var $fastPrev, $fastNext, $next;
 
@@ -195,19 +199,19 @@ define([
             $hist.html('');
 
             var fastPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
-                h('i.fa.fa-fast-backward'),
+                Icons.get('history-fast-prev'),
             ]);
             var fastNext = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
-                h('i.fa.fa-fast-forward'),
+                Icons.get('history-fast-next'),
             ]);
             var _next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
-                h('i.fa.fa-step-forward')
+                Icons.get('history-next'),
             ]);
             $fastPrev = $(fastPrev);
             $fastNext = $(fastNext).prop('disabled', 'disabled');
             $next = $(_next).prop('disabled', 'disabled');
 
-            var pos = h('span.cp-history-timeline-pos.fa.fa-caret-down');
+            var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos'});
             var time = h('div.cp-history-timeline-time');
             var version = h('div.cp-history-timeline-version');
             $time = $(time);
@@ -231,21 +235,22 @@ define([
             ]);
             var snapshot = h('button', {
                 title: Messages.snapshots_new,
+                class: 'cp-history-create-snapshot'
             }, [
-                h('i.fa.fa-camera')
+                Icons.get('snapshot')
             ]);
             var share = h('button', { title: Messages.history_shareTitle }, [
-                h('i.fa.fa-shhare-alt'),
+                Icons.get('share'),
                 h('span', Messages.shareButton)
             ]);
             var restore = h('button', {
                 title: Messages.history_restoreTitle,
             }, [
-                h('i.fa.fa-check'),
+                Icons.get('history-restore'),
                 h('span', Messages.history_restore)
             ]);
             var close = h('button', { title: Messages.history_closeTitle }, [
-                h('i.fa.fa-times'),
+                Icons.get('close'),
                 h('span', Messages.history_close)
             ]);
             var actions = h('div.cp-toolbar-history-actions', [
@@ -336,7 +341,7 @@ define([
                     keys: [27],
                 }, {
                     className: 'primary',
-                    iconClass: '.fa.fa-camera',
+                    iconClass: 'snapshot',
                     name: Messages.snapshots_new,
                     onClick: function () {
                         var val = $input.val();
@@ -379,7 +384,7 @@ define([
         display();
 
         showVersion(true);
-
+        setTimeout(()=> Lucide.createIcons());
         //return void loadMoreOOHistory();
     };
 

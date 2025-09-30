@@ -12,8 +12,10 @@ define([
     '/common/common-constants.js',
     '/customize/messages.js',
     '/customize/pages.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
     'tui-date-picker'
-], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages, DatePicker) {
+], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages, Lucide, Icons, DatePicker) {
 
     var handlers = {};
 
@@ -458,7 +460,9 @@ define([
         content.getFormatText = function () {
             var msg = Pages.setHTML(h('span'), Messages.settings_safeLinkDefault);
             var i = msg.querySelector('i');
-            if (i) { i.classList = 'fa fa-shhare-alt'; }
+            if (i) { i.remove(); }
+            const icon = Icons.get('share');
+            msg.appendChild(icon);
             return msg.innerHTML;
         };
 

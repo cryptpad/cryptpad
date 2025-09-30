@@ -15,9 +15,11 @@ define([
     '/customize/messages.js',
     '/components/nthen/index.js',
     '/components/saferphore/index.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
     '/components/jszip/dist/jszip.min.js',
 ], function ($, FileCrypto, Hash, Util, UI, h, Feedback, UO,
-             Cache, Messages, nThen, Saferphore, JsZip) {
+             Cache, Messages, nThen, Saferphore, Lucide, Icons, JsZip) {
     var saveAs = window.saveAs;
 
     var sanitize = function (str) {
@@ -507,8 +509,7 @@ define([
         var complete = function(h, err) {
             if (completed) { return; }
             completed = true;
-            $(progress).find('.fa-square-o').removeClass('fa-square-o')
-                .addClass('fa-check-square-o');
+            $(progress).find('svg').empty().append(Icons.get('checked-box'));
             $(cancel).text(Messages.filePicker_close).off('click').click(function() {
                 _onCancel.forEach(function(h) { h(); });
             });
@@ -525,10 +526,9 @@ define([
 
             // New step
             if (!done[step]) {
-                $(progress).find('.fa-square-o').removeClass('fa-square-o')
-                    .addClass('fa-check-square-o');
+                $(progress).find('svg').empty().append(Icons.get('checked-box'));
                 $(progress).append(h('p', [
-                    h('span.fa.fa-square-o'),
+                    Icons.get('checked-box'),
                     h('span.text', Messages['settings_export_' + step] || step)
                 ]));
                 done[step] = state; // -1 if no bar, object otherwise

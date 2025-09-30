@@ -21,6 +21,17 @@
     display: flex;
     flex-flow: column;
     font: @colortheme_app-font;
+    .cp-spinner {
+        svg {
+            animation: spin 10s linear infinite;
+        }
+    }
+    .cp-checkmark {
+        height: 1.2rem;
+        svg {
+            margin-left: @variables_icon_margin;
+        }
+    }
 
     input, textarea, .cp-appblock {
         &:focus-visible {
@@ -83,6 +94,14 @@
         width: ~"calc(100% - 5rem)";
         padding-left: 0.5rem;
         vertical-align: middle;
+        .cp-palette-color {
+            svg.lucide {
+                margin: 0;
+            }
+        }
+        .is-hidden {
+            display: none;
+        }
     }
 
     .cp-admin-color-preview {
@@ -134,7 +153,7 @@
     }
 
     .cp-admin-support-state {
-        i {
+        svg {
             margin-right: @sidebar_base-margin;
         }
     }

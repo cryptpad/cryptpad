@@ -8,8 +8,10 @@ define([
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/customize/messages.js',
-    '/customize/pages.js'
-], function (Config, $, h, UI, Msg, Pages) {
+    '/customize/pages.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
+], function (Config, $, h, UI, Msg, Pages, Lucide, Icons) {
     return function () {
         document.title = Msg.register_header;
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
@@ -54,7 +56,23 @@ define([
             h('div.row.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
                     h('h2', Msg.register_notes_title),
-                    Pages.setHTML(h('div.cp-register-notes'), Msg.register_notes)
+                    h('div.cp-register-notes', [
+                        h('ul.cp-notes-list', [
+                            h('li', [
+                                Icons.get('alert'),
+                                Msg.password_note1,
+                                h('span.red', Msg.password_note2)
+                            ]),
+                            h('li', [
+                                Icons.get('alert'),
+                                Pages.setHTML(h('span'), Msg._getKey('computer_note', ['<span class="red">','</span>']))
+                            ]),
+                            h('li', [
+                                Icons.get('alert'),
+                                Msg.import_note
+                            ])
+                        ])
+                    ])
                 ]),
                 h('div.col-md-3.cp-closed-filler'+ssoEnabled, h('div')),
                 h('div.cp-reg-form.col-md-6', [

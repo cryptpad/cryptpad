@@ -10,8 +10,10 @@ define([
     '/components/nthen/index.js',
     '/customize.dist/login.js',
     '/common/common-util.js',
+    '/customize/fonts/lucide.js',
+    '/common/common-icons.js',
 
-], function ($, Messages, h, UI, nThen, Login, Util) {
+], function ($, Messages, h, UI, nThen, Login, Util, Lucide, Icons) {
     const MFA = {};
 
     MFA.totpSetup = function (common, config, content, enabled, cb) {
@@ -23,10 +25,10 @@ define([
 
         var $content = $(content).empty();
         $content.append(h('div.cp-settings-mfa-hint.cp-settings-mfa-status' + (enabled ? '.mfa-enabled' : '.mfa-disabled'), [
-            h('i.fa' + (enabled ? '.fa-check' : '.fa-times')),
+            (enabled ? Icons.get('check') : Icons.get('close')),
             h('span', enabled ? Messages.mfa_status_on : Messages.mfa_status_off)
         ]));
-
+        setTimeout(() => Lucide.createIcons());
         if (enabled) {
             (function () {
             var button = h('button.btn', Messages.mfa_disable);
@@ -214,7 +216,7 @@ define([
                 var next = waitFor();
                 recoverySecret = Util.encodeBase64(Nacl.randomBytes(24));
                 var button = h('button.btn.btn-primary', [
-                    h('i.fa.fa-check'),
+                    Icons.get('check'),
                     h('span', Messages.done)
                 ]);
                 $content.append(h('div.alert.alert-danger', [
@@ -238,6 +240,7 @@ define([
                     $content.find('.alert-danger').removeClass('alert-danger').addClass('alert-success');
                     $(button).prop('disabled', 'disabled');
                     $(nextButton).removeAttr('disabled');
+                    Lucide.createIcons();
                 });
             }).nThen(function () {
                 var randomSecret = function () {
@@ -268,7 +271,7 @@ define([
 
                     var description = h('p.cp-settings-mfa-hint', Messages.settings_otp_tuto);
                     var confirmOTP = h('button.btn.btn-primary', [
-                        h('i.fa.fa-check'),
+                        Icons.get('check'),
                         h('span', Messages.mfa_enable)
                     ]);
                     var lock = false;
