@@ -248,7 +248,8 @@ define([
         "credit-card": "credit-card",
         "circle-left": "circle-chevron-left",
         "user": "user-round",
-        "notebook":"notepad-text"
+        "notebook":"notepad-text",
+        "sso": "id-card"
     };
 
     Icons.get = (name, attrs = {}) => {
