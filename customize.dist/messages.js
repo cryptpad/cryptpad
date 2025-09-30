@@ -135,16 +135,6 @@ define(req, function(AppConfig, Default, Language) {
     };
 
     // XXX
-    Messages.badges_admin = "Instance administrator";
-    Messages.badges_moderator = "Instance moderator";
-    Messages.badges_premium = "Premium user";
-    Messages.badges_error = "Error while validating this user's data";
-    Messages.profile_badges = "Badges";
-    Messages.add_password = "Add your document password";
-    Messages.show_password = "Show password";
-    Messages.hide_password = "Hide password";
-    Messages.next_templateList = "Next template list";
-    Messages.previous_templateList = "Previous template list";
 
     Messages.forms_switchHorizontalAxe = 'Switch to horizontal layout';
     Messages.forms_switchVerticalAxe = 'Switch to vertical layout';
