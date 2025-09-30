@@ -1369,7 +1369,6 @@ define([
             if (e.which === 32 || e.which === 13){
                 e.stopPropagation();
                 e.preventDefault();
-                $input.trigger('click');
                 $mark.prop('checked', !$input.is(':checked'));
                 $input.change();
             }
