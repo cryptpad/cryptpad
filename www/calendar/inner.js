@@ -2296,7 +2296,7 @@ APP.recurrenceRule = {
                     } else {
                         $icon.removeClass('fa-caret-up').addClass('fa-caret-down');
                     }
-                }
+                };
                 $dropdownButton.on('click keydown', function (event) {
                     if (event.type !== 'click' && event.key !== 'Enter' && event.key !== ' ' && event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
                         return;
