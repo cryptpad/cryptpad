@@ -2652,6 +2652,12 @@ define([
                 var lines = makePollTable(answers, opts, false);
 
                 var disabled = false;
+
+                var updateAriaLabel = function ($c, val, index) {
+                    const labels = [Messages.forms_pollOptionNo, Messages.forms_pollOptionYes, Messages.forms_pollOptionMaybe];
+                    const currentLabelText = $('#cp-form-option-' + index).text().trim();
+                    $c.attr('aria-label', currentLabelText + ', ' + labels[val]);
+                };
                 // Add form
                 var addLine = extractValues(opts.values).map(function (data,index) {
                     var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
@@ -2663,19 +2669,15 @@ define([
                     $c.data('option', data);
                     var val = 0;
                     $c.attr('data-value', val).attr('tabindex', '0').attr('role','button');
-
-                    function updateAriaLabel() {
-                        const labels = [Messages.forms_pollOptionNo, Messages.forms_pollOptionYes, Messages.forms_pollOptionMaybe];
-                        const currentLabelText = $('#cp-form-option-' + index).text().trim();
-                        $c.attr('aria-label', currentLabelText + ', ' + labels[val]);
-                    }
-                    setTimeout(updateAriaLabel, 0);
+                    setTimeout(function() {
+                        updateAriaLabel($c, val, index);
+                    }, 0);
 
                     Util.onClickEnter($c, function () {
                         if (disabled) { return; }
                         val = (val+1)%3;
                         $c.attr('data-value', val);
-                        updateAriaLabel();
+                        updateAriaLabel($c, val, index);
                         evOnChange.fire();
                     });
                     cell._setValue = function (v) {
