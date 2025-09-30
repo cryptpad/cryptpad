@@ -133,7 +133,7 @@ define([
         "report": "clipboard-plus",
         "limit": "settings-2",
         "duration": "timer-reset",
-        "checkup": "monitor-cog",
+        "checkup": "square-activity",
         // Login + Register
         "login": "log-in",
         "logout": "log-out",

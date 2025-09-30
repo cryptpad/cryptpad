@@ -3916,7 +3916,7 @@ Example
         support: 'support',
         broadcast: 'broadcast',
         performance: 'performance',
-        network: 'newtork',
+        network: 'network',
         database: 'database',
     };
 
