@@ -482,7 +482,7 @@ define([
                 });
                 dataObject = kanban.getBoardJSON(id);
                 $(content)
-                    .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
+                    .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, .cp-markdown-label-row, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
                     .hide();
             } else {
                 onCursorUpdate.fire({
@@ -490,7 +490,7 @@ define([
                 });
                 dataObject = kanban.getItemJSON(id);
                 $(content)
-                    .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
+                    .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, .cp-markdown-label-row, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
                     .show();
             }
             // Also reset the buttons
