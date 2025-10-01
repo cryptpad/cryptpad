@@ -742,7 +742,7 @@ define([
         }
         // Create first line with options
         var allDays = getWeekDays(true);
-        var els = extractValues(opts.values).map(function (data) {
+        var els = extractValues(opts.values).map(function (data, index) {
             var _date;
             if (opts.type === "day") {
                 _date = new Date(data);
@@ -754,6 +754,7 @@ define([
             }
             var day = _date && allDays[_date.getDay()];
             return h('div.cp-poll-cell.cp-form-poll-option', {
+                id: 'cp-form-option-' + index,
                 title: data,
             }, [
                 opts.type === 'day' ? h('span.cp-form-weekday', day) : undefined,
@@ -762,7 +763,10 @@ define([
             ]);
         });
         // Insert axis switch button
-        var switchAxis = h('button.btn.btn-default', [
+        var switchAxis = h('button.btn.btn-default', {
+            'aria-pressed': 'false',
+            'aria-label': Messages.forms_switchVerticalAxe
+            }, [
             Messages.form_poll_switch,
             Icons.get('form-poll-switch'),
         ]);
@@ -843,6 +847,9 @@ define([
 
         var $s = $(switchAxis).click(function () {
             $s.closest('.cp-form-type-poll').toggleClass('cp-form-poll-switch');
+            var pressed = $s.attr('aria-pressed') === 'true';
+            $s.attr('aria-pressed', !pressed);
+            $s.attr('aria-label', !pressed ? Messages.forms_switchHorizontalAxe  : Messages.forms_switchVerticalAxe );
         });
 
         return lines;
@@ -1933,27 +1940,31 @@ define([
                 var isDefaultOpts = !opts;
                 if (!opts) { opts = Util.clone(TYPES.multiradio.defaultOpts); }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
-                var lines = opts.items.map(function (itemData) {
+                var lines = opts.items.map(function (itemData, j) {
                     if (!itemData.uid) {
                         itemData.uid = Util.uid();
                         if (APP.isEditor) { APP.framework.localChange(); }
                     }
                     var name = itemData.uid;
                     var item = itemData.v;
+                    var rowId = 'cp-row-multiradio-' + name + '-' + j;
                     var els = extractValues(opts.values).map(function (data, i) {
-                        var radio = UI.createRadio(name, 'cp-form-'+name+'-'+i,
-                                   '', false, {});
+                        var columnId = 'cp-column-multiradio-' + i;
+                        var radio = UI.createRadio(name, 'cp-form-'+name+'-'+i, '', false, {});
                         $(radio).find('input').data('uid', name);
                         $(radio).find('input').data('val', data);
+                        $(radio).find('span').attr('aria-labelledby', rowId + ' ' + columnId);
                         return radio;
                     });
-                    els.unshift(h('div.cp-form-multiradio-item', item));
-                    els.unshift(h('div.cp-form-multiradio-item', item));
-                    return h('div.radio-group', {'data-uid':name}, els);
+                    els.unshift(h('div.cp-form-multiradio-item', { id: rowId }, item));
+                    rowId = 'cp-row-multiradio-' + name + '-' + (j + 1);
+                    els.unshift(h('div.cp-form-multiradio-item', { id: rowId }, item));
+                    return h('div.radio-group', {'data-uid':name, 'role': 'radiogroup'}, els);
                 });
-                var header = extractValues(opts.values).map(function (v) {
+                var header = extractValues(opts.values).map(function (v,index) {
                     return h('span', {
-                        title: Util.fixHTML(v)
+                        title: Util.fixHTML(v),
+                        id: 'cp-column-multiradio-' + index
                     }, v);
                 });
                 header.unshift(h('span'));
@@ -2297,18 +2308,22 @@ define([
                 var isDefaultOpts = !opts;
                 if (!opts) { opts = Util.clone(TYPES.multicheck.defaultOpts); }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
-                var lines = opts.items.map(function (itemData) {
+                var lines = opts.items.map(function (itemData, j) {
                     var name = itemData.uid;
                     var item = itemData.v;
+                    var rowId = 'cp-row-multicheck-' + name + '-' + j;
                     var els = extractValues(opts.values).map(function (data, i) {
+                        var columnId = 'cp-column-multicheck-' + i;
                         var cbox = UI.createCheckbox('cp-form-'+name+'-'+i,
                                    '', false, {});
                         $(cbox).find('input').data('uid', name);
                         $(cbox).find('input').data('val', data);
+                        $(cbox).find('span').attr('aria-labelledby', rowId + ' ' + columnId);
                         return cbox;
                     });
-                    els.unshift(h('div.cp-form-multiradio-item', item));
-                    els.unshift(h('div.cp-form-multiradio-item', item));
+                    els.unshift(h('div.cp-form-multicheck-item', { id: rowId }, item));
+                    rowId = 'cp-row-multicheck-' + name + '-' + (j + 1);
+                    els.unshift(h('div.cp-form-multicheck-item', { id: rowId }, item));
                     return h('div.radio-group', {'data-uid':name}, els);
                 });
 
@@ -2330,9 +2345,10 @@ define([
                     });
                 });
 
-                var header = extractValues(opts.values).map(function (v) {
+                var header = extractValues(opts.values).map(function (v,index) {
                     return h('span', {
-                        title: Util.fixHTML(v)
+                        title: Util.fixHTML(v),
+                        id: 'cp-column-multicheck-' + index
                     }, v);
                 });
                 header.unshift(h('span'));
@@ -2504,7 +2520,7 @@ define([
                     var uid = Util.uid();
                     map[uid] = data;
                     invMap[data] = uid;
-                    var div = h('div.cp-form-type-sort', {'data-id': uid}, [
+                    var div = h('div.cp-form-type-sort', {'data-id': uid, 'tabindex': 0, 'role': 'option'}, [
                         h('span.cp-form-handle', [
                             Icons.get('grip-move-vertical')
                         ]),
@@ -2514,7 +2530,7 @@ define([
                     $(div).data('val', data);
                     return div;
                 });
-                var tag = h('div.cp-form-type-sort-container', [
+                var tag = h('div.cp-form-type-sort-container', { 'role': 'listbox' },[
                     h('div.cp-form-sort-hint', Messages._getKey('form_sort_hint', [els.length])),
                     els
                 ]);
@@ -2525,6 +2541,24 @@ define([
                     });
                     sorted = !reset;
                 };
+                $tag.on('keydown', '.cp-form-type-sort', function (e) {
+                    var $current = $(this);
+                    var $all = $tag.find('.cp-form-type-sort');
+                    var index = $all.index($current);
+                    if (e.key === 'ArrowUp' && index > 0) {
+                        e.preventDefault();
+                        $current.insertBefore($all.eq(index - 1));
+                        reorder();
+                        $current.focus();
+                        evOnChange.fire();
+                    } else if (e.key === 'ArrowDown' && index < $all.length - 1) {
+                        e.preventDefault();
+                        $current.insertAfter($all.eq(index + 1));
+                        reorder();
+                        $current.focus();
+                        evOnChange.fire();
+                    }
+                });
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
 
@@ -2625,8 +2659,14 @@ define([
                 var lines = makePollTable(answers, opts, false);
 
                 var disabled = false;
+
+                var updateAriaLabel = function ($c, val, index) {
+                    const labels = [Messages.forms_pollOptionNo, Messages.forms_pollOptionYes, Messages.forms_pollOptionMaybe];
+                    const currentLabelText = $('#cp-form-option-' + index).text().trim();
+                    $c.attr('aria-label', currentLabelText + ', ' + labels[val]);
+                };
                 // Add form
-                var addLine = extractValues(opts.values).map(function (data) {
+                var addLine = extractValues(opts.values).map(function (data,index) {
                     var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
                         Icons.get('check', { class: 'cp-yes' }),
                         Icons.get('close', { class: 'cp-no' }),
@@ -2635,11 +2675,16 @@ define([
                     var $c = $(cell);
                     $c.data('option', data);
                     var val = 0;
-                    $c.attr('data-value', val);
-                    $c.click(function () {
+                    $c.attr('data-value', val).attr('tabindex', '0').attr('role','button');
+                    setTimeout(function() {
+                        updateAriaLabel($c, val, index);
+                    }, 0);
+
+                    Util.onClickEnter($c, function () {
                         if (disabled) { return; }
                         val = (val+1)%3;
                         $c.attr('data-value', val);
+                        updateAriaLabel($c, val, index);
                         evOnChange.fire();
                     });
                     cell._setValue = function (v) {
@@ -3537,7 +3582,7 @@ define([
                 anonOffContent, false, {
                     input: { value: 0 },
                 });
-        var radioContainer = h('div.cp-form-required-radio', [
+        var radioContainer = h('fieldset.cp-form-required-radio', {'aria-label': Messages.form_answerChoice },[
             Messages.form_answerChoice,
             anonRadioOn,
             anonRadioOff,
@@ -3723,6 +3768,7 @@ define([
                         if (APP.refreshPage) { APP.refreshPage(pages, 'required'); }
                     }
                     $el[0].scrollIntoView();
+                    $el.find('input, textarea, select, button, [tabindex]:not([tabindex="-1"])').filter(':visible').first().focus();
                 });
                 return h('li', a);
             };
@@ -3783,7 +3829,7 @@ define([
                 });
                 var list = h('ul', lis);
                 var divContent = [
-                    h('div.alert.alert-danger', [
+                    h('fieldset.alert.alert-danger', {'aria-label': Messages.form_requiredWarning}, [
                         Messages.form_requiredWarning,
                         list
                     ])
@@ -4016,7 +4062,7 @@ define([
             var dragHandle;
             var q = h('div.cp-form-block-question', [
                 h('span.cp-form-block-question-number', (n++)+'.'),
-                h('span.cp-form-block-question-text', block.q || Messages.form_default),
+                h('span.cp-form-block-question-text',{ 'id': 'cp-question-' + (n-1) }, block.q || Messages.form_default),
                 requiredTag
             ]);
             // Static blocks don't have questions ("q" is not used) so we can decrement n
@@ -4289,7 +4335,8 @@ define([
                             h('span', Messages['form_type_'+type]),
                             Icons.get('chevron-down')
                         ]);
-                        $(changeType).click(function () {
+                        $(changeType).attr('tabindex', 0).attr('role', 'button');
+                        Util.onClickEnter($(changeType), function () {
                             var name = Util.uid();
                             var els = model.compatible.map(function (data, i) {
                                 var text = Messages['form_type_'+data];
@@ -4297,9 +4344,11 @@ define([
                                 var radio = UI.createRadio(name, 'cp-form-changetype-'+i,
                                            text, data===type, {});
                                 $(radio).find('input').data('val', data);
+                                $(radio).attr('role', 'radio');
                                 return radio;
                             });
                             var tag = h('div.radio-group', els);
+                            $(tag).attr('role', 'radiogroup');
                             var changeTypeContent = [
                                 APP.answers && Object.keys(APP.answers).length ?
                                     h('div.alert.alert-warning', Messages.form_corruptAnswers) :
@@ -4346,9 +4395,10 @@ define([
 
             var editableCls = editable ? ".editable" : "";
             var draggable = APP.drag ? '' : '.nodrag';
-            elements.push(h('div.cp-form-block'+editableCls+draggable, {
+            elements.push(h('fieldset.cp-form-block'+editableCls+draggable, {
                 'data-id':uid,
-                'data-type':type
+                'data-type':type,
+                'aria-labelledby': 'cp-question-' + (n-1)
             }, [
                 h('header', [
                     APP.isEditor ? dragHandle : undefined,
@@ -5119,7 +5169,47 @@ define([
                 h('span', Messages.form_colors),
                 colorContainer
             ]);
-            var $colors = $(colorContainer);
+            var $colorContainer = $(colorContainer);
+            var handleColorNavigation = function(e, $currentColor) { // color list navigation
+                let index;
+                const $colors = $colorContainer.find('.cp-form-palette');
+                const current = $colors.index($currentColor);
+                let next = current;
+                switch(e.which) {
+                    case 37: // left
+                        next = current > 0 ? current - 1 : $colors.length - 1;
+                        break;
+                    case 39: // right
+                        next = current < $colors.length - 1 ? current + 1 : 0;
+                        break;
+                    case 38: // up
+                        if (current >= 5) {
+                            next = current - 5;
+                        } else {
+                            index = current + 5;
+                            next = index < $colors.length ? index : $colors.length - 1;
+                        }
+                        break;
+                    case 40: // down
+                        if (current < 5) {
+                            index = current + 5;
+                            next = index < $colors.length ? index : current + ($colors.length - 5);
+                        } else {
+                            next = current - 5;
+                        }
+                        break;
+                    case 32: // space
+                        e.preventDefault();
+                        $currentColor.click();
+                        break;
+                    default:
+                        return;
+                }
+                e.preventDefault();
+                const $nextColor = $colors.eq(next);
+                $nextColor.focus();
+            };
+
             var refreshColorTheme = function () {
                 $(colorLine1).empty();
                 $(colorLine2).empty();
@@ -5132,11 +5222,22 @@ define([
                     if (i === 5) { currentContainer = colorLine2; }
                     var $color = $(h('span.cp-form-palette'));
                     $color.addClass('cp-form-palette-'+(_color || 'nocolor'));
+
                     const checkIcon = Icons.get('check');
                     $(checkIcon).addClass('cp-check-icon is-hidden');
                     $color.append(checkIcon);
                     if (selectedColor === _color) { $(checkIcon).removeClass('is-hidden'); }
-                    $color.click(function () {
+                    var colorKey = _color === 'nocolor' ? 'color0' : _color;
+                    var colorLabel = Messages[colorKey] || Messages.color0;
+                    $color.attr('tabindex', i === 0 ? 0 : -1).attr('role', 'button').attr('aria-label', colorLabel);
+                    $color.on('keydown', function(e) {
+                        handleColorNavigation(e, $color);
+                    });
+                    $color.on('focus', function() {
+                        $colorContainer.find('.cp-form-palette').attr('tabindex', -1);
+                        $color.attr('tabindex', 0);
+                    });
+                    Util.onClickEnter($color, function () {
                         if (_color === selectedColor) { return; }
                         content.answers.color = _color;
                         framework.localChange();
@@ -5144,8 +5245,10 @@ define([
                         framework._.cpNfInner.chainpad.onSettle(function () {
                             UI.log(Messages.saved);
                             selectedColor = _color;
-                            $colors.find('.cp-check-icon').addClass('is-hidden');
-                            $clickedElement.find('.cp-check-icon').removeClass('is-hidden');
+                            $colorContainer.find('.cp-check-icon').addClass('is-hidden');
+                            $color.find('.cp-check-icon').removeClass('is-hidden');
+                            $colorContainer.find('.cp-form-palette').attr('tabindex', -1);
+                            $colorContainer.find('.cp-form-palette').first().attr('tabindex', 0);
 
                             var $body = $('body');
                             $body[0].classList.forEach(function (cls) {
@@ -5155,7 +5258,8 @@ define([
                             });
                             $body.addClass('cp-form-palette-'+_color);
                         });
-                    }).appendTo(currentContainer);
+                    });
+                    $color.appendTo(currentContainer);
                 });
             };
             refreshColorTheme();

@@ -142,6 +142,23 @@ define(req, function(AppConfig, Default, Language) {
     Messages.import_note = 'To keep the documents you created and/or stored without being logged in, tick "Import documents from your guest session".';
     Messages.admin_creation_note =  "Create your first administrator account on this page. Administrators manage instance settings including storage quotas, and have access to moderation tools.";
 
+    Messages.forms_switchHorizontalAxe = 'Switch to horizontal layout';
+    Messages.forms_switchVerticalAxe = 'Switch to vertical layout';
+    Messages.forms_pollOptionNo = 'No';
+    Messages.forms_pollOptionYes = 'Yes';
+    Messages.forms_pollOptionMaybe = 'Maybe';
+
+    // to be changed with the actual color name (for forms)
+    Messages.color0 = 'No color';
+    Messages.color1 = 'Red';
+    Messages.color2 = 'Orange';
+    Messages.color3 = 'Yellow';
+    Messages.color4 = 'Green';
+    Messages.color5 = 'Dark green';
+    Messages.color6 = 'Turquoise'
+    Messages.color7 = 'Blue';
+    Messages.color8 = 'Purple';
+
     return Messages;
 
 });
