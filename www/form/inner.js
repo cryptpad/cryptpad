@@ -1934,14 +1934,14 @@ define([
                 var isDefaultOpts = !opts;
                 if (!opts) { opts = Util.clone(TYPES.multiradio.defaultOpts); }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
-                var lines = opts.items.map(function (itemData, i) {
+                var lines = opts.items.map(function (itemData, j) {
                     if (!itemData.uid) {
                         itemData.uid = Util.uid();
                         if (APP.isEditor) { APP.framework.localChange(); }
                     }
                     var name = itemData.uid;
                     var item = itemData.v;
-                    var rowId = 'cp-row-multiradio-' + i;
+                    var rowId = 'cp-row-multiradio-' + name + '-' + j;
                     var els = extractValues(opts.values).map(function (data, i) {
                         var columnId = 'cp-column-multiradio-' + i;
                         var radio = UI.createRadio(name, 'cp-form-'+name+'-'+i, '', false, {});
@@ -1951,6 +1951,7 @@ define([
                         return radio;
                     });
                     els.unshift(h('div.cp-form-multiradio-item', { id: rowId }, item));
+                    rowId = 'cp-row-multiradio-' + name + '-' + (j + 1);
                     els.unshift(h('div.cp-form-multiradio-item', { id: rowId }, item));
                     return h('div.radio-group', {'data-uid':name, 'role': 'radiogroup'}, els);
                 });
@@ -2301,10 +2302,10 @@ define([
                 var isDefaultOpts = !opts;
                 if (!opts) { opts = Util.clone(TYPES.multicheck.defaultOpts); }
                 if (!Array.isArray(opts.items) || !Array.isArray(opts.values)) { return; }
-                var lines = opts.items.map(function (itemData, i) {
+                var lines = opts.items.map(function (itemData, j) {
                     var name = itemData.uid;
                     var item = itemData.v;
-                    var rowId = 'cp-row-multicheck-' + i;
+                    var rowId = 'cp-row-multicheck-' + name + '-' + j;
                     var els = extractValues(opts.values).map(function (data, i) {
                         var columnId = 'cp-column-multicheck-' + i;
                         var cbox = UI.createCheckbox('cp-form-'+name+'-'+i,
@@ -2314,8 +2315,9 @@ define([
                         $(cbox).find('span').attr('aria-labelledby', rowId + ' ' + columnId);
                         return cbox;
                     });
-                    els.unshift(h('div.cp-form-multiradio-item', { id: rowId }, item));
-                    els.unshift(h('div.cp-form-multiradio-item', { id: rowId }, item));
+                    els.unshift(h('div.cp-form-multicheck-item', { id: rowId }, item));
+                    rowId = 'cp-row-multicheck-' + name + '-' + (j + 1);
+                    els.unshift(h('div.cp-form-multicheck-item', { id: rowId }, item));
                     return h('div.radio-group', {'data-uid':name}, els);
                 });
 
