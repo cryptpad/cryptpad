@@ -33,7 +33,6 @@ define([
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
 
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'cm/addon/display/autorefresh',
@@ -72,7 +71,6 @@ define([
     diffMk,
     SFCodeMirror,
     CodeMirror,
-    Lucide,
     Icons
     )
 {
@@ -804,7 +802,6 @@ define([
             });
         }
         if (APP.$calendars) { APP.$calendars.append(calendar); }
-        Lucide.createIcons();
         return calendar;
     };
 
@@ -936,7 +933,6 @@ define([
                         $(showCalendarsBtn).append(Icons.get(iconClass));
                         $(showCalendarsBtn).append(h('span.cp-calendar-title', visible ? Messages.calendar_hide : Messages.calendar_show));
                         $(showCalendarsBtn).append(h('span'));
-                        Lucide.createIcons();
                     }).appendTo($showContainer);
                 }
                 else {visible = true;}
@@ -958,7 +954,6 @@ define([
                     onCalendarsUpdate.fire();
                 }
             });
-            Lucide.createIcons();
         });
         onCalendarsUpdate.fire();
     };
@@ -1367,7 +1362,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         APP.toolbar.$bottomL.append(h('div.cp-calendar-browse', [
             goLeft, goToday, goRight, goDate
         ]));
-        Lucide.createIcons();
     };
 
 
@@ -2045,7 +2039,6 @@ APP.recurrenceRule = {
             });
             $list.append(span);
             APP.notificationsEntries.push(minutes);
-            Lucide.createIcons();
         };
         $(addNotif).click(function () {
             var unit = $block.getValue();
@@ -2470,12 +2463,10 @@ APP.recurrenceRule = {
                         if (node.classList && node.classList.contains('tui-full-calendar-popup')
                                 && !node.classList.contains('tui-full-calendar-popup-detail')) {
                             onCalendarPopup(node);
-                            Lucide.createIcons();
                         }
                         if (node.classList && node.classList.contains('tui-full-calendar-popup')
                                 && node.classList.contains('tui-full-calendar-popup-detail')) {
                             onCalendarEditPopup(node);
-                            Lucide.createIcons();
                         }
                     } catch (e) {}
                 }
@@ -2534,7 +2525,6 @@ APP.recurrenceRule = {
                 APP.initTime = privateData.calendarOpts.time;
             }
             store.get('calendarView', makeCalendar);
-            Lucide.createIcons();
             UI.removeLoadingScreen();
         });
 

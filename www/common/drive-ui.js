@@ -26,7 +26,6 @@ define([
     '/customize/pages.js',
     '/common/pad-types.js',
     '/common/onlyoffice/broken-formats.js',
-    '/customize/lucide.js',
     '/common/common-icons.js'
 ], function (
     $,
@@ -50,7 +49,6 @@ define([
     Pages,
     PadTypes,
     BrokenFormats,
-    Lucide,
     Icons)
 {
 
@@ -770,7 +768,6 @@ define([
             },
             ready: function (state) {
                 appStatus.isReady = state;
-                Lucide.createIcons();
                 if (state) {
                     appStatus._onReady.forEach(function (h) {
                         h();
@@ -1346,7 +1343,6 @@ define([
             });
             var content = h("div.cp-app-drive-color-picker", colorsElements);
             UI.alert(content);
-            Lucide.createIcons();
         };
 
         var getFolderColor = function (path) {
@@ -2249,7 +2245,6 @@ define([
             $(icon).addClass('cp-app-drive-element-icon');
             $name.addClass('cp-app-drive-element-name-icon');
             $name.prepend($(icon));
-            Lucide.createIcons();
             // Clean up
             setTimeout(function() {
                 $name.closest('li').children('svg').remove();
@@ -2905,7 +2900,6 @@ define([
                 buttons: buttons
             });
             UI.openCustomModal(m);
-            Lucide.createIcons();
         };
         var createEmptyTrashButton = function () {
             var button = h('button.btn.btn-danger', [
@@ -4075,7 +4069,6 @@ define([
                     createTitle($path, obj._path);
 
                     $list.append($element);
-                    Lucide.createIcons();
                 };
                 if (_folders.length) { getFolderListHeader(true, true).appendTo($list); }
                 _folders.forEach(function (el) {
@@ -4612,7 +4605,6 @@ define([
                             displayDirectory(path);
                         }
                     }
-                    Lucide.createIcons();
                 });
                 if (LS.wasFolderOpened(path) ||
                         (manager.isSubpath(currentPath, path) && path.length < currentPath.length)) {

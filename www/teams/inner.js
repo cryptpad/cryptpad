@@ -24,7 +24,6 @@ define([
     '/common/clipboard.js',
     '/common/make-backup.js',
     '/customize/messages.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/components/file-saver/FileSaver.min.js',
@@ -52,7 +51,6 @@ define([
     Clipboard,
     Backup,
     Messages,
-    Lucide,
     Icons)
 {
     var APP = {
@@ -372,7 +370,6 @@ define([
 
     var loadMain = function (common) {
         buildUI(common);
-        Lucide.createIcons();
         UI.removeLoadingScreen();
     };
 
@@ -563,7 +560,6 @@ define([
             });
             content.push(h('ul.cp-team-list-container', list));
             cb(content);
-            Lucide.createIcons();
         });
         return content;
     };
@@ -646,7 +642,6 @@ define([
             });
         });
         cb(content);
-        Lucide.createIcons();
     };
     makeBlock('create', function (common, cb) {
         refreshCreate(common, cb);
@@ -733,7 +728,6 @@ define([
         APP.module.execCommand('GET_EDITABLE_FOLDERS', {
             teamId: APP.team
         }, function (arr) {
-            setTimeout( () => Lucide.createIcons());
             if (!Array.isArray(arr) || !arr.length) {
                 return void $blockContainer.find('.cp-modal').append(content);
             }
@@ -934,7 +928,6 @@ define([
                 common.openURL('/profile/#' + data.profile);
             });
         }
-        setTimeout(() => Lucide.createIcons());
         return div;
     };
     APP.refreshRoster = function (common, roster) {

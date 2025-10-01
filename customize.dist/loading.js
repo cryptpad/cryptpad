@@ -7,9 +7,8 @@
 // text #3F4141
 define([
     '/customize/messages.js',
-    '/customize/lucide.js',
     'less!/customize/src/less2/include/loading.less'
-], function (Messages, Lucide) {
+], function (Messages) {
     var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });
     var elem = document.createElement('div');
     elem.setAttribute('id', 'cp-loading');
@@ -101,7 +100,6 @@ define([
             if (el2) { el2.innerHTML = makeList(data); }
             var el3 = document.querySelector('.cp-loading-progress-container');
             if (el3) { el3.innerHTML = makeBar(data); }
-            Lucide.createIcons();
         } catch (e) {
         }
     };

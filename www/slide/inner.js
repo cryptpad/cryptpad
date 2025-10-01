@@ -17,7 +17,6 @@ define([
     '/customize/messages.js',
     'cm/lib/codemirror',
     '/common/common-ui-elements.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -65,7 +64,6 @@ define([
     Messages,
     CMeditor,
     UIElements,
-    Lucide,
     Icons)
 {
     window.CodeMirror = CMeditor;

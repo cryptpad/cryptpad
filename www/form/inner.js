@@ -35,7 +35,6 @@ define([
 
     '/lib/datepicker/flatpickr.js',
     '/components/sortablejs/Sortable.min.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'cm/addon/edit/closebrackets',
@@ -80,7 +79,6 @@ define([
     Share, Access, Properties,
     Flatpickr,
     Sortable,
-    Lucide,
     Icons
     )
 {
@@ -122,7 +120,8 @@ define([
                             Icons.get('preview'),
                             Messages.form_preview_button
                         ]);
-        $(cancelBlock).click(function () { cb(undefined, true); Lucide.createIcons(); });
+
+        $(cancelBlock).click(function () { cb(undefined, true); });
 
         return cancelBlock;
     };
@@ -343,7 +342,6 @@ define([
                 input,
                 del
             ]);
-            setTimeout(()=> Lucide.createIcons());
             $(del).click(function () {
                 var $block = $(el).closest('.cp-form-edit-block');
                 $(el).remove();
@@ -2881,7 +2879,6 @@ define([
     };
 
     var renderResults = APP.renderResults = function (content, answers, showUser) {
-        setTimeout(() => Lucide.createIcons());
         var $container = $('div.cp-form-creator-results').empty().css('display', '');
 
         var framework = APP.framework;
@@ -3145,7 +3142,6 @@ define([
             });
             $results.empty().append(elements);
             if (header) { $results.prepend(header); }
-            Lucide.createIcons();
         };
         show(answers);
 
@@ -3296,7 +3292,6 @@ define([
 
         });
         $container.prepend($res);
-        Lucide.createIcons();
     };
 
     var getLogo = function () {
@@ -3464,7 +3459,6 @@ define([
             ])
         ]));
         $container.append(getLogo());
-        Lucide.createIcons();
     };
 
     var getFormResults = function () {
@@ -3838,7 +3832,6 @@ define([
             });
             evOnChange.fire(true);
         }
-        setTimeout(()=> Lucide.createIcons());
         return h('div.cp-form-send-container', [
             errors,
             invalid,
@@ -3985,7 +3978,6 @@ define([
 
             var inlineCls = full ? '-full' : '-inline';
             setTimeout(()=> {
-                Lucide.createIcons();
             });
             return h('div.cp-form-creator-add'+inlineCls, [
                 add,
@@ -4317,7 +4309,6 @@ define([
 
                         $(edit).hide();
                         $(copy).hide();
-                        Lucide.createIcons();
                     };
                     $(edit).click(function () {
                         onEdit();
@@ -4550,7 +4541,6 @@ define([
                         refreshPage(current + 1, 'next');
                     });
                     $page.append([left, state, right]);
-                    Lucide.createIcons();
                 };
                 setTimeout(refreshPage);
             }
@@ -5150,7 +5140,6 @@ define([
                     $button.after(confirmContent);
                     $button.remove();
                     picker.open();
-                    Lucide.createIcons();
                 });
 
                 $endDate.append(h('div.cp-form-status', text));
@@ -5571,7 +5560,6 @@ define([
 
             var $container = $('#cp-app-form-container');
             $container.append(makeFormCreator());
-            Lucide.createIcons();
             if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
                 return void UI.errorLoadingScreen(Messages.form_invalid);
             }
@@ -5780,7 +5768,6 @@ define([
                 editor.refresh();
                 $tb.show();
                 setTimeout(function () {
-                    Lucide.createIcons();
                     var firstBtn = $(markdownTb.toolbar).find('button').get(0);
                     if (firstBtn) {
                         firstBtn.focus();

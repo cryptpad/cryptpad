@@ -18,7 +18,6 @@ define([
     '/customize/application_config.js',
     '/components/chainpad/chainpad.dist.js',
     '/common/common-ui-elements.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/lib/fabric.min.js',
@@ -39,7 +38,6 @@ define([
     AppConfig,
     ChainPad,
     UIElements,
-    Lucide,
     Icons)
 {
 
@@ -647,7 +645,6 @@ define([
                 skipLink: '#cp-app-whiteboard-controls'
             }, waitFor(function (framework) {
                 andThen2(framework);
-                Lucide.createIcons();
             }));
         });
     };

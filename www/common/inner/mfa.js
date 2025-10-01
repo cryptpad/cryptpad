@@ -10,10 +10,9 @@ define([
     '/components/nthen/index.js',
     '/customize.dist/login.js',
     '/common/common-util.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
-], function ($, Messages, h, UI, nThen, Login, Util, Lucide, Icons) {
+], function ($, Messages, h, UI, nThen, Login, Util, Icons) {
     const MFA = {};
 
     MFA.totpSetup = function (common, config, content, enabled, cb) {
@@ -28,7 +27,6 @@ define([
             (enabled ? Icons.get('check') : Icons.get('close')),
             h('span', enabled ? Messages.mfa_status_on : Messages.mfa_status_off)
         ]));
-        setTimeout(() => Lucide.createIcons());
         if (enabled) {
             (function () {
             var button = h('button.btn', Messages.mfa_disable);
@@ -240,7 +238,6 @@ define([
                     $content.find('.alert-danger').removeClass('alert-danger').addClass('alert-success');
                     $(button).prop('disabled', 'disabled');
                     $(nextButton).removeAttr('disabled');
-                    Lucide.createIcons();
                 });
             }).nThen(function () {
                 var randomSecret = function () {

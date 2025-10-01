@@ -13,10 +13,9 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/components/nthen/index.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function ($, Util, Hash, UI, UIElements, Types, Modal, h,
-             Messages, nThen, Lucide, Icons) {
+             Messages, nThen, Icons) {
     var Access = {};
 
     var getOwnersTab = function (Env, data, opts, _cb) {
@@ -400,7 +399,6 @@ define([
                 $div1.append(drawRemove(false)).append(drawRemove(true));
                 $div2.append(drawAdd());
                 called = false;
-                setTimeout(() => Lucide.createIcons(),0);
             });
         };
         redrawAll();
@@ -1044,7 +1042,6 @@ define([
                                 }
                             });
                         });
-                        Lucide.createIcons();
                     });
                 });
                 $(passwordOk).on('keydown', function (e) {

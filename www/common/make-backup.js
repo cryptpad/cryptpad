@@ -15,11 +15,10 @@ define([
     '/customize/messages.js',
     '/components/nthen/index.js',
     '/components/saferphore/index.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
     '/components/jszip/dist/jszip.min.js',
 ], function ($, FileCrypto, Hash, Util, UI, h, Feedback, UO,
-             Cache, Messages, nThen, Saferphore, Lucide, Icons, JsZip) {
+             Cache, Messages, nThen, Saferphore, Icons, JsZip) {
     var saveAs = window.saveAs;
 
     var sanitize = function (str) {

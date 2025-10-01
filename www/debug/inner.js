@@ -21,7 +21,6 @@ define([
     '/customize/application_config.js',
     '/common/common-ui-elements.js',
     '/debug/chainpad.dist.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -45,7 +44,6 @@ define([
     AppConfig,
     UIElements,
     ChainWalk,
-    Lucide,
     Icons)
 {
     var APP = window.APP = {

@@ -17,11 +17,10 @@ define([
     '/customize/pages.js',
     '/components/nthen/index.js',
     '/common/media-tag.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/components/file-saver/FileSaver.min.js',
-], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages, Pages, nThen, MT, Lucide, Icons) {
+], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages, Pages, nThen, MT, Icons) {
     var module = {};
 
     var blobToArrayBuffer = function (blob, cb) {
@@ -143,7 +142,6 @@ define([
             var $row = $table.find('tr[id="'+id+'"]');
 
             $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(Icons.get('minus'));
-            Lucide.createIcons();
             var $pv = $row.find('.cp-fileupload-table-progress-value');
             var $pb = $row.find('.cp-fileupload-table-progressbar');
             var $link = $row.find('.cp-fileupload-table-link');
@@ -314,7 +312,6 @@ define([
             if (diff && diff > 0) {
                 $table.css('margin-right', diff+'px');
             }
-            Lucide.createIcons();
             queue.next();
         };
 

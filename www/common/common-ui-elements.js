@@ -21,11 +21,10 @@ define([
     '/common/inner/invitation.js',
     '/common/visible.js',
     '/common/pad-types.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
 ], function ($, Config, Broadcast, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
-             Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes, Lucide, Icons) {
+             Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes, Icons) {
     var UIElements = {};
     var urlArgs = Config.requireConf.urlArgs;
 
@@ -2725,7 +2724,6 @@ define([
     };
     */
     UIElements.getPadCreationScreen = function (common, cfg, appCfg, cb) {
-        setTimeout(() => Lucide.createIcons());
         appCfg = appCfg || {};
         if (!common.isLoggedIn()) { return void cb(); }
         var sframeChan = common.getSframeChannel();
@@ -3015,7 +3013,6 @@ define([
                     $('.cp-creation-template-container').find('[tabindex]:not([tabindex="-1"])').filter(':visible').first().focus();
                 });
                 if (i < TEMPLATES_DISPLAYED) { $(left).addClass('hidden'); }
-                Lucide.createIcons();
             };
             if (fromFileData) {
                 var todo = function (thumbnail) {

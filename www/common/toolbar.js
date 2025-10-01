@@ -19,10 +19,9 @@ define([
     '/customize/messages.js',
     '/customize/pages.js',
     '/common/pad-types.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, Badges, h,
-MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
+MessengerUI, Messages, Pages, PadTypes, Icons) {
     var Common;
 
     var Bar = {
@@ -381,7 +380,6 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
             Common.displayAvatar($avatar, data.avatar, name, function () {
                 $span.append($rightCol);
                 onAvatar.fire();
-                Lucide.createIcons();
             }, data.uid);
             $span.data('uid', data.uid);
             if (data.badge && data.edPublic) {
@@ -431,7 +429,6 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
             viewText += numberOfViewUsers + ' ' + viewerText + '</div>';
             $editUsers.append(viewText);
         }
-        Lucide.createIcons();
     };
 
     var initUserList = function (toolbar, config) {
@@ -530,7 +527,6 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
                 Icons.get('chevron-up', {title: Messages.toolbar_collapse});
 
             $button.find('[data-lucide]').replaceWith(newIcon);
-            Lucide.createIcons();
         });
     };
 
@@ -899,7 +895,6 @@ MessengerUI, Messages, Pages, PadTypes, Lucide, Icons) {
             'role': 'button',
             'aria-label': buttonTitle
         }).append(UI.getIcon(privateData.app)).append(Icons.get(toMain ? 'homepage' : 'drive')); //append both icons
-        Lucide.createIcons();
 
         var onClick = function (e) {
             e.preventDefault();

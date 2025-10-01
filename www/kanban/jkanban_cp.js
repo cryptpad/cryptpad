@@ -8,9 +8,8 @@ define([
     '/common/common-util.js',
     '/common/visible.js',
     '/components/dragula/dist/dragula.min.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
-], function ($, Messages, Util, Visible, Dragula, Lucide, Icons) {
+], function ($, Messages, Util, Visible, Dragula, Icons) {
         /**
          * jKanban
          * Vanilla Javascript plugin for manage kanban boards
@@ -928,7 +927,6 @@ define([
         };
         this.onChange = function () {
             self.options.onChange();
-            Lucide.createIcons(); // reprocess all lucide icons after any DOM changes
         };
 
         this.getBoardsJSON = function () {

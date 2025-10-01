@@ -10,11 +10,10 @@ define([
     '/customize/messages.js',
     '/components/nthen/index.js',
     '/common/common-icons.js',
-    '/customize/lucide.js',
     //'/components/chainpad-json-validator/json-ot.js',
 
     '/components/chainpad/chainpad.dist.js',
-], function ($, UI, Util, h, Messages, nThen, Icons, Lucide, ChainPad /* JsonOT */) {
+], function ($, UI, Util, h, Messages, nThen, Icons, ChainPad /* JsonOT */) {
     //var ChainPad = window.ChainPad;
     var History = {};
 
@@ -293,7 +292,6 @@ define([
 
         var spinner = UI.makeSpinner($hist);
         spinner.spin();
-        Lucide.createIcons();
 
         let closeAll = () => {
             History.state = false;
@@ -435,7 +433,6 @@ define([
 
         // Create the history toolbar
         var display = function () {
-            setTimeout(()=> Lucide.createIcons());
             $hist.html('');
             $hist.removeClass('cp-history-init');
 

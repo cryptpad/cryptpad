@@ -12,7 +12,6 @@ define([
     '/common/common-hash.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function(
     $,
@@ -24,7 +23,6 @@ define([
     Hash,
     Messages,
     h,
-    Lucide,
     Icons
 ) {
     const Sidebar = {};
@@ -400,7 +398,6 @@ define([
             common.setHash(active);
 
             setTimeout(() => { sidebar.openCategory(active); });
-            Lucide.createIcons();
             $leftside.append(container);
         };
 

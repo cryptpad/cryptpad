@@ -14,9 +14,8 @@ define([
     '/common/text-cursor.js',
     '/components/chainpad/chainpad.dist.js',
     '/common/hyperscript.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
-], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad, h, Lucide, Icons) {
+], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad, h, Icons) {
     var module = {};
 
      var cursorToPos = module.cursorToPos = function(cursor, oldText) {
