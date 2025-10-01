@@ -17,7 +17,7 @@ define([
     '/common/events-channel.js',
     '/common/outer/login-block.js',
     '/common/common-credential.js',
-    '/customize/login.js',
+    '/common/common-login.js',
     '/common/store-interface.js',
     '/common/pad-types.js',
 

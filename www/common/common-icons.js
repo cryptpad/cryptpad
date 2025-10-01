@@ -1,8 +1,7 @@
 define([
-    'jquery',
     '/common/hyperscript.js',
     '/customize/lucide.js'
-], function ($, h, Lucide) {
+], function (h, Lucide) {
     const Icons = {};
 
     const map = {
@@ -243,17 +242,15 @@ define([
         "badge-moderator": "life-buoy",
         "badge-premium": "ticket-check",
         "badge-error": "circle-alert",
-        // Accounts
-        "pricing": "circle-star",
-        "subscribe": "ticket",
-        "trophy": "trophy",
-        "credit-card": "credit-card",
-        "circle-left": "circle-chevron-left",
-        "user": "user-round",
-        "notebook":"notepad-text",
-        "sso": "id-card",
+        // Other
         "maintenance": "construction",
         "release-notes": "notepad-text"
+    };
+
+    Icons.add = (newIcons) => {
+        Object.keys(newIcons).forEach(k => {
+            map[k] = newIcons[k];
+        });
     };
 
     Icons.get = (name, attrs = {}) => {
