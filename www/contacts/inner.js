@@ -12,7 +12,7 @@ define([
     '/common/messenger-ui.js',
     '/customize/messages.js',
     '/common/common-interface.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'less!/contacts/app-contacts.less',

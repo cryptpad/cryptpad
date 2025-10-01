@@ -35,7 +35,7 @@ define([
     '/components/localforage/dist/localforage.min.js',
     '/common/hyperscript.js',
     '/common/extensions.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js'
 ], function (
     $,

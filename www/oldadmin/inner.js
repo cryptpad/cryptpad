@@ -22,7 +22,7 @@ define([
     'json.sortify',
 
     '/lib/datepicker/flatpickr.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
     '/components/tweetnacl/nacl-fast.min.js',
 
@@ -3916,7 +3916,7 @@ Example
         support: 'support',
         broadcast: 'broadcast',
         performance: 'performance',
-        network: 'newtork',
+        network: 'network',
         database: 'database',
     };
 

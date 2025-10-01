@@ -17,7 +17,7 @@ define([
     '/customize/pages.js',
     '/components/nthen/index.js',
     '/common/media-tag.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/components/file-saver/FileSaver.min.js',

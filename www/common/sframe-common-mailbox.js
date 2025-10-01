@@ -12,7 +12,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/common/common-icons.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
 ], function ($, Util, Hash, UI, UIElements, Notifications, h, Messages, Icons, Lucide) {
     var Mailbox = {};
 

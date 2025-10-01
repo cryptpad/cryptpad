@@ -24,7 +24,7 @@ define([
     '/common/clipboard.js',
     '/common/make-backup.js',
     '/customize/messages.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/components/file-saver/FileSaver.min.js',

@@ -17,7 +17,7 @@ define([
     '/customize/pages.js',
     '/common/rpc.js',
     'onboardscreen.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'less!/install/onboarding.less',

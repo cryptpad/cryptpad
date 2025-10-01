@@ -21,7 +21,7 @@ define([
     '/customize/application_config.js',
     '/common/common-ui-elements.js',
     '/debug/chainpad.dist.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',

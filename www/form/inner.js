@@ -35,7 +35,7 @@ define([
 
     '/lib/datepicker/flatpickr.js',
     '/components/sortablejs/Sortable.min.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'cm/addon/edit/closebrackets',

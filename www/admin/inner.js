@@ -22,7 +22,7 @@ define([
     '/api/instance',
     '/lib/datepicker/flatpickr.js',
     '/install/onboardscreen.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
@@ -226,7 +226,7 @@ define([
 
         // Msg.admin_flushCacheHint, .admin_flushCacheTitle, .admin_flushCacheButton
         sidebar.addItem('flush-cache', function (cb) {
-            var button = blocks.activeButton('primary', '',
+            var button = blocks.activeButton('primary', 'trash-full',
                     Messages.admin_flushCacheButton, done => {
                 flushCache(function (e, data) {
                     done(!!data);
@@ -602,7 +602,7 @@ define([
                 let button, pre;
                 row(Messages.admin_accountReport, h('div', [
                     pre = h('pre', data.archiveReport_formatted),
-                    button = blocks.activeButton('primary', '',
+                    button = blocks.activeButton('primary', 'report',
                             Messages.admin_accountReportFull, () => {
                         $(button).remove();
                         $(pre).html(JSON.stringify(data.archiveReport, 0, 2));
@@ -613,7 +613,7 @@ define([
 
             // actions
             if (data.archived && data.live === false && data.archiveReport) {
-                let button = blocks.activeButton('primary', '',
+                let button = blocks.activeButton('primary', 'restore',
                         Messages.ui_restore, () => {
                     justifyRestorationDialog('', reason => {
                         sframeCommand('RESTORE_ACCOUNT', {
@@ -822,7 +822,7 @@ define([
             });
             var $input = $(input);
 
-            var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+            var button = blocks.activeButton('primary', 'save', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_ADMIN_EMAIL', [$input.val().trim()]]
@@ -854,7 +854,7 @@ define([
             const appsToDisable = ApiConfig.appsToDisable || [];
             const grid = Onboarding.createAppsGrid(appsToDisable);
 
-            var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+            var save = blocks.activeButton('primary', 'save', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['DISABLE_APPS', appsToDisable]
@@ -898,7 +898,7 @@ define([
             });
             var $input = $(input);
 
-            var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+            var button = blocks.activeButton('primary', 'save', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_INSTANCE_NAME', [$input.val().trim()]]
@@ -933,7 +933,7 @@ define([
                 'aria-labelledby': 'cp-admin-description'
             }, getInstanceString('instanceDescription'));
             var $input = $(textarea);
-            var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+            var button = blocks.activeButton('primary', 'save', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_INSTANCE_DESCRIPTION', [$input.val().trim()]]
@@ -971,7 +971,7 @@ define([
             });
             var $input = $(input);
 
-            var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+            var button = blocks.activeButton('primary', 'save', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_INSTANCE_JURISDICTION', [$input.val().trim()]]
@@ -1009,7 +1009,7 @@ define([
             });
             var $input = $(input);
 
-            var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+            var button = blocks.activeButton('primary', 'save', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
                     data: ['SET_INSTANCE_NOTICE', [$input.val().trim()]]
@@ -1186,12 +1186,11 @@ define([
             };
             $input = $(input).on('change', onColorPicked).addClass('cp-admin-color-picker');
 
-            let btn = blocks.activeButton('primary', '',
+            let btn = blocks.activeButton('primary', 'color-palette',
               Messages.admin_colorChange, (done) => {
                 let color = $input.val();
                 setColor(color, done);
             });
-            btn.prepend(Icons.get('color-palette'));
 
 
             UI.confirmButton($remove, {
@@ -1989,7 +1988,7 @@ define([
                     var content = list.map(function (key) {
                         var user = obj[key];
                         var limit = getPrettySize(user.limit);
-                        var infoButton = blocks.button('primary','',  Messages.admin_diskUsageButton);
+                        var infoButton = blocks.button('primary','report',  Messages.admin_diskUsageButton);
                         Util.onClickEnter($(infoButton), function () {
                              getAccountData(key, (err, data) => {
                                  if (err) { return void console.error(err); }
@@ -2285,7 +2284,7 @@ define([
 
             if (data.live && data.archived) {
                 let disableButtons;
-                let restoreButton = blocks.activeButton('danger', '', Messages.admin_unarchiveButton, function () {
+                let restoreButton = blocks.activeButton('danger', 'restore', Messages.admin_unarchiveButton, function () {
                     justifyRestorationDialog('', reason => {
                         nThen(function (w) {
                             sframeCommand('REMOVE_DOCUMENT', {
@@ -2313,7 +2312,7 @@ define([
                     });
                 }, true);
 
-                let archiveButton = blocks.activeButton('danger', '',Messages.admin_archiveButton, function () {
+                let archiveButton = blocks.activeButton('danger', 'archive',Messages.admin_archiveButton, function () {
                     justifyArchivalDialog('', result => {
                         sframeCommand('ARCHIVE_DOCUMENT', {
                             id: data.id,
@@ -2370,7 +2369,7 @@ define([
                     h('small', Messages.admin_archiveHint),
                 ]));
             } else if (data.archived) {
-                var restoreDocumentButton = blocks.activeButton('primary', '',Messages.admin_unarchiveButton, function () {
+                var restoreDocumentButton = blocks.activeButton('primary', 'restore',Messages.admin_unarchiveButton, function () {
                     justifyRestorationDialog('', reason => {
                         sframeCommand("RESTORE_ARCHIVED_DOCUMENT", {
                             id: data.id,
@@ -2655,7 +2654,7 @@ define([
                 row(Messages.admin_channelPlaceholder, UI.getDestroyedPlaceholderMessage(data.placeholder, true));
             }
             if (data.archived && !data.live) {
-                var restoreButton = blocks.activeButton('danger', '', Messages.ui_restore, function () {
+                var restoreButton = blocks.activeButton('danger', 'restore', Messages.ui_restore, function () {
                     justifyRestorationDialog('', reason => {
                         sframeCommand('RESTORE_ARCHIVED_BLOCK', {
                             key: data.key,
@@ -3133,7 +3132,7 @@ define([
 
                 const state = blocks.block([], 'cp-admin-support-state');
                 const $state = $(state).appendTo($div);
-                const button = blocks.activeButton('primary', '',
+                const button = blocks.activeButton('primary', 'support',
                                     Messages.admin_supportInit, done => {
                     generateSupportKey(moderatorsData, supportKey, (err) => {
                         done(!err);
@@ -3406,7 +3405,7 @@ define([
         };
         // Msg.admin_maintenanceHint, admin_maintenanceTitle
         sidebar.addItem('maintenance', function(cb){
-            var button = blocks.button('primary', '', Messages.admin_maintenanceButton);
+            var button = blocks.button('primary', 'maintenance', Messages.admin_maintenanceButton);
             var $button = $(button);
             var start = blocks.input({
                 type: 'date',
@@ -3533,7 +3532,7 @@ define([
 
         // Msg.admin_surveyHint, admin_surveyTitle
         sidebar.addItem('survey', function(cb){
-            var button = blocks.button('primary', '', Messages.admin_surveyButton);
+            var button = blocks.button('primary', 'survey', Messages.admin_surveyButton);
             var $button = $(button);
             let nav = blocks.nav([button]);
             let active = blocks.block([], 'cp-sidebar-flex-block');
@@ -3548,7 +3547,7 @@ define([
 
             let send = function () {};
             var refresh = getApi(function (Broadcast) {
-                var removeButton = blocks.button('danger', '', Messages.admin_surveyCancel);
+                var removeButton = blocks.button('danger', 'restricted', Messages.admin_surveyCancel);
                 UI.confirmButton(removeButton, {
                     classes: 'btn-danger',
                 }, function () {
@@ -3617,7 +3616,7 @@ define([
             var form = blocks.block([], 'cp-admin-broadcast-form');
             var $form = $(form);
             var refresh = getApi(function(Broadcast) {
-                var button = blocks.button('primary', '', Messages.admin_broadcastButton);
+                var button = blocks.button('primary', 'send', Messages.admin_broadcastButton);
                 var $button = $(button);
                 var removeButton = blocks.button('danger', 'close', Messages.admin_broadcastCancel);
                 var activeContent = Messages.admin_broadcastActive;
@@ -3719,7 +3718,7 @@ define([
                 // Add a textarea
                 var addLang = function (l) {
                     if ($container.find('.cp-broadcast-lang[data-lang="'+l+'"]').length) { return; }
-                    var preview = blocks.button('secondary', '', Messages.broadcast_preview);
+                    var preview = blocks.button('secondary', 'broadcast', Messages.broadcast_preview);
                     $(preview).click(function () {
                         onPreview(l);
                     });
@@ -3985,7 +3984,7 @@ define([
             if (typeof(APP.instanceStatus.updateAvailable) === 'string') {
                 updateURL = APP.instanceStatus.updateAvailable;
             }
-            var button = blocks.button('primary', '', Messages.admin_updateAvailableButton);
+            var button = blocks.button('primary', 'release-notes', Messages.admin_updateAvailableButton);
             Util.onClickEnter($(button), function () {
                 common.openURL(updateURL);
             });

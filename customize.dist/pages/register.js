@@ -9,7 +9,7 @@ define([
     '/common/common-interface.js',
     '/customize/messages.js',
     '/customize/pages.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function (Config, $, h, UI, Msg, Pages, Lucide, Icons) {
     return function () {

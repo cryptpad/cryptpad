@@ -17,7 +17,7 @@ define([
     '/common/hyperscript.js',
     '/common/extensions.js',
     '/customize/pages.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function (Config, $, Login, Cryptpad, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Extensions, Pages, Lucide, Icons) {
     if (window.top !== window) { return; }

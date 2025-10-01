@@ -13,7 +13,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/components/nthen/index.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function ($, Util, Hash, UI, UIElements, Types, Modal, h,
              Messages, nThen, Lucide, Icons) {

@@ -14,7 +14,7 @@ define([
     '/common/hyperscript.js',
     'json.sortify',
     '/customize/messages.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',

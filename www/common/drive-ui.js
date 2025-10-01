@@ -26,7 +26,7 @@ define([
     '/customize/pages.js',
     '/common/pad-types.js',
     '/common/onlyoffice/broken-formats.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js'
 ], function (
     $,
@@ -131,7 +131,7 @@ define([
     var $sortAscIcon = $(Icons.get('sort-asc', {'class': 'sortasc'}));
     var $sortDescIcon = $(Icons.get('sort-desc', {'class': 'sortdesc'}));
     var $closeIcon = $(Icons.get('close'));
-    var $searchIcon = $($(Icons.get('drive-search', {'class': 'cp-app-drive-tree-search-icon'})));
+    var $searchIcon = $($(Icons.get('search', {'class': 'cp-app-drive-tree-search-icon'})));
     var $addIcon = $(Icons.get('add'));
     var $renamedIcon = $(Icons.get('renamed'));
     var $readonlyIcon = $(Icons.get(readOnly));

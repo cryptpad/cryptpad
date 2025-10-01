@@ -23,7 +23,7 @@ define([
     '/customize/messages.js',
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
     '/common/test.js',
 

@@ -17,7 +17,7 @@ define([
     '/api/config',
     '/customize/application_config.js',
     '/customize/pages.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',

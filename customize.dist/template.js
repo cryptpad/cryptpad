@@ -7,7 +7,7 @@ define([
     '/common/hyperscript.js',
     '/customize/pages.js',
     '/components/nthen/index.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
 ], function ($, h, Pages, nThen, Lucide) {
     // we consider that there is no valid reason to load any of the info pages
     // in an iframe. abort everything if you detect that you are embedded.

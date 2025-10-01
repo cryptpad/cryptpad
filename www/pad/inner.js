@@ -46,7 +46,7 @@ define([
     '/common/common-ui-elements.js',
     '/common/hyperscript.js',
     '/components/chainpad/chainpad.dist.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
     //'/customize/application_config.js',
     //'/common/test.js',

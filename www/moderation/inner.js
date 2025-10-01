@@ -17,7 +17,7 @@ define([
     '/common/common-hash.js',
     '/common/inner/sidebar-layout.js',
     '/support/ui.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/components/file-saver/FileSaver.min.js',
@@ -362,7 +362,7 @@ define([
                 ]
             },
             'search': { // Msg.support_cat_search
-                icon: 'drive-search',
+                icon: 'search',
                 content: [
                     'filter',
                     'search'
@@ -459,7 +459,7 @@ define([
         sidebar.addItem('search', cb => {
 
             let inputSearch = blocks.input({type:'text', class: 'cp-support-search-input'});
-            let button = blocks.button('primary', 'drive-search');
+            let button = blocks.button('primary', 'search');
             let inputBlock = blocks.inputButton(inputSearch, button, { onEnterDelegate: true });
             let searchBlock = blocks.labelledInput(Messages.support_searchLabel,
                                                     inputSearch, inputBlock);

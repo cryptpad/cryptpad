@@ -7,7 +7,7 @@ define([
         // Drive
         "homepage": "house",
         "drive": "hard-drive",
-        "drive-search": "search",
+        "search": "search",
         "drive-shared-folder": "folder-users",
         "drive-upload-file": "file-up",
         "drive-upload-folder": "folder-up",
@@ -133,7 +133,7 @@ define([
         "report": "clipboard-plus",
         "limit": "settings-2",
         "duration": "timer-reset",
-        "checkup": "monitor-cog",
+        "checkup": "square-activity",
         // Login + Register
         "login": "log-in",
         "logout": "log-out",
@@ -248,7 +248,10 @@ define([
         "credit-card": "credit-card",
         "circle-left": "circle-chevron-left",
         "user": "user-round",
-        "notebook":"notepad-text"
+        "notebook":"notepad-text",
+        "sso": "id-card",
+        "maintenance": "construction",
+        "release-notes": "notepad-text"
     };
 
     Icons.get = (name, attrs = {}) => {

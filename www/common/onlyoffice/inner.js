@@ -26,7 +26,7 @@ define([
 
     '/common/onlyoffice/current-version.js',
     '/common/onlyoffice/broken-formats.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
     '/components/file-saver/FileSaver.min.js',
 

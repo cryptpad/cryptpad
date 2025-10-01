@@ -14,7 +14,7 @@ define([
     '/customize/messages.js',
     '/lib/less.min.js',
     '/customize/pages.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
 
     '/lib/highlight/highlight.pack.js',
     '/lib/diff-dom/diffDOM.js',

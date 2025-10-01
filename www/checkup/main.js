@@ -21,7 +21,7 @@ define([
     '/checkup/checkup-tools.js',
     '/customize/application_config.js',
     '/common/onlyoffice/current-version.js',
-    '/customize/fonts/lucide.js',
+    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/components/tweetnacl/nacl-fast.min.js',
