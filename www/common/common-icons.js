@@ -7,7 +7,7 @@ define([
         // Drive
         "homepage": "house",
         "drive": "hard-drive",
-        "drive-search": "search",
+        "search": "search",
         "drive-shared-folder": "folder-users",
         "drive-upload-file": "file-up",
         "drive-upload-folder": "folder-up",
