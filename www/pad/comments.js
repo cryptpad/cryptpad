@@ -11,9 +11,8 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/customize/messages.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
-], function($, Sortify, Util, Hash, h, UI, UIElements, Messages, Lucide, Icons) {
+], function($, Sortify, Util, Hash, h, UI, UIElements, Messages, Icons) {
     var Comments = {};
 
     /*
@@ -273,7 +272,6 @@ define([
 
 
         setTimeout(function() {
-            Lucide.createIcons();
             $(textarea).focus();
             selectAll(textarea);
         });

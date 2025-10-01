@@ -26,7 +26,6 @@ define([
 
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
-    '/customize/lucide.js',
     '/common/common-icons.js',
     'cm/mode/gfm/gfm',
 
@@ -61,7 +60,6 @@ define([
     Login,
     SFCodeMirror,
     CodeMirror,
-    Lucide,
     Icons
 ) {
     var saveAs = window.saveAs;
@@ -1856,7 +1854,6 @@ define([
             ]);
             $badges.empty().append(content);
             spinner = UI.makeSpinner($badges.find('.cp-settings-badges-list'));
-            setTimeout(() => Lucide.createIcons());
         });
     };
     makeBlock('profile-badges', function(cb) {
@@ -1888,7 +1885,6 @@ define([
                 title: Messages.profile_remove_avatar
             }, Icons.get('close'));
             $avatar.append(delButton);
-            Lucide.createIcons();
             $(delButton).click(() => {
                 const old = APP.profileData?.avatar;
                 APP.profile.execCommand("SET", {
@@ -2189,7 +2185,6 @@ define([
         createUsageButton();
 
         common.setTabTitle(Messages.settings_title);
-        Lucide.createIcons();
         UI.removeLoadingScreen();
     });
 });

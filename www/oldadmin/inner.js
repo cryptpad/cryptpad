@@ -22,7 +22,6 @@ define([
     'json.sortify',
 
     '/lib/datepicker/flatpickr.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
     '/components/tweetnacl/nacl-fast.min.js',
 
@@ -48,7 +47,6 @@ define([
     Clipboard,
     Sortify,
     Flatpickr,
-    Lucide,
     Icons
     )
 {

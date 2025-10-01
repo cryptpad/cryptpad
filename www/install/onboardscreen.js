@@ -13,7 +13,6 @@ define([
     '/common/common-ui-elements.js',
     '/common/pad-types.js',
     '/components/nthen/index.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -28,7 +27,6 @@ define([
     UIElements,
     PadTypes,
     nThen,
-    Lucide,
     Icons
 ) {
 
@@ -41,7 +39,6 @@ define([
         var nextPageForm = nextPageFunction(Env);
         let frame = h('div.cp-onboarding-box', nextPageForm);
         Env.overlay.empty().append(frame);
-        setTimeout(() => Lucide.createIcons());
     };
     const blocks = Sidebar.blocks('admin');
 

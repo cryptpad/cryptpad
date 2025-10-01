@@ -9,9 +9,8 @@ define([
     '/common/common-interface.js',
     '/customize/messages.js',
     '/customize/pages.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
-], function (Config, $, h, UI, Msg, Pages, Lucide, Icons) {
+], function (Config, $, h, UI, Msg, Pages, Icons) {
     return function () {
         document.title = Msg.register_header;
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];

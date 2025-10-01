@@ -35,7 +35,6 @@ define([
     '/components/localforage/dist/localforage.min.js',
     '/common/hyperscript.js',
     '/common/extensions.js',
-    '/customize/lucide.js',
     '/common/common-icons.js'
 ], function (
     $,
@@ -69,7 +68,6 @@ define([
     localForage,
     h,
     Ext,
-    Lucide,
     Icons
 ) {
     // Chainpad Netflux Inner

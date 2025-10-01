@@ -23,7 +23,6 @@ define([
     '/customize/messages.js',
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
-    '/customize/lucide.js',
     '/common/common-icons.js',
     '/common/test.js',
 
@@ -56,7 +55,6 @@ define([
     Messages,
     SFCodeMirror,
     CMeditor,
-    Lucide,
     Icons/*,
     Test*/)
 {

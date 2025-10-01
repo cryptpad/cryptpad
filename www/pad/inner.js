@@ -46,7 +46,6 @@ define([
     '/common/common-ui-elements.js',
     '/common/hyperscript.js',
     '/components/chainpad/chainpad.dist.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
     //'/customize/application_config.js',
     //'/common/test.js',
@@ -77,7 +76,6 @@ define([
     UIElements,
     h,
     ChainPad,
-    Lucide,
     Icons/*,
     AppConfig,
     Test */
@@ -347,7 +345,6 @@ define([
             icon: 'pad-settings',
         }, function () {
             UI.alert(getSettings());
-            Lucide.createIcons();
         });
 
         var $settings = UIElements.getEntryFromButton($settingsButton);
@@ -967,7 +964,6 @@ define([
                 content.push(h('p.cp-pad-toc-'+level, a));
             });
             $toc.html('').append(content);
-            Lucide.createIcons();
         }, 400);
 
         // apply patches, and try not to lose the cursor in the process!
@@ -1329,7 +1325,6 @@ define([
             }
         });
 
-        Lucide.createIcons();
         framework.start();
     };
 

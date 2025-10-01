@@ -22,7 +22,6 @@ define([
     '/lib/tippy/tippy.min.js',
     '/common/hyperscript.js',
     '/customize/loading.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
     //'/common/test.js',
 
@@ -31,7 +30,7 @@ define([
     'css!/lib/tippy/tippy.css',
     'css!/lib/jquery-ui/jquery-ui.min.css'
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
-            Alertify, Tippy, h, Loading, Lucide, Icons /*, Test */) {
+            Alertify, Tippy, h, Loading, Icons /*, Test */) {
     var UI = {};
 
     /*
@@ -356,7 +355,6 @@ define([
                 $container.append($form);
                 isEdit = false;
                 called = false;
-                Lucide.createIcons();
             });
         };
         resetUI();
@@ -638,7 +636,6 @@ define([
         });
 
         addTabListener(frame);
-        Lucide.createIcons();
         return frame;
     };
 
@@ -685,7 +682,6 @@ define([
             show: function () {
                 $blockContainer.css('display', 'flex');
                 addTabListener($blockContainer);
-                Lucide.createIcons();
             },
             hide: hide
         };
@@ -856,7 +852,6 @@ define([
         document.body.appendChild(frame);
 
         addTabListener(frame);
-        Lucide.createIcons();
         listener = listenForKeys(function () {
             // Only trigger OK if cancel is not focused
             if (document.activeElement === $cancel[0]) {
@@ -1041,11 +1036,9 @@ define([
                     $eye.empty().append(passwordReveal);
                     $eye.attr('aria-label', Messages.show_password).attr('aria-pressed', 'false');
                 }
-                Lucide.createIcons();
             });
         }
 
-        Lucide.createIcons();
         return h('span.cp-password-container', [
             input,
             eye
@@ -1181,7 +1174,6 @@ define([
                 }
             });
         }
-        Lucide.createIcons();
     };
 
     UI.getNewIcon = function (type) {

@@ -9,9 +9,8 @@ define([
     '/customize/messages.js',
     '/components/nthen/index.js',
     '/components/chainpad/chainpad.dist.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
-], function ($, UI, h, Messages, nThen, ChainPad, Lucide, Icons /* JsonOT */) {
+], function ($, UI, h, Messages, nThen, ChainPad, Icons /* JsonOT */) {
     var Snapshots = {};
 
     Snapshots.create = function (common, config) {

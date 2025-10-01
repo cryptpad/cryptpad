@@ -17,11 +17,10 @@ define([
     '/customize/pages.js',
     '/common/rpc.js',
     'onboardscreen.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'less!/install/onboarding.less',
-], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages, Rpc, OnboardScreen, Lucide, Icons) {
+], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages, Rpc, OnboardScreen, Icons) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;
     $(function () {

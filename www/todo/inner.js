@@ -14,7 +14,6 @@ define([
     '/todo/todo.js',
     '/customize/messages.js',
     '/components/sortablejs/Sortable.min.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -31,7 +30,6 @@ define([
     Todo,
     Messages,
     Sortable,
-    Lucide,
     Icons
     )
 {

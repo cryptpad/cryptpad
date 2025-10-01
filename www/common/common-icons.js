@@ -1,6 +1,8 @@
 define([
-    '/common/hyperscript.js'
-], function (h) {
+    'jquery',
+    '/common/hyperscript.js',
+    '/customize/lucide.js'
+], function ($, h, Lucide) {
     const Icons = {};
 
     const map = {
@@ -264,6 +266,32 @@ define([
 
         return h('i', attrs);
     };
+
+    if (!window.CP_Lucide_observer) {
+        window.CP_Lucide_observer = true;
+        Lucide.createIcons();
+        const observer = new MutationObserver((mutations) => {
+            let found = mutations.some((mutation) => {
+                for (var i = 0; i < mutation.addedNodes.length; i++) {
+                    let added = mutation.addedNodes[i];
+                    if (added.tagName === "svg") { continue; }
+                    if (added?.hasAttribute?.('data-lucide')) {
+                        return true;
+                    }
+                    if (added?.querySelector?.(':not(svg)[data-lucide]')) {
+                        return true;
+                    }
+                }
+            });
+            if (found) { Lucide.createIcons(); }
+        });
+        observer.observe(document.body, {
+            attributes: true,
+            childList: true,
+            characterData: false,
+            subtree: true
+        });
+    }
 
     return Icons;
 });

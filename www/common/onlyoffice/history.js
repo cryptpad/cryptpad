@@ -6,10 +6,9 @@ define([
     'jquery',
     '/common/common-interface.js',
     '/common/hyperscript.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
-], function ($, UI, h, Lucide, Icons) {
+], function ($, UI, h, Icons) {
     //var ChainPad = window.ChainPad;
     var History = {};
 
@@ -384,7 +383,6 @@ define([
         display();
 
         showVersion(true);
-        setTimeout(()=> Lucide.createIcons());
         //return void loadMoreOOHistory();
     };
 

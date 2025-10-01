@@ -17,7 +17,6 @@ define([
     '/api/config',
     '/customize/application_config.js',
     '/customize/pages.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -37,7 +36,6 @@ define([
     ApiConfig,
     AppConfig,
     Pages,
-    Lucide,
     Icons
     )
 {
@@ -321,7 +319,6 @@ define([
             $category.append(Messages['support_cat_'+key] || key);
         });
         showCategories(categories[active]);
-        Lucide.createIcons();
     };
 
     var createToolbar = function () {

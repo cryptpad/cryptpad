@@ -15,7 +15,6 @@ define([
     '/common/common-ui-elements.js',
     '/common/notifications.js',
     '/common/common-util.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -33,7 +32,6 @@ define([
     UIElements,
     Notifications,
     Util,
-    Lucide,
     Icons
     )
 {
@@ -101,7 +99,6 @@ define([
                 $(el).attr('tabindex', -1);
                 $(el).attr('role', 'listitem');
                 $(notifsList).prepend(el);
-                Lucide.createIcons();
             }
         };
         var addArchivedNotification = function (data) {
@@ -296,7 +293,6 @@ define([
         }
 
         createLeftside();
-        Lucide.createIcons();
         UI.removeLoadingScreen();
 
     });

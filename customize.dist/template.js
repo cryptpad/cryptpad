@@ -7,8 +7,7 @@ define([
     '/common/hyperscript.js',
     '/customize/pages.js',
     '/components/nthen/index.js',
-    '/customize/lucide.js',
-], function ($, h, Pages, nThen, Lucide) {
+], function ($, h, Pages, nThen) {
     // we consider that there is no valid reason to load any of the info pages
     // in an iframe. abort everything if you detect that you are embedded.
     if (window.top !== window) { return; }
@@ -55,7 +54,6 @@ $(function () {
                 titleSuffix = window.location.hostname;
             }
             document.title = document.title + ' - ' + titleSuffix;
-            setTimeout(() => Lucide.createIcons(), 0);
             $('#placeholder').remove();
 
             $body.append($main);

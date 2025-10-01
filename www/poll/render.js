@@ -9,11 +9,10 @@ define([
     '/components/chainpad/chainpad.dist.js',
     '/common/common-util.js',
     '/customize/messages.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/lib/diff-dom/diffDOM.js',
-], function ($, Hyperjson, TextCursor, ChainPad, Util, Messages, Lucide, Icons) {
+], function ($, Hyperjson, TextCursor, ChainPad, Util, Messages, Icons) {
     var DiffDOM = window.diffDOM;
 
     var Example = {

@@ -13,14 +13,13 @@ define([
     '/common/inner/badges.js',
     '/customize/messages.js',
     '/customize/application_config.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/components/croppie/croppie.min.js',
     '/components/file-saver/FileSaver.min.js',
     'css!/components/croppie/croppie.css',
 ], function ($, ApiConfig, Util, Hash, UI, h, MediaTag, Badges,
-            Messages, AppConfig, Lucide, Icons) {
+            Messages, AppConfig, Icons) {
     var MT = {};
 
     // Configure MediaTags to use our local viewer

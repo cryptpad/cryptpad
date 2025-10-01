@@ -13,9 +13,8 @@ define([
     '/common/common-ui-elements.js',
     '/customize/messages.js',
     '/customize/pages.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
-], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages, Pages, Lucide, Icons) {
+], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages, Pages, Icons) {
 
     var getDebuggingData = function (ctx, data) {
         var common = ctx.common;
@@ -342,7 +341,6 @@ define([
                 e.preventDefault();
                 ctx.common.openURL(href);
             });
-            setTimeout(() => Lucide.createIcons());
             $(attachments).append(span);
         };
         if (oldData && Array.isArray(oldData.attachments)) {
@@ -392,7 +390,6 @@ define([
         var close = h('button.btn.btn-danger.cp-support-close', [Icons.get('close'), Messages.support_close]);
         var remove = h('button.btn.btn-danger.cp-support-hide', [Icons.get('close'), Messages.support_remove]);
         var _actions = [answer, close];
-        setTimeout(()=> Lucide.createIcons());
         if (content.closed && !ctx.isAdmin) {
             _actions = [remove]; // XXX update key to "Delete permanently" ?
         }
@@ -591,7 +588,6 @@ define([
             });
             $(newForm).attr('data-id', id);
             $ticket.append(newForm);
-            Lucide.createIcons();
         };
         if (form) { addForm(); }
         Util.onClickEnter($(answer), addForm);
@@ -678,7 +674,6 @@ define([
         var adminClass = (fromAdmin? '.cp-support-fromadmin': '');
         var premiumClass = (ctx.isAdmin && fromPremium && !fromAdmin? '.cp-support-frompremium': '');
         var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
-        setTimeout(()=> Lucide.createIcons());
         return h('div.cp-support-list-message' + adminClass + premiumClass, {}, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
                 UI.setHTML(h('span'), Messages._getKey('support_from', [name])),
