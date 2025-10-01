@@ -121,6 +121,8 @@ define([
                             Messages.form_preview_button
                         ]);
 
+        $(cancelBlock).click(function () { cb(undefined, true); });
+
         return cancelBlock;
     };
     var editTextOptions = function (opts, setCursorGetter, cb) {
