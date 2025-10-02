@@ -255,7 +255,8 @@ define([
 
     Icons.get = (name, attrs = {}) => {
         if (!map[name]) {
-            alert(`Invalid icon: ${name}`);
+            console.error("Invalid icon", name);
+            //alert(`Invalid icon: ${name}`);
             // throw new Error(`Invalid icon: ${name}`);
         }
         attrs['data-lucide'] = map[name];

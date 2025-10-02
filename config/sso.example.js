@@ -12,8 +12,6 @@ module.exports = {
     cpPassword: false,
     // You can also force your SSO users to add a CryptPad password
     forceCpPassword: false,
-    // Force redirect to first SSO provider
-    forceRedirect: true,
     // List of SSO providers
     list: [
     /*
