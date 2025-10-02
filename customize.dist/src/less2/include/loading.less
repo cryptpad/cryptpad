@@ -185,9 +185,6 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                i {
-                    width: 22px;
-                }
                 span {
                     margin-left: 10px;
                     &.percent {
@@ -219,7 +216,7 @@
         }
     }
 
-    .cp-spinner {
+    .cp-spinner-main {
         display: inline-block;
         box-sizing: border-box;
         width: 80px;
@@ -229,6 +226,15 @@
         border-top-color: transparent;
         animation: spin infinite 3s;
         animation-timing-function: cubic-bezier(.6,0.15,0.4,0.85);
+    }
+
+    button {
+        .cp-spinner {
+            svg {
+                animation: spin 10s linear infinite ;
+                margin: 0 0 0.1rem 0.3rem;
+            }
+        }
     }
 
 }

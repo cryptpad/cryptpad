@@ -7,8 +7,6 @@ define([
     '/common/hyperscript.js',
     '/customize/pages.js',
     '/components/nthen/index.js',
-
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, h, Pages, nThen) {
     // we consider that there is no valid reason to load any of the info pages
     // in an iframe. abort everything if you detect that you are embedded.
@@ -16,7 +14,6 @@ define([
 
 $(function () {
     var $body = $('body');
-
     var pathname = location.pathname;
 
     // add class on info-pages
@@ -50,7 +47,6 @@ $(function () {
             'optional!/api/instance',
             'less!/customize/src/less2/pages/page-' + pageName + '.less',
             'css!/components/bootstrap/dist/css/bootstrap.min.css',
-            'css!/customize/fonts/cptools/style.css'
         ], function (ApiConfig, Util, Instance) {
             var $main = $(infoPage());
             var titleSuffix = (Util.find(Instance, ['name','default']) || '').trim();
@@ -58,7 +54,6 @@ $(function () {
                 titleSuffix = window.location.hostname;
             }
             document.title = document.title + ' - ' + titleSuffix;
-
             $('#placeholder').remove();
 
             $body.append($main);

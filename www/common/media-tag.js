@@ -136,7 +136,7 @@ var factory = function (Util) {
                 var btn = document.createElement('button');
                 btn.setAttribute('class', 'btn btn-default');
                 btn.setAttribute('alt', metadata.alt || "");
-                btn.innerHTML = '<i class="fa fa-save"></i>' + cfg.download.text + '<br>' +
+                btn.innerHTML = '<i data-lucide="save"></i>' + cfg.download.text + '<br>' +
                                 (metadata.name ? '<b>' + fixHTML(metadata.name) + '</b>' : '');
                 btn.addEventListener('click', function () {
                     saveFile(content, url, metadata.name);
@@ -205,7 +205,7 @@ var factory = function (Util) {
     };
     var makeDownloadButton = function (cfg, mediaObject, size, cb) {
         var metadata = cfg.metadata || {};
-        var i = '<i class="fa fa-paperclip"></i>';
+        var i = '<i data-lucide="paperclip"></i>';
         var name = metadata.name ? '<span class="mediatag-download-name">'+ i +'<b>'+
                                     fixHTML(metadata.name)+'</b></span>' : '';
         var btn = document.createElement('button');

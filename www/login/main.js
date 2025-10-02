@@ -14,7 +14,6 @@ define([
     '/common/outer/local-store.js',
     //'/common/test.js',
 
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function (Config, $, h, Cryptpad, Login, UI, Realtime, Feedback, LocalStore /*, Test */) {
     if (window.top !== window) { return; }
     $(function () {

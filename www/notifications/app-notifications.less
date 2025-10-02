@@ -108,8 +108,9 @@
                     }
                 }
                 .cp-avatar-calendar {
-                    font-size: 45px;
-                    padding: 12px;
+                    min-width: 2em;
+                    min-height: 2em;
+                    margin: 1rem 0 1rem 1rem;
                 }
                 &.cp-app-notification-archived {
                     background-color: @cp_notif-bg;
@@ -149,6 +150,9 @@
                     border-left: 1px solid @cp_notif-table-border;
                     width: 3rem;
                     margin: 0.2rem;
+                    svg {
+                        margin: 0;
+                    }
                     &:focus-visible{
                         border-radius: @variables_radius;
                     }

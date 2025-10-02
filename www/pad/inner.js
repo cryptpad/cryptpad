@@ -46,6 +46,7 @@ define([
     '/common/common-ui-elements.js',
     '/common/hyperscript.js',
     '/components/chainpad/chainpad.dist.js',
+    '/common/common-icons.js',
     //'/customize/application_config.js',
     //'/common/test.js',
 
@@ -54,7 +55,6 @@ define([
 
     'css!/customize/src/print.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/pad/app-pad.less'
 ], function(
     $,
@@ -75,7 +75,8 @@ define([
     UI,
     UIElements,
     h,
-    ChainPad/*,
+    ChainPad,
+    Icons/*,
     AppConfig,
     Test */
 ) {
@@ -235,7 +236,7 @@ define([
                     input: { value: 1 },
                     label: { class: 'noTitle' }
                 });
-            var delWidth = h('button.btn.btn-default.fa.fa-times');
+            var delWidth = h('button.btn.btn-default', Icons.get('close'));
             var width = h('div.cp-pad-settings-radio-container', [
                 opt1,
                 opt2,
@@ -267,7 +268,7 @@ define([
                     input: { value: 1 },
                     label: { class: 'noTitle' }
                 });
-            var delOutline = h('button.btn.btn-default.fa.fa-times');
+            var delOutline = h('button.btn.btn-default', Icons.get('close'));
             var outline = h('div.cp-pad-settings-radio-container', [
                 opt3,
                 opt4,
@@ -299,7 +300,7 @@ define([
                     input: { value: 1 },
                     label: { class: 'noTitle' }
                 });
-            var delComments = h('button.btn.btn-default.fa.fa-times');
+            var delComments = h('button.btn.btn-default', Icons.get('close'));
             var comments = h('div.cp-pad-settings-radio-container', [
                 opt5,
                 opt6,
@@ -341,7 +342,7 @@ define([
             drawer: true,
             text: Messages.pad_settings_title,
             name: 'pad-settings',
-            icon: 'fa-cog',
+            icon: 'pad-settings',
         }, function () {
             UI.alert(getSettings());
         });
@@ -812,8 +813,8 @@ define([
             var store = window.cryptpadStore;
             var key = 'pad-small-width';
 
-            var hideBtn = h('button.btn.btn-default.cp-pad-hide.fa.fa-compress');
-            var showBtn = h('button.btn.btn-default.cp-pad-show.fa.fa-expand');
+            var hideBtn = h('button.btn.btn-default.cp-pad-hide', Icons.get('shrink-pad'));
+            var showBtn = h('button.btn.btn-default.cp-pad-show', Icons.get('expand-pad'));
 
             var localHide;
             $(hideBtn).click(function () { // Expand
@@ -882,11 +883,11 @@ define([
                     title: Util.stripTags($(el).text())
                 });
             });
-            var hideBtn = h('button.btn.btn-default.cp-pad-hide.fa.fa-chevron-left');
+            var hideBtn = h('button.btn.btn-default.cp-pad-hide', Icons.get('chevron-left'));
             var showBtn = h('button.btn.btn-default.cp-pad-show', {
                 title: Messages.pad_tocHide
             }, [
-                h('i.fa.fa-list-ul')
+                Icons.get('list')
             ]);
             var content = [
                 hideBtn,

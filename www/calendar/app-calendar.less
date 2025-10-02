@@ -38,12 +38,6 @@
 
 
         .tui-full-calendar-confirm {
-            span, i {
-                padding: 0 0.5rem;
-            }
-            span {
-                padding-left: 0;
-            }
             width: unset;
         }
 
@@ -171,7 +165,7 @@
             color: @cryptpad_text_col;
             border-radius: @variables_radius_L;
             font-weight: normal;
-            .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox):not(.fa-map-marker):not(.fa-align-left) {
+            .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox):not(svg) {
                 display: none;
             }
             .tui-full-calendar-icon {
@@ -190,13 +184,11 @@
                     display: flex;
                     align-items: center;
                 }
-                .fa-align-left {
-                    margin-top: 4px;
-                }
                 &.tui-full-calendar-popup-detail-item-separate {
                     &>span {
                         display: flex;
                         width: 100%;
+                        align-items: center;
                     }
                     .event-description {
                         display: block;
@@ -227,7 +219,8 @@
             .tui-full-calendar-section-button-save {
                 height: 40px;
                 .btn-primary { // Update button
-                    margin-right: 0px;
+                    margin-right: 0;
+                    display: flex;
                 }
             }
 
@@ -351,6 +344,8 @@
                 button {
                     flex: 1;
                     margin: 0;
+                    display: inline-flex;
+                    justify-content: center;
                 }
             }
             .tui-full-calendar-popup-top-line {
@@ -366,13 +361,13 @@
         .cp-recurrence-label, .cp-notif-label {
             color: @cryptpad_text_col;
             margin-right: 1rem;
-            i {
-                margin-right: 0.5rem;
-            }
+            display: inline-flex;
+            align-items: center;
         }
 
         .cp-calendar-recurrence-container {
             margin-top: 1rem;
+            display: inline-flex;
             .cp-calendar-rec-translated-str {
                 margin-top: 0.5rem;
             }
@@ -388,6 +383,7 @@
             }
             & > div {
                 display: flex;
+                align-items: self-start;
             }
             .cp-calendar-notif-list-container {
                 width: 100%;
@@ -430,7 +426,6 @@
                     }
                     .btn-danger-outline {
                         display: block;
-                        margin-right: 0px !important;
                         background-color: transparent;
                         color: @cryptpad_text_col;
                         border-color: @cryptpad_text_col;
@@ -438,6 +433,9 @@
                             color: @cp_buttons-red-color;
                             background-color: @cp_buttons-red;
                             border-color: @cp_buttons-red;
+                        }
+                        svg {
+                            margin-right: 0;
                         }
                       }
                 }
@@ -466,6 +464,11 @@
                             outline: @cryptpad_color_brand solid 2px;
                         }
                     }
+                    .btn:last-of-type {
+                        svg {
+                            margin: 0;
+                        }
+                    }
                 }
                 // margin-bottom: 20px;
                 input {
@@ -484,6 +487,9 @@
             border: 1px solid;
             &:not(:hover) {
                 background: transparent;
+            }
+            svg {
+                margin: 0;
             }
         }
 
@@ -600,6 +606,9 @@
                 background-color: fade(@cp_toolbar-fg, 50%);
                 cursor: pointer;
             }
+            svg {
+                margin: 0;
+            }
         }
     }
 
@@ -664,13 +673,18 @@
                 padding: 5px;
                 border-radius: @variables_radius;
                 background-color: @cp_sidebar-left-bg;
+                svg {
+                    margin: 0;
+                }
                 &:not(.cp-unclickable) {
                     cursor: pointer;
                 }
                 .cp-dropdown-container {
                     position: initial;
-
                     .cp-dropdown-content{
+                        svg {
+                            margin-right: @variables_icon_margin;
+                        }
                         @media screen and (max-width: 600px)
                         {
                             left: 50%;
@@ -708,9 +722,6 @@
                         }
                         &:focus-visible {
                             outline: @variables_focus_style;
-                        }
-                        i {
-                            margin-left: 5px;
                         }
                     }
                 }
@@ -774,10 +785,11 @@
         .cp-calendar-notif-list-container, .cp-calendar-notif-form {
             flex-direction: column;
             align-items: unset !important;
+            gap: 1rem;
         }
         .cp-calendar-newevent {
-            i {
-                margin: 0 !important;
+            svg {
+                margin: 0;
             }
             span {
                 display: none;

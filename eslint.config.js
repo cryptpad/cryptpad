@@ -49,6 +49,7 @@ module.exports = [{
         "_build",
         "scripts/api/testapi.js",
         "rollup.config.mjs",
+        "*/lucide.js"
     ],
 }, ...compat.extends("eslint:recommended", "plugin:compat/recommended"), {
     plugins: {

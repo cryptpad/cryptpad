@@ -22,9 +22,9 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/components/marked/marked.min.js',
+    '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/profile/app-profile.less',
 ], function (
     ApiConfig,
@@ -45,7 +45,8 @@ define([
     h,
     Messages,
     AppConfig,
-    Marked)
+    Marked,
+    Icons)
 {
     var APP = window.APP = {
         _onRefresh: []
@@ -74,16 +75,16 @@ define([
         var isCheckbox = true;
         if (isCheckedTaskItem) {
             text = text.replace(checkedTaskItemPtn,
-                '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square-check" aria-hidden="true"></i>') + '\n';
         } else if (isUncheckedTaskItem) {
             text = text.replace(uncheckedTaskItemPtn,
-                '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square" aria-hidden="true"></i>') + '\n';
         } else if (hasBogusCheckedInput) {
             text = text.replace(bogusCheckPtn,
-                '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square-check" aria-hidden="true"></i>') + '\n';
         } else if (hasBogusUncheckedInput) {
             text = text.replace(bogusUncheckPtn,
-                '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square" aria-hidden="true"></i>') + '\n';
         } else {
             isCheckbox = false;
         }
@@ -127,7 +128,7 @@ define([
         var buttonS = h('button.btn.btn-primary.' + VIEW_PROFILE_BUTTON, {
             'aria-labelledby': 'cp-profile-share-button'
         }, [
-            h('i.fa.fa-share-alt', { 'aria-hidden': 'true' }),
+            Icons.get('share'),
             h('span#cp-profile-share-button', Messages.shareButton)
         ]);
         $(buttonS).click(function () {
@@ -201,7 +202,7 @@ define([
         if (friends[data.curvePublic]) {
             // Add friend message
             APP.$friend.append(h('p.cp-app-profile-friend', [
-                h('i.fa.fa-address-book', {'aria-hidden': 'true' }),
+                Icons.get('contacts-book'),
                 Messages._getKey('isContact', [name])
             ]));
             if (!friends[data.curvePublic].notifications) { return; }
@@ -209,7 +210,7 @@ define([
             var unfriendButton = h('button.btn.btn-primary.cp-app-profile-friend-request', {
                 'aria-labelledby': 'cp-profile-unfriend-button'
             }, [
-                h('i.fa.fa-user-times', {'aria-hidden': 'true' }), 
+                Icons.get('unfriend'),
                 h('span#cp-profile-unfriend-button', Messages.contacts_remove)
             ]);
             $(unfriendButton).click(function () {
@@ -228,7 +229,7 @@ define([
         }
 
         var button = h('button.btn.btn-success.cp-app-profile-friend-request', [
-            h('i.fa.fa-user-plus', {'aria-hidden': 'true'}),
+            Icons.get('add-friend'),
         ]);
         var $button = $(button).appendTo(APP.$friend);
 
@@ -246,7 +247,7 @@ define([
             var cancelButton = h('button.btn.btn-danger.cp-app-profile-friend-request', { 
                 'aria-labelledby': 'cp-profile-cancel-button' 
             },[
-                h('i.fa.fa-user-times', {'aria-hidden': 'true' }),
+                Icons.get('unfriend'),
                 h('span#cp-profile-cancel-button' , Messages.cancel)
             ]);
             $(cancelButton).click(function () {
@@ -312,7 +313,7 @@ define([
                 var unmuteButton = h('button.btn.btn-secondary.cp-app-profile-friend-request', { 
                     'aria-labelledby': 'cp-profile-unmute-button'
                 }, [
-                    h('i.fa.fa-bell', {'aria-hidden': 'true' }),
+                    Icons.get('notification'),
                     h('span#cp-profile-unmute-button', Messages.contacts_unmute || 'unmute')
                 ]);
                 $(unmuteButton).click(function () {
@@ -326,7 +327,7 @@ define([
             var muteButton = h('button.btn.btn-danger-outline.cp-app-profile-friend-request', {
                  'aria-labelledby': 'cp-profile-mute-button'
                 }, [
-                    h('i.fa.fa-bell-slash', {'aria-hidden': 'true' }),
+                    Icons.get('mute'),
                     h('span#cp-profile-mute-button', Messages.contacts_mute || 'mute')
                 ]);
             $(muteButton).click(function () {
@@ -426,7 +427,7 @@ define([
             'class': 'btn',
             'aria-labelledby': 'cp-profile-copy-key-button'
         }).append([
-            h('i.fa.fa-key', {'aria-hidden': 'true' }),
+            Icons.get('key'),
             h('span#cp-profile-copy-key-button', Messages.profile_copyKey)
         ]).click(function () {
             if (!APP.getEdPublic) { return; }
@@ -454,7 +455,7 @@ define([
         APP.$copyData = $(h('button.btn.btn-secondary', { 
             'aria-labelledby': 'cp-profile-copy-data-button' 
         }, [   
-            h('i.fa.fa-clipboard', {'aria-hidden': 'true' }), 
+            Icons.get('copy'),
             h('span#cp-profile-copy-data-button', Messages.support_copyUserData)
         ])).click(function () {
             if (!APP.getCopyData) { return; }
@@ -475,7 +476,7 @@ define([
     var createLeftside = function () {
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'}).appendTo(APP.$leftside);
         var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
-        $category.append($('<span>', {'class': 'fa fa-user'}));
+        $category.append(Icons.get('user-account'));
         $category.addClass('cp-leftside-active');
         $category.text(Messages.profileButton);
     };

@@ -26,6 +26,25 @@
     .cp-sidebarlayout-element {
         max-width: 650px;
     }
+    .cp-spinner, .cp-ok {
+        svg {
+            width: 1.2rem;
+        }
+    }
+    .cp-checkmark.noTitle, .cp-sidebarlayout-input-block {
+        svg {
+            margin-left: @variables_icon_margin;
+        }
+    }
+    .cp-spinner, .cp-ok{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: middle;
+    }
+    .cp-spinner svg {
+        animation: spin 10s linear infinite;
+    }
 
     div.alert {
         font-size: @colortheme_app-font-size;
@@ -33,13 +52,6 @@
     }
 
     .export_main();
-
-    .cp-settings-displayname .fa{
-        margin-left: 0.5rem;
-    }
-    .cp-settings-mediatag-size .fa{
-        margin-left: 0.5rem;
-    }
 
     .alertify {
         nav {
@@ -84,6 +96,7 @@
                 }
             }
             .cp-sidebarlayout-input-block {
+                position: relative;
                 input {
                     border-top-right-radius: 0;
                     border-bottom-right-radius: 0;
@@ -97,8 +110,12 @@
                         margin-right: 100%;
                     }
                 }
-                & > .fa {
-                    align-self: center;
+                & > .cp-spinner,
+                & > .cp-ok {
+                    position: absolute;
+                    right: -16px;
+                    top: 50%;
+                    transform: translateY(-50%);
                     margin-right: -16px;
                 }
             }
@@ -117,6 +134,9 @@
                     padding-right: 1rem;
                     padding-bottom:0.5rem;
                 }
+                svg {
+                    margin: 0 0 @variables_icon_margin;
+                }
             }
 
             .cp-password-container {
@@ -132,6 +152,7 @@
                     margin-left: 10px;
                 }
                 .cp-password-reveal {
+                    margin-left: 0.5rem;
                     border-radius:@variables_radius;
                 }
             }
@@ -151,9 +172,6 @@
             }
             .cp-settings-drive-backup {
                 button {
-                    span.fa {
-                        margin-right: 5px;
-                    }
                     margin-right: 5px;
                 }
             }
@@ -179,10 +197,16 @@
                 color: @cp_sidebar-hint;
             }
             .cp-settings-mfa-status {
-                & > i {
-                    margin-right: 5px;
-                }
                 margin: 1em 0;
+                display: inline-flex;
+                align-items: center;
+            }
+            .cp-settings-safe-links {
+                svg {
+                    margin: 0;
+                    vertical-align: middle;
+                    width: 1rem;
+                }
             }
             .cp-settings-mfa {
                 .cp-password-container {
@@ -198,6 +222,11 @@
                         width: 100%;
                         font-weight: unset;
                         margin-bottom: 5px;
+                    }
+                    button {
+                        svg {
+                            margin: 0 0 0 0.2rem;
+                        }
                     }
                 }
                 .cp-settings-qr-container {
@@ -225,12 +254,6 @@
                         margin-top:1rem;
                     }
                 }
-                .btn-primary .fa.fa-check{
-                    color:white;
-                    width:1rem;
-                    height:1rem;
-                    margin: 0 2px 0 0;
-                }
             }
             .cp-settings-badges {
                 display: flex;
@@ -240,15 +263,13 @@
                     display: flex;
                     align-items: center;
                     font-size: 24px;
+                    gap: 0.5rem;
                     margin-top: 10px;
                     .badges_main(40px);
-                    i {
+                    span {
                         cursor: pointer;
                         &:focus-visible {
                             outline: @variables_focus_style;
-                        }
-                        &:not(:last-child) {
-                            margin-right: 0.5em;
                         }
                     }
                 }
@@ -267,7 +288,7 @@
                     border-radius: 4px;
                     overflow: visible;
                     position: relative;
-                    i.cp-badge {
+                    span.cp-badge {
                         border-width: 3px;
                     }
                     .cp-settings-avatar-delete {
@@ -277,6 +298,9 @@
                         opacity: 1;
                         &:hover {
                             opacity: 0.7;
+                        }
+                        svg {
+                            margin: 0;
                         }
                     }
                 }

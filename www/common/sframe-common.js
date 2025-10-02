@@ -34,7 +34,8 @@ define([
     '/common/common-constants.js',
     '/components/localforage/dist/localforage.min.js',
     '/common/hyperscript.js',
-    '/common/extensions.js'
+    '/common/extensions.js',
+    '/common/common-icons.js'
 ], function (
     $,
     ApiConfig,
@@ -66,7 +67,8 @@ define([
     Constants,
     localForage,
     h,
-    Ext
+    Ext,
+    Icons
 ) {
     // Chainpad Netflux Inner
     var funcs = {};
@@ -840,7 +842,9 @@ define([
             ctx.sframeChan.on("EV_PAD_NODATA", function () {
                 var error = Pages.setHTML(h('span'), Messages.safeLinks_error);
                 var i = error.querySelector('i');
-                if (i) { i.classList = 'fa fa-shhare-alt'; }
+                if (i) {
+                    $(i).empty().append(Icons.get('share'));
+                }
                 var a = error.querySelector('a');
                 if (a) {
                     a.setAttribute('href', Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/user_account.html#confidentiality"));
