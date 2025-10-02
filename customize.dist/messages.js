@@ -142,6 +142,8 @@ define(req, function(AppConfig, Default, Language) {
     Messages.import_note = 'To keep the documents you created and/or stored without being logged in, tick "Import documents from your guest session".';
     Messages.admin_creation_note =  "Create your first administrator account on this page. Administrators manage instance settings including storage quotas, and have access to moderation tools.";
 
+    Messages.loading_encrypted = "end-to-end encrypted";
+
     return Messages;
 
 });

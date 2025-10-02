@@ -937,7 +937,7 @@ define([
                 }
                 UI.errorLoadingScreen(msg, false, function () {
                     funcs.gotoURL('/drive/');
-                });
+                }, true);
             });
 
             ctx.sframeChan.on('EV_UNIVERSAL_EVENT', function (obj) {

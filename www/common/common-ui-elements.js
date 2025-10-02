@@ -3209,7 +3209,7 @@ define([
             }
 
             if (err.message && err.drive) {
-                let msg = UI.getDestroyedPlaceholder(err.message, true);
+                let msg = UI.getDestroyedPlaceholder(err.message, true, false, true);
                 return UI.errorLoadingScreen(msg, false, () => {
                     // When closing error screen
                     if (err.message === 'PASSWORD_CHANGE') {
@@ -3221,7 +3221,7 @@ define([
             if (err.message && (err.message !== "PASSWORD_CHANGE" || viewer)) {
                 // If readonly, tell the viewer that their link won't work with the new password
                 UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, false),
-                    exitable, exitable);
+                    exitable, exitable, true);
                 return;
             }
 

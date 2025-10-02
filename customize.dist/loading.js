@@ -7,27 +7,36 @@
 // text #3F4141
 define([
     '/customize/messages.js',
+    '/customize/lucide.js',
     'less!/customize/src/less2/include/loading.less'
-], function (Messages) {
+], function (Messages, Lucide) {
     var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });
     var elem = document.createElement('div');
     elem.setAttribute('id', 'cp-loading');
 
-    elem.innerHTML = [
-        '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/api/logo?' + urlArgs + '" alt="" aria-hidden="true">',
-        '</div>',
-        '<div class="cp-loading-container">',
-            '<div class="cp-loading-spinner-container">',
-                '<span class="cp-spinner-main"></span>',
-            '</div>',
-            '<div class="cp-loading-progress" aria-hidden="true" role="presentation">',
-                '<div class="cp-loading-progress-list"></div>',
-                '<div class="cp-loading-progress-container"></div>',
-            '</div>',
-            '<p id="cp-loading-message"></p>',
-        '</div>'
-    ].join('');
+    const logoPath = '/customize/CryptPad_logo_grey.svg';// XXX custom
+    elem.innerHTML = `
+<div></div>
+<div class="cp-loading-container">
+    <div class="cp-loading-progress" aria-hidden="true" role="presentation">
+        <div class="cp-loading-progress-list"></div>
+        <div class="cp-loading-progress-container"></div>
+    </div>
+    <div class="cp-loading-spinner-container">
+        <div class="cp-spinner-main"></div>
+    </div>
+    <p id="cp-loading-message"></p>
+</div>
+<div id="cp-loading-footer">
+    <div class="cp-loading-logo">
+        <img class="cp-loading-cryptofist" src="${logoPath}?${urlArgs}" alt="" aria-hidden="true"><span>CryptPad</span>
+    </div>
+    <div id="cp-loading-status">
+        <i data-lucide="lock" aria-hidden="true"></i>
+        <span>${Messages.loading_encrypted}</span>
+    </div>
+</div>
+`;
     var built = false;
 
     var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad', 'end']; // Msg.loading_state_0, loading_state_1, loading_state_2, loading_state_3, loading_state_4, loading_state_5
@@ -35,6 +44,10 @@ define([
     var makeList = function (data) {
         var c = types.indexOf(data.type);
         current = c;
+        const msg = Messages['loading_state_'+c];
+        return `<span>${msg}</span>`;
+
+        /*
         var getLi = function (i) {
             var check = (i < c || (i === c && data.progress >= 100)) ? 'square-check'
                                                                       : 'square';
@@ -52,6 +65,7 @@ define([
         });
         list += '</ul>';
         return list;
+        */
     };
     var makeBar = function (data) {
         var c = types.indexOf(data.type);
@@ -100,7 +114,10 @@ define([
             if (el2) { el2.innerHTML = makeList(data); }
             var el3 = document.querySelector('.cp-loading-progress-container');
             if (el3) { el3.innerHTML = makeBar(data); }
+            var el4 = document.querySelector('#cp-loading-status');
+            if (el4) { el4.setAttribute('style', ''); }
         } catch (e) {
+            console.error(e);
         }
     };
     window.CryptPad_updateLoadingProgress = updateLoadingProgress;
@@ -134,6 +151,7 @@ define([
             if (!document.body) { return; }
             clearInterval(intr);
             document.body.appendChild(elem);
+            Lucide.createIcons();
         };
         intr = setInterval(append, 100);
         append();
