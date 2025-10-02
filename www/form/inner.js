@@ -3849,7 +3849,7 @@ define([
             if (!APP.isEditor) { return; }
             var full = !uid;
             var addControl = function (type) {
-                if (type === "section" && inSection) { return; }
+                if (type === "section" && (uid && !content.order.includes(uid) || uid && inSection) ) { return; }
 
                 var btn = h('button.btn.btn-secondary', {
                     title: full ? '' : Messages['form_type_'+type],
@@ -3943,8 +3943,7 @@ define([
             $container.find('.cp-form-block:not(.cp-form-submit-message)').each(function (i, el) {
                 var $el = $(el);
                 var uid = $el.attr('data-id');
-                var inSection = !content.order.includes(uid);
-                $el.before(getFormCreator(uid, inSection));
+                $el.before(getFormCreator(uid));
             });
             // Add to the end of a section
             $container.find('.cp-form-section-sortable').each(function (i, el) {
