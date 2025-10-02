@@ -502,7 +502,7 @@ define([
                         return isAppEnabled(app) ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (restricted[app] === 0 ? '.cp-app-disabled' : ''), {
                             'tabindex': '-1',
                         },[
-                            Icons.get(AppConfig.applicationsIcon[app]),
+                            Icons.get(AppConfig.applicationsIcon[app] || 'file'),
                             Messages.type[app]
                         ])) : undefined;
                     })),
