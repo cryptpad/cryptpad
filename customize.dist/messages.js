@@ -159,6 +159,8 @@ define(req, function(AppConfig, Default, Language) {
     Messages.color7 = 'Blue';
     Messages.color8 = 'Purple';
 
+    Messages.loading_encrypted = "end-to-end encrypted";
+
     return Messages;
 
 });

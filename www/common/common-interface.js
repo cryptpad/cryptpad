@@ -1082,10 +1082,12 @@ define([
                 $('.cp-loading-spinner-container').show();
             }
             // Add loading text
+            const $message = $('#' + LOADING).find('#cp-loading-message');
+            $message.removeClass('cp-error-message cp-error-message-alt');
             if (loadingText) {
-                $('#' + LOADING).find('#cp-loading-message').show().text(loadingText);
+                $message.show().text(loadingText);
             } else {
-                $('#' + LOADING).find('#cp-loading-message').hide().text('');
+                $message.hide().text('');
             }
         };
         if ($('#' + LOADING).length) {
@@ -1124,7 +1126,7 @@ define([
         $loading.find('.cp-loading-logo').hide();
         $loading.append(content);
     };
-    UI.errorLoadingScreen = function (error, transparent, exitable) {
+    UI.errorLoadingScreen = function (error, transparent, exitable, errorCls) {
         if (error === 'Error: XDR encoding failure') {
             console.warn(error);
             return;
@@ -1143,10 +1145,18 @@ define([
 
         // Add the error message
         var $error = $loading.find('#cp-loading-message').show();
+        $error.removeClass('cp-error-message cp-error-message-alt');
         if (error instanceof Element) {
             $error.html('').append(error);
         } else {
+            errorCls = true;
             $error.html(error || Messages.error);
+        }
+
+        if (errorCls) {
+            const cls = transparent ? 'cp-error-message-alt'
+                                    : 'cp-error-message';
+            $error.addClass(cls);
         }
         $error.find('a[href]').click(function (e) {
             e.preventDefault();
@@ -1704,7 +1714,7 @@ define([
         var input = split[1]; // User/admin manual input
         var text = UI.getDestroyedPlaceholderMessage(code, isAccount);
         var reasonBlock = input ? h('p', Messages._getKey('dph_reason', [input])) : undefined;
-        return h('div', [
+        return h('div.cp-loading-error', [
             h('p', text),
             reasonBlock
         ]);
