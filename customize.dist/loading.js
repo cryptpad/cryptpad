@@ -22,6 +22,7 @@ define([
         <div class="cp-loading-progress-list"></div>
         <div class="cp-loading-progress-container"></div>
     </div>
+    <div id="cp-loading-spinner-message"></div>
     <div class="cp-loading-spinner-container">
         <div class="cp-spinner-main"></div>
     </div>

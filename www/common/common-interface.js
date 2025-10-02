@@ -1083,11 +1083,11 @@ define([
             }
             // Add loading text
             const $message = $('#' + LOADING).find('#cp-loading-message');
+            const $spinnerMessage = $('#' + LOADING).find('#cp-loading-spinner-message').hide();
             $message.removeClass('cp-error-message cp-error-message-alt');
+            $message.hide().text('');
             if (loadingText) {
-                $message.show().text(loadingText);
-            } else {
-                $message.hide().text('');
+                $spinnerMessage.show().text(loadingText);
             }
         };
         if ($('#' + LOADING).length) {
@@ -1133,9 +1133,7 @@ define([
         }
 
         var $loading = $('#' + LOADING);
-        if (!$loading.is(':visible') || $loading.hasClass('cp-loading-hidden')) {
-            UI.addLoadingScreen();
-        }
+        UI.addLoadingScreen();
         // Remove the progress list
         $loading.find('.cp-loading-progress').remove();
         // Hide the spinner
@@ -1145,7 +1143,6 @@ define([
 
         // Add the error message
         var $error = $loading.find('#cp-loading-message').show();
-        $error.removeClass('cp-error-message cp-error-message-alt');
         if (error instanceof Element) {
             $error.html('').append(error);
         } else {
