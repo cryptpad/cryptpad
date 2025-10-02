@@ -3865,7 +3865,13 @@ define([
                     var idx = content.order.indexOf(uid);
                     if (!full) {
                         if (inSection) {
-                            var section = content.form[uid];
+                            if (content.form[uid].type === 'section') {
+                                var section = content.form[uid];
+                            } else {
+                                var $el = $container.find(`[data-id="${uid}"]`);
+                                var sectionUid = $el.parents('.cp-form-block').attr('data-id');
+                                var section = content.form[sectionUid];
+                            }
                             section.opts = section.opts || STATIC_TYPES.section.opts;
                             arr = section.opts.questions;
                         } else {
@@ -3937,7 +3943,7 @@ define([
             $container.find('.cp-form-block:not(.cp-form-submit-message)').each(function (i, el) {
                 var $el = $(el);
                 var uid = $el.attr('data-id');
-                var inSection = ($(el.parentElement).attr('class').indexOf('section') !== -1) ? true : false;
+                var inSection = !content.order.includes(uid);
                 $el.before(getFormCreator(uid, inSection));
             });
             // Add to the end of a section
