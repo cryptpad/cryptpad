@@ -3865,13 +3865,7 @@ define([
                     var idx = content.order.indexOf(uid);
                     if (!full) {
                         if (inSection) {
-                            if (content.form[uid].type === 'section') {
-                                var section = content.form[uid];
-                            } else {
-                                var $el = $container.find(`[data-id="${uid}"]`);
-                                var sectionUid = $el.parents('.cp-form-block').attr('data-id');
-                                var section = content.form[sectionUid];
-                            }
+                            var section = content.form[uid];
                             section.opts = section.opts || STATIC_TYPES.section.opts;
                             arr = section.opts.questions;
                         } else {
