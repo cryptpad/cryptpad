@@ -181,6 +181,7 @@ define([
         "tag": "hash",
         "password-reveal": "eye",
         "password-hide": "eye-closed",
+        "password-change": "rotate-ccw-key",
         "arrow-left": "arrow-left",
         "arrow-up": "arrow-up",
         "code": "code-xml",
