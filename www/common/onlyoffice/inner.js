@@ -355,8 +355,8 @@ define([
         var getContent = function (title) {
             try {
                 getEditor().asc_setCoreProps({
+                    ...getEditor().asc_getCoreProps(),
                     'title': title,
-                    'creator': ''
                 });
                 return getEditor().asc_nativeGetFile();
             } catch (e) {
