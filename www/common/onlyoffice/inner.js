@@ -364,7 +364,7 @@ define([
                     props.creator = "";
                 }
                 getEditor().asc_setCoreProps(props);
-            } catch () {}
+            } catch {}
         };
         var getContent = function (title) {
             try {
