@@ -393,7 +393,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            s.rpc.uploadStatus(data.size, function (err, res) {
+            s.rpc.uploadStatus({
+                id: data.id,
+                size: data.size
+            }, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);
             });
@@ -403,7 +406,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            s.rpc.uploadCancel(data.size, function (err, res) {
+            s.rpc.uploadCancel({
+                id: data.id,
+                size: data.size
+            }, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);
             });
@@ -413,7 +419,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            s.rpc.send.unauthenticated('UPLOAD', data.chunk, function (e, msg) {
+            s.rpc.send.unauthenticated('UPLOAD', {
+                chunk: data.chunk,
+                id: data.id
+            }, function (e, msg) {
                 cb({
                     error: e,
                     msg: msg

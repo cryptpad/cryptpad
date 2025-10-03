@@ -91,17 +91,6 @@ var factory = function (Util, Rpc) {
                 });
             };
 
-            // Update the limit value for all the users and return the limit for your publicKey
-            exp.updatePinLimits = function (cb) {
-                rpc.send('UPDATE_LIMITS', undefined, function (e, response) {
-                    if (e) { return void cb(e); }
-                    if (response && response.length && typeof(response[0]) === "number") {
-                        cb (void 0, response[0], response[1], response[2]);
-                    } else {
-                        cb('INVALID_RESPONSE');
-                    }
-                });
-            };
             // Get the storage limit associated with your publicKey
             exp.getLimit = function (cb) {
                 rpc.send('GET_LIMIT', undefined, function (e, response) {
@@ -189,13 +178,13 @@ var factory = function (Util, Rpc) {
                 });
             };
 
-            exp.uploadStatus = function (size, cb) {
-                if (typeof(size) !== 'number') {
+            exp.uploadStatus = function (data, cb) {
+                if (typeof(data?.size) !== 'number') {
                     return void setTimeout(function () {
                         cb('INVALID_SIZE');
                     });
                 }
-                rpc.send('UPLOAD_STATUS', size, function (e, res) {
+                rpc.send('UPLOAD_STATUS', data, function (e, res) {
                     if (e) { return void cb(e); }
                     var pending = res[0];
                     if (typeof(pending) !== 'boolean') {
@@ -205,8 +194,8 @@ var factory = function (Util, Rpc) {
                 });
             };
 
-            exp.uploadCancel = function (size, cb) {
-                rpc.send('UPLOAD_CANCEL', size, function (e) {
+            exp.uploadCancel = function (data, cb) {
+                rpc.send('UPLOAD_CANCEL', data, function (e) {
                     if (e) { return void cb(e); }
                     cb();
                 });

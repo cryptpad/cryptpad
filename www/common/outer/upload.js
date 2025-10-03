@@ -35,12 +35,13 @@ define([
 
         var sendChunkWs = function (box, cb) {
             var enc = Util.encodeBase64(box);
-            common.uploadChunk(teamId, enc, function (e, msg) {
+            common.uploadChunk(teamId, id, enc, function (e, msg) {
                 cb(e, msg);
             });
         };
 
 
+        const prefix = id.slice(0,2);
         let uploadUrl = '/upload-blob';
         let keys, cookie;
         if (ApiConfig.fileHost) {
@@ -60,7 +61,7 @@ define([
                 edPublic: keys.edPublic
             };
 
-            fetch(uploadUrl, {
+            fetch(`${uploadUrl}/${prefix}/${id}`, {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json'
@@ -131,6 +132,7 @@ define([
                 };
                 ServerCommand(keys, {
                     command: 'UPLOAD_COOKIE',
+                    id: id
                 }, (err, data) => {
                     cookie = data?.cookie;
                     if (err || !cookie) { return void onError(err || 'NOCOOKIE'); }
@@ -139,7 +141,7 @@ define([
             });
         };
 
-        common.uploadStatus(teamId, estimate, function (e, pending) {
+        common.uploadStatus(teamId, id, estimate, function (e, pending) {
             if (e) {
                 console.error(e);
                 onError(e);
@@ -149,7 +151,7 @@ define([
             if (pending) {
                 return void onPending(function () {
                     // if the user wants to cancel the pending upload to execute that one
-                    common.uploadCancel(teamId, estimate, function (e) {
+                    common.uploadCancel(teamId, id, estimate, function (e) {
                         if (e) {
                             return void console.error(e);
                         }
