@@ -352,12 +352,23 @@ define([
             cpIndex: 0
         };
 
+        const fixProps = (title) => {
+            try {
+                const props = getEditor().asc_getCoreProps();
+                if (!props) { return; }
+                props.title = title;
+                if (!content.hashes || !content.hashes.length) {
+                    // No CP: document is using our templates
+                    // --> fix the "creator" field
+                    props.creator = "";
+                }
+                getEditor().asc_setCoreProps(props);
+            } catch () {}
+        };
         var getContent = function (title) {
             try {
-                getEditor().asc_setCoreProps({
-                    ...getEditor().asc_getCoreProps(),
-                    'title': title,
-                });
+                // Update document metadata with latest title
+                fixProps(title);
                 return getEditor().asc_nativeGetFile();
             } catch (e) {
                 console.error(e);
