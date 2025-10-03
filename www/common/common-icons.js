@@ -197,6 +197,7 @@ define([
         "restore": "rotate-cw",
         "all": "menu",
         "chat": "message-circle-more",
+        "comments": "message-square-more",
         "mail": "mail",
         "upload-avatar": "image-up",
         "edit": "pencil",
