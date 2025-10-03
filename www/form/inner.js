@@ -3902,7 +3902,7 @@ define([
             if (!APP.isEditor) { return; }
             var full = !uid;
             var addControl = function (type) {
-                if (type === "section" && inSection) { return; }
+                if (type === "section" && (uid && !content.order.includes(uid) || uid && inSection) ) { return; }
 
                 var btn = h('button.btn.btn-secondary', {
                     title: full ? '' : Messages['form_type_'+type],
