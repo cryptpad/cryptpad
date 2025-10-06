@@ -3601,9 +3601,8 @@ define([
                 h('span.cp-form-anon-answer-registered', user.name || Messages.anonymous)
             ]));
         }
-
-        var send = h('button.cp-open.btn.btn-primary', APP.hasAnswered ? Messages.form_update : Messages.form_submit);
-        var reset = h('button.cp-open.cp-reset-button.btn.btn-danger-alt', Messages.form_reset);
+        var send = h('button.cp-open.btn.btn-primary', [Icons.get('send'), APP.hasAnswered ? Messages.form_update : Messages.form_submit]);
+        var reset = h('button.cp-open.cp-reset-button.btn.btn-danger-alt', [Icons.get('restore'), Messages.form_reset]);
         var $reset = $(reset).click(function () {
             if (!Array.isArray(APP.formBlocks)) { return; }
             APP.formBlocks.forEach(function (data) {
@@ -3665,7 +3664,7 @@ define([
                 window.onbeforeunload = undefined;
 
                 $send.removeAttr('disabled');
-                $send.text(Messages.form_update);
+                $send.empty().append(Icons.get('send'), Messages.form_update);
                 APP.answeredInForm = false;
 
                 APP.getMyAnswers();
@@ -3727,7 +3726,8 @@ define([
                 var $container = $('div.cp-form-creator-content');
                 var $inputs = $container.find('input:invalid');
                 if (!$inputs.length) {
-                    $send.text(APP.hasAnswered ? Messages.form_update : Messages.form_submit);
+                    $send.empty().append(Icons.get('send'), APP.hasAnswered ? Messages.form_update : Messages.form_submit);
+                    Lucide.createIcons();
                     return void $invalid.empty();
                 }
                 $send.text(APP.hasAnswered ? Messages.form_updateWarning : Messages.form_submitWarning);
