@@ -21,7 +21,6 @@ define([
     '/checkup/checkup-tools.js',
     '/customize/application_config.js',
     '/common/onlyoffice/current-version.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/components/tweetnacl/nacl-fast.min.js',
@@ -29,7 +28,7 @@ define([
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
             NetConfig, Block, Pages, Tools, AppConfig,
-            OOCurrentVersion, Lucide, Icons) {
+            OOCurrentVersion, Icons) {
     window.CHECKUP_MAIN_LOADED = true;
 
     var Assert = Assertions();

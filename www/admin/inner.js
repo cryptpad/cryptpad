@@ -22,7 +22,6 @@ define([
     '/api/instance',
     '/lib/datepicker/flatpickr.js',
     '/install/onboardscreen.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
@@ -48,7 +47,6 @@ define([
     Instance,
     Flatpickr,
     Onboarding,
-    Lucide,
     Icons
 ) {
 
@@ -387,7 +385,6 @@ define([
                     }).nThen(() => {
                         APP.updateStatus(function () {
                             evRefreshAdmins.fire();
-                            Lucide.createIcons();
                         });
                     });
                 });
@@ -415,7 +412,6 @@ define([
                         // refresh
                         APP.updateStatus(function () {
                             evRefreshAdmins.fire();
-                            Lucide.createIcons();
                         });
                     });
                 });
@@ -734,7 +730,6 @@ define([
             }
 
             row(reportContentLabel, copyToClipboard(data));
-            setTimeout(() => Lucide.createIcons());
             return tableObj.table;
         };
 
@@ -1999,7 +1994,6 @@ define([
                                     wide: true,
                                  });
                              });
-                             Lucide.createIcons();
                         });
 
                         var keyEl = h('code.cp-limit-key', key);
@@ -2391,7 +2385,6 @@ define([
             }
 
             row(reportContentLabel, copyToClipboard(data));
-            setTimeout(() => Lucide.createIcons());
             return tableObj.table;
         };
 
@@ -3057,7 +3050,6 @@ define([
                 }));
             }).nThen(() => {
                 onRefreshSupportEvt.fire({moderators, supportKey});
-                Lucide.createIcons();
             });
         };
         const getMyData = () => {

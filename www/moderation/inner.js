@@ -17,7 +17,6 @@ define([
     '/common/common-hash.js',
     '/common/inner/sidebar-layout.js',
     '/support/ui.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     '/components/file-saver/FileSaver.min.js',
@@ -38,7 +37,6 @@ define([
     Hash,
     Sidebar,
     Support,
-    Lucide,
     Icons
     )
 {
@@ -608,7 +606,6 @@ define([
                     $list.find('span').removeClass('active');
                     commitTags();
                 });
-                setTimeout(() => Lucide.createIcons());
                 $container.append(tags);
             };
             events.REFRESH_TAGS.reg(redrawTags);

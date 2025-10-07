@@ -22,7 +22,6 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/components/marked/marked.min.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -47,7 +46,6 @@ define([
     Messages,
     AppConfig,
     Marked,
-    Lucide,
     Icons)
 {
     var APP = window.APP = {
@@ -324,7 +322,6 @@ define([
                         refreshMute(data);
                     });
                 }).appendTo($mute);
-                Lucide.createIcons();
                 return;
             }
             var muteButton = h('button.btn.btn-danger-outline.cp-app-profile-friend-request', {
@@ -343,13 +340,11 @@ define([
                     refreshMute(data);
                 });
             }).appendTo($mute);
-            Lucide.createIcons();
             $(UI.setHTML(h('p'), Messages.contacts_muteInfo)).appendTo($mute);
         });
     };
 
     var displayAvatar = function (val, data, badgeOK) {
-        setTimeout(()=> Lucide.createIcons());
         var $span = APP.$avatar;
         $span.empty();
         const badge = data?.badge;
@@ -560,7 +555,6 @@ define([
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
-        setTimeout(() => Lucide.createIcons(),0);
         createToolbar();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();

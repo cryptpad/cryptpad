@@ -23,7 +23,6 @@ define([
     '/kanban/jkanban_cp.js',
     '/kanban/export.js',
     '/common/TypingTests.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'cm/mode/gfm/gfm',
@@ -59,7 +58,6 @@ define([
     jKanban,
     Export,
     TypingTest,
-    Lucide,
     Icons)
 {
 
@@ -169,7 +167,6 @@ define([
         addEditItemButton(framework, kanban);
         addMoveElementButton(framework, kanban);
         if (cursor) { restoreCursor(cursor); }
-        Lucide.createIcons();
     };
     var _updateBoardsThrottle = Util.throttle(_updateBoards, 1000);
     var updateBoards = function (framework, kanban, boards, fixCursor) {
@@ -523,7 +520,6 @@ define([
             });
         });
 
-        Lucide.createIcons();
         return {
             modal: modal,
             setId: setId,
@@ -695,7 +691,6 @@ define([
                 ])).click(function () {
                     shiftItem('right', el);
                 }).appendTo(arrowContainerItem);
-                Lucide.createIcons();
             });
         } 
     };
@@ -1188,7 +1183,6 @@ define([
                             $tag.attr('aria-pressed', 'true');
                         }
                         commitTags();
-                        Lucide.createIcons();
                     }).keydown(function (e) {
                         if (e.which === 13 || e.which === 32) {
                             $tag.click();

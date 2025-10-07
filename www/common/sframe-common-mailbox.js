@@ -12,8 +12,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/common/common-icons.js',
-    '/customize/lucide.js',
-], function ($, Util, Hash, UI, UIElements, Notifications, h, Messages, Icons, Lucide) {
+], function ($, Util, Hash, UI, UIElements, Notifications, h, Messages, Icons) {
     var Mailbox = {};
 
     Mailbox.create = function (Common) {
@@ -188,7 +187,6 @@ define([
                     if (isNotification(data.type)) {
                         Notifications.add(Common, data);
                         el = createElement(data);
-                        setTimeout(() => Lucide.createIcons());
                     }
                     f(data, el);
                 } catch (e) {

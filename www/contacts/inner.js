@@ -12,7 +12,6 @@ define([
     '/common/messenger-ui.js',
     '/customize/messages.js',
     '/common/common-interface.js',
-    '/customize/lucide.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'less!/contacts/app-contacts.less',
@@ -25,8 +24,7 @@ define([
     h,
     MessengerUI,
     Messages,
-    UI,
-    Lucide
+    UI
     )
 {
     var APP = {};
@@ -63,6 +61,5 @@ define([
         common.setTabTitle(Messages.contacts);
 
         UI.removeLoadingScreen();
-        Lucide.createIcons();
     });
 });

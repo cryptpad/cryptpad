@@ -26,7 +26,6 @@ define([
 
     '/common/onlyoffice/current-version.js',
     '/common/onlyoffice/broken-formats.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
     '/components/file-saver/FileSaver.min.js',
 
@@ -55,7 +54,6 @@ define([
     Channel,
     OOCurrentVersion,
     BrokenFormats,
-    Lucide,
     Icons)
 {
     var saveAs = window.saveAs;

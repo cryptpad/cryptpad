@@ -11,9 +11,8 @@ define([
     '/common/inner/badges.js',
     '/common/hyperscript.js',
     '/common/diffMarked.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
-], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd, Lucide, Icons) {
+], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd, Icons) {
     'use strict';
 
     var debug = console.log;
@@ -381,7 +380,6 @@ define([
                         avatars[friend.avatar] = $img[0].outerHTML;
                     }
                     $(rightCol).insertAfter($avatar);
-                    Lucide.createIcons();
                 }, friend.uid, friend.badge);
             }
 
@@ -637,7 +635,6 @@ define([
                         avatars[friendData.avatar] = $img[0].outerHTML;
                     }
                     $room.append(rightCol);
-                    Lucide.createIcons();
                 }, friendData.uid, friendData.badge);
             }
             $room.append(status);
@@ -827,7 +824,6 @@ define([
                     $container.removeClass('cp-app-contacts-initializing');
                     display(room.id);
                 }
-                setTimeout( () => Lucide.createIcons());
             });
         };
 
@@ -946,7 +942,6 @@ define([
                 $button.off('click');
                 $button.click(function () {
                     UI.alert(content);
-                    Lucide.createIcons();
                 }).show();
             });
         };

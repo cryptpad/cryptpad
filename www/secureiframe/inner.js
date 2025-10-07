@@ -14,7 +14,6 @@ define([
     '/common/hyperscript.js',
     'json.sortify',
     '/customize/messages.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -30,8 +29,7 @@ define([
     Hash,
     h,
     Sortify,
-    Messages,
-    Lucide
+    Messages
 )
 {
     var APP = window.APP = {};
@@ -233,7 +231,6 @@ define([
                             'title': Util.fixHTML(name),
                         }).appendTo($container);
                         $span.append(UI.getFileIcon(data));
-                        Lucide.createIcons();
                         $('<span>', {'class': 'cp-filepicker-content-element-name'}).text(name)
                             .appendTo($span);
                         if (data.static) { $span.attr('title', Util.fixHTML(data.href)); }
@@ -262,7 +259,6 @@ define([
             $('button.cancel').click(); // Close any existing alertify
             displayed = undefined;
             create[type](data);
-            Lucide.createIcons();
         });
 
         UI.removeLoadingScreen();

@@ -12,15 +12,13 @@ define([
     '/api/config',
     '/common/extensions.js',
     'optional!/api/instance',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function (h, Language, Util, AppConfig, Msg, $, ApiConfig,
-            Extensions, Instance, Lucide, Icons) {
+            Extensions, Instance, Icons) {
     var Pages = {};
 
     Pages.setHTML = function (e, html) {
         e.innerHTML = html;
-        setTimeout(() => Lucide.createIcons(), 0);
         return e;
     };
 

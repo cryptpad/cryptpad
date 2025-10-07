@@ -17,9 +17,8 @@ define([
     '/common/hyperscript.js',
     '/common/extensions.js',
     '/customize/pages.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
-], function (Config, $, Login, Cryptpad, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Extensions, Pages, Lucide, Icons) {
+], function (Config, $, Login, Cryptpad, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Extensions, Pages, Icons) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;
     $(function () {
@@ -180,7 +179,6 @@ define([
                     ]),
                     Messages.register_warning_note
                 ]);
-            setTimeout(() => Lucide.createIcons(), 0); 
             UI.confirm(span, function (yes) {
                 if (!yes) { return; }
 

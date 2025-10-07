@@ -15,10 +15,9 @@ define([
     '/common/outer/local-store.js',
     '/common/outer/login-block.js',
     '/customize/messages.js',
-    '/customize/lucide.js',
     '/common/common-icons.js',
 ], function (ApiConfig, $, h, Util, Cred, UI, Login, Constants,
-        ServerCommand, LocalStore, Block, Messages, Lucide, Icons) {
+        ServerCommand, LocalStore, Block, Messages, Icons) {
     if (window.top !== window) { return; }
 
     let ssoAuthCb = function (cb) {
