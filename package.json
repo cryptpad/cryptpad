@@ -44,7 +44,7 @@
     "localforage": "^1.5.2",
     "marked": "^4.3.0",
     "mathjax": "3.0.5",
-    "netflux-websocket": "^1.2.1",
+    "netflux-websocket": "github:cryptpad/netflux-websocket#scalable",
     "notp": "^2.0.3",
     "nthen": "0.1.8",
     "open-sans-fontface": "^1.4.0",
