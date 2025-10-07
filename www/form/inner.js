@@ -3721,7 +3721,6 @@ define([
                 var $inputs = $container.find('input:invalid');
                 if (!$inputs.length) {
                     $send.empty().append(Icons.get('send'), APP.hasAnswered ? Messages.form_update : Messages.form_submit);
-                    Lucide.createIcons();
                     return void $invalid.empty();
                 }
                 $send.text(APP.hasAnswered ? Messages.form_updateWarning : Messages.form_submitWarning);

@@ -514,7 +514,6 @@ define([
             });
             $(download).click(h).appendTo(actions);
             addErrors(err);
-            Lucide.createIcons();
         };
 
         var done = {};
