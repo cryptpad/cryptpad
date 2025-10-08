@@ -20,7 +20,6 @@ define([
         "folder-nocolor": "folder-minus",
         "folder-check": "folder-check",
         "file-template": "file-cog",
-        "file-save-template": "file-plus",
         "file-pad": "file-text",
         "grid": "layout-grid",
         "list": "list",
@@ -33,7 +32,7 @@ define([
         // CryptPad apps
         // Pad
         "pad": "file-text",
-        "pad-settings": "file-cog",
+        "pad-settings": "settings",
         "expand-pad": "maximize-2",
         "shrink-pad": "minimize-2",
         "slide": "cp-file-slide",
@@ -117,7 +116,6 @@ define([
         "minus": "minus",
         "alert": "triangle-alert",
         "sort-amount-desc": "arrow-down-wide-narrow",
-        "export-sheet": "sheet",
         "announcement": "megaphone",
         "reply": "reply",
         "comment": "message-square-text",
@@ -164,6 +162,7 @@ define([
         "calendar-reminder": "bell-ring",
         "calendar-location": "map-pin",
         "calendar-description": "align-justify",
+        "closing-date": "calendar-x",
         // Contacts
         "contacts": "contact-round",
         "contacts-book": "book-user",

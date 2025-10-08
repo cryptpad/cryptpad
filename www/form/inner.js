@@ -2931,7 +2931,7 @@ define([
         }];
         var dropdownExport = {
             buttonContent: [
-                Icons.get('download'),
+                Icons.get('export'),
                 h('span', Messages.exportButton)
             ],
             buttonCls: 'btn btn-primary',
@@ -2943,7 +2943,7 @@ define([
 
         // Export in "sheet"
         var export2Button = h('button.btn.btn-primary', [
-            Icons.get('export-sheet'),
+            Icons.get('sheet'),
             Messages.form_exportSheet
         ]);
         $(export2Button).appendTo($controls);
@@ -2963,7 +2963,7 @@ define([
             if (!Array.isArray(owners) || !owners.length) { return; }
             var owned = APP.common.isOwned(owners);
             if (!owned) { return; }
-            var button = h('button.btn.btn-danger.cp-form-results-delete', Messages.form_deleteAll);
+            var button = h('button.btn.btn-danger.cp-form-results-delete', [Icons.get('trash-full'), Messages.form_deleteAll]);
             UI.confirmButton(button, {classes:'danger'}, function () {
                 var sframeChan = framework._.sfCommon.getSframeChannel();
                 sframeChan.query('Q_FORM_DELETE_ALL_ANSWERS', {
@@ -2980,7 +2980,7 @@ define([
         var summary = true;
         var form = content.form;
 
-        var switchMode = h('button.btn.btn-secondary', Messages.form_showIndividual);
+        var switchMode = h('button.btn.btn-secondary', [Icons.get('list'), Messages.form_showIndividual]);
         $controls.hide().append(switchMode);
 
 
@@ -5097,7 +5097,7 @@ define([
 
                 $endDateStr.text(text);
 
-                var button = h('button.btn.btn-secondary', [Icons.get('expire'), buttonTxt]);
+                var button = h('button.btn.btn-secondary', [Icons.get('closing-date'), buttonTxt]);
 
                 var $button = $(button).click(function () {
                     $button.attr('disabled', 'disabled');
