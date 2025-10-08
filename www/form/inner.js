@@ -4809,7 +4809,7 @@ define([
             var $results = $(resultsType);
             var refreshPublic = function () {
                 $results.empty();
-                var makePublic = h('button.btn.btn-secondary', Messages.form_makePublic);
+                var makePublic = h('button.btn.btn-secondary', [Icons.get('access'), Messages.form_makePublic]);
                 var makePublicDiv = h('div.cp-form-actions', makePublic);
                 if (content.answers.privateKey) { makePublicDiv = undefined; }
                 var publicText = content.answers.privateKey ? Messages.form_isPublic : Messages.form_isPrivate;
@@ -5042,7 +5042,7 @@ define([
 
                 $endDateStr.text(text);
 
-                var button = h('button.btn.btn-secondary', buttonTxt);
+                var button = h('button.btn.btn-secondary', [Icons.get('expire'), buttonTxt]);
 
                 var $button = $(button).click(function () {
                     $button.attr('disabled', 'disabled');
