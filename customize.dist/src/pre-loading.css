@@ -59,6 +59,7 @@ html #placeholder.dark-theme {
     display: flex;
     align-items: center;
     gap: 1rem;
+    color: #939393;
 }
 #placeholder .placeholder-logo-container img {
     margin: 0;
@@ -93,9 +94,12 @@ html #placeholder.dark-theme {
 }
 
 #placeholder-loading-status {
-    font-size: 20px;
-    padding-top: 0.5rem;
+    font-size: 0.75em;
+    margin-top: 2rem;
     font-family: "IBM Plex Mono";
+    svg {
+        margin: 0;
+    }
 }
 #placeholder-loading-footer {
     margin-bottom: 2rem;

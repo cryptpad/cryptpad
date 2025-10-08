@@ -4,9 +4,6 @@
 
 (function () {
 var logoPath = '/customize/CryptPad_logo_grey.svg';
-if (location.pathname === '/' || location.pathname === '/index.html') {
-    logoPath = '/api/logo';
-}
 
 var elem = document.createElement('div');
 elem.setAttribute('id', 'placeholder');
@@ -17,7 +14,7 @@ elem.innerHTML = `
 </div>
 <div id="placeholder-loading-footer">
     <div class="placeholder-logo-container">
-    <img class="placeholder-logo" alt="" aria-hidden="true" src="${logoPath}"><span>CryptPad</span>
+        <img class="placeholder-logo" alt="" aria-hidden="true" src="${logoPath}"><span>CryptPad</span>
     </div>
     <div id="placeholder-loading-status">
         <i data-lucide="lock" aria-hidden="true"></i>
