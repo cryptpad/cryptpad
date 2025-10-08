@@ -116,7 +116,6 @@ define([
         "minus": "minus",
         "alert": "triangle-alert",
         "sort-amount-desc": "arrow-down-wide-narrow",
-        "export-sheet": "sheet",
         "announcement": "megaphone",
         "reply": "reply",
         "comment": "message-square-text",
@@ -163,6 +162,7 @@ define([
         "calendar-reminder": "bell-ring",
         "calendar-location": "map-pin",
         "calendar-description": "align-justify",
+        "closing-date": "calendar-x",
         // Contacts
         "contacts": "contact-round",
         "contacts-book": "book-user",
