@@ -20,7 +20,6 @@ define([
         "folder-nocolor": "folder-minus",
         "folder-check": "folder-check",
         "file-template": "file-cog",
-        "file-save-template": "file-plus",
         "file-pad": "file-text",
         "grid": "layout-grid",
         "list": "list",
@@ -33,7 +32,7 @@ define([
         // CryptPad apps
         // Pad
         "pad": "file-text",
-        "pad-settings": "file-cog",
+        "pad-settings": "settings",
         "expand-pad": "maximize-2",
         "shrink-pad": "minimize-2",
         "slide": "cp-file-slide",
