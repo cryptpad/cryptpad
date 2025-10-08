@@ -425,7 +425,8 @@
                         margin-left: 0.3rem;
                     }
                     .btn-danger-outline {
-                        display: block;
+                        display: inline-flex;
+                        align-items: center;
                         background-color: transparent;
                         color: @cryptpad_text_col;
                         border-color: @cryptpad_text_col;
@@ -456,6 +457,7 @@
                 .cp-calendar-notif-form-buttons {
                     display: inline-flex;
                     align-items: center;
+                    gap: 0.5rem;
                     & > input {
                         height: 40px;
                     }
@@ -473,7 +475,6 @@
                 // margin-bottom: 20px;
                 input {
                     width: 80px;
-                    margin-right: 0.5rem;
                 }
             }
         }
