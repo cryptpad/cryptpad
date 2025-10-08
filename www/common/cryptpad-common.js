@@ -431,6 +431,14 @@ define([
             cb(obj);
         });
     };
+    common.getAccountObject = function (teamId, cb) {
+        postMessage("GET", {
+            teamId: teamId,
+            key: []
+        }, function (obj) {
+            cb(obj);
+        });
+    };
     common.getSharedFolder = function (data, cb) {
         postMessage("GET_SHARED_FOLDER", data, function (obj) {
             cb(obj);
