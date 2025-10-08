@@ -503,13 +503,13 @@ define([
             });
         };
 
-        var download = h('button.btn.btn-primary', Messages.download_mt_button);
+        var download = h('button.btn.btn-primary', [Icons.get('download'), Messages.download_mt_button]);
         var completed = false;
         var complete = function(h, err) {
             if (completed) { return; }
             completed = true;
             $(progress).find('svg').empty().append(Icons.get('checked-box'));
-            $(cancel).text(Messages.filePicker_close).off('click').click(function() {
+            $(cancel).empty().append(Icons.get('close'), Messages.filePicker_close).off('click').click(function() {
                 _onCancel.forEach(function(h) { h(); });
             });
             $(download).click(h).appendTo(actions);

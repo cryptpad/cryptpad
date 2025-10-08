@@ -134,7 +134,7 @@ define([
             return;
         }
 
-        var button = h('button.btn.btn-primary', Messages.mfa_setup_button);
+        var button = h('button.btn.btn-primary', [Icons.get('lock'), Messages.mfa_setup_button]);
         var $mfaSetupBtn = $(button);
         var pwInput;
         $content.append(h('div.cp-password-container', [

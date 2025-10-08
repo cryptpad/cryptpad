@@ -638,7 +638,7 @@ define([
                 placeholder: Messages.settings_changePasswordNewConfirm,
                 autocomplete: 'new-password',
             }, true),
-            h('button.btn.btn-primary', Messages.settings_changePasswordButton)
+            h('button.btn.btn-primary', [ Icons.get('password-change'), Messages.settings_changePasswordButton ])
         ]);
 
         $(form).appendTo($div);
