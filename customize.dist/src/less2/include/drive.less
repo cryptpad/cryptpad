@@ -412,11 +412,15 @@
         }
         .cp-app-drive-icon-expcol {
             display: inline-flex;
+            .lucide {
+                margin: 0;
+            }
             &:focus-visible {
                 outline: none;
                 svg {
                     outline: @variables_focus_style;
                     border-radius: @variables_radius_S;
+                    margin: 0;
                 }
             }
         }
@@ -463,7 +467,7 @@
                 position: relative;
                 &:before {
                     position: absolute;
-                    left: -5px;
+                    left: -10px;
                     top: -10px;
                     content: '';
                     display: block;
@@ -474,7 +478,7 @@
                 }
                 &:after {
                     position: absolute;
-                    left: -5px;
+                    left: -10px;
                     bottom: -7px;
                     content: '';
                     display: block;
