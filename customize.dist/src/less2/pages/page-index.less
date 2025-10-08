@@ -150,7 +150,7 @@
             margin-top: 40px;
         }
     }
-    @icons-size: 130px;
+    @icons-size: 120px;
     @icons-text-size: 24px;
     .bs-callout {
         display: flex;
@@ -174,7 +174,6 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            white-space: nowrap;
             text-overflow: ellipsis;
             font-size: 16px;
         }
@@ -190,6 +189,8 @@
         .pad-button-text {
             color: @cryptpad_text_col;
             padding: 5px;
+            white-space: wrap;
+            text-align: center;
         }
     }
     .cp-index-appitem {
