@@ -160,6 +160,7 @@ define([
         "calendar-add": "calendar-plus-2",
         "calendar-repeat": "calendar-sync",
         "calendar-reminder": "bell-ring",
+        "calendar-add-reminder": "bell-plus",
         "calendar-location": "map-pin",
         "calendar-description": "align-justify",
         "closing-date": "calendar-x",

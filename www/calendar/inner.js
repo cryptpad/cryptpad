@@ -2054,6 +2054,7 @@ APP.recurrenceRule = {
         return h('div.tui-full-calendar-popup-section.cp-calendar-add-notif', [
             listContainer,
             h('div.cp-calendar-notif-form', [
+                Icons.get('calendar-add-reminder'),
                 h('span.cp-notif-label', Messages.calendar_addNotification),
                 h('span.cp-calendar-notif-form-buttons', [
                     number,
@@ -2189,6 +2190,7 @@ APP.recurrenceRule = {
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-dropdown-arrow').append(Icons.get('chevron-down')).removeClass('tui-full-calendar-dropdown-arrow').addClass('tui-full-calendar-dropdown-arrow-custom');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel cp-calendar-close').empty();
+            $el.find('.tui-full-calendar-dropdown-arrow').append(Icons.get('chevron-down')).removeClass('tui-full-calendar-dropdown-arrow').removeClass('tui-full-calendar-icon').addClass('tui-full-calendar-dropdown-arrow-custom');
             $el.find('.tui-full-calendar-popup-close').append(Icons.get('close'));
             $el.find('.tui-full-calendar-section-allday').attr('tabindex', 0);
             $el.find('.cp-calendar-close').attr('tabindex',-1);
@@ -2223,9 +2225,19 @@ APP.recurrenceRule = {
                 let $dropdownButton = $el.find('.tui-full-calendar-dropdown-button');
                 let $dropdownMenu = $el.find('.tui-full-calendar-dropdown-menu');
 
+                let updateDropdownArrow = function(isOpen) {
+                    const $icon = $dropdownButton.find('.tui-full-calendar-dropdown-arrow-custom');
+                    if (isOpen) {
+                        $icon.empty().append(Icons.get('chevron-up'));
+                    } else {
+                        $icon.empty().append(Icons.get('chevron-down'));
+                    }
+                };
+
                 let toggleAriaExpanded = function (isOpen) {
                     $dropdownButton.attr('aria-expanded', isOpen ? 'true' : 'false');
                     isOpen ? $dropdownMenu.show() : $dropdownMenu.hide();
+                    updateDropdownArrow(isOpen);
                 };
 
                 let calendarDropdownNavigation = function (event) {
@@ -2274,21 +2286,12 @@ APP.recurrenceRule = {
                             break;
                     }
                 };
-                let updateDropdownArrow = function(isOpen) {
-                    const $icon = $dropdownButton.find('i.fa');
-                    if (isOpen) {
-                        $icon.removeClass('fa-caret-down').addClass('fa-caret-up');
-                    } else {
-                        $icon.removeClass('fa-caret-up').addClass('fa-caret-down');
-                    }
-                }
                 $dropdownButton.on('click keydown', function (event) {
                     if (event.type !== 'click' && event.key !== 'Enter' && event.key !== ' ' && event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
                         return;
                     }
                     let isOpen = $el.find('.tui-full-calendar-open').length > 0;
                     toggleAriaExpanded(!isOpen);
-                    updateDropdownArrow(!isOpen);
                     if (!isOpen && event.key !== 'ArrowUp') {
                         $dropdownMenu.find('li').first().focus();
                     }
@@ -2300,7 +2303,6 @@ APP.recurrenceRule = {
                 $(document).on('click', function (event) {
                     if (!$(event.target).closest($dropdownButton).length) {
                         toggleAriaExpanded(false);
-                        updateDropdownArrow(false);
                     }
                 });
 
