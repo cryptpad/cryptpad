@@ -176,7 +176,7 @@
                 display: inline-flex;
                 align-items: center;
                 svg {
-                    font-size: 14px;
+                    font-size: @variables_button-font-size;
                     margin: 0;
                 }
             }
@@ -256,6 +256,7 @@
                     overflow: hidden;
                     white-space: nowrap;
                     font: @colortheme_app-font;
+                    font-size: @variables_button-font-size;
                     padding: 0 10px;
                     &:focus{
                         outline: @cryptpad_color_brand solid 2px;
@@ -263,6 +264,9 @@
                 }
                 input { flex: 1; }
             }
+        }
+        .tui-full-calendar-content {
+            font-size: @variables_button-font-size;
         }
         .tui-full-calendar-section-date-dash {
             height: auto;
@@ -276,11 +280,6 @@
             background-color: @cp_dropdown-bg;
             color: @cp_dropdown-fg;
             border-radius: 0 0 @variables_radius @variables_radius;
-            li.tui-full-calendar-dropdown-menu-item {
-                span.tui-full-calendar-content {
-                    font-size: 14px;
-                }
-            }
             li:focus-visible {
                 outline: @cryptpad_color_brand solid 2px;
             }
@@ -327,7 +326,7 @@
                     width: 100%;
                     height: 80px;
                     font: @colortheme_app-font;
-                    font-size: 16px;
+                    font-size: @variables_button-font-size;
                     line-height: initial;
                     padding-left: 0.3rem;
                     pre {
@@ -353,7 +352,7 @@
                 padding-bottom: 17px;
             }
             .tui-full-calendar-popup-detail-date {
-                font-size: 14px;
+                font-size: @variables_button-font-size;
             }
             .tui-full-calendar-section-button {
                 margin-top: 10px;
@@ -379,6 +378,7 @@
 
         .cp-recurrence-label, .cp-notif-label {
             color: @cryptpad_text_col;
+            font-size: @variables_button-font-size;
             margin-right: 1rem;
             display: inline-flex;
             align-items: center;
@@ -390,6 +390,9 @@
             .cp-calendar-rec-translated-str {
                 margin-top: 0.5rem;
             }
+            button {
+                font-size: @variables_button-font-size;
+            }
         }
 
         .cp-calendar-add-notif {
@@ -397,7 +400,7 @@
             align-items: baseline !important;
             margin: 1rem 0;
             * {
-                font-size: @colortheme_app-font-size;
+                font-size: @variables_button-font-size;
                 font-weight: normal;
             }
             & > div {
@@ -477,6 +480,7 @@
                     display: inline-flex;
                     align-items: center;
                     gap: 0.5rem;
+                    font-size: @variables_button-font-size;
                     & > input {
                         height: 40px;
                     }
@@ -485,7 +489,7 @@
                             outline: @cryptpad_color_brand solid 2px;
                         }
                     }
-                    .btn:last-of-type {
+                    .btn-primary-outline {
                         svg {
                             margin: 0;
                         }

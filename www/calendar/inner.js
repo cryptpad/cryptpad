@@ -2054,6 +2054,7 @@ APP.recurrenceRule = {
         return h('div.tui-full-calendar-popup-section.cp-calendar-add-notif', [
             listContainer,
             h('div.cp-calendar-notif-form', [
+                Icons.get('calendar-add-reminder'),
                 h('span.cp-notif-label', Messages.calendar_addNotification),
                 h('span.cp-calendar-notif-form-buttons', [
                     number,
@@ -2188,7 +2189,7 @@ APP.recurrenceRule = {
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel cp-calendar-close').empty();
-            $el.find('.tui-full-calendar-dropdown-arrow').append(Icons.get('chevron-down')).removeClass('tui-full-calendar-dropdown-arrow').addClass('tui-full-calendar-dropdown-arrow-custom');
+            $el.find('.tui-full-calendar-dropdown-arrow').append(Icons.get('chevron-down')).removeClass('tui-full-calendar-dropdown-arrow').removeClass('tui-full-calendar-icon').addClass('tui-full-calendar-dropdown-arrow-custom');
             $el.find('.tui-full-calendar-popup-close').append(Icons.get('close'));
             $el.find('.tui-full-calendar-section-allday').attr('tabindex', 0);
             $el.find('.cp-calendar-close').attr('tabindex',-1);
