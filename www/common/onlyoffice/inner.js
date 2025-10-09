@@ -2811,9 +2811,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                             file: fileType
                         });
                     })
-                    .catch(() => {
+                    .catch((err) => {
                         // Checkpoint error: load the previous one
-                        deleteLastCp(i);
+                        if (err === "DECRYPTION_ERROR" || err === "E_METADATA_DECRYPTION") {
+                            deleteLastCp(i);
+                        }
                         i = i || 0;
                         loadDocument(noCp, useNewDefault, ++i, cb);
                     });
