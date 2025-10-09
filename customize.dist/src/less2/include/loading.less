@@ -86,6 +86,13 @@
         margin-bottom: 2em;
     }
 
+    &.cp-loading-empty {
+        &>:not(.cp-loading-empty) {
+            display: none !important;
+        }
+        justify-content: center;
+    }
+
     @media screen and (max-width: 500px) {
         font-size: 16px !important;
     }

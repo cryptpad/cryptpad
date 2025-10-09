@@ -1067,6 +1067,7 @@ define([
             var $loading = $('#' + LOADING);
             // Show the loading screen
             $loading.css('display', '');
+            $loading.toggleClass('cp-loading-empty', false);
             $loading.removeClass('cp-loading-hidden');
             $loading.removeClass('cp-loading-transparent');
             $loading.attr('aria-live','polite');
@@ -1122,9 +1123,10 @@ define([
     UI.emptyLoadingScreen = function (content) {
         UI.addLoadingScreen();
         var $loading = $('#' + LOADING);
+        $loading.toggleClass('cp-loading-empty', true);
         $loading.find('.cp-loading-container').hide();
         $loading.find('.cp-loading-logo').hide();
-        $loading.append(content);
+        $loading.append(h('div.cp-loading-empty', [content]));
     };
     UI.errorLoadingScreen = function (error, transparent, exitable, errorCls) {
         if (error === 'Error: XDR encoding failure') {
