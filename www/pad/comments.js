@@ -10,8 +10,9 @@ define([
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
-    '/customize/messages.js'
-], function($, Sortify, Util, Hash, h, UI, UIElements, Messages) {
+    '/customize/messages.js',
+    '/common/common-icons.js',
+], function($, Sortify, Util, Hash, h, UI, UIElements, Messages, Icons) {
     var Comments = {};
 
     /*
@@ -165,13 +166,13 @@ define([
         var cancel = h('button.btn.btn-cancel', {
             tabindex: 1
         }, [
-            h('i.fa.fa-times'),
+            Icons.get('close'),
             Messages.cancel
         ]);
         var submit = h('button.btn.btn-primary', {
             tabindex: 1
         }, [
-            h('i.fa.fa-paper-plane-o'),
+            Icons.get('send'),
             Messages.comments_submit
         ]);
 
@@ -260,7 +261,7 @@ define([
             deleteButton = h('button.btn.btn-danger', {
                 tabindex: 1
             }, [
-                h('i.fa.fa-times'),
+                Icons.get('trash-full'),
                 Messages.kanban_delete
             ]);
             $(deleteButton).click(function(e) {
@@ -314,11 +315,11 @@ define([
 
         // Remove everything
         Env.$container.html('');
-        var hideBtn = h('button.cp-pad-hide.btn.btn-default.fa.fa-chevron-right');
+        var hideBtn = h('button.cp-pad-hide.btn.btn-default', Icons.get('chevron-right'));
         var showBtn = h('button.cp-pad-show.btn.btn-default', {
             title: Messages.poll_comment_list
         }, [
-            h('i.fa.fa-comment')
+            Icons.get('comments')
         ]);
 
 
@@ -440,7 +441,7 @@ define([
                     edit = h('span.cp-comment-edit', {
                         tabindex: 1,
                         title: Messages.clickToEdit
-                    }, h('i.fa.fa-pencil'));
+                    }, Icons.get('edit'));
                     $(edit).click(function(e) {
                         Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
                         $div.addClass('cp-comment-active');
@@ -503,13 +504,13 @@ define([
             var reply = h('button.btn.btn-secondary', {
                 tabindex: 1
             }, [
-                h('i.fa.fa-reply'),
+                Icons.get('reply'),
                 Messages.comments_reply
             ]);
             var resolve = h('button.btn.btn-primary', {
                 tabindex: 1
             }, [
-                h('i.fa.fa-check'),
+                Icons.get('check'),
                 Messages.comments_resolve
             ]);
 
@@ -781,7 +782,7 @@ define([
 
         var button = h('button.btn.btn-secondary', {
             title: Messages.comments_comment
-        }, h('i.fa.fa-commenting'));
+        }, Icons.get('comment'));
         Env.bubble = {
             range: ranges[ranges.length-1],
             button: button

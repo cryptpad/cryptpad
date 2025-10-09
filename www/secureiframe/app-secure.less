@@ -28,22 +28,25 @@
     .usergrid_main();
     .forms_main();
 
-    .fa-shhare-alt:before { content: "\f1e0"; }
-
     #cp-filepicker-dialog {
         display: none;
+        .lucide {
+            width: @variables_icon_width;
+            height: @variables_icon_height;
+            margin-right: @variables_icon_margin;
+        }
         .cp-modal {
             border-radius: @variables_radius_L;
             .cp-filepicker-content {
                 display: flex;
                 flex-wrap: wrap;
-                justify-content: flex-start;
+                justify-content: center;
                 overflow-y: auto;
             }
 
             .cp-loading-spinner-container {
                 height: 100px;
-                .cp-spinner {
+                .cp-spinner-main {
                     border-color: @cryptpad_color_brand;
                     border-top-color: transparent;
                 }
@@ -59,6 +62,7 @@
                 border-radius: @variables_radius;
 
                 display: inline-flex;
+                justify-content: center;
                 flex-flow: column;
 
                 box-sizing: content-box;
@@ -93,13 +97,11 @@
                     margin-top: 5px;
                     max-width: 100%;
                 }
-                .fa, .cptools {
+                svg {
                     cursor: pointer;
-                    width: 100px;
-                    height: 100px;
-                    font-size: 70px;
-                    text-align: center;
-                    line-height: 100px;
+                    width: 4rem;
+                    height: 4rem;
+                    margin: 0;
                 }
             }
         }

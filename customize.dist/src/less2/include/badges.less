@@ -22,7 +22,7 @@
 }
 
 & {
-    i.cp-badge {
+    span.cp-badge {
         width: var(--badges-width);
         height: var(--badges-width);
         box-sizing: content-box;
@@ -43,7 +43,12 @@
                 background-color: @value;
             }
         });
-
+        svg {
+            margin: 0;
+        }
+        .lucide-star {
+            fill: currentcolor;
+        }
     }
 }
 

@@ -122,10 +122,13 @@
                 position: relative;
                 a {
                     position: absolute;
-                    top: 7px;
-                    margin-left: 30px;
+                    margin-left: 1em;
                     font-size: 16px;
                     color: inherit;
+
+                    svg {
+                        margin: 0;
+                    }
                 }
                 a:focus-visible {
                     border-radius: 50%;
@@ -196,6 +199,9 @@
                 &:hover {
                     text-decoration: none;
                 }
+                svg {
+                    margin: 0;
+                }
             }
             .cp-creation-slider {
                 display: none;
@@ -248,11 +254,6 @@
                     &.cp-selected {
                         background-color: @cp_creation-button-bg;
                         color: @cp_creation-button-fg;
-                    }
-                    .cp-creation-team-avatar {
-                        .fa {
-                            font-size: 25px;
-                        }
                     }
                     .cp-creation-team-name {
                         overflow: hidden;
@@ -315,10 +316,13 @@
                             flex: none;
                         }
                         .cp-password-reveal {
-                            margin:0.2rem;
+                            margin:0.5rem;
                             &:focus-visible {
                                 outline: @variables_focus_style;
                                 border-radius: @variables_radius;
+                            }
+                            svg {
+                                margin: 0;
                             }
                         }
                     }
@@ -341,9 +345,8 @@
                 width: 100%;
                 //flex: 1 0 auto;
                 flex-wrap: nowrap;
-                justify-content: space-between;
+                justify-content: center;
                 .cp-creation-template-more {
-                    font-size: 30px;
                     margin: 0 5px;
                     text-align: center;
                     background-color: transparent;
@@ -365,6 +368,11 @@
                     &:focus-visible {
                         outline: @variables_focus_style;
                         border-radius: @variables_radius;
+                    }
+                    svg {
+                        margin: 0;
+                        width: @variables_icon_width;
+                        height: @variables_icon_height;
                     }
                 }
             }
@@ -399,7 +407,7 @@
                     &.cp-creation-template-selected, &:hover {
                         background-color: @creation-bg-color-light;
                         background-color: var(--creation-bg-color-light);
-                        .fa, .cptools {
+                        svg {
                             color: @creation-color;
                             color: var(--creation-color);
                         }
@@ -430,11 +438,12 @@
                         line-height: 25px;
                         max-width: 100%;
                     }
-                    .fa, .cptools {
+                    svg {
                         color: @creation-bg-color;
                         color: var(--creation-bg-color);
                         cursor: pointer;
-                        font-size: 30px;
+                        height: 1.8rem;
+                        width: 1.8rem;
                         text-align: center;
                         margin-right: 10px;
                     }

@@ -66,6 +66,9 @@
 
     // contains user tools
     #cp-app-whiteboard-controls {
+        svg {
+            margin: 0;
+        }
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -78,29 +81,27 @@
 
         padding: 10px;
 
-        & > * + * {
-            margin: 0;
-            margin-left: 1em;
-        }
-
         #cp-app-whiteboard-width, #cp-app-whiteboard-opacity {
             .middle;
         }
 
         #cp-app-whiteboard-clear {
-            display: inline;
-            vertical-align: middle;
+            svg {
+                margin-right: @variables_icon_margin;
+            }
+            display: inline-flex;
+            align-items: center;
         }
         #cp-app-whiteboard-delete {
+            margin-left: 1em;
             min-width: 40px;
         }
-        .cp-whiteboard-type, .cp-whiteboard-history {
+        .cp-whiteboard-type, .cp-whiteboard-history, .cp-whiteboard-text {
             button {
+                margin: 0;
+                margin-left: 1em;
                 min-width: 40px;
                 text-align: center;
-                &:not(:first-child) {
-                    margin-left: -1px;
-                }
                 &.btn-primary:hover {
                     cursor: default;
                 }

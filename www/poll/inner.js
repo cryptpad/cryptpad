@@ -23,6 +23,7 @@ define([
     '/customize/messages.js',
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
+    '/common/common-icons.js',
     '/common/test.js',
 
     'cm/addon/display/placeholder',
@@ -32,7 +33,6 @@ define([
     '/components/file-saver/FileSaver.min.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/poll/app-poll.less',
 ], function (
     $,
@@ -54,7 +54,8 @@ define([
     h,
     Messages,
     SFCodeMirror,
-    CMeditor/*,
+    CMeditor,
+    Icons/*,
     Test*/)
 {
     var saveAs = window.saveAs;
@@ -198,15 +199,15 @@ define([
         var $input = $(table).find('input[disabled="disabled"][data-rt-id^="' + id + '"]')
             .removeAttr('disabled');
         $input.closest('td').addClass('cp-app-poll-table-editing');
-        $(table).find('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-unlock')
-            .removeClass('fa-lock').attr('title', Messages.poll_unlocked);
+        $(table).find('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').empty().append(Icons.get('unlock'))
+            .attr('title', Messages.poll_unlocked);
     };
     var disableColumn = function (id) {
         var $input = $('input[data-rt-id^="' + id + '"]')
             .attr('disabled', 'disabled');
         $input.closest('td').removeClass('cp-app-poll-table-editing');
-        $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-lock')
-            .removeClass('fa-unlock').attr('title', Messages.poll_locked);
+        $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').empty().append(Icons.get('lock'))
+            .attr('title', Messages.poll_locked);
     };
     var enableRow = APP.enableRow = function (id, table) {
         table = table || $('body');
@@ -462,7 +463,7 @@ define([
             .indexOf('cp-app-poll-table-bookmark') !== -1;
         var isLock = span.className && span.className.split(' ')
             .indexOf('cp-app-poll-table-lock') !== -1;
-        var isLocked = span.className && span.className.split(' ').indexOf('fa-lock') !== -1;
+        var isLocked = span.querySelector('[data-lucide="lock"]') !== null;
         if (type === 'row') {
             if (isRemove) {
                 UI.confirm(Messages.poll_removeOption, function (res) {
@@ -574,10 +575,10 @@ define([
         var msg = (p ? Messages.poll_edit : Messages.poll_publish_button);
         APP.$publishButton.find('.cp-toolbar-name').text(msg);
         if (p) {
-            APP.$publishButton.find('i').removeClass('fa-check').addClass('fa-pencil');
+            APP.$publishButton.find('.lucide').empty().append(Icons.get('edit'));
             return;
         }
-        APP.$publishButton.find('i').addClass('fa-check').removeClass('fa-pencil');
+        APP.$publishButton.find('.lucide').empty().append(Icons.get('check'));
     };
     var publish = APP.publish = function (bool) {
         if (!APP.readOnly) {
@@ -605,7 +606,7 @@ define([
             // disable all the things
             $('.cp-app-poll-realtime input, .cp-app-poll-realtime button, .cp-app-poll-upper button, .cp-app-poll-realtime textarea').attr('disabled', true);
             $('span.cp-app-poll-table-edit, span.cp-app-poll-table-remove').hide();
-            $('span.cp-app-poll-table-lock').addClass('fa-lock').removeClass('fa-unlock')
+            $('span.cp-app-poll-table-lock').empty().append(Icons.get('lock'))
                 .attr('title', Messages.poll_locked)
                 .css({'cursor': 'default'});
         } else {
@@ -700,12 +701,11 @@ define([
             // Actions
             if (!APP.readOnly && (!c.profile || c.profile === profile)) {
                 $('<button>', {
-                    'class': 'btn btn-secondary fa fa-times',
+                    'class': 'btn btn-secondary',
                     'title': Messages.poll_comment_remove,
                     'data-rt-id': k
-                }).appendTo($actions).click(function () { removeComment(k); });
+                }, Icons.get('close')).appendTo($actions).click(function () { removeComment(k); });
                 /*$('<button>', {
-                    'class': 'fa fa-pencil',
                     'title': 'TODO: edit comment',
                     'data-rt-id': c.uid
                 }).appendTo($actions).click(editComment);*/
@@ -1227,7 +1227,7 @@ define([
         var $publish = common.createButton('', true, {
             name: 'publish',
             text: Messages.poll_publish_button,
-            icon: 'fa-check',
+            icon: 'check',
             drawer: false,
             hiddenReadOnly: true
         }).click(function () { publish(!APP.proxy.published); }).appendTo(APP.toolbar.$bottomM);
@@ -1282,7 +1282,7 @@ define([
                             }, Messages.poll_commit),
                             h('button#cp-app-poll-create-option.btn.btn-default', {
                                 title: Messages.poll_create_option
-                            }, h('span.fa.fa-plus')),
+                            }, Icons.get('add')),
                         ]),
                         h('div#cp-app-poll-comments', [
                             h('h2#cp-app-poll-comments-add-title', Messages.poll_comment_add),

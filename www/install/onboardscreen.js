@@ -13,10 +13,9 @@ define([
     '/common/common-ui-elements.js',
     '/common/pad-types.js',
     '/components/nthen/index.js',
+    '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
-
 ], function(
     $,
     Sidebar,
@@ -27,7 +26,8 @@ define([
     Util,
     UIElements,
     PadTypes,
-    nThen
+    nThen,
+    Icons
 ) {
 
     let pages = [];
@@ -314,7 +314,7 @@ define([
             [
                 icon,
                 h('span.cp-app-name', name),
-                h('i.fa.fa-check.cp-on-enabled')
+                Icons.get('check', {'class': 'cp-on-enabled'})
             ]);
             let $app = $(appBlock).appendTo($grid);
             if (appsToDisable.includes(app)) {

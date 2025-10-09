@@ -88,7 +88,7 @@ define([
             text: Messages.toolbar_theme,
             options: [],
             common: framework._.sfCommon,
-            iconCls: 'cptools cptools-palette'
+            iconCls: 'color-palette'
         });
         framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
         framework._.toolbar.$bottomL.append($drawer);
@@ -99,7 +99,7 @@ define([
         var $showAuthorColorsButton = framework._.sfCommon.createButton('', true, {
             text: Messages.cba_hide,
             name: 'authormarks',
-            icon: 'fa-paint-brush',
+            icon: 'customize',
         }).hide();
         var $showAuthorColors = UIElements.getEntryFromButton($showAuthorColorsButton).hide();
         $showAuthorColors.find('span').addClass('cp-toolbar-name cp-toolbar-drawer-element');
@@ -421,7 +421,7 @@ define([
     var mkColorByAuthor = function (framework, markers) {
         var common = framework._.sfCommon;
         var $cbaButton = framework._.sfCommon.createButton(null, true, {
-            icon: 'fa-paint-brush',
+            icon: 'customize',
             text: Messages.cba_title,
             name: 'cba'
         }, function () {

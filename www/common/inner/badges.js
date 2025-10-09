@@ -5,14 +5,15 @@
 define([
     '/common/hyperscript.js',
     '/customize/messages.js',
-], function (h, Messages) {
+    '/common/common-icons.js'
+], function (h, Messages, Icons) {
     var Badges = {};
 
     const badges = {
-        admin: 'fa-star',
-        moderator: 'fa-life-ring',
-        premium: 'fa-ticket',
-        error: 'fa-exclamation-circle'
+        admin: 'badge-admin',
+        moderator: 'badge-moderator',
+        premium: 'badge-premium',
+        error: 'badge-error'
     };
 
     // safeBadges won't show an error when they aren't active anymore
@@ -22,13 +23,14 @@ define([
     Badges.render = id => {
         let icon = badges[id];
         if (!icon) { return; }
-        let cls = icon.indexOf('cptools') === 0 ? 'cptools '+icon : 'fa '+icon;
+        let cls = 'cp-badge';
         if (id === 'error') { cls += ' cp-badge-error'; }
-        return h('i', {
-            'data-badge': id,
-            'class': `cp-badge ${cls}`,
-            'title': Messages[`badges_${id}`] || id
-        });
+        let span = document.createElement('span');
+        span.setAttribute('class', cls);
+        span.setAttribute('title', Messages[`badges_${id}`] || id);
+        span.setAttribute('data-badge', id);
+        span.append(Icons.get(icon));
+        return span;
     };
 
     return Badges;

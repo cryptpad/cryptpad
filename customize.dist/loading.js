@@ -19,7 +19,7 @@ define([
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',
-                '<span class="cp-spinner"></span>',
+                '<span class="cp-spinner-main"></span>',
             '</div>',
             '<div class="cp-loading-progress" aria-hidden="true" role="presentation">',
                 '<div class="cp-loading-progress-list"></div>',
@@ -36,14 +36,14 @@ define([
         var c = types.indexOf(data.type);
         current = c;
         var getLi = function (i) {
-            var check = (i < c || (i === c && data.progress >= 100)) ? 'fa-check-square-o'
-                                                                      : 'fa-square-o';
+            var check = (i < c || (i === c && data.progress >= 100)) ? 'square-check'
+                                                                      : 'square';
             var percentStr = '';
             if (i === c) {
                 var p = Math.min(Math.floor(data.progress), 100);
                 percentStr = '<span class="percent">('+p+'%)</span>';
             }
-            return '<li><i class="fa '+check+'"></i><span>'+Messages['loading_state_'+i]+'</span>' + percentStr;
+            return '<li><i data-lucide="'+check+'"></i><span>'+Messages['loading_state_'+i]+'</span>' + percentStr;
         };
         var list = '<ul>';
         types.forEach(function (el, i) {

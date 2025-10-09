@@ -33,6 +33,8 @@ define([
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
 
+    '/common/common-icons.js',
+
     'cm/addon/display/autorefresh',
     'cm/addon/display/placeholder',
     'cm/mode/gfm/gfm',
@@ -41,7 +43,6 @@ define([
     'css!/lib/calendar/tui-calendar.min.css',
     'css!/components/codemirror/lib/codemirror.css',
     'css!/components/codemirror/addon/dialog/dialog.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'less!/calendar/app-calendar.less',
 ], function (
@@ -69,7 +70,8 @@ define([
     Share, Access, Properties,
     diffMk,
     SFCodeMirror,
-    CodeMirror
+    CodeMirror,
+    Icons
     )
 {
 
@@ -408,12 +410,14 @@ define([
                 str = `<a href="${l}" id="${uid}">${str}</a>`;
                 APP.nextLocationUid = uid;
             }
-            let location_icon = h('i.fa.fa-map-marker.tui-full-calendar-icon', { 'aria-hidden': true }, []);
+            let location_icon = Icons.get('calendar-location', { class: 'tui-full-calendar-icon'});
             return `<div class="event-location"> ${location_icon.outerHTML} ${str} </div>`;
         },
         popupDetailBody: function(schedule) {
             var str = schedule.body ? schedule.body.trim() : ""; //check also whitespace
             delete APP.eventBody;
+
+            let description_icon = Icons.get('calendar-description', { class: 'tui-full-calendar-icon'});
             if (!str) { return "";}
             let description_icon = h('i.fa.fa-align-left.tui-full-calendar-icon', { 'aria-hidden': true }, []);
             let description = diffMk.render(str, true);
@@ -536,10 +540,7 @@ define([
         if (!data.readOnly) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-pencil',
-                },
-                content: h('span', Messages.tag_edit),
+                content: h('span',[Icons.get('rename'), Messages.tag_edit]),
                 action: function (e) {
                     e.stopPropagation();
                     editCalendar(id);
@@ -550,10 +551,7 @@ define([
         if (APP.loggedIn && (data.teams.indexOf(1) === -1 || teamId === 0)) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-clone',
-                },
-                content: h('span', Messages.calendar_import),
+                content: h('span', [ Icons.get('copy'), Messages.calendar_import]),
                 action: function (e) {
                     e.stopPropagation();
                     importCalendar({
@@ -572,10 +570,7 @@ define([
         if (!data.restricted) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-shhare-alt',
-                },
-                content: h('span', Messages.shareButton),
+                content: h('span', [ Icons.get('share'), Messages.shareButton]),
                 action: function (e) {
                     e.stopPropagation();
                     var friends = common.getFriends();
@@ -602,10 +597,7 @@ define([
             });
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-lock',
-                },
-                content: h('span', Messages.accessButton),
+                content: h('span',[ Icons.get('lock'), Messages.accessButton]),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
@@ -634,10 +626,7 @@ define([
             if (!data.readOnly) {
                 options.push({
                     tag: 'a',
-                    attributes: {
-                        'class': 'fa fa-upload',
-                    },
-                    content: h('span', Messages.importButton),
+                    content: h('span', Icons.get('upload'), Messages.importButton),
                     action: function () {
                         UIElements.importContent('text/calendar', function (res) {
                             Export.import(res, id, function (err, json) {
@@ -660,10 +649,7 @@ define([
             }
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-download',
-                },
-                content: h('span', Messages.exportButton),
+                content: h('span', Icons.get('download'), Messages.exportButton),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
@@ -705,10 +691,7 @@ define([
 
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-info-circle',
-                },
-                content: h('span', Messages.propertiesButton),
+                content: h('span', Icons.get('properties'), Messages.propertiesButton),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
@@ -733,10 +716,7 @@ define([
         if (!cantRemove) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'fa fa-trash-o',
-                },
-                content: h('span', Messages.poll_remove),
+                content: h('span', Icons.get('trash-full'), Messages.poll_remove),
                 action: function (e) {
                     e.stopPropagation();
                     var cal = APP.calendars[id];
@@ -768,7 +748,8 @@ define([
             text: '',
             options: options, // Entries displayed in the menu
             common: common,
-            buttonCls: 'btn btn-default fa fa-gear small cp-calendar-actions',
+            buttonCls: 'btn btn-default small cp-calendar-actions',
+            iconCls: 'settings',
             buttonTitle: Messages.calendar_settings,
         };
         return UIElements.createDropdown(dropdownConfig)[0];
@@ -777,7 +758,7 @@ define([
         var data = APP.calendars[id];
         var edit;
         if (data.loading) {
-            edit = h('i.fa.fa-spinner.fa-spin', {'aria-hidden': 'true'});
+            edit = Icons.get('loading');
         } else {
             edit = makeEditDropdown(id, teamId);
         }
@@ -792,14 +773,17 @@ define([
             h('span.cp-calendar-icon', {
                 style: 'background-color: '+md.color+';'
             }, [
-                h('i.cp-calendar-active.fa.fa-calendar', {
+                Icons.get('calendar', {
+                    class: 'cp-calendar-active',
                     style: 'color: '+getContrast(md.color)+';'
                 }),
-                h('i.cp-calendar-inactive.fa.fa-calendar-o')
+                Icons.get('calendar-inactive',{
+                    class: 'cp-calendar-inactive'
+                })
             ]),
             h('span.cp-calendar-title', md.title),
-            data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted, 'aria-hidden': 'true'}) :
-                (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly, 'aria-hidden': 'true'}) : undefined),
+            data.restricted ? Icons.get('restricted', {title: Messages.fm_restricte}) :
+                (isReadOnly(id, teamId) ? Icons.get('read-only', {title: Messages.readonly}) : undefined),
             edit
         ]);
         var $calendar = $(calendar).click(function () {
@@ -858,7 +842,7 @@ define([
                 ]));
                 makeCalendarEntry(tempCalendars[0], 0);
                 var importTemp = h('button', [
-                    h('i.fa.fa-calendar-plus-o'),
+                    Icons.get('calendar-add'),
                     h('span', Messages.calendar_import_temp),
                     h('span')
                 ]);
@@ -904,7 +888,7 @@ define([
             // Add the new calendar button
             var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($contentContainer);
             var newButton = h('button', [
-                h('i.fa.fa-calendar-plus-o', {'aria-hidden': 'true'}),
+                Icons.get('calendar-add'),
                 h('span', Messages.calendar_new),
                 h('span')
             ]);
@@ -934,10 +918,10 @@ define([
                 // hide the calendars list and display a "show" button
                 if (APP.numberCalendars > 2 || totalCalendars > 2) {
                     var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
-                    var iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
+                    var iconClass = visible ? 'password-hide' : 'password-reveal';
                     var buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
                     var showCalendarsBtn = h('button', [
-                        h('i.fa.' + iconClass, {'aria-hidden': "true"}),
+                        Icons.get(iconClass),
                         h('span.cp-calendar-title', buttonText),
                         h('span')
                     ]);
@@ -945,10 +929,12 @@ define([
                     $(showCalendarsBtn).click(() => {
                         visible = !visible;
                         $contentContainer.toggle(visible);
-                        iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
+                        iconClass = visible ? 'password-hide' : 'password-reveal';
                         buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
-                        $(showCalendarsBtn).find('i').attr('class', 'fa ' + iconClass).attr('aria-hidden', "true");
-                        $(showCalendarsBtn).find('span').first().text(visible ? Messages.calendar_hide : Messages.calendar_show);
+                        $(showCalendarsBtn).empty();
+                        $(showCalendarsBtn).append(Icons.get(iconClass));
+                        $(showCalendarsBtn).append(h('span.cp-calendar-title', visible ? Messages.calendar_hide : Messages.calendar_show));
+                        $(showCalendarsBtn).append(h('span'));
                     }).appendTo($showContainer);
                 }
                 else {visible = true;}
@@ -1332,7 +1318,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         APP.toolbar.$bottomR.append($block);
         // New event button
         var newEventBtn = h('button.cp-calendar-newevent', [
-            h('i.fa.fa-plus', {'aria-hidden': 'true'}),
+            Icons.get('add'),
             h('span', Messages.calendar_newEvent)
         ]);
         $(newEventBtn).click(function (e) {
@@ -1340,10 +1326,10 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             cal.openCreationPopup({isAllDay:false});
         }).appendTo(APP.toolbar.$bottomL);
         // Change page
-        var goLeft = h('button.fa.fa-chevron-left',{'aria-label': Messages.goLeft});
-        var goRight = h('button.fa.fa-chevron-right', {'aria-label': Messages.goRight});
+        var goLeft = h('button',{'aria-label': Messages.goLeft}, [Icons.get('chevron-left')]);
+        var goRight = h('button', {'aria-label': Messages.goRight}, [Icons.get('chevron-right')]);
         var goToday = h('button', Messages.calendar_today);
-        var goDate = h('button.fa.fa-calendar',{'aria-label': Messages.date});
+        var goDate = h('button',{'aria-label': Messages.date}, Icons.get('calendar'));
         $(goLeft).click(function () {
             cal.prev();
             updateDateRange();
@@ -1378,7 +1364,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         APP.toolbar.$bottomL.append(h('div.cp-calendar-browse', [
             goLeft, goToday, goRight, goDate
         ]));
-
     };
 
 
@@ -1951,7 +1936,7 @@ APP.recurrenceRule = {
 
         return h('div.cp-calendar-recurrence-container', [
             h('span.cp-recurrence-label', [
-                h('i.fa.fa-repeat', {'aria-hidden':'true'}),
+                Icons.get('calendar-repeat'),
                 Messages.calendar_rec]),
             $block[0],
             translated
@@ -2020,11 +2005,11 @@ APP.recurrenceRule = {
             $number.attr('max', max);
             if ($number.val() > max) { $number.val(max); }
         });
-        var addNotif = h('button.btn.btn-primary-outline.fa.fa-plus');
+        var addNotif = h('button.btn.btn-primary-outline', Icons.get('add'));
         var $list = $(h('div.cp-calendar-notif-list'));
         var listContainer = h('div.cp-calendar-notif-list-container', [
             h('span.cp-notif-label', [
-                h('i.fa.fa-bell', {'aria-hidden':'true'}),
+                Icons.get('calendar-reminder'),
                 Messages.calendar_notifications
             ]),
             $list[0],
@@ -2033,8 +2018,9 @@ APP.recurrenceRule = {
 
         var addNotification = function (unit, value) {
             var unitValue = (unit === "minutes") ? 1 : (unit === "hours" ? 60 : (60*24));
-            var del = h('button.btn.btn-danger-outline.small.fa.fa-times',
-                {'title': Messages.calendar_removeNotification}
+            var del = h('button.btn.btn-danger-outline.small',
+                {'title': Messages.calendar_removeNotification},
+                Icons.get('close')
             );
             var minutes = value * unitValue;
             if ($list.find('[data-minutes="'+minutes+'"]').length) { return; }
@@ -2200,11 +2186,11 @@ APP.recurrenceRule = {
         // Customize creation/update popup
         var onCalendarPopup = function (el) {
             var $el = $(el);
-            $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(h('i.fa.fa-floppy-o', {'aria-hidden': 'true'}));
+            $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(Icons.get('save'));
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
-            $el.find('.tui-full-calendar-dropdown-arrow').append(h('i.fa.fa-caret-down', {'aria-hidden': 'true'})).removeClass('tui-full-calendar-dropdown-arrow').addClass('tui-full-calendar-dropdown-arrow-custom');
-            $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
+            $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel cp-calendar-close').empty();
+            $el.find('.tui-full-calendar-popup-close').append(Icons.get('close'));
             $el.find('.tui-full-calendar-section-allday').attr('tabindex', 0);
             $el.find('.cp-calendar-close').attr('tabindex',-1);
             $el.find('.tui-full-calendar-section-allday').keydown(function (e) {
@@ -2377,11 +2363,12 @@ APP.recurrenceRule = {
             $el.attr('aria-describedby', 'tui-full-calendar-section-detail');
 
             $el.find('.tui-full-calendar-popup-edit').addClass('btn btn-primary');
-            $el.find('.tui-full-calendar-popup-edit .tui-full-calendar-icon').addClass('fa fa-pencil').removeClass('tui-full-calendar-icon');
+            $el.find('.tui-full-calendar-popup-edit .tui-full-calendar-icon').append(Icons.get('edit'));
+            $el.find('.tui-full-calendar-popup-edit .tui-full-calendar-icon').removeClass('tui-full-calendar-icon');
             $el.find('.tui-full-calendar-content').removeClass('tui-full-calendar-content');
 
             var delButton = h('button.btn.btn-danger', [
-                h('i.fa.fa-trash', {'aria-hidden': 'true'}),
+                Icons.get('trash-full'),
                 h('span', Messages.kanban_delete)
             ]);
             var $del = $el.find('.tui-full-calendar-popup-delete').hide();
@@ -2431,7 +2418,7 @@ APP.recurrenceRule = {
 
             // This is a recurring event, add button to stop recurrence now
             var $b = $(h('button.btn.btn-default', [
-                h('i.fa.fa-times', {'aria-hidden': 'true'}),
+                Icons.get('close'),
                 h('span', Messages.calendar_rec_stop)
             ])).insertBefore($section);
             UI.confirmButton($b[0], { classes: 'btn-default' }, function () {

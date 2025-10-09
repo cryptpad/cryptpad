@@ -12,9 +12,6 @@
 @import (reference) "../../customize/src/less2/include/colortheme-all.less";
 @import (reference) '../../customize/src/less2/include/export.less';
 
-.fa-spinner,.fa-check{
-    margin-left:0.5rem;
-}
 
 &.cp-app-team {
     .framework_min_main(
@@ -48,6 +45,16 @@
         }
     }
 
+    .cp-spinner, .cp-ok {
+        svg {
+            margin: @variables_icon_margin;
+        }
+    }
+    .cp-spinner {
+        svg {
+            animation: spin 10s linear infinite;
+        }
+    }
     #cp-sidebarlayout-container {
         @media screen and (max-width: 900px) {
             .cp-app-drive-toolbar-leftside {
@@ -84,7 +91,7 @@
                         border: 0;
                         margin-right: 2px;
                     }
-                    .fa-paper-plane{
+                    svg {
                         border-radius: @variables_radius;
                     }
                 }
@@ -212,8 +219,8 @@
                     display: flex;
                     align-items: center;
                     flex-flow: column;
-                    i {
-                        font-size: 40px;
+                    svg {
+                        margin: 0;
                     }
                 }
                 .cp-team-list-open {
@@ -241,6 +248,9 @@
                 margin-bottom: 20px;
                 button:not(:last-child) {
                     margin-right: 5px;
+                }
+                .btn {
+                    margin-bottom: 5px;
                 }
             }
             .cp-team-roster-member {
@@ -276,13 +286,18 @@
                     .tools_unselectable();
                 }
                 .cp-team-member-actions {
-                    .fa {
+                    span{
+                        border-radius: @variables_radius;
+                        cursor: pointer;
+                        &:focus-visible {
+                            outline: @variables_focus_style;
+                        }
+                    }
+                    svg {
                         height: 25px;
                         width: 25px;
-                        display: inline-flex;
-                        justify-content: center;
-                        align-items: center;
-                        cursor: pointer;
+                        border-radius: @variables_radius;
+                        margin: 0;
                         &:hover {
                             background-color: @roster-bg-color-hover2;
                         }
@@ -317,9 +332,6 @@
             .cp-teams-invite-password {
                 margin-bottom: 20px;
             }
-            i.fa.fa-spin.fa-spinner {
-                margin-right: 10px;
-            }
         }
         div#cp-sidebarlayout-rightside .cp-team-offline {
             // Compensate #cp-sidebarlayout-rightside padding
@@ -335,10 +347,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        .fa {
-            font-size: 30px;
-            margin-right: 10px;
-        }
     }
 
     .cp-teams-invite-uses {

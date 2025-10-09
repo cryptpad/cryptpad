@@ -26,10 +26,10 @@ define([
 
     '/common/onlyoffice/current-version.js',
     '/common/onlyoffice/broken-formats.js',
+    '/common/common-icons.js',
     '/components/file-saver/FileSaver.min.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/common/onlyoffice/app-oo.less',
 ], function (
     $,
@@ -53,7 +53,8 @@ define([
     EmptySlide,
     Channel,
     OOCurrentVersion,
-    BrokenFormats)
+    BrokenFormats,
+    Icons)
 {
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
@@ -403,7 +404,7 @@ define([
         // Add a lock
         var isLockedModal = {
             content: UI.dialog.customModal(h('div.cp-oo-x2tXls', [
-                h('span.fa.fa-spin.fa-spinner'),
+                Icons.get('loading'),
                 h('span', Messages.oo_isLocked)
             ]))
         };
@@ -745,7 +746,7 @@ define([
         var refreshReadOnly = function () {
             var cancel = h('button.cp-corner-cancel', Messages.cancel);
             var reload = h('button.cp-corner-primary', [
-                h('i.fa.fa-refresh'),
+                Icons.get('refresh'),
                 Messages.oo_refresh
             ]);
 
@@ -1958,7 +1959,7 @@ define([
             var onMigrateRdy = Util.mkEvent();
             onMigrateRdy.reg(function () {
                 var div = h('div.cp-oo-x2tXls', [
-                    h('span.fa.fa-spin.fa-spinner'),
+                    Icons.get('loading'),
                     h('span', Messages.oo_sheetMigration_loading)
                 ]);
                 APP.migrateModal = UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
@@ -2648,7 +2649,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
 
                 var content = h('div.cp-oo-x2tXls', [
-                    h('span.fa.fa-spin.fa-spinner'),
+                    Icons.get('loading'),
                     h('span', Messages.oo_exportInProgress)
                 ]);
                 UI.openCustomModal(UI.dialog.customModal(content, {buttons: []}));
@@ -2780,7 +2781,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 return void UI.alert(Messages.oo_invalidFormat);
             }
             var div = h('div.cp-oo-x2tXls', [
-                h('span.fa.fa-spin.fa-spinner'),
+                Icons.get('loading'),
                 h('span', Messages.oo_importInProgress)
             ]);
             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
@@ -3100,7 +3101,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                 var $dlMedias = common.createButton('', true, {
                     name: 'dlmedias',
-                    icon: 'fa-download',
+                    icon: 'download',
                 }, function () {
                     require(['/components/jszip/dist/jszip.min.js'], function (JsZip) {
                         var zip = new JsZip();
@@ -3192,7 +3193,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                 var $historyButton = common.createButton('', true, {
                     name: 'history',
-                    icon: 'fa-history',
+                    icon: 'history',
                     text: Messages.historyText,
                     tippy: Messages.historyButton
                 });
@@ -3265,7 +3266,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             if (window.CP_DEV_MODE || DISPLAY_RESTORE_BUTTON) {
                 common.createButton('', true, {
                     name: 'delete',
-                    icon: 'fa-trash',
+                    icon: 'trash-full',
                     hiddenReadOnly: true
                 }).click(function () {
                     if (initializing) { return void console.error('initializing'); }
@@ -3273,7 +3274,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }).attr('title', 'Delete last checkpoint').appendTo(toolbar.$bottomM);
                 common.createButton('', true, {
                     name: 'restore',
-                    icon: 'fa-history',
+                    icon: 'history',
                     hiddenReadOnly: true
                 }).click(function () {
                     if (initializing) { return void console.error('initializing'); }

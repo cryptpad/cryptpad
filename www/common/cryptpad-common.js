@@ -17,7 +17,7 @@ define([
     '/common/events-channel.js',
     '/common/outer/login-block.js',
     '/common/common-credential.js',
-    '/customize/login.js',
+    '/common/common-login.js',
     '/common/store-interface.js',
     '/common/pad-types.js',
 
@@ -427,6 +427,14 @@ define([
         */
         postMessage("GET_DRIVE", {
             teamId: teamId,
+        }, function (obj) {
+            cb(obj);
+        });
+    };
+    common.getAccountObject = function (teamId, cb) {
+        postMessage("GET", {
+            teamId: teamId,
+            key: []
         }, function (obj) {
             cb(obj);
         });

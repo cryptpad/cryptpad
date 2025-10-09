@@ -293,8 +293,3 @@ media-tag button.btn b {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-media-tag button.btn .fa {
-    display: inline;
-    margin-right: 5px;
-    flex: 0;
-}

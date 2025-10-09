@@ -20,7 +20,6 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
     "chainpad-netflux",
     "ckeditor",
     "codemirror",
-    "components-font-awesome",
     "croppie",
     "file-saver",
     "hyper-json",

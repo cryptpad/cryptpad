@@ -61,7 +61,6 @@ body.cp-app-pad {
             height: 28px;
             line-height: 28px;
             padding: 0px 6px;
-            .fa { margin: 0 !important; }
         }
         &.hidden {
             width: auto !important;
@@ -238,6 +237,9 @@ body.cp-app-pad {
         }
     }
     #cke_1_contents {
+        svg {
+            margin: 0;
+        }
         flex: 1;
         display: flex;
         height: auto !important;
@@ -252,9 +254,6 @@ body.cp-app-pad {
         div.cp-comment-bubble {
             position: relative;
             button {
-                .fa {
-                    margin: 0 !important;
-                }
                 position: absolute;
                 padding: 0 4px;
                 background: @cp_toolbar-bg;
@@ -311,6 +310,9 @@ body.cp-app-pad {
                 margin-right: 20px;
             }
             margin-bottom: 20px;
+            svg {
+                margin: 0;
+            }
         }
         .cp-app-prop-content {
             margin-bottom: 0;
