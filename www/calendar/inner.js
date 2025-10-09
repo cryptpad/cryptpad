@@ -2224,6 +2224,15 @@ APP.recurrenceRule = {
                 let $dropdownButton = $el.find('.tui-full-calendar-dropdown-button');
                 let $dropdownMenu = $el.find('.tui-full-calendar-dropdown-menu');
 
+                let updateDropdownArrow = function(isOpen) {
+                    const $icon = $dropdownButton.find('.tui-full-calendar-dropdown-arrow-custom');
+                    if (isOpen) {
+                        $icon.empty().append(Icons.get('chevron-up'));
+                    } else {
+                        $icon.empty().append(Icons.get('chevron-down'));
+                    }
+                };
+
                 let toggleAriaExpanded = function (isOpen) {
                     $dropdownButton.attr('aria-expanded', isOpen ? 'true' : 'false');
                     isOpen ? $dropdownMenu.show() : $dropdownMenu.hide();
@@ -2274,14 +2283,6 @@ APP.recurrenceRule = {
                             toggleAriaExpanded(false);
                             $dropdownButton.focus();
                             break;
-                    }
-                };
-                let updateDropdownArrow = function(isOpen) {
-                    const $icon = $dropdownButton.find('.tui-full-calendar-dropdown-arrow-custom');
-                    if (isOpen) {
-                        $icon.empty().append(Icons.get('chevron-up'));
-                    } else {
-                        $icon.empty().append(Icons.get('chevron-down'));
                     }
                 };
                 $dropdownButton.on('click keydown', function (event) {
