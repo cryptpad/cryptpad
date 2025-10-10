@@ -207,18 +207,28 @@ define([
 
             var msgLength = Object.keys(hashes).length   
 
-            if (cpIndex >= cps && msgIndex === 0) {
+            if ((id === -1 || id === 0) && ooMessages[id].length+1 === Math.abs(msgIndex)) {
                 $fastPrev.prop('disabled', 'disabled');
             }
-            if (id === 0 && msgIndex === 0) {
+            if ((id === -1 || id === 0) && ooMessages[id].length+1 === Math.abs(msgIndex)) {
                 $prev.prop('disabled', 'disabled');
             }
             var msgs = ooMessages[id]?.length;
 
-            if ((id === msgLength) && msgIndex === -1 || (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev) {
+            if ((id === msgLength) && msgIndex === -1 || (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev ||
+            parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]) === id && parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length) {
                 $fastNext.prop('disabled', 'disabled');
-            }        
-            if ((id === msgLength) && msgIndex === -1 || id === -1 && msgIndex === -1 || (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev) {
+            } 
+            console.log(hashes, ooMessages, id, msgIndex)     
+            // console.log(Object.keys(hashes)[Object.keys(hashes).length - 1] === Object.keys(ooMessages)[Object.keys(ooMessages).length - 1] === id && !ooMessages[id].length, 
+            // Object.keys(hashes)[Object.keys(hashes).length - 1] === Object.keys(ooMessages)[Object.keys(ooMessages).length - 1], id, typeof id, 
+            // typeof parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]), 
+            // parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]) === id && parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id, 
+            // ooMessages[id])  
+
+            console.log(("next update", id === msgLength) && msgIndex === -1, id === -1 && msgIndex === -1, (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev || Object.keys(hashes)[Object.keys(hashes).length - 1] === Object.keys(ooMessages)[Object.keys(ooMessages).length - 1] === id && !ooMessages[id].length)       
+            if ((id === msgLength) && msgIndex === -1 || id === -1 && msgIndex === -1 || (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev ||
+            parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]) === id && parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length) {
                 $next.prop('disabled', 'disabled');
             }
             
@@ -232,6 +242,8 @@ define([
         }
 
         var next = async function () {
+            console.log("next1", hashes, id, ooMessages, msgIndex)
+
             msgIndex++;
             msgs = ooMessages[id];
             if (Object.keys(hashes).length) {
@@ -257,17 +269,21 @@ define([
                         loadingFalse();
                     })
                     return;
-                }
+                } 
             } 
             var patch = msgs[msgs.length + msgIndex];
+            console.log("next0.5", msgIndex, msgs, msgs.length + msgIndex)
             config.onPatch(patch);
             showVersion(false, msgs.indexOf(patch)+1);
             loadingFalse();
+                            console.log("next2", hashes, id, ooMessages)
+
         };
 
         var msgs;
 
         var prev = function () {
+                            console.log("prev1", hashes, id, ooMessages)
             msgs = ooMessages[id];
             if (!Object.keys(hashes).length) {
                 var cp = {};
@@ -293,6 +309,8 @@ define([
             showVersion(false, queue.length);
             msgIndex--;
             loadingFalse();
+                            console.log("prev2", hashes, id, ooMessages)
+
         };
 
 
@@ -408,17 +426,36 @@ define([
             // Go to previous checkpoint
             $fastNext.click(function () {
                 if (loading) { return; }
+                console.log("fastnext1", hashes, id, ooMessages)
                 loading = true;
-                if (id < Object.keys(hashes).length) {
-                    id++;
-                    var cp = hashes[id];
-                    config.loadCp(cp);
+                if (id < Object.keys(hashes).length && id !== -1) {
+                    if (id === -1) {
+                        id = 1;
+                    } else {
+                        id++;
+                    }
+                    loadMoreOOHistory().then(() => {
+                        var cp = hashes[id];
+                        loadMoreOOHistory()
+                        config.loadCp(cp);
+                        console.log("fastnext0.5", hashes, id, ooMessages, msgIndex)
+                        setTimeout(function () {
+                            update();
+                            loading = false;
+                        }, 100);
+                        return;
+
+
+                    });
+                    
                 } else {
                     var cp = hashes[id];
                     var msgs = ooMessages[id]
                     msgIndex = -1
                     config.onPatchBack(cp, msgs);
                 }
+                console.log("fastnext2", hashes, id, ooMessages, msgIndex)
+
                 
                 
                 setTimeout(function () {
@@ -428,20 +465,24 @@ define([
             });
             // Go to next checkpoint
             $fastPrev.click(function () {
+                                console.log("fastprev1", hashes, id, ooMessages, msgIndex)
+
                 if (loading) { return; }
                 loading = true;
-                if (!ooMessages[id].length) {
+                if (!ooMessages[id].length || ooMessages[id].length+1 === Math.abs(msgIndex)) {
                     id--;
                 } 
                 var cp = hashes[id];
                 config.loadCp(cp);
-                update(true);
                 loadMoreOOHistory().then(() => {
                     var msgs = ooMessages[id];
                     msgIndex = -msgs.length-1;
+                    update(true);
+
                 });
                 loading = false;
-                
+                                console.log("fastprev2", hashes, id, ooMessages)
+
             });
             onKeyDown = function (e) {
                 var p = function () { e.preventDefault(); };
