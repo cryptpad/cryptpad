@@ -519,6 +519,12 @@ MessengerUI, Messages, Pages, PadTypes) {
         toolbar.$bottomR.prepend($button);
         $down.hide();
         $(notif).hide();
+
+        let focus;
+        $button.on('mousedown', function () {
+            focus = document.activeElement;
+        });
+
         $button.click(function () {
             toolbar.$top.toggleClass('toolbar-hidden');
             var hidden = toolbar.$top.hasClass('toolbar-hidden');
@@ -531,6 +537,15 @@ MessengerUI, Messages, Pages, PadTypes) {
                 $down.hide();
                 $(notif).hide();
             }
+
+            // Fix focus
+            $button.focus();
+            if (focus.nodeName === "IFRAME") {
+                $(focus.contentWindow).focus();
+            } else {
+                $(focus).focus();
+            }
+
         });
     };
 
