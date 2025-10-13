@@ -246,12 +246,17 @@
                     border-radius: @variables_radius 0px 0px @variables_radius;
                     background-color: @cp_form-bg1;
                     color: @cryptpad_text_col;
+                    display: inline-flex;
+                    align-items: center;
                     &:focus-visible {
                         outline: @variables_focus_style;
                     }
                     &.cp-toggle-active {
                         color: @cp_form-bg1;
                         background-color: @cryptpad_text_col;
+                    }
+                    svg {
+                        margin: 0;
                     }
                 }
                 #cp-toggle-drag-on {
