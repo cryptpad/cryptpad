@@ -105,6 +105,7 @@ define([
         var oldLocks = {};
         var myUniqueOOId;
         var myOOId;
+        let myIndex;
         var cpNfInner;
         let integrationChannel;
 
@@ -203,7 +204,9 @@ define([
             }
 
             const myId = getId();
-            const myIndex = getNextUserIndex();
+            if (!myIndex) {
+                myIndex = getNextUserIndex();
+            }
 
             ids[myId] = {
                 ooid: myOOId,
