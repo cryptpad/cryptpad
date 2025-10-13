@@ -14,9 +14,9 @@ define([
     '/common/hyperscript.js',
     'json.sortify',
     '/customize/messages.js',
+    '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/secureiframe/app-secure.less',
 ], function (
     $,
@@ -29,7 +29,8 @@ define([
     Hash,
     h,
     Sortify,
-    Messages)
+    Messages
+)
 {
     var APP = window.APP = {};
 
@@ -209,7 +210,7 @@ define([
             }
 
             var $container = $(h('span.cp-filepicker-content', [
-                h('div.cp-loading-spinner-container', h('span.cp-spinner'))
+                h('div.cp-loading-spinner-container', h('span.cp-spinner-main'))
             ])).appendTo($block);
 
             // Update the files list when needed

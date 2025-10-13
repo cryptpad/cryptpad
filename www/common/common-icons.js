@@ -1,0 +1,298 @@
+define([
+    '/common/hyperscript.js',
+    '/customize/lucide.js'
+], function (h, Lucide) {
+    const Icons = {};
+
+    const map = {
+        // Drive
+        "homepage": "house",
+        "drive": "hard-drive",
+        "search": "search",
+        "drive-shared-folder": "folder-users",
+        "drive-upload-file": "file-up",
+        "drive-upload-folder": "folder-up",
+        "file": "file",
+        "drive-recent": "clock",
+        "drive-password-document": "file-lock",
+        "folder": "folder",
+        "folder-open": "folder-open",
+        "folder-nocolor": "folder-minus",
+        "folder-check": "folder-check",
+        "file-template": "file-cog",
+        "file-pad": "file-text",
+        "grid": "layout-grid",
+        "list": "list",
+        "document-owner": "id-card-lanyard",
+        "burn-drive": "ban",
+        // Teams
+        "teams": "users-round",
+        "promote": "chevrons-up",
+        "downgrade": "chevrons-down",
+        // CryptPad apps
+        // Pad
+        "pad": "file-text",
+        "pad-settings": "settings",
+        "expand-pad": "maximize-2",
+        "shrink-pad": "minimize-2",
+        "slide": "cp-file-slide",
+        "poll": "file-chart-column-increasing",
+        // Form
+        "form": "file-chart-column-increasing",
+        "form-responses": "chart-no-axes-combined",
+        "form-text": "minus",
+        "form-paragraph": "text",
+        "form-grid-radio": "cp-form-grid-radio",
+        "form-grid-check": "cp-form-grid-check",
+        "form-list-check": "list-checks",
+        "form-list-radio": "list",
+        "form-list-ordered": "list-ordered",
+        "form-poll": "cp-form-poll",
+        "form-page-break": "cp-form-page-break",
+        "form-conditional": "cp-form-conditional",
+        "form-poll-maybe": "cp-form-poll-maybe",
+        "form-poll-switch": "arrow-right-left",
+        // Whiteboard
+        "whiteboard": "cp-file-whiteboard",
+        // Diagram
+        "diagram": "cp-file-diagram",
+        // Code
+        "code-pad": "file-code",
+        "todo": "file",
+        // Kanban
+        "kanban": "cp-file-kanban",
+        "kanban-tags": "tags",
+        "kanban-minimize": "minus",
+        "kanban-maximize": "menu",
+        "touch-mode": "hand",
+        "kanban-add-top": "cp-kanban-add-top",
+        "kanban-add-bottom": "cp-kanban-add-bottom",
+        "delete-token": "x",
+        // Doc
+        "doc": "cp-file-oo-document",
+        // Sheet
+        "sheet": "cp-file-oo-sheet",
+        // Presentation
+        "presentation": "cp-file-oo-presentation",
+        // Actions
+        "add": "plus",
+        "check": "check",
+        "filter": "list-filter-plus",
+        "share": "share-2",
+        "download": "hard-drive-download",
+        "destroy": "shredder",
+        "donate": "hand-coins",
+        "send": "send",
+        "cloud-upload": "cloud-upload",
+        "print": "printer",
+        "play": "circle-play",
+        "grip-move": "grip-horizontal",
+        "grip-move-vertical": "grip-vertical",
+        "refresh": "refresh-ccw",
+        "select": "move",
+        // General
+        "trash-empty": "trash",
+        "trash-full": "trash-2",
+        "properties": "info",
+        "documentation": "book-open-text",
+        "language": "languages",
+        "link": "link",
+        "external-link": "external-link",
+        "chevron-left": "chevron-left",
+        "chevron-right": "chevron-right",
+        "chevron-down": "chevron-down",
+        "chevron-up": "chevron-up",
+        "copy": "copy",
+        "close": "x",
+        "square": "square",
+        "timer": "hourglass",
+        "map-pin": "map-pin",
+        "pin": "pin",
+        "checked-box": "square-check",
+        "unchecked-box": "square",
+        "table": "table",
+        "inbox": "inbox",
+        "server": "server",
+        "minus": "minus",
+        "alert": "triangle-alert",
+        "sort-amount-desc": "arrow-down-wide-narrow",
+        "announcement": "megaphone",
+        "reply": "reply",
+        "comment": "message-square-text",
+        "file-image": "file-image",
+        "snapshot": "camera",
+        "certificate": "shield-check",
+        "circle-question": "circle-question-mark",
+        "list-ol": "list-ordered",
+        "list-todo": "list-todo",
+        "ellipsis-vertical": "ellipsis-vertical",
+        "ellipsis-horizontal": 'ellipsis',
+        "toolbar-insert": "image-plus",
+        "features": "info",
+        "report": "clipboard-plus",
+        "limit": "settings-2",
+        "duration": "timer-reset",
+        "checkup": "square-activity",
+        // Login + Register
+        "login": "log-in",
+        "logout": "log-out",
+        "logout-everywhere": "unplug",
+        "register": "user-round-plus",
+        // User
+        "user-profile": "circle-user-round",
+        "users": "users-round",
+        "secret-user": "venetian-mask",
+        "user-account": "user",
+        // History
+        "history": "history",
+        "history-prev": 'arrow-left',
+        "history-next": "arrow-right",
+        "history-fast-next": "arrow-right-to-line",
+        "history-fast-prev": "arrow-left-to-line",
+        "history-timeline-position": "chevron-down",
+        "history-restore": "archive-restore",
+        "remove-history": "eraser",
+        "history-moderation": "archive",
+        "archive": "archive",
+        // Calendar
+        "calendar": "calendar-days",
+        "calendar-inactive": "calendar",
+        "calendar-add": "calendar-plus-2",
+        "calendar-repeat": "calendar-sync",
+        "calendar-reminder": "bell-ring",
+        "calendar-add-reminder": "bell-plus",
+        "calendar-location": "map-pin",
+        "calendar-description": "align-justify",
+        "closing-date": "calendar-x",
+        // Contacts
+        "contacts": "contact-round",
+        "contacts-book": "book-user",
+        "unfriend": "user-round-x",
+        "add-friend": "user-round-plus",
+        "sort-asc": "chevron-down",
+        "sort-desc": "chevron-up",
+        "access": "lock-open",
+        "rename": "pen-line",
+        "color-palette": "palette",
+        "customize": "brush",
+        "upload": "hard-drive-upload",
+        "read-only": "pen-off",
+        "preview": "eye",
+        "tag": "hash",
+        "password-reveal": "eye",
+        "password-hide": "eye-closed",
+        "password-change": "rotate-ccw-key",
+        "arrow-left": "arrow-left",
+        "arrow-up": "arrow-up",
+        "code": "code-xml",
+        "qr-code": "qr-code",
+        "lock": "lock",
+        "unlocked": "lock-open",
+        "help": "info",
+        "expand-menu": "chevron-right",
+        "location": "navigation",
+        "collapse": "square-minus",
+        "expand": "square-plus",
+        "expire": "clock-alert",
+        "restricted": "ban",
+        "renamed": "flag",
+        "restore": "rotate-cw",
+        "all": "menu",
+        "chat": "message-circle-more",
+        "comments": "message-square-more",
+        "mail": "mail",
+        "upload-avatar": "image-up",
+        "edit": "pencil",
+        "save": "save",
+        "loading": "loader",
+        "notification" : "bell",
+        "notifications" : "notebook-text",
+        "mute": "bell-off",
+        "cursor": "text-cursor",
+        "import": "upload",
+        "import-template": "file-up",
+        "export": "download",
+        // Settings + Admin
+        "settings": "settings",
+        "apps-settings": "wrench",
+        "administration": "monitor-cog",
+        "support": "life-buoy",
+        "moderation": "ambulance",
+        "broadcast": "radio",
+        "support-ticket": "mail",
+        "user-directory": "id-card",
+        "database": "database",
+        "stats": "chart-line",
+        "performance": "heart-pulse",
+        "network": "network",
+        "survey": "graduation-cap",
+        // Markdown toolbar
+        "undo": "undo",
+        "redo": "redo",
+        "type": "type",
+        "clear-canvas": "brush-cleaning",
+        "key": "key",
+        "bold": "bold",
+        "italic": "italic",
+        "heading": "heading",
+        "strikethrough": "strikethrough",
+        "quote": "quote",
+        "toc": "newspaper",
+        "embed": "image-plus",
+        // Badges
+        "badge-admin": "star",
+        "badge-moderator": "life-buoy",
+        "badge-premium": "ticket-check",
+        "badge-error": "circle-alert",
+        // Other
+        "maintenance": "construction",
+        "release-notes": "notepad-text"
+    };
+
+    Icons.add = (newIcons) => {
+        Object.keys(newIcons).forEach(k => {
+            map[k] = newIcons[k];
+        });
+    };
+
+    Icons.get = (name, attrs = {}) => {
+        if (!map[name]) {
+            console.error("Invalid icon", name);
+            //alert(`Invalid icon: ${name}`);
+            // throw new Error(`Invalid icon: ${name}`);
+        }
+        attrs['data-lucide'] = map[name];
+        attrs['aria-hidden'] = "true";
+
+        return h('i', attrs);
+    };
+
+    if (!window.CP_Lucide_observer) {
+        window.CP_Lucide_observer = true;
+        Lucide.createIcons();
+        const observer = new MutationObserver((mutations) => {
+            let found = mutations.some((mutation) => {
+                for (var i = 0; i < mutation.addedNodes.length; i++) {
+                    let added = mutation.addedNodes[i];
+                    if (added.tagName === "svg") { continue; }
+                    if (added?.hasAttribute?.('data-lucide')) {
+                        return true;
+                    }
+                    if (added?.querySelector?.(':not(svg)[data-lucide]')) {
+                        return true;
+                    }
+                }
+            });
+            if (found) { Lucide.createIcons(); }
+        });
+        observer.observe(document.body, {
+            attributes: true,
+            childList: true,
+            characterData: false,
+            subtree: true
+        });
+    }
+
+    return Icons;
+});
+

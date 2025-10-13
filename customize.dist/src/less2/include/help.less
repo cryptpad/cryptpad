@@ -12,7 +12,8 @@
 };
 & {
     .cp-help-container {
-
+        display:inline-flex;
+        align-items: center;
         position: relative;
         background-color: @cp_help-bg;
         max-height: 50%;
@@ -25,11 +26,13 @@
             border: none;
             position: absolute;
             color: @cryptpad_text_col;
-            top: 5px;
             right: 5px;
             &:focus-visible {
                 outline: @variables_focus_style;
                 border-radius: @variables_radius;
+            }
+            svg {
+                margin: 0;
             }
         }
         .cp-help-text {

@@ -17,10 +17,10 @@ define([
     '/customize/pages.js',
     '/common/rpc.js',
     'onboardscreen.js',
+    '/common/common-icons.js',
 
     'less!/install/onboarding.less',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages, Rpc, OnboardScreen) {
+], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages, Rpc, OnboardScreen, Icons) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;
     $(function () {
@@ -144,7 +144,7 @@ define([
             setTimeout(function () {
                 var span = h('span', [
                     h('h2', [
-                        h('i.fa.fa-warning'),
+                        Icons.get('alert'),
                         ' ',
                         Messages.register_warning,
                     ]),

@@ -11,7 +11,6 @@ define([
     '/components/chainpad/chainpad.dist.js',
     '/common/common-realtime.js',
     '/common/common-constants.js',
-    '/common/common-interface.js',
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/customize/messages.js',
@@ -22,7 +21,7 @@ define([
 
     '/components/tweetnacl/nacl-fast.min.js',
     '/components/scrypt-async/scrypt-async.min.js', // better load speed
-], function (Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
+], function (Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants,
             Feedback, LocalStore, Messages, nThen, Block, Hash, ServerCommand) {
     var Nacl = window.nacl;
 

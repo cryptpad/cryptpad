@@ -3,21 +3,25 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (function () {
-var logoPath = '/customize/CryptPad_logo.svg';
-if (location.pathname === '/' || location.pathname === '/index.html') {
-    logoPath = '/api/logo';
-}
+var logoPath = '/customize/CryptPad_logo_grey.svg';
 
 var elem = document.createElement('div');
 elem.setAttribute('id', 'placeholder');
-elem.innerHTML = [
-    '<div class="placeholder-logo-container">',
-        '<img class="placeholder-logo" alt="" aria-hidden="true" src="' + logoPath + '">',
-    '</div>',
-    '<div class="placeholder-message-container">',
-        '<p>Loading...</p>',
-    '</div>'
-].join('');
+elem.innerHTML = `
+<div></div>
+<div class="placeholder-message-container">
+    <p>Loading...</p>
+</div>
+<div id="placeholder-loading-footer">
+    <div class="placeholder-logo-container">
+        <img class="placeholder-logo" alt="" aria-hidden="true" src="${logoPath}"><span>CryptPad</span>
+    </div>
+    <div id="placeholder-loading-status">
+        <i data-lucide="lock" aria-hidden="true"></i>
+        <span>End-to-end encrypted</span>
+    </div>
+</div>
+`;
 
 var key = 'CRYPTPAD_STORE|colortheme'; // handle outer
 if (localStorage[key] && localStorage[key] === 'dark') {

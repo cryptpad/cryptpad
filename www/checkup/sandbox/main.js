@@ -8,7 +8,6 @@ define([
     '/checkup/checkup-tools.js',
 
     '/components/tweetnacl/nacl-fast.min.js',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/checkup/app-checkup.less',
 ], function ($, Util, Tools) {
     var postMessage = function (content) {

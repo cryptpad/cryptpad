@@ -22,6 +22,22 @@
     label{
         margin-top:0.5rem;
     }
+    .cp-spinner, .cp-ok {
+        margin-left: @variables_icon_margin;
+    }
+    .cp-spinner {
+        svg {
+            animation: spin 10s linear infinite;
+        }
+    }
+    .cp-spinner, .cp-ok {
+        svg {
+            vertical-align: middle;
+        }
+    }
+    .cp-checkmark {
+        height: 1.5rem;
+    }
 
     display: flex;
     flex-flow: column;
@@ -132,6 +148,9 @@
         display: flex;
         flex-flow: column;
 
+        svg {
+            margin: 0;
+        }
     }
 }
 

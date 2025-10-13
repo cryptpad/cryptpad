@@ -15,8 +15,9 @@ define([
     '/common/outer/local-store.js',
     '/common/outer/login-block.js',
     '/customize/messages.js',
+    '/common/common-icons.js',
 ], function (ApiConfig, $, h, Util, Cred, UI, Login, Constants,
-        ServerCommand, LocalStore, Block, Messages) {
+        ServerCommand, LocalStore, Block, Messages, Icons) {
     if (window.top !== window) { return; }
 
     let ssoAuthCb = function (cb) {
@@ -150,7 +151,7 @@ define([
                 if (data.register) {
                     var span = h('span', [
                         h('h2', [
-                            h('i.fa.fa-warning'),
+                            Icons.get('alert'),
                             ' ',
                             Messages.register_warning,
                         ]),

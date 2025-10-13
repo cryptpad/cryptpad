@@ -18,7 +18,6 @@ define([
     '/customize/messages.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/drive/app-drive.less',
 ], function (
     $,
@@ -282,7 +281,7 @@ define([
                 APP.$burnThisDrive = common.createButton(null, true, {
                     text: '',
                     name: 'burn-anon-drive',
-                    icon: 'fa-ban',
+                    icon: 'burn-drive',
                     tippy: Messages.fm_burnThisDriveButton,
                     drawer: false
                 }, function () {

@@ -13,12 +13,13 @@ define([
     '/common/inner/badges.js',
     '/customize/messages.js',
     '/customize/application_config.js',
+    '/common/common-icons.js',
 
     '/components/croppie/croppie.min.js',
     '/components/file-saver/FileSaver.min.js',
     'css!/components/croppie/croppie.css',
 ], function ($, ApiConfig, Util, Hash, UI, h, MediaTag, Badges,
-            Messages, AppConfig) {
+            Messages, AppConfig, Icons) {
     var MT = {};
 
     // Configure MediaTags to use our local viewer
@@ -331,11 +332,11 @@ define([
         modal.show();
         var $modal = modal.$modal.focus();
         var $container = $modal.find('.cp-modal').append([
-            h('div.cp-mediatag-control', left = h('span.fa.fa-chevron-left')),
+            h('div.cp-mediatag-control', left = Icons.get('chevron-left')),
             h('div.cp-mediatag-container', [
                 h('div.cp-loading-spinner-container', h('span.cp-spinner')),
             ]),
-            h('div.cp-mediatag-control', right = h('span.fa.fa-chevron-right')),
+            h('div.cp-mediatag-control', right = Icons.get('chevron-right')),
         ]);
         var $close = $modal.find('.cp-modal-close');
         var $left = $(left);
@@ -484,37 +485,36 @@ define([
             }, [
                 h('li.cp-svg', h('a.cp-app-code-context-open.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': "fa-eye",
-                }, Messages.pad_mediatagPreview)),
+                }, [
+                    Icons.get('preview'),
+                    Messages.pad_mediatagPreview
+                ])),
                 h('li', h('a.cp-app-code-context-openin.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': "fa-external-link",
-                }, Messages.pad_mediatagOpen)),
+                }, [
+                    Icons.get('external-link'),
+                    Messages.pad_mediatagOpen
+                ])),
                 h('li', h('a.cp-app-code-context-share.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': "fa-shhare-alt",
-                }, Messages.pad_mediatagShare)),
+                }, [
+                    Icons.get('share'),
+                    Messages.pad_mediatagShare
+                ])),
                 h('li', h('a.cp-app-code-context-saveindrive.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': "fa-cloud-upload",
-                }, Messages.pad_mediatagImport)),
+                }, [
+                    Icons.get('cloud-upload'),
+                    Messages.pad_mediatagImport
+                ])),
                 h('li.cp-svg', h('a.cp-app-code-context-download.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': "fa-download",
-                }, Messages.download_mt_button)),
+                },[
+                    Icons.get('download'),
+                    Messages.download_mt_button
+                ])),
             ])
         ]);
-        // create the icon for each contextmenu option
-        $(menu).find("li a.dropdown-item").each(function (i, el) {
-            var $icon = $("<span>");
-            if ($(el).attr('data-icon')) {
-                var font = $(el).attr('data-icon').indexOf('cptools') === 0 ? 'cptools' : 'fa';
-                $icon.addClass(font).addClass($(el).attr('data-icon'));
-            } else {
-                $icon.text($(el).text());
-            }
-            $(el).prepend($icon);
-        });
         var m = UI.createContextMenu(menu);
 
         mediatagContextMenu = m;

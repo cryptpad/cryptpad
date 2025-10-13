@@ -37,7 +37,7 @@
     opacity: 1;
     display: flex;
     flex-flow: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     font: 20px 'Open Sans', 'Helvetica Neue', sans-serif !important;
     &.cp-loading-transparent {
@@ -49,23 +49,27 @@
         transition: opacity 0.75s, visibility 0s 0.75s;
     }
     .cp-loading-logo {
-        height: 300px;
-        width: 300px;
-        margin-top: 50px;
         flex: 0 1 auto;
         min-height: 0;
-        text-align: center;
-    }
-    .cp-loading-logo img {
-        max-width: 100%;
-        max-height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: @cp_loading-logo;
+
+        img {
+            margin: 0;
+            max-height: 60px;
+        }
+        span {
+            font-size: 40px;
+            font-family: "IBM Plex Mono";
+            .tools_unselectable();
+        }
     }
     .cp-loading-container {
         width: 700px;
         max-width: 90vw;
-        min-height: 236px;
         max-height: calc(100vh - 20px);
-        margin: 50px;
         flex-shrink: 0;
         display: flex;
         flex-flow: column;
@@ -82,32 +86,58 @@
         margin-bottom: 2em;
     }
 
+    &.cp-loading-empty {
+        &>:not(.cp-loading-empty) {
+            display: none !important;
+        }
+        justify-content: center;
+    }
+
     @media screen and (max-width: 500px) {
         font-size: 16px !important;
-        .cp-loading-container {
-            height: 206px;
-        }
     }
-    @media screen and (max-height: 700px) {
-        font-size: 16px !important;
-        .cp-loading-container {
-            height: 206px;
-        }
-    }
-    @media screen and (max-height: 500px) {
+    @media screen and (max-width: 300px) {
         .cp-loading-logo {
-            display: none;
+            img {
+                max-height: 40px;
+            }
+            span {
+                font-size: 20px;
+            }
         }
+    }
+    @media screen and (max-height: 600px) {
+        font-size: 16px !important;
+    }
+
+    #cp-loading-spinner-message {
+        color: @cp_loading-color;
     }
     #cp-loading-message {
         background: @cp_loading-msg-bg;
-        padding: 20px;
+        padding: 1rem;
         width: 100%;
         border-radius: @variables_radius;
         color: @cp_loading-fg;
         text-align: left;
-        display: none;
         overflow-y: auto;
+        &.cp-error-message, &.cp-error-message-alt {
+            margin: 0;
+            font-size: 16px;
+            padding: 0.5rem;
+            width: auto;
+        }
+        &.cp-error-message {
+            background-color: @cp_alerts-danger-bg;
+            color: @cp_alerts-danger-text;
+        }
+        &.cp-error-message-alt {
+            background-color: @cp_alerts-danger-text;
+            color: @cp_alerts-danger-bg;
+        }
+        &:empty {
+            display: none;
+        }
         a {
             color: @cp_loading-link;
             border-radius: @variables_radius;
@@ -116,13 +146,35 @@
             margin-bottom: 0;
         }
     }
+    #cp-loading-status {
+        display: flex;
+        color: @cp_loading-color;
+        align-items: center;
+        font-family: "IBM Plex Mono";
+        font-size: 0.75em;
+        margin-top: 2rem;
+        gap: 0.5rem;
+        svg {
+            margin: 0;
+        }
+    }
+
+    #cp-loading-footer {
+        margin-bottom: 2rem;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+    }
 
     #cp-loading-password-prompt {
         p.cp-password-error {
-            color: @cp_loading-error-fg;
-            background: @cp_loading-error-bg;
-            padding: 5px;
-            margin-bottom: 15px;
+            margin: 0;
+            margin-bottom: 0.5rem;
+            font-size: 16px;
+            padding: 0.5rem;
+            background-color: @cp_alerts-danger-bg;
+            color: @cp_alerts-danger-text;
+            border-radius: @variables_radius;
         }
         .cp-password-form {
             display: flex;
@@ -130,7 +182,7 @@
             gap:0.5rem;
             width: 100%;
             .cp-password-container {
-                flex-shrink: 1;
+                flex: 1;
                 min-width: 0;
             }
             .cp-password-reveal {
@@ -152,14 +204,9 @@
 
     p.cp-password-info {
         text-align: left;
-        margin-bottom: 15px;
+        margin-bottom: 0.5rem;
     }
 
-    .cp-loading-spinner-container {
-        position: relative;
-        height: 80px;
-        margin-bottom: 50px;
-    }
     .cp-loading-progress {
         width: 100%;
         text-align: center;
@@ -170,42 +217,23 @@
             text-overflow: ellipsis;
         }
         .cp-loading-progress-list {
-            text-align: left;
             display: inline-block;
-            margin-bottom: 50px;
             max-width: 100%;
-            ul {
-                list-style: none;
-                padding-left: 0;
-                margin: 0;
-            }
-            li {
-                padding: 0px 5px;
-                .tools_unselectable();
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                i {
-                    width: 22px;
-                }
-                span {
-                    margin-left: 10px;
-                    &.percent {
-                        position: absolute;
-                    }
-                }
-            }
+            color: @cp_loading-color;
         }
 
         .cp-loading-progress-bar {
-            height: 24px;
+            margin: 1rem 0;
+            height: 5px;
             background: @cp_loading-progress-bg;
-            border: 1px solid @cp_loading-progress-bar-bg;
+            border: 0;
+            //border: 1px solid @cp_loading-progress-bar-bg;
             border-radius: @variables_radius;
         }
         .cp-loading-progress-bar-value {
             height: 100%;
             background: @cp_loading-progress-bar-bg;
+            border-radius: @variables_radius;
         }
 
     }
@@ -219,16 +247,44 @@
         }
     }
 
-    .cp-spinner {
-        display: inline-block;
-        box-sizing: border-box;
-        width: 80px;
-        height: 80px;
-        border: 11px solid @cp_loading-spinner;
-        border-radius: 50%;
-        border-top-color: transparent;
-        animation: spin infinite 3s;
-        animation-timing-function: cubic-bezier(.6,0.15,0.4,0.85);
+    .cp-loading-spinner-container {
+        margin: 1rem 0;
+        height: 5px;
+        width: 100%;
+        border: 0;
+        overflow: hidden;
+        background: @cp_loading-progress-bg;
+        border-radius: @variables_radius;
+    }
+    .cp-spinner-main {
+        width: 100%;
+        height: 5px;
+        background: @cp_loading-progress-bar-bg;
+        border-radius: @variables_radius;
+        animation: loading-animation 1s infinite linear;
+        transform-origin: 0% 50%;
+    }
+
+@keyframes loading-animation {
+    0% {
+        transform:  translateX(0) scaleX(0);
+    }
+    40% {
+        transform:  translateX(0) scaleX(0.4);
+    }
+    100% {
+        transform:  translateX(100%) scaleX(0.5);
+    }
+}
+
+
+    button {
+        .cp-spinner {
+            svg {
+                animation: spin 10s linear infinite ;
+                margin: 0 0 0.1rem 0.3rem;
+            }
+        }
     }
 
 }
