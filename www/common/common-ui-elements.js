@@ -658,6 +658,31 @@ define([
         let btnId = $button.attr('id');
         let btnTitle = $button.attr('title');
         let btnVisibility = $button.attr('style');
+        const orderMap = { // Order based on icon class
+            'cp-toolbar-icon-newpad': 0,
+            'cp-toolbar-icon-snapshots': 5,
+            'cp-toolbar-icon-template': 10,
+            'cp-toolbar-icon-pad-settings': 15,
+            'cp-toolbar-icon-history': 20,
+            'cp-toolbar-icon-hashtag': 25,
+            'cp-toolbar-icon-import-template': 30,
+            'cp-toolbar-icon-import': 35,
+            'cp-toolbar-icon-copy': 40,
+            'cp-toolbar-icon-export': 45,
+            'cp-toolbar-icon-print': 50,
+            'cp-toolbar-icon-forget': 60,
+            'cp-toolbar-icon-properties': 100,
+            'cp-toolbar-icon-help': 150
+        };
+
+        let order = 1000; // default high order
+        if (btnClass) {
+            Object.keys(orderMap).forEach(function(cls) {
+                if (btnClass.indexOf(cls) !== -1) {
+                    order = orderMap[cls];
+                }
+            });
+        }
         if (btnClass) { attributes['class'] = btnClass; }
         if (btnId) { attributes['id'] = btnId; }
         if (btnTitle && !attributes.title) { attributes['title'] = btnTitle; }
@@ -665,6 +690,7 @@ define([
         return UIElements.createDropdownEntry({
             tag: 'a',
             attributes: attributes,
+            order: order, // Pass order to createDropdownEntry
             content: [
                 $icon.length ? $icon.clone()[0] : null,
                 h('span', $button.text())
@@ -1617,6 +1643,9 @@ define([
             // Links and items with action are focusable
             // Add correct "role" attribute
             entry = $(h('li'));
+            if (typeof config.order !== 'undefined') {
+                entry.css('order', config.order);
+            }
             if (config.tag === 'a') {
                 $el.attr('tabindex', '-1');
                 entry.attr('role', 'menuitem');
