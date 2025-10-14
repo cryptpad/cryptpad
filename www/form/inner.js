@@ -3499,7 +3499,7 @@ define([
         if (content.form[uid].type === 'section') {
             content.form[uid].opts.questions.forEach(function(subQuestionUid) {
                 delete content.form[subQuestionUid];
-            })
+            });
         }
         delete content.form[uid];
         var idx = content.order.indexOf(uid);
@@ -5229,7 +5229,6 @@ define([
                         if (_color === selectedColor) { return; }
                         content.answers.color = _color;
                         framework.localChange();
-                        var $clickedElement = $(this);
                         framework._.cpNfInner.chainpad.onSettle(function () {
                             UI.log(Messages.saved);
                             selectedColor = _color;

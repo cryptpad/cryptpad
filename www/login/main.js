@@ -12,9 +12,10 @@ define([
     '/common/common-realtime.js',
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
+    '/customize/messages.js',
     //'/common/test.js',
 
-], function (Config, $, h, Cryptpad, Login, UI, Realtime, Feedback, LocalStore /*, Test */) {
+], function (Config, $, h, Cryptpad, Login, UI, Realtime, Feedback, LocalStore, Messages /*, Test */) {
     if (window.top !== window) { return; }
     $(function () {
         var $checkImport = $('#import-recent');
