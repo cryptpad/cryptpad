@@ -1200,15 +1200,15 @@ define([
         return icon;
     };
     UI.getIcon = function (type) {
-        var icon = Icons.get('file');
+        let icon = Icons.get('file');
 
         if (AppConfig.applicationsIcon && AppConfig.applicationsIcon[type]) {
-            var icon = AppConfig.applicationsIcon[type];
+            let appIcon = AppConfig.applicationsIcon[type];
             if (type === 'fileupload') { type = 'file'; }
             if (type === 'folderupload') { type = 'file'; }
             if (type === 'link') { type = 'drive'; }
-            var appClass = ' cp-icon cp-icon-color-'+type;
-            icon = Icons.get(icon, {'class': appClass});
+            const appClass = ' cp-icon cp-icon-color-'+type;
+            icon = Icons.get(appIcon, {'class': appClass});
         }
 
         return icon;
