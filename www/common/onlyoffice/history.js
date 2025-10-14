@@ -12,7 +12,8 @@ define([
     //var ChainPad = window.ChainPad;
     var History = {};
 
-    History.create = function (common, config) {
+    History.create = function (common, config, patchNo) {
+        console.log("Patch number", patchNo)
         if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
         if (History.loading) { return void console.error("History is already being loaded..."); }
         History.loading = true;
@@ -24,8 +25,9 @@ define([
             throw new Error("Missing config element");
         }
 
-        var cpIndex = -1;
-        var msgIndex = -1;
+        var cpIndex;
+        var msgIndex = 0;
+
         var ooMessages = {};
         var loading = false;
         var update = function () {};
@@ -39,7 +41,7 @@ define([
 
         var endWithCp = sortedCp.length &&
                         config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
-
+        console.log("endwithcp?", sortedCp, config.onlyoffice.lastHash)
         var fillOO = function (id, messages) {
             if (!id) { return; }
             if (ooMessages[id]) { return; }
@@ -47,7 +49,7 @@ define([
             update();
         };
 
-        if (endWithCp) { cpIndex = 0; }
+        if (endWithCp) { cpIndex = 0; } else {cpIndex = -1}
 
         var $version, $time, $share;
         var $hist = $toolbar.find('.cp-toolbar-history');
@@ -81,14 +83,48 @@ define([
             else { $time.text(''); }
         };
 
+        function getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, callback) {
+            sframeChan.query('Q_GET_HISTORY_RANGE', {
+                channel: config.onlyoffice.channel,
+                lastKnownHash: fromHash,
+                toHash: toHash,
+            }, function (err, data) {
+                console.log("function called")
+                if (err) {
+                    console.error(err);
+                    callback(err);
+                    return;
+                }
+
+                if (!Array.isArray(data.messages)) {
+                    return;
+                }
+
+                let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
+
+                const messages = (data.messages || []).slice(initialCp ? 0 : 1);
+
+                if (config.debug) {
+                    console.log(data.messages);
+                }
+                console.log("messages", id, initialCp, cpIndex)
+                fillOO(id, messages);
+                loading = false;
+                // $share.show();
+
+                callback(null, messages);
+            });
+        }
+
         // We want to load a checkpoint (or initial state)
-        var loadMoreOOHistory = function () {
+        var loadMoreOOHistory = function (direction) {
             if (!Array.isArray(sortedCp)) { return void console.error("Wrong type"); }
 
             var cp = {};
 
             // Get the checkpoint ID
             var id = -1;
+            console.log("CP", cpIndex, sortedCp)
             if (cpIndex < sortedCp.length) {
                 id = sortedCp[sortedCp.length - 1 - cpIndex];
                 cp = hashes[id];
@@ -102,40 +138,42 @@ define([
             // We need to get all the patches between the current cp hash and the next cp hash
 
             // Current cp or initial hash (invalid hash ==> initial hash)
-            var toHash = cp.hash || 'NONE';
+            var toHash = cp?.hash ? cp.hash : 'NONE';
             // Next cp or last hash
             var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
 
-            msgIndex = -1;
+            if (direction === 'prev') {
+                msgIndex = -2;
+            } else {
+                msgIndex = -1;
+            }
+            
+
 
             showVersion();
+            console.log("oomsgs", ooMessages, id, cp)
             if (ooMessages[id]) {
                 // Cp already loaded: reload OO
                 loading = false;
-                return void config.onCheckpoint(cp);
+                console.log("patchhh", cp)
+                return void config.onCheckpoint(cp, 'patchNo');
             }
 
-            sframeChan.query('Q_GET_HISTORY_RANGE', {
-                channel: config.onlyoffice.channel,
-                lastKnownHash: fromHash,
-                toHash: toHash,
-            }, function (err, data) {
-                if (err) { return void console.error(err); }
-                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
-
-                // The first "cp" in history is the empty doc. It doesn't include the first patch
-                // of the history
-                var initialCp = cpIndex === sortedCp.length || !cp.hash;
-
-                var messages = (data.messages || []).slice(initialCp ? 0 : 1);
-
-                if (config.debug) { console.log(data.messages); }
-                fillOO(id, messages);
-                loading = false;
-                config.onCheckpoint(cp);
-                $share.show();
+            getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, function (err, messages) {
+                if (err) {
+                    return;
+                }
+                console.log(messages);
             });
-        };
+        }
+
+        getMessages(config.onlyoffice.lastHash, 'NONE', cpIndex, sortedCp, undefined, -1, config, fillOO, $share, function (err, messages) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+        });
+        
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
@@ -150,7 +188,7 @@ define([
         var spinner = UI.makeSpinner($hist);
         spinner.spin();
 
-        var $fastPrev, $fastNext, $next;
+        var $fastPrev, $fastNext, $next, $prev;
 
         var getId = function () {
             var cps = sortedCp.length;
@@ -161,6 +199,7 @@ define([
             var cps = sortedCp.length;
             $fastPrev.show();
             $next.show();
+            $prev.show();
             $fastNext.show();
             $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous')
                 .prop('disabled', '');
@@ -181,9 +220,14 @@ define([
             var id = getId();
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
+            // msgIndex = 0
             msgIndex++;
             var patch = msgs[msgIndex];
+                        console.log("patch next 1", msgs, msgIndex)
+
             if (!patch) { loading = false; return; }
+                                    console.log("patch next 2", msgs, msgIndex, id)
+
             config.onPatch(patch);
             showVersion();
             setTimeout(function () {
@@ -191,6 +235,61 @@ define([
                 loading = false;
             }, 200);
         };
+
+        var prev = function () {
+            var id = getId();
+            if (!ooMessages[id]) { loading = false; return; }
+            var msgs = ooMessages[id];
+            // msgIndex = 0
+            // msgIndex++;
+            // id++;
+            var patch = msgs[msgIndex];
+            console.log("patch prev 1", msgs, msgIndex)
+            if (!patch) { loading = false; return; }
+                        console.log("patch prev 2", msgs, msgIndex, id)
+
+            // config.onPatch(patch);
+            // showVersion();
+            // setTimeout(function () {
+            //     $('iframe').blur();
+            //     loading = false;
+            // }, 200);
+        };
+
+        // var prev = (function () {
+        //     var msgIndexPrevMap = {};
+
+
+        //     return function () {
+                
+        //         var id = getId();
+
+        //         if (!ooMessages[id]) { loading = false; return; }
+
+        //         var msgs = ooMessages[id];
+
+        //         if (!(id in msgIndexPrevMap)) {
+        //             msgIndexPrevMap[id] = Object.keys(msgs).length - 1;
+        //         } else {
+        //             msgIndexPrevMap[id]--;
+        //         }
+
+        //         var index = msgIndexPrevMap[id];
+
+        //         var patch = msgs[index];
+
+        //         if (!patch) { loading = false; return; }
+        //         console.log("patch", msgs, index)
+        //         config.onPatch(patch);
+        //         showVersion();
+
+        //         setTimeout(function () {
+        //             $('iframe').blur();
+        //             loading = false;
+        //         }, 200);
+        //     };
+        // })();
+
 
 
         // Create the history toolbar
@@ -206,9 +305,13 @@ define([
             var _next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
                 Icons.get('history-next'),
             ]);
+            var _prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
+                h('i.fa.fa-step-backward')
+            ]);
             $fastPrev = $(fastPrev);
             $fastNext = $(fastNext).prop('disabled', 'disabled');
             $next = $(_next).prop('disabled', 'disabled');
+            $prev = $(_prev)
 
             var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos'});
             var time = h('div.cp-history-timeline-time');
@@ -223,6 +326,7 @@ define([
                 h('div.cp-history-timeline-actions', [
                     h('span.cp-history-timeline-prev', [
                         fastPrev,
+                        _prev,
                     ]),
                     time,
                     version,
@@ -296,6 +400,45 @@ define([
                 loadMoreOOHistory();
                 update();
             });
+             $prev.click(function () {
+                if (loading) { return; }
+                loading = true;
+                cpIndex = 0
+                                console.log("hello1", cpIndex)
+
+                if (msgIndex === -1) {
+                    // cpIndex++;
+                }
+                loadMoreOOHistory('prev');
+                console.log("hello2", cpIndex)
+                setTimeout(function () {
+                    prev()
+                    // loading = false;
+                }, 2000);
+                // next()
+
+                // var id = getId();
+                // if (!ooMessages[id]) { loading = false; return; }
+                // var msgs = ooMessages[id];
+                // msgIndex--;
+                // var patch = msgs[32];
+                // if (!patch) { loading = false; return; }
+                // config.onPatch(patch);
+                // showVersion();
+                // setTimeout(function () {
+                //     $('iframe').blur();
+                //     loading = false;
+                // }, 200);
+                // update();
+                
+                // if (loading) { return; }
+                // loading = true;
+                // if (msgIndex === -1) {
+                //     cpIndex++;
+                // }
+                // prev();
+                update();
+            });
             // Go to next checkpoint
             $fastPrev.click(function () {
                 if (loading) { return; }
@@ -304,7 +447,7 @@ define([
                     cpIndex++;
                 }
                 loadMoreOOHistory();
-                update();
+                // update();
             });
             onKeyDown = function (e) {
                 var p = function () { e.preventDefault(); };
