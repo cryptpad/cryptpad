@@ -587,7 +587,7 @@ define([
             startOO(blob, type, true);
         };
 
-        var saveToServer = function (blob, title) {
+        var saveToServer = function (blob, title ) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
             var text = !blob && getContent();
             if (!text && !blob) {
@@ -606,15 +606,18 @@ define([
             blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var data = {
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
-                index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex
+                index:  APP.revert ? ooChannel.currentIndex : ooChannel.cpIndex
             };
+            if (APP.revert) {
+                APP.revert = false;
+            }
             fixSheets();
 
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
             ooChannel.ready = false;
-            ooChannel.queue = [];
+            // ooChannel.queue = [];
             data.callback = function () {
                 if (APP.template) { APP.template = false; }
                 resetData(blob, file);
@@ -625,7 +628,7 @@ define([
 
         var noLogin = false;
 
-        var makeCheckpoint = function (force) {
+        var makeCheckpoint = function (force, msgs) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
 
             var locked = content.saveLock;
@@ -1103,6 +1106,7 @@ define([
                 if (last) { ooChannel.lastHash = last.hash; }
             }
             return changes;
+            
         };
 
         const onAuth = function () {
@@ -1457,7 +1461,7 @@ define([
                 return;
             }
 
-            debug(obj, 'toOOClient');
+            // debug(obj, 'toOOClient');
             APP.docEditor.sendMessageToOO(obj);
             if (obj && obj.type === "saveChanges") {
                 evIntegrationSave.fire();
@@ -1465,7 +1469,7 @@ define([
         };
 
         const fromOOHandler = function (obj) {
-            debug(obj, 'fromOOClient');
+            // debug(obj, 'fromOOClient');
             switch (obj.type) {
                 case "auth":
                     // Handled by onlyoffice-editor now
@@ -2221,7 +2225,7 @@ define([
                 c.forcesave = true;
             }
 
-            console.error('updated config', ooconfig);
+            // console.error('updated config', ooconfig);
             return ooconfig;
         };
 
@@ -3158,7 +3162,26 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onCheckpoint = function (cp) {
                     // We want to load a checkpoint:
-                    loadCp(cp);
+                    loadCp(cp, true);
+                };
+                var onPatchBack = function (cp, msgs) {
+                    if (msgs) {
+                        msgsFormatted = [];
+                        msgs.forEach(function(msg) {
+                            var parsedMsg = JSON.parse(msg.msg);
+                            var formattedMsg = {
+                                msg: parsedMsg,
+                                hash: msg.serverHash, 
+                                author: msg.author,
+                                time: msg.time
+                            };
+                            msgsFormatted.push(formattedMsg);
+                        })
+                        ooChannel.queue = msgsFormatted;
+                        loadCp(cp, true);
+                    } else {
+                        loadCp(cp);
+                    }
                 };
                 var setHistoryMode = function (bool) {
                     if (bool) {
@@ -3226,6 +3249,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     Feedback.send('OO_HISTORY');
                     var histConfig = {
                         onPatch: onPatch,
+                        onPatchBack: onPatchBack,
                         onCheckpoint: onCheckpoint,
                         onRevert: commit,
                         setHistory: setHistoryMode,
