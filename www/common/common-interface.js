@@ -1662,6 +1662,7 @@ define([
         var $input = $(input);
         var $btn = $(btn).click(function () {
             var val = $input.val();
+            $btn.prop('disabled', true);
             if (!val) { return void UI.getOTPScreen(cb, exitable, 'INVALID_CODE'); }
             cb(val);
         });
