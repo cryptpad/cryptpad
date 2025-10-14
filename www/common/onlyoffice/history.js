@@ -214,19 +214,19 @@ define([
 
             if ((id === msgLength) && msgIndex === -1 || (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev ||
             parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]) === id && parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length) {
-                $fastNext.prop('disabled', 'disabled');
+                // $fastNext.prop('disabled', 'disabled');
             } 
-            console.log(hashes, ooMessages, id, msgIndex)     
+            // console.log(hashes, ooMessages, id, msgIndex)     
             // console.log(Object.keys(hashes)[Object.keys(hashes).length - 1] === Object.keys(ooMessages)[Object.keys(ooMessages).length - 1] === id && !ooMessages[id].length, 
             // Object.keys(hashes)[Object.keys(hashes).length - 1] === Object.keys(ooMessages)[Object.keys(ooMessages).length - 1], id, typeof id, 
             // typeof parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]), 
             // parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]) === id && parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id, 
             // ooMessages[id])  
 
-            console.log(("next update", id === msgLength) && msgIndex === -1, id === -1 && msgIndex === -1, (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev || Object.keys(hashes)[Object.keys(hashes).length - 1] === Object.keys(ooMessages)[Object.keys(ooMessages).length - 1] === id && !ooMessages[id].length)       
+            // console.log(("next update", id === msgLength) && msgIndex === -1, id === -1 && msgIndex === -1, (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev || Object.keys(hashes)[Object.keys(hashes).length - 1] === Object.keys(ooMessages)[Object.keys(ooMessages).length - 1] === id && !ooMessages[id].length)       
             if ((id === msgLength) && msgIndex === -1 || id === -1 && msgIndex === -1 || (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev ||
             parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]) === id && parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length) {
-                $next.prop('disabled', 'disabled');
+                // $next.prop('disabled', 'disabled');
             }
             
         };
@@ -239,10 +239,13 @@ define([
         }
 
         var next = async function () {
+
+            // if (msgIndex !== 0) {
+                msgIndex++
+            // };
+            msgs = ooMessages[id];
             console.log("next1", hashes, id, ooMessages, msgIndex)
 
-            msgIndex++;
-            msgs = ooMessages[id];
             if (Object.keys(hashes).length) {
                 if (msgIndex === 0) {
                     id++;
@@ -268,7 +271,19 @@ define([
                     return;
                 } 
             } 
-            var patch = msgs[msgs.length + msgIndex];
+            if (Math.abs(msgIndex) > msgs.length) {
+                msgIndex = 0
+                var patch = msgs[msgIndex]
+            }
+            // if (Math.sign !== -1) {
+            //     console.log('kurwa')
+            //     var patch = msgs[msgIndex]
+            // } else {
+            //     console.log('kurwa MAC')
+                var patch = msgs[msgs.length + msgIndex-1];
+
+            // }
+
             console.log("next0.5", msgIndex, msgs, msgs.length + msgIndex)
             config.onPatch(patch);
             showVersion(false, msgs.indexOf(patch)+1);
