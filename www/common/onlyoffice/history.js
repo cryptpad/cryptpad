@@ -24,8 +24,9 @@ define([
             throw new Error("Missing config element");
         }
 
-        var cpIndex = -1;
-        var msgIndex = -1;
+        var cpIndex;
+        var msgIndex = 0;
+
         var ooMessages = {};
         var loading = false;
         var update = function () {};
@@ -39,7 +40,6 @@ define([
 
         var endWithCp = sortedCp.length &&
                         config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
-
         var fillOO = function (id, messages) {
             if (!id) { return; }
             if (ooMessages[id]) { return; }
@@ -47,7 +47,7 @@ define([
             update();
         };
 
-        if (endWithCp) { cpIndex = 0; }
+        if (endWithCp) { cpIndex = 0; } else {cpIndex = -1}
 
         var $version, $time, $share;
         var $hist = $toolbar.find('.cp-toolbar-history');
@@ -81,8 +81,42 @@ define([
             else { $time.text(''); }
         };
 
+        function getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, callback) {
+            sframeChan.query('Q_GET_HISTORY_RANGE', {
+                channel: config.onlyoffice.channel,
+                lastKnownHash: fromHash,
+                toHash: toHash,
+            }, function (err, data) {
+                if (err) {
+                    console.error(err);
+                    callback(err);
+                    return;
+                }
+
+                if (!Array.isArray(data.messages)) {
+                    return;
+                }
+
+                let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
+
+                const messages = (data.messages || []).slice(initialCp ? 0 : 1);
+
+                if (config.debug) {
+                    console.log(data.messages);
+                }
+
+                fillOO(id, messages);
+                loading = false;
+                // $share.show();
+
+                callback(null, messages);
+            });
+        }
+
+        var allMsgs
+
         // We want to load a checkpoint (or initial state)
-        var loadMoreOOHistory = function () {
+        var loadMoreOOHistory = function (keepQueue, patch) {
             if (!Array.isArray(sortedCp)) { return void console.error("Wrong type"); }
 
             var cp = {};
@@ -91,7 +125,7 @@ define([
             var id = -1;
             if (cpIndex < sortedCp.length) {
                 id = sortedCp[sortedCp.length - 1 - cpIndex];
-                cp = hashes[id];
+                cp = hashes[id];ooMessages[-1]
             }
             var nextId = sortedCp[sortedCp.length - cpIndex];
 
@@ -102,40 +136,39 @@ define([
             // We need to get all the patches between the current cp hash and the next cp hash
 
             // Current cp or initial hash (invalid hash ==> initial hash)
-            var toHash = cp.hash || 'NONE';
-            // Next cp or last hash
+            var toHash = cp?.hash ? cp.hash : 'NONE';
+            // // Next cp or last hash
             var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
 
-            msgIndex = -1;
+            msgIndex = -2;
+
 
             showVersion();
-            if (ooMessages[id]) {
+
+            if (ooMessages[id] && keepQueue) {
                 // Cp already loaded: reload OO
-                loading = false;
-                return void config.onCheckpoint(cp);
-            }
+                return void config.onCheckpoint(cp, keepQueue);
+            } 
 
-            sframeChan.query('Q_GET_HISTORY_RANGE', {
-                channel: config.onlyoffice.channel,
-                lastKnownHash: fromHash,
-                toHash: toHash,
-            }, function (err, data) {
-                if (err) { return void console.error(err); }
-                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
-
-                // The first "cp" in history is the empty doc. It doesn't include the first patch
-                // of the history
-                var initialCp = cpIndex === sortedCp.length || !cp.hash;
-
-                var messages = (data.messages || []).slice(initialCp ? 0 : 1);
-
-                if (config.debug) { console.log(data.messages); }
-                fillOO(id, messages);
-                loading = false;
-                config.onCheckpoint(cp);
-                $share.show();
+            getMessages(fromHash, toHash, cpIndex, sortedCp, cp, id, config, fillOO, $share, function (err, messages) {
+                if (err) {
+                    return;
+                }
+                console.log('msgs', messages);
             });
-        };
+        }
+
+        getMessages(config.onlyoffice.lastHash, 'NONE', cpIndex, sortedCp, undefined, -1, config, fillOO, $share, function (err, messages) {
+            allMsgs = ooMessages[-1].length-1
+
+            if (err) {
+                console.error(err);
+                return;
+            }
+        });
+
+
+        
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
@@ -150,7 +183,7 @@ define([
         var spinner = UI.makeSpinner($hist);
         spinner.spin();
 
-        var $fastPrev, $fastNext, $next;
+        var $fastPrev, $fastNext, $next, $prev;
 
         var getId = function () {
             var cps = sortedCp.length;
@@ -161,6 +194,7 @@ define([
             var cps = sortedCp.length;
             $fastPrev.show();
             $next.show();
+            $prev.show();
             $fastNext.show();
             $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous')
                 .prop('disabled', '');
@@ -182,15 +216,23 @@ define([
             if (!ooMessages[id]) { loading = false; return; }
             var msgs = ooMessages[id];
             msgIndex++;
-            var patch = msgs[msgIndex];
+            id++;
+            allMsgs++
+
+            var patch = msgs[allMsgs];
             if (!patch) { loading = false; return; }
-            config.onPatch(patch);
+            config.onPatchHistory(patch);
             showVersion();
             setTimeout(function () {
                 $('iframe').blur();
                 loading = false;
             }, 200);
         };
+
+        var prev = function () {
+            allMsgs--
+        };
+
 
 
         // Create the history toolbar
@@ -206,9 +248,13 @@ define([
             var _next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
                 Icons.get('history-next'),
             ]);
+            var _prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
+                h('i.fa.fa-step-backward')
+            ]);
             $fastPrev = $(fastPrev);
             $fastNext = $(fastNext).prop('disabled', 'disabled');
             $next = $(_next).prop('disabled', 'disabled');
+            $prev = $(_prev)
 
             var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos'});
             var time = h('div.cp-history-timeline-time');
@@ -223,6 +269,7 @@ define([
                 h('div.cp-history-timeline-actions', [
                     h('span.cp-history-timeline-prev', [
                         fastPrev,
+                        _prev,
                     ]),
                     time,
                     version,
@@ -283,10 +330,9 @@ define([
 
             // Push one patch
             $next.click(function () {
-                if (loading) { return; }
+                // if (loading) { return; }
                 loading = true;
                 next();
-                update();
             });
             // Go to previous checkpoint
             $fastNext.click(function () {
@@ -294,6 +340,16 @@ define([
                 loading = true;
                 cpIndex--;
                 loadMoreOOHistory();
+                update();
+            });
+             $prev.click(function () {
+                // if (loading) { return; }
+                loading = true;
+                cpIndex = 0
+                loadMoreOOHistory(true);
+                setTimeout(function () {
+                    prev()
+                }, 2000);
                 update();
             });
             // Go to next checkpoint

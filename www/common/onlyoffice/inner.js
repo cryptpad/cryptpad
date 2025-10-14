@@ -290,6 +290,7 @@ define([
         };
         var getLastCp = function (old, i) {
             var hashes = old ? oldHashes : content.hashes;
+
             if (!hashes || !Object.keys(hashes).length) { return {}; }
             i = i || 0;
             var idx = sortCpIndex(hashes);
@@ -298,6 +299,7 @@ define([
                 return {};
             }
             var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
+            
             return last;
         };
         var deleteLastCp = function (i) {
@@ -549,7 +551,7 @@ define([
         };
         APP.FM = common.createFileManager(fmConfig);
 
-        var resetData = function (blob, type) {
+        var resetData = function (blob, type, next) {
             // If a read-only refresh popup was planned, abort it
             delete APP.refreshPopup;
             clearTimeout(APP.refreshRoTo);
@@ -584,7 +586,7 @@ define([
                 delete pendingChanges[key];
             });
             if (APP.stopHistory || APP.template) { APP.history = false; }
-            startOO(blob, type, true);
+            startOO(blob, type, true, next);
         };
 
         var saveToServer = function (blob, title) {
@@ -715,6 +717,7 @@ define([
 
         const loadLastDocument = function (lastCp) {
             return new Promise((resolve, reject) => {
+                lastCp = getLastCp()
                 if (!lastCp || !lastCp.file) {
                     return void reject('EEMPTY');
                 }
@@ -1082,7 +1085,7 @@ define([
                         type: "releaseLock",
                         locks: l
                     });
-                    delete content.locks[id];
+                    // delete content.locks[id];
                 }
             });
             if (content.saveLock && !isUserOnline(content.saveLock)) {
@@ -1091,15 +1094,22 @@ define([
         };
 
         const getInitialChanges = function() {
+
             const changes = [];
             if (content.version > 2) {
                 ooChannel.queue.forEach(function (data) {
                     Array.prototype.push.apply(changes, data.msg.changes);
                 });
                 ooChannel.ready = true;
-
                 ooChannel.cpIndex += ooChannel.queue.length;
-                var last = ooChannel.queue.pop();
+
+
+                if (APP.next) {
+                    var last = ooChannel.queue;
+                } else {
+                    var last = ooChannel.queue.pop()
+                    APP.last = last
+                }
                 if (last) { ooChannel.lastHash = last.hash; }
             }
             return changes;
@@ -1122,7 +1132,6 @@ define([
                     Array.prototype.push.apply(changes, data.msg.changes);
                 });
                 ooChannel.ready = true;
-
                 ooChannel.cpIndex += ooChannel.queue.length;
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
@@ -1671,6 +1680,7 @@ define([
                         console.error(obj);
                         return;
                     }
+                    console.log("obj", obj)
 
                     debug(obj, 'toOO');
                     chan.event('CMD', obj);
@@ -2226,7 +2236,12 @@ define([
         };
 
         var firstOO = true;
-        startOO = function (blob, file, force) {
+        startOO = function (blob, file, force, next) {
+            if (next) {
+                APP.next = true
+            } else {
+                APP.next = undefined
+            }
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             const lock = !APP.history && (APP.migrate);
 
@@ -2242,6 +2257,7 @@ define([
 
             // Config
             APP.ooconfig = createOOConfig(blob, file, lock, fromContent, lang, force);
+
             /*
             // NOTE: Make sure it won't break anaything new (Firefox setTimeout bug)
             window.onbeforeunload = function () {
@@ -2925,7 +2941,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             pinImages();
         };
 
-        const loadCp = async function (cp, keepQueue) {
+        const loadCp = async function (cp, keepQueue, next) {
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
@@ -2938,7 +2954,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
                 if (!keepQueue) { ooChannel.queue = []; }
-                resetData(blob, file);
+                resetData(blob, file, next);
             }
         };
 
@@ -2980,7 +2996,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var initialCp = !lastCp.hash;
 
                 var messages = (data.messages || []).slice(initialCp ? 0 : 1);
-
                 ooChannel.queue = messages.map(function (obj) {
                     return {
                         hash: obj.serverHash,
@@ -3155,10 +3170,24 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var onPatch = function (patch) {
                     // Patch on the current cp
                     ooChannel.send(JSON.parse(patch.msg));
+                    
                 };
-                var onCheckpoint = function (cp) {
-                    // We want to load a checkpoint:
-                    loadCp(cp);
+                var onPatchHistory = function (patch) {
+                    // Patch on the current cp
+                    var parsedMsg = JSON.parse(patch.msg);
+                    var output = {
+                        msg: parsedMsg,
+                        hash: patch.serverHash
+                    };
+                    if (!APP.next) {
+                        ooChannel.queue.push(APP.last)
+                    }
+                    ooChannel.queue.push(output)
+                        var next = true
+                        loadCp({}, true, next)  
+                };
+                var onCheckpoint = function (cp, keepQueue) {
+                    loadCp(cp, keepQueue);
                 };
                 var setHistoryMode = function (bool) {
                     if (bool) {
@@ -3170,6 +3199,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     APP.history = false;
                     ooChannel.queue = [];
                     ooChannel.ready = false;
+
+
                     // Fill the queue and then load the last CP
                     rtChannel.getHistory(function () {
                         var lastCp = getLastCp();
@@ -3226,6 +3257,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     Feedback.send('OO_HISTORY');
                     var histConfig = {
                         onPatch: onPatch,
+                        onPatchHistory: onPatchHistory,
                         onCheckpoint: onCheckpoint,
                         onRevert: commit,
                         setHistory: setHistoryMode,
