@@ -3756,10 +3756,9 @@ define([
             });
             checkCollapseButton();
             APP.toolbar.$bottomL.append(APP.$collapseButton);
-            var isSmallScreen = () => window.innerWidth <= 600;
             APP.$collapseButton.off('click').on('click', function () {
                 APP.$tree.toggle();
-                if(!isSmallScreen()) {
+                if (!APP.mobile()) {
                     APP.$splitter.toggle(APP.$tree.is(':visible'));
                 }
                 checkCollapseButton();
