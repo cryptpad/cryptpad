@@ -2054,8 +2054,7 @@ APP.recurrenceRule = {
         return h('div.tui-full-calendar-popup-section.cp-calendar-add-notif', [
             listContainer,
             h('div.cp-calendar-notif-form', [
-                Icons.get('calendar-add-reminder'),
-                h('span.cp-notif-label', Messages.calendar_addNotification),
+                h('span.cp-notif-label', [ Icons.get('calendar-add-reminder'), Messages.calendar_addNotification]),
                 h('span.cp-calendar-notif-form-buttons', [
                     number,
                     $block[0],

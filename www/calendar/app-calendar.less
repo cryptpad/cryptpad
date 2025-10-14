@@ -379,7 +379,6 @@
         .cp-recurrence-label, .cp-notif-label {
             color: @cryptpad_text_col;
             font-size: @variables_button-font-size;
-            margin-right: 1rem;
             display: inline-flex;
             align-items: center;
         }
@@ -387,6 +386,7 @@
         .cp-calendar-recurrence-container {
             margin-top: 1rem;
             display: inline-flex;
+            gap: 1rem;
             .cp-calendar-rec-translated-str {
                 margin-top: 0.5rem;
             }
@@ -405,14 +405,14 @@
             }
             & > div {
                 display: flex;
-                align-items: self-start;
+                align-items: center;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 1rem;
             }
             .cp-calendar-notif-list-container {
                 width: 100%;
                 margin-bottom: 10px;
-                .cp-notif-label {
-                    margin-top: 0.5em;
-                }
             }
             .cp-calendar-notif-list {
                 display: flex;
