@@ -1645,6 +1645,7 @@ define([
             entry = $(h('li'));
             if (typeof config.order !== 'undefined') {
                 entry.css('order', config.order);
+                entry.attr('data-order', config.order);
             }
             if (config.tag === 'a') {
                 $el.attr('tabindex', '-1');
@@ -1654,6 +1655,10 @@ define([
                 entry = $el;
                 entry.attr('role', 'menuitem');
                 entry.attr('tabindex', '0');
+                if (typeof config.order !== 'undefined') {
+                    entry.css('order', config.order);
+                    entry.attr('data-order', config.order); // Store for keyboard navigation sorting
+                }
             } else if (config.tag === 'hr') {
                 entry.attr('role', 'separator');
             } else {
