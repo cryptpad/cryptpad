@@ -361,7 +361,7 @@ define([
                 const props = getEditor().asc_getCoreProps();
                 if (!props) { return; }
                 props.title = title;
-                if (!content.hashes || !content.hashes.length) {
+                if (!content.hashes || !Object.keys(content.hashes).length) {
                     // No CP: document is using our templates
                     // --> fix the "creator" field
                     props.creator = "";
