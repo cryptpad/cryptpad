@@ -1700,6 +1700,12 @@ define([
 
         return entry;
     };
+    var reorderDropdownItems = function($container) {
+        var $items = $container.children('li').detach().sort(function(a, b) {
+            return (parseInt($(a).attr('data-order')) || 1000) - (parseInt($(b).attr('data-order')) || 1000);
+        });
+        $container.append($items);
+    };
 
     // Create a button with a dropdown menu
     // input is a config object with parameters:
@@ -1829,6 +1835,7 @@ define([
             $innerblock.css('bottom', '');
             $innerblock.css('display', 'flex'); // for the css order rules to apply
             $innerblock.css('flex-direction', 'column');
+            reorderDropdownItems($innerblock);
             if ($parentMenu) {
                 // keep parent open when recursive
                 $parentMenu.show();

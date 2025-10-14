@@ -1061,15 +1061,6 @@ define([
             var $propertiesButton = common.createButton('properties', true);
             var $properties = UIElements.getEntryFromButton($propertiesButton);
             toolbar.$drawer.append($properties);
-            setTimeout(() => { // keyboard navigation order
-                const $drawerItems = toolbar.$drawer.children('li');
-                const itemsArray = $drawerItems.toArray().sort((a, b) => {
-                const orderA = parseInt($(a).attr('data-order')) || 1000;
-                const orderB = parseInt($(b).attr('data-order')) || 1000;
-                    return orderA - orderB;
-                });
-                toolbar.$drawer.empty().append(itemsArray);
-            }, 100);
 
             createFilePicker();
 
