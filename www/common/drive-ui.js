@@ -3756,9 +3756,12 @@ define([
             });
             checkCollapseButton();
             APP.toolbar.$bottomL.append(APP.$collapseButton);
+            var isSmallScreen = () => window.innerWidth <= 600;
             APP.$collapseButton.off('click').on('click', function () {
                 APP.$tree.toggle();
-                APP.$splitter.toggle(APP.$tree.is(':visible'));
+                if(!isSmallScreen()) {
+                    APP.$splitter.toggle(APP.$tree.is(':visible'));
+                }
                 checkCollapseButton();
             });
         };
