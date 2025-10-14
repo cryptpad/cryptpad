@@ -2770,7 +2770,7 @@ define([
         if (/^http/.test(domain)) { domain = domain.replace(/^https?\:\/\//, ''); }
 
         var title = h('div.cp-creation-title', [
-            UI.getFileIcon({type: type})[0],
+            UI.getFileIcon({type: type}),
             h('div.cp-creation-title-text', [
                 h('span', newPadH3Title),
                 createHelper(Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/apps/general.html#new-document'), Messages.creation_helperText)
