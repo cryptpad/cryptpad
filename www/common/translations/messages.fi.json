@@ -1071,7 +1071,6 @@
     "unableToDisplay": "Asiakirjan näyttäminen epäonnistui. Paina Esc-näppäintä ladataksesi sivun uudelleen. Jos ongelma ei ratkea, ota yhteyttä käyttäjätukeen.",
     "documentID": "Asiakirjan tunniste",
     "register_warning_note": "CryptPadin salausrakenteesta johtuen palvelun ylläpitäjät eivät voi palauttaa tietojasi, jos unohdat käyttäjätunnuksesi ja/tai salasanasi. Säilytäthän ne turvallisessa paikassa.",
-    "register_notes": "<ul class=\"cp-notes-list\"><li>Salasanasi on avain, joka salaa kaikki asiakirjasi. <span class=\"red\">Jos kadotat salasanasi, emme voi palauttaa tietojasi.</span></li><li>Jos käytät jaettua tietokonetta, <span class=\"red\">muista kirjautua ulos</span> lopettaessasi. Pelkkä selainikkunan sulkeminen jättää käyttäjätunnuksesi haavoittuvaiseksi.</li><li>Säilyttääksesi kirjautumattomana tekemäsi tai tallentamasi asiakirjat, valitse \"Tuo asiakirjat vierasistunnosta\".</li></ul>",
     "settings_padOpenLinkLabel": "Ota käyttöön suora linkkien avaus",
     "settings_padOpenLinkHint": "Tämä asetus avaa upotetut linkit suoraan napsauttamalla ilman esikatseluikkunaa",
     "settings_padOpenLinkTitle": "Avaa linkit ensimmäisellä napsautuksella",
