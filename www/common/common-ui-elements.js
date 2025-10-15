@@ -2749,9 +2749,24 @@ define([
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
         var urlArgs = (Config.requireConf && Config.requireConf.urlArgs) || '';
 
-        var logo = h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs, alt:'', 'aria-hidden': 'true',role: 'presentation' });
-        var fill1 = h('div.cp-creation-fill.cp-creation-logo', logo);
-        var fill2 = h('div.cp-creation-fill');
+        var fill1 = h('div.cp-creation-fill');
+        var fill2 = h('div.cp-creation-fill', [
+
+            h('div#cp-creation-footer', [
+                h('div#cp-creation-logo', [
+                    h('img', {
+                        src:`/customize/CryptPad_logo_grey.svg?${urlArgs}`,
+                        alt: '',
+                        'aria-hidden': true
+                    }),
+                    h('span', 'CryptPad')
+                ]),
+                h('div#cp-creation-status', [
+                    Icons.get('lock'),
+                    h('span', Messages.loading_encrypted)
+                ])
+            ])
+        ]);
         var $creation = $('<div>', { id: 'cp-creation' });
         $creationContainer.append([fill1, $creation, fill2]);
 
