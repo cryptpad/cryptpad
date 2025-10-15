@@ -43,6 +43,7 @@ define([
     var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad', 'end']; // Msg.loading_state_0, loading_state_1, loading_state_2, loading_state_3, loading_state_4, loading_state_5
     var current, progress;
     var makeList = function (data) {
+        if (data.type === "end") { return ''; }
         var c = types.indexOf(data.type);
         current = c;
         const msg = Messages['loading_state_'+c];
