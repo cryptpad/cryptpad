@@ -261,6 +261,7 @@
             }
 
             .hover () {
+                cursor: pointer;
                 height: 100%;
                 line-height: 30px;
                 padding: 10px;
@@ -396,6 +397,10 @@
                 &[disabled="true"] {
                     .tools_placeholder-color();
                 }
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
             }
             button {
                 height: 54px !important;
@@ -407,6 +412,13 @@
                 &:hover {
                     background-color: @msg-bg-color-dark;
                     background-color: var(--msg-bg-color-dark);
+                }
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
+                svg {
+                    margin: 0;
                 }
             }
         }
