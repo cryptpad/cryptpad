@@ -2289,7 +2289,7 @@ APP.recurrenceRule = {
                     if (event.type !== 'click' && event.key !== 'Enter' && event.key !== ' ' && event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
                         return;
                     }
-                    let isOpen = $el.find('.tui-full-calendar-open').length > 0;
+                    let isOpen = $el.find('.tui-full-calendar-dropdown-menu:visible').length > 0;
                     toggleAriaExpanded(!isOpen);
                     if (!isOpen && event.key !== 'ArrowUp') {
                         $dropdownMenu.find('li').first().focus();
@@ -2297,6 +2297,10 @@ APP.recurrenceRule = {
                     else if(!isOpen){
                         $dropdownMenu.find('li').last().focus();
                     }
+                    // If the menu is close, don't propagate the event
+                    // to make sure the "document" won't catch the click
+                    // and close the menu (we want to open it)
+                    if (!isOpen) { event.stopPropagation(); }
                 });
                 // click outside the dropdown button => closes the dropdown => aria-expanded is false
                 $(document).on('click', function (event) {
