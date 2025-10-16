@@ -16443,7 +16443,7 @@
         if (typeof document === "undefined") {
             throw new Error("`createIcons()` only works in a browser environment.");
         }
-        const elementsToReplace = document.querySelectorAll(`[${nameAttr}]`);
+        const elementsToReplace = document.querySelectorAll(`:not(svg)[${nameAttr}]`);
         Array.from(elementsToReplace).forEach(
             (element) => replaceElement(element, { nameAttr, icons, attrs })
         );
