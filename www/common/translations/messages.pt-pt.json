@@ -1373,7 +1373,6 @@
     "admin_broadcastTitle": "Transmitir mensagem",
     "admin_surveyActive": "Abrir pesquisa",
     "pad_settings_width_small": "Modo de página",
-    "register_notes": "<ul class=\"cp-notes-list\"><li>Sua senha é a chave secreta que criptografa todos os seus documentos. <span class=\"red\">Se você perdê-la, não haverá como recuperar seus dados.</span></li><li>Se você estiver usando um computador compartilhado, <span class=\"red\">lembre-se de fazer log out</span> quando terminar. Apenas fechar a janela do navegador deixa sua conta exposta.</li><li>Para manter os documentos que você criou e / ou armazenou sem estar logado, marque \"Importar documentos da sua sessão de visitante\".</li></ul>",
     "form_editMaxLength": "Número máximo de caracteres",
     "admin_limitPlan": "Plano: {0}",
     "todo_move": "A sua lista de tarefas está agora no kanban <b>{0}</b> na sua Drive.",
