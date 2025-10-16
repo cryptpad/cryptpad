@@ -52,8 +52,7 @@ var grep = function (pattern, cb) {
         './github/*',
         '*.svg',
         '*.md',
-        './config/*',
-        'www/oldadmin/*', // XXX
+        './config/*'
     ].map(function (patt) {
         return "':(exclude)" + patt + "'";
     }).join(' ');

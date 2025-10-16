@@ -1165,7 +1165,6 @@ define([
                 window.open('/bounce/#'+encodeURIComponent(href));
                 return;
             }
-            // XXX
             window.parent.location = href;
         });
         if (exitable) {

@@ -31,7 +31,7 @@ const factory = function (AppConfig = {}) {
         MAX_PREMIUM_TEAMS_SLOTS: Math.max(AppConfig.maxTeamsSlots || 0, AppConfig.maxPremiumTeamsSlots || 0) || 5,
         MAX_PREMIUM_TEAMS_OWNED: Math.max(AppConfig.maxOwnedTeams || 0, AppConfig.maxPremiumTeamsOwned || 0) || 5,
         // Apps
-        criticalApps: ['profile', 'settings', 'debug', 'admin', 'support', 'notifications', 'calendar', 'moderation', 'oldadmin'], // XXX oldadmin
+        criticalApps: ['profile', 'settings', 'debug', 'admin', 'support', 'notifications', 'calendar', 'moderation'],
         earlyAccessApps: []
     };
 };
