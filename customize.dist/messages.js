@@ -134,33 +134,6 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    // XXX
-    Messages.password_note1 = 'Your password is the secret key that encrypts all of your documents.';
-    Messages.password_note2 = 'If you lose it there is no way we can recover your data.';
-    Messages.password_note3 = "Your password is the secret key that encrypts all of your documents and administrator privileges on this instance.";
-    Messages.computer_note = 'If you are using a shared computer, {0}remember to log out{1} when you are done. Only closing the browser window leaves your account exposed.';
-    Messages.import_note = 'To keep the documents you created and/or stored without being logged in, tick "Import documents from your guest session".';
-    Messages.admin_creation_note =  "Create your first administrator account on this page. Administrators manage instance settings including storage quotas, and have access to moderation tools.";
-
-    Messages.forms_switchHorizontalAxe = 'Switch to horizontal layout';
-    Messages.forms_switchVerticalAxe = 'Switch to vertical layout';
-    Messages.forms_pollOptionNo = 'No';
-    Messages.forms_pollOptionYes = 'Yes';
-    Messages.forms_pollOptionMaybe = 'Maybe';
-
-    // to be changed with the actual color name (for forms)
-    Messages.color0 = 'No color';
-    Messages.color1 = 'Red';
-    Messages.color2 = 'Orange';
-    Messages.color3 = 'Yellow';
-    Messages.color4 = 'Green';
-    Messages.color5 = 'Dark green';
-    Messages.color6 = 'Turquoise';
-    Messages.color7 = 'Blue';
-    Messages.color8 = 'Purple';
-
-    Messages.loading_encrypted = "end-to-end encrypted";
-
     return Messages;
 
 });
