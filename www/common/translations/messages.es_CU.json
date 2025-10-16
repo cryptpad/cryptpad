@@ -1232,7 +1232,6 @@
     "snapshot_error_exists": "Ya existe una instantánea de esta versión",
     "snapshots_notFound": "Esta instantánea ya no existe porque se eliminó el historial del documento.",
     "snapshots_cantMake": "No se pudo crear la instantánea. Estás desconectado.",
-    "register_notes": "<ul class=\"cp-notes-list\"><li>Su contraseña es la clave secreta que cifra todos sus documentos. <span class=\"red\">Si lo pierdes no hay manera de que podamos recuperar tus datos.</span></li><li>Si está utilizando una computadora compartida, <span class=\"red\">recuerda cerrar sesión</span> cuando acabes. Sólo cerrar la ventana del navegador deja tu cuenta expuesta.</li><li>Para conservar los documentos que creó y/o almacenó sin iniciar sesión, marque \"Importar documentos desde su sesión de invitado\". </li></ul>",
     "register_warning_note": "Debido a la naturaleza cifrada de CryptPad, los administradores del servicio no podrán recuperar datos en caso de que olvide su nombre de usuario y/o contraseña. Guárdelos en un lugar seguro.",
     "creation_expiresIn": "Destruir en",
     "creation_helperText": "Abrir en documentación",
@@ -1779,6 +1778,5 @@
     "admin_diskUsageWarning": "¡Úselo con precaución! Dependiendo del tamaño de los datos almacenados en la instancia, generar este informe puede consumir toda la memoria disponible en el servidor y provocar una falla.",
     "loading_mfa_required": "En esta instancia requiere de autenticación de dos factores. Actualiza tu cuenta utilizando una aplicación de autenticación y el formulario a continuación.",
     "admin_invitationHint": "Los enlaces de invitación crean una cuenta cada uno, incluso si el registro está cerrado. El nombre de usuario y el correo electrónico son únicamente para fines de identificación. CryptPad no enviará por correo electrónico el enlace de invitación (ni cualquier otra cosa), copia el enlace y envíelo utilizando el canal seguro de tu elección.",
-    "support_privacyTitle": "Responder anónimamente",
-    "install_notes": "<ul class=\"cp-notes-list\"><li>Crea tu primera cuenta de administrador en esta página. Los administradores administran la configuración de la instancia, incluidas las cuotas de almacenamiento, y tienen acceso a herramientas de moderación.</li><li>Tu contraseña es la clave secreta que cifra todos tus documentos y privilegios de administrador en esta instancia. <span class=\"red\">Si la pierdes, no hay forma de que podamos recuperar tus datos.</span></li><li>Si estás utilizando una computadora compartida, <span class=\"red\">recuerda cerrar sesión</span> cuando acabes. Sólo cerrar la ventana del navegador deja tu cuenta expuesta. </li></ul>"
+    "support_privacyTitle": "Responder anónimamente"
 }
