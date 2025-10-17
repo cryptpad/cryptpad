@@ -752,7 +752,7 @@ define([
             }
             var day = _date && allDays[_date.getDay()];
             return h('div.cp-poll-cell.cp-form-poll-option', {
-                id: 'cp-form-option-' + index,
+                'data-index': index,
                 title: data,
             }, [
                 opts.type === 'day' ? h('span.cp-form-weekday', day) : undefined,
@@ -1066,6 +1066,8 @@ define([
         if (!href) { return; }
         APP.common.openUnsafeURL(href);
     };
+
+    const pollLabels = [Messages.forms_pollOptionNo, Messages.forms_pollOptionYes, Messages.forms_pollOptionMaybe];
 
     var STATIC_TYPES = {
         md: {
@@ -2659,9 +2661,9 @@ define([
                 var disabled = false;
 
                 var updateAriaLabel = function ($c, val, index) {
-                    const labels = [Messages.forms_pollOptionNo, Messages.forms_pollOptionYes, Messages.forms_pollOptionMaybe];
-                    const currentLabelText = $('#cp-form-option-' + index).text().trim();
-                    $c.attr('aria-label', currentLabelText + ', ' + labels[val]);
+                    //const currentLabelText = $('#cp-form-option-' + index).text().trim();
+                    const optionLabel = $c.closest('.cp-form-type-poll').find(`.cp-form-poll-option[data-index=${index}] span`).text().trim();
+                    $c.attr('aria-label', optionLabel + ', ' + pollLabels[val]);
                 };
                 // Add form
                 var addLine = extractValues(opts.values).map(function (data,index) {
