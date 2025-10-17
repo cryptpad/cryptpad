@@ -2661,7 +2661,6 @@ define([
                 var disabled = false;
 
                 var updateAriaLabel = function ($c, val, index) {
-                    //const currentLabelText = $('#cp-form-option-' + index).text().trim();
                     const optionLabel = $c.closest('.cp-form-type-poll').find(`.cp-form-poll-option[data-index=${index}] span`).text().trim();
                     $c.attr('aria-label', optionLabel + ', ' + pollLabels[val]);
                 };
@@ -4072,11 +4071,11 @@ define([
             if (APP.isEditor && !isStatic && data.isEmpty) {
                 if (!block.opts) { block.opts = Util.clone(TYPES[type].defaultOpts); }
                 var isRequired = Boolean(block.opts.required);
-                var radioOn = UI.createRadio('cp-form-required-'+uid, 'cp-form-required-on',
+                var radioOn = UI.createRadio('cp-form-required-'+uid, 'cp-form-required-on-'+uid,
                         Messages.form_required_on, isRequired, {
                             input: { value: 1 },
                         });
-                var radioOff = UI.createRadio('cp-form-required-'+uid, 'cp-form-required-off',
+                var radioOff = UI.createRadio('cp-form-required-'+uid, 'cp-form-required-off-'+uid,
                         Messages.form_required_off, !isRequired, {
                             input: { value: 0 },
                         });
