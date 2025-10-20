@@ -697,7 +697,13 @@
                 border-radius: @variables_radius;
                 background-color: @cp_sidebar-left-bg;
                 svg {
-                    margin: 0;
+                    margin-right: 0.25rem;
+                    flex-shrink: 0;
+                }
+                .cp-calendar-icon, .cp-calendar-actions {
+                    svg {
+                        margin: 0;
+                    }
                 }
                 &:not(.cp-unclickable) {
                     cursor: pointer;
@@ -793,6 +799,8 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                     padding: 0 5px;
+                    flex: 1;
+                    text-align: center;
                 }
             }
         }
