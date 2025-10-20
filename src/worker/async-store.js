@@ -493,7 +493,8 @@ const factory = (Sortify, UserObject, ProxyManager,
 
         Store.isNewChannel = function (clientId, data, cb) {
             if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
-            var channelId = data.channel || Hash.hrefToHexChannelId(data.href, data.password);
+            let channelId = typeof(data) === "string" ? data :
+                (data.channel || Hash.hrefToHexChannelId(data.href, data.password));
             store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
                 if (response && response.length && typeof(response[0]) === 'object') {
