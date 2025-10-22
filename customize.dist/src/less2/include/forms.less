@@ -64,12 +64,12 @@
         }
     }
     &.mfa-enabled {
-        span, i {
+        span, i, svg {
             color: @cp_settings_enabled;
         }
     }
     &.mfa-disabled {
-        span, i {
+        span, i, svg {
             color: @cp_settings_disabled;
         }
     }
@@ -137,7 +137,7 @@
             line-height: 30px;
             color: @cp_kanban-fg;
             border: 1px solid fade(@cp_kanban-fg, 40%);
-            &.fa-check { // tick on selected color
+            &.svg { // tick on selected color
                 color: @cryptpad_text_col;
             }
             outline: none;
@@ -150,28 +150,19 @@
     button.btn {
         background-color: @cp_buttons-cancel;
         box-sizing: border-box;
+        display: inline-flex;
         align-items: center;
+        justify-content: center;
         line-height: 20px;
         padding: 8px 6px;
         white-space: nowrap;
         text-align: center;
         text-transform: uppercase;
-        font-size: 14px;
+        font-size: @variables_button-font-size;
         text-decoration: none;
         cursor: pointer;
         border-radius: @variables_radius;
         transition: none;
-
-        &:not(.fa):not(.cptools) {
-            font-family: inherit;
-        }
-
-        i, .fa, .cptools {
-            &:not(.nomargin) {
-                margin-right: 5px;
-            }
-        }
-
         color: @cp_buttons-fg;
         border: 1px solid @cp_buttons-fg;
 
@@ -316,9 +307,6 @@
         font-size: 12px;
         padding: 5px;
         border-radius: @variables_radius;
-        i {
-            margin-right: 10px;
-        }
         &.cp-alert-top {
             margin-top: @alertify_padding-base;
         }
@@ -358,11 +346,6 @@
         &.dismissable {
             display: flex;
             align-items: center;
-            span.fa-times {
-                font-size: @colortheme_app-font-size;
-                margin-left: 20px;
-                cursor: pointer;
-            }
         }
     }
     .cp-banner {

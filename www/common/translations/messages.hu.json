@@ -182,7 +182,6 @@
     "contacts_request": "<em>{0}</em> szeretne ismerősének felvenni. <b>Elfogadod</b>?",
     "crowdfunding_popup_text": "<h3>Szükségünk van a segítségedre!</h3>A CryptPad aktív fejlesztésének érdekében fontold meg a projekt támogatását az OpenCollective oldalon keresztül, ahol megtekintheted az <b>ütemtervünket</b> és a <b>támogatási célokat</b>.",
     "form_poll_hint": "<i></i>: Igen, <i></i>: Nem, <i></i>: Elfogadható",
-    "register_notes": "<ul class=\"cp-notes-list\"><li>A jelszavad az a titkos komponens amivel a dokumentumokat titkosítjuk. <span class=\"red\">Ha elveszíted nincs semmi mód arra, hogy az adataidat helyreállítsd.</span></li><li>Ha mások által is használt gépen dolgozol, <span class=\"red\">ne felejts el kilépni</span> amikor készen vagy. Ha egyszerűen lezárod a böngészőablakot azzal kockáztatod adataid biztonságát. </li><li>Ha meg akarod őrizni azokat a dokumentumokat amiket belépés nélkül tároltál válaszd ki a „Vendég munkamenetek dokumentumainak importálása” opciót. </li></ul>",
     "fo_unavailableName": "Már létezik ilyen fájl vagy mappa a megadott útvonalon. Nevezd át és próbáld újra.",
     "broadcast_maintenance": "Tervezett karbantartás lesz <b>{0}</b> és <b>{1}</b> között. A CryptPad elérhetetlenné válhat ezidő alatt.",
     "admin_updateAvailableHint": "Új CryptPad verzió érhető el",

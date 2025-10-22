@@ -8,7 +8,7 @@ try {
     var theme = req.theme;
     var os = req.themeOS;
     window.CryptPad_theme = theme || os;
-    if ((theme || os) === 'dark') {
+    if ((theme || os) === 'dark') {
         var s = document.createElement('style');
         s.innerHTML = 'body { background: black; }';
         document.body.appendChild(s);

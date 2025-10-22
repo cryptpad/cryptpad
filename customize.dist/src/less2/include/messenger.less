@@ -62,12 +62,12 @@
         }
     }
 
-    span.cp-app-contacts-spinner {
+    .cp-app-contacts-spinner {
         display: none;
     }
 
     .cp-app-contacts-initializing {
-        span.cp-app-contacts-spinner {
+        svg.cp-app-contacts-spinner {
             color: @cp_messenger-fg;
             display: block;
         }
@@ -115,16 +115,19 @@
                     & > span:hover {
                         color: @msg-color-hover;
                     }
+                    svg {
+                        margin-right: 0.1rem;
+                    }
                 }
             }
-            i.cp-badge {
+            span.cp-badge {
                 color: var(--msg-bg-color-dark);
                 border-color: var(--msg-bg-color-dark);
             }
             &:hover {
                 background-color: @msg-bg-color-darker;
                 background-color: var(--msg-bg-color-darker);
-                i.cp-badge {
+                span.cp-badge {
                     color: var(--msg-bg-color-darker);
                     border-color: var(--msg-bg-color-darker);
                 }
@@ -174,9 +177,6 @@
                 margin: 10px;
                 display: none;
                 order: 3;
-                .fa-bell-slash {
-                    margin-right: 10px;
-                }
             }
         }
     }
@@ -247,7 +247,7 @@
         .cp-app-contacts-header {
             background-color: @msg-bg-color-lighter;
             background-color: var(--msg-bg-color-lighter);
-            i.cp-badge {
+            span.cp-badge {
                 color: var(--msg-bg-color-lighter);
                 border-color: var(--msg-bg-color-lighter);
             }
@@ -256,8 +256,12 @@
             justify-content: space-between;
             align-items: center;
             height: 50px;
+            svg {
+                margin-right: 0;
+            }
 
             .hover () {
+                cursor: pointer;
                 height: 100%;
                 line-height: 30px;
                 padding: 10px;
@@ -307,6 +311,7 @@
                 position: absolute;
                 top: 2px;
                 right: 2px;
+                margin: 0;
             }
         }
         .cp-app-contacts-chat {
@@ -392,6 +397,10 @@
                 &[disabled="true"] {
                     .tools_placeholder-color();
                 }
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
             }
             button {
                 height: 54px !important;
@@ -403,6 +412,13 @@
                 &:hover {
                     background-color: @msg-bg-color-dark;
                     background-color: var(--msg-bg-color-dark);
+                }
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
+                svg {
+                    margin: 0;
                 }
             }
         }

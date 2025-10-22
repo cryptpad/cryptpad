@@ -34,7 +34,8 @@ define([
     '/common/common-constants.js',
     '/components/localforage/dist/localforage.min.js',
     '/common/hyperscript.js',
-    '/common/extensions.js'
+    '/common/extensions.js',
+    '/common/common-icons.js'
 ], function (
     $,
     ApiConfig,
@@ -66,7 +67,8 @@ define([
     Constants,
     localForage,
     h,
-    Ext
+    Ext,
+    Icons
 ) {
     // Chainpad Netflux Inner
     var funcs = {};
@@ -751,7 +753,9 @@ define([
             // Ctrl || Meta (mac)
             if (e.ctrlKey || (navigator.platform === "MacIntel" && e.metaKey)) {
                 // Ctrl+E: New pad modal
+                var priv = ctx.metadataMgr.getPrivateData();
                 if (e.which === 69 && isApp) {
+                    if (priv.app === 'form' && !priv.canEdit && !priv.form_auditorKey) { return; }
                     e.preventDefault();
                     return void funcs.createNewPadModal();
                 }
@@ -840,7 +844,9 @@ define([
             ctx.sframeChan.on("EV_PAD_NODATA", function () {
                 var error = Pages.setHTML(h('span'), Messages.safeLinks_error);
                 var i = error.querySelector('i');
-                if (i) { i.classList = 'fa fa-shhare-alt'; }
+                if (i) {
+                    $(i).empty().append(Icons.get('share'));
+                }
                 var a = error.querySelector('a');
                 if (a) {
                     a.setAttribute('href', Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/user_account.html#confidentiality"));
@@ -933,7 +939,7 @@ define([
                 }
                 UI.errorLoadingScreen(msg, false, function () {
                     funcs.gotoURL('/drive/');
-                });
+                }, true);
             });
 
             ctx.sframeChan.on('EV_UNIVERSAL_EVENT', function (obj) {

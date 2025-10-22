@@ -4,6 +4,176 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+
+# 🍁 Autumn release (2025.9.0)
+
+## Goals
+
+This release improves the look and feel of CryptPad and resolves a long-standing technical debt by updating all icons in the product from Fontawesome 4.7 (2016) to [Lucide](https://lucide.dev/). Other improvements include a redesigned loading screen and bug fixes.
+
+## Features
+
+- Update icons [#1987](https://github.com/cryptpad/cryptpad/pull/1987)
+
+## Improvements
+
+- Loading screen [#2058](https://github.com/cryptpad/cryptpad/pull/2058)
+- Form participant UX fixes [#2007](https://github.com/cryptpad/cryptpad/pull/2007)
+- Improve keyboard & screen reader support for Forms [#1923](https://github.com/cryptpad/cryptpad/pull/1923)
+- Make client compatible with new server [#2059](https://github.com/cryptpad/cryptpad/pull/2059)
+- Guard against misconfiguration of `fileHost` setting [#2017](https://github.com/cryptpad/cryptpad/pull/2017) @ansuz
+- Add a checkup page test for `/upload-blob` [#1995](https://github.com/cryptpad/cryptpad/pull/1995) @ansuz
+- Add forceRedirect to SSO [#1868](https://github.com/cryptpad/cryptpad/pull/1868) @avinash-0007
+- SSO login redirect [#2057](https://github.com/cryptpad/cryptpad/pull/2057)
+
+
+## Fixes
+
+- OnlyOffice
+  - Make sure OnlyOffice user index does not change [#2066](https://github.com/cryptpad/cryptpad/pull/2066)
+  - Office documents corruption on server issues [#2064](https://github.com/cryptpad/cryptpad/pull/2064)
+  - Fix disappearing sheets [#1991](https://github.com/cryptpad/cryptpad/pull/1991)
+  - Hardcoded values in PDF export metadata [#2015](https://github.com/cryptpad/cryptpad/pull/2015)
+- Forms
+  - Fix deletion of conditional section contents [#2014](https://github.com/cryptpad/cryptpad/pull/2014)
+  - Remove nested conditionals [#2026](https://github.com/cryptpad/cryptpad/pull/2026)
+  -  Form auditor link fix [#2008](https://github.com/cryptpad/cryptpad/pull/2008)
+- Fix text-tools button visibility for Kanban card title editing [#2049](https://github.com/cryptpad/cryptpad/pull/2049)
+- Fix calendar-picker dropdown styling in event modal [#2031](https://github.com/cryptpad/cryptpad/pull/2031)
+- Can open files in read only mode from guest drive [#2025](https://github.com/cryptpad/cryptpad/pull/2025)
+- Update trigger/target branches for tests [#2023](https://github.com/cryptpad/cryptpad/pull/2023)
+- Switch to our new email address [#2018](https://github.com/cryptpad/cryptpad/pull/2018)
+- Very minor typo fix regarding macOS [#2056](https://github.com/cryptpad/cryptpad/pull/2056)
+- Fix minor typos in `docs/ARCHITECTURE.md` [#2050](https://github.com/cryptpad/cryptpad/pull/2050) @touilleMan
+
+## Deployment
+
+-  Performance improvements (2/3) to example-advanced.nginx.conf [#2005](https://github.com/cryptpad/cryptpad/pull/2005) @nisbet-hubbard
+
+## Dependencies
+
+- Upgraded
+  - `@node-saml/node-saml`: from ^4.0.5 to ^5.1.0
+  - `netflux-websocket`: from ^1.2.1 to ^1.3.0
+- Removed
+  - `components-font-awesome`
+  - `prompt-confirm`
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2025.6.0` please read the upgrade notes of all versions between yours and `2025.9.0` to avoid configuration issues.
+
+> [!WARNING]  
+> The CryptPad SSO plugin needs to be upgraded to a compatible version at the same time as CryptPad
+> - [SSO plugin 0.4.0](https://github.com/cryptpad/sso/releases/tag/0.4.0)
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch --depth 1 origin tag 2025.9.0
+git checkout 2025.9.0
+npm ci
+npm run install:components
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+## Contributors
+
+Community: @touilleMan, @ansuz, @nisbet-hubbard
+
+CryptPad team: @AAAMON @Chouhartem @dariiing @davidbenque @DianaXWiki @mathilde-cryptpad @wginolas @yflory @zuzanna-maria
+
+
+# 🌻 Summer 2025 release (2025.6.0)
+
+## Goals
+
+This release introduces badges that users can display on their avatar if they are instance administrator, part of the moderation/support team, or subscriber on cryptpad.fr. We also include a host of improvements and fixes to forms, calendar, drive, accessibility and many more…
+
+## Features
+
+- Badges: instance administrators, moderation/support accounts, and subscribers on cryptpad.fr can now display a bage next to their avatar (activated in the new Profile settings)
+
+## Improvements
+
+- Accessibility
+  - Improve keyboard & screen reader support for Document access [#1913](https://github.com/cryptpad/cryptpad/pull/1913)
+  - Improve keyboard navigation & screen reader support for "Create New Document" modal [#1911](https://github.com/cryptpad/cryptpad/pull/1911)
+  - Improve screen reader support for register/login flow [#1910](https://github.com/cryptpad/cryptpad/pull/1910)
+  - Improve notification page accessibility, responsiveness and UI [#1848](https://github.com/cryptpad/cryptpad/pull/1848)
+  - Documentation notification can be dismissed via keyboard [#1847](https://github.com/cryptpad/cryptpad/pull/1847)
+  - Improve Kanban Tags accessibility with keyboard navigation [#1846](https://github.com/cryptpad/cryptpad/pull/1846)
+- QA and tests
+  - Workflow to automate Playwright tests [#1853](https://github.com/cryptpad/cryptpad/pull/1853)
+  - Only Office load messages [#1959](https://github.com/cryptpad/cryptpad/pull/1959)
+- Make text area markdown toolbar responsive [#1845](https://github.com/cryptpad/cryptpad/pull/1845)
+- Move profile modification to the settings page [#1960](https://github.com/cryptpad/cryptpad/pull/1960)
+-  Ability to delete multiple documents at once as an admin [#1973](https://github.com/cryptpad/cryptpad/pull/1973)
+- Upload static files using HTTP [#1925](https://github.com/cryptpad/cryptpad/pull/1925)
+- Add Diagram history [#1906](https://github.com/cryptpad/cryptpad/pull/1906)
+- Modularize and deduplicate worker code [#1898](https://github.com/cryptpad/cryptpad/pull/1898)
+- Deduplicate common files [#1872](https://github.com/cryptpad/cryptpad/pull/1872)
+
+
+## Fixes
+
+- Calendar
+  - Fix export bug on calendars with recurring event with expiry date [#1940](https://github.com/cryptpad/cryptpad/pull/1940)
+  - Fix missing recurring calendar after update [#1936](https://github.com/cryptpad/cryptpad/pull/1936)
+  - Improve responsiveness of the calendar preview popup & add screen reader support [#1849](https://github.com/cryptpad/cryptpad/pull/1849)
+- Form
+  - Use a default date rather than empty answer in Forms [#1931](https://github.com/cryptpad/cryptpad/pull/1931)
+  - Fix auditor features in forms [#1927](https://github.com/cryptpad/cryptpad/pull/1927)
+  - Reset form answers [#1908](https://github.com/cryptpad/cryptpad/pull/1908)
+- Drive
+  - Remove redundant ellipsis on desktop [#1907](https://github.com/cryptpad/cryptpad/pull/1907)
+  - Fix inconsistent behaviour in natural sort [#1894](https://github.com/cryptpad/cryptpad/pull/1894)
+  - Remove side splitter from drive on mobile  [#1857](https://github.com/cryptpad/cryptpad/pull/1857)
+- Presentation mode
+  - Fix exit from presentation mode on mobile [#1926](https://github.com/cryptpad/cryptpad/pull/1926)
+  - Make buttons visible in mobile version of presentation mode in slides [#1112](https://github.com/cryptpad/cryptpad/pull/1112) thanks @lemondevxyz 
+- Update config.example.js comment for admins section [#1963](https://github.com/cryptpad/cryptpad/pull/1963)
+- Fix AppConfig.disableFeedback [#1920](https://github.com/cryptpad/cryptpad/pull/1920)
+- fix typo in shebang of rc.d-cryptpad [#1885](https://github.com/cryptpad/cryptpad/pull/1885) thanks @p4tpr0
+- Fix mobile scrolling within kanban columns in arrow-buttons mode [#1873](https://github.com/cryptpad/cryptpad/pull/1873) thanks @xenofem 
+- Update contact page [#1869](https://github.com/cryptpad/cryptpad/pull/1869)
+- Fix diagram export [#1866](https://github.com/cryptpad/cryptpad/pull/1866) thanks @naitikraj1000
+
+## Deployment
+
+- Note that we have made a [change in the Nginx advanced example config](https://github.com/cryptpad/cryptpad/commit/30715da2bae25ad9868366cfdd28bdaec8160f50) that may need to be reflected in your own configuration.
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2025.3.1` please read the upgrade notes of all versions between yours and `2025.6.0` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch --depth 1 origin tag 2025.6.0
+git checkout 2025.6.0
+npm ci
+npm run install:components
+```
+
+1. Restart your server
+2. Review your instance's checkup page to ensure that you are passing all tests
+
+## Contributors
+
+Community: @p4tpr0, @naitikraj1000, @xenofem, @lemondevxyz 
+
+CryptPad team: @AAAMON @Chouhartem @dariiing @davidbenque @DianaXWIKI @mathilde-cryptpad @wginolas @yflory @zuzanna-maria
+
+
 # 2025.3.1
 
 ## Goals

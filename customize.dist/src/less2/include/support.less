@@ -43,9 +43,9 @@
     }
     .cp-support-attachments {
         display: flex;
-        .fa {
+        svg {
             cursor: pointer;
-            margin-right: 10px;
+            vertical-align: middle;
         }
         &> span {
             border: 1px solid @fromme-bg;
@@ -95,6 +95,9 @@
                 }
                 .cp-support-title-buttons {
                     margin-left: 1em;
+                    svg {
+                        margin: 0;
+                    }
                 }
             }
             .cp-support-ticket-tags {
@@ -155,6 +158,9 @@
                         display: none;
                         cursor: default;
                         position: relative;
+                        button svg {
+                            margin-right: 0;
+                        }
                         .cp-support-copydata {
                             position: absolute;
                             right: 0;
@@ -196,7 +202,7 @@
                         display: none;
                     }
                     .cp-support-hide {
-                        display: inline;
+                        display: inline-flex;
                     }
                 }
                 .cp-support-form-container {

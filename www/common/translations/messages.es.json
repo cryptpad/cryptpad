@@ -1035,7 +1035,6 @@
     "creation_helperText": "Abrir en documentación",
     "creation_expiresIn": "Destruir en",
     "register_warning_note": "Debido a la naturaleza encriptada de CryptPad, los administradores no podrán recuperar los datos en caso de que olvides tu nombre de usuario y/o contraseña. Por favor, guárdalos en un lugar seguro.",
-    "register_notes": "<ul class=\"cp-notes-list\"><li>Tu contraseña es la llave secreta que encripta todos tus documentos. <span class=\"red\">Si la pierdes no hay forma que podamos recuperar tus datos.</span></li><li>Si estás usando una computadora compartida, <span class=\"red\">recuerda cerrar la sesión</span> cuando termines. Cerrar solo la ventana del navegador dejará tu cuenta expuesta. </li><li>Para quedarte con los documentos que creaste y/o guardaste sin iniciar sesión, marca \"Importar documentos de tu sesión de invitado\".</li></ul>",
     "register_notes_title": "Notas importantes",
     "offlineError": "No se han podido sincronizar los datos más recientes, esta página no puede ser mostrada ahora. La carga continuará cuando tu conexión al servicio sea restaurada.",
     "share_noContactsOffline": "Actualmente estás fuera de línea. Los contactos no están disponibles.",

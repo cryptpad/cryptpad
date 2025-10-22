@@ -17,9 +17,10 @@ define([
     '/customize/pages.js',
     '/components/nthen/index.js',
     '/common/media-tag.js',
+    '/common/common-icons.js',
 
     '/components/file-saver/FileSaver.min.js',
-], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages, Pages, nThen, MT) {
+], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages, Pages, nThen, MT, Icons) {
     var module = {};
 
     var blobToArrayBuffer = function (blob, cb) {
@@ -70,7 +71,7 @@ define([
 
         var tableHeader = h('div.cp-fileupload-header', [
             h('div.cp-fileupload-header-title', h('span', Messages.fileTableHeader)),
-            h('div.cp-fileupload-header-close', h('span.fa.fa-times')),
+            h('div.cp-fileupload-header-close', Icons.get('close')),
         ]);
 
 
@@ -140,7 +141,7 @@ define([
 
             var $row = $table.find('tr[id="'+id+'"]');
 
-            $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(h('span.fa.fa-minus'));
+            $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(Icons.get('minus'));
             var $pv = $row.find('.cp-fileupload-table-progress-value');
             var $pb = $row.find('.cp-fileupload-table-progressbar');
             var $link = $row.find('.cp-fileupload-table-link');
@@ -172,7 +173,7 @@ define([
 
             file.uid = Util.uid();
             response.expect(file.uid, function (href) {
-                $link.prepend($('<span>', {'class': 'fa fa-external-link'}));
+                $link.prepend(Icons.get('external-link'));
                 $link.attr('href', href)
                     .click(function (e) {
                         e.preventDefault();
@@ -277,10 +278,10 @@ define([
                 //$lines.slice(0, $lines.length - 5).remove();
             }
 
-            var $cancel = $('<span>', {'class': 'cp-fileupload-table-cancel-button fa fa-times'}).click(function () {
+            var $cancel = $('<span>', {'class': 'cp-fileupload-table-cancel-button'}, Icons.get('close')).click(function () {
                 queue.queue = queue.queue.filter(function (el) { return el.id !== id; });
                 $cancel.remove();
-                $tr.find('.cp-fileupload-table-cancel').addClass('cancelled').html('').append(h('span.fa.fa-minus'));
+                $tr.find('.cp-fileupload-table-cancel').addClass('cancelled').html('').append(Icons.get('minus'));
                 $tr.find('.cp-fileupload-table-progress-value').text(Messages.upload_cancelled);
             });
 
@@ -290,8 +291,8 @@ define([
             }).append(h('span.cp-fileupload-table-name', obj.dl ? obj.name : obj.metadata.name));
 
             var typeIcon;
-            if (obj.dl) { typeIcon = h('span.fa.fa-arrow-down', { title: Messages.download_dl }); }
-            else { typeIcon = h('span.fa.fa-arrow-up', { title: Messages.upload_up }); }
+            if (obj.dl) { typeIcon = Icons.get('download', { title: Messages.download_dl }); }
+            else { typeIcon = Icons.get('upload', { title: Messages.upload_up }); }
 
             // type (download / upload)
             $('<td>', {'class': 'cp-fileupload-table-type'}).append(typeIcon).appendTo($tr);
@@ -311,7 +312,6 @@ define([
             if (diff && diff > 0) {
                 $table.css('margin-right', diff+'px');
             }
-
             queue.next();
         };
 
@@ -650,13 +650,13 @@ define([
             var $link = $row.find('.cp-fileupload-table-link');
 
             var done = function () {
-                $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(h('span.fa.fa-check'));
+                $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(Icons.get('check'));
                 queue.inProgress = false;
                 queue.next();
             };
 
             var cancelled = function () {
-                $row.find('.cp-fileupload-table-cancel').addClass('cancelled').html('').append(h('span.fa.fa-minus'));
+                $row.find('.cp-fileupload-table-cancel').addClass('cancelled').html('').append(Icons.get('minus'));
                 queue.inProgress = false;
                 queue.next();
             };
@@ -723,7 +723,7 @@ define([
             };
 
             var dl = downloadFunction(ctx, data, function (err, obj) {
-                $link.prepend($('<span>', {'class': 'fa fa-external-link'}))
+                $link.prepend(Icons.get('external-link'))
                     .attr('href', '#')
                     .click(function (e) {
                     e.preventDefault();
@@ -741,8 +741,8 @@ define([
             var $cancel = $row.find('.cp-fileupload-table-cancel').html('');
             if (dl && dl.cancel) {
                 $('<span>', {
-                    'class': 'cp-fileupload-table-cancel-button fa fa-times'
-                }).click(function () {
+                    'class': 'cp-fileupload-table-cancel-button'
+                }, Icons.get('close')).click(function () {
                     dl.cancel();
                     $cancel.remove();
                     $row.find('.cp-fileupload-table-progress-value').text(Messages.upload_cancelled);

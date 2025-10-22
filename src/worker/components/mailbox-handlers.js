@@ -849,6 +849,8 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
         if (!teamId) { return void cb(false); }
 
         var team = ctx.store.proxy.teams[teamId];
+        if (!team) { return void cb(false); }
+
         content.teamName = team.metadata && team.metadata.name;
         cb(false);
     };

@@ -4,6 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
+@font-face {
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 500;
+    src: url("/customize/fonts/IBMPlexMono-Medium.woff2") format("woff2"), url("/customize/fonts/IBMPlexMono-Medium.woff") format("woff"); }
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot');
+  src: url('/components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot?#iefix') format('embedded-opentype'),
+       url('/components/open-sans-fontface/fonts/Regular/OpenSans-Regular.woff') format('woff'),
+       url('/components/open-sans-fontface/fonts/Regular/OpenSans-Regular.ttf') format('truetype'),
+       url('/components/open-sans-fontface/fonts/Regular/OpenSans-Regular.svg#OpenSansLight') format('svg');
+  font-weight: 300;
+  font-style: normal;
+}
+
 .cp-app-noscroll body {
     background: transparent;
 }
@@ -21,61 +38,79 @@
     left: 0px;
     right: 0px;
     background-color: #EEEEEE; /* @cp_loading-bg */
-    color: #424242; /* @cp_loading-fg */
+    color: #757575; /* grey_600 */
     font-size: 1.3em;
     line-height: 120%;
     opacity: 1;
     display: flex;
     flex-flow: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    font: 20px 'Helvetica Neue', sans-serif !important;
+    font: 20px 'Open Sans', sans-serif !important;
 }
-html:not(.cp-app-noscroll) #placeholder.dark-theme {
+html #placeholder.dark-theme {
     background-color: #212121; /* @cp_loading-bg (dark) */
 }
 #placeholder.dark-theme {
-    color: #EEEEEE; /* @cp_loading-fg (dark) */
+    color: #BDBDBD; /* grey_400 */
 }
 
 #placeholder .placeholder-logo-container {
-    height: 300px;
-    width: 300px;
-    margin-top: 50px;
-    flex: 0 1 auto;
-    min-height: 0;
-    text-align: center;
-    opacity: 0;
-    animation: fadein 5s ease 2s forwards;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #939393;
 }
 #placeholder .placeholder-logo-container img {
-    max-width: 100%;
-    max-height: 100%;
+    margin: 0;
+    max-height: 60px;
+}
+#placeholder .placeholder-logo-container span {
+    font-size: 40px;
+    font-family: "IBM Plex Mono";
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    cursor: pointer;
 }
 #placeholder .placeholder-message-container {
     width: 700px;
     max-width: 90vw;
-    height: 236px;
+    height: auto;
     max-height: calc(100vh - 20px);
-    margin: 50px;
     flex-shrink: 0;
     display: flex;
     flex-flow: column;
     align-items: center;
+    justify-content: center;
     opacity: 0;
     animation: fadein 5s ease 2s forwards;
 }
 #placeholder .placeholder-message-container p {
     margin-top: 0;
 }
-#placeholder .placeholder-logo {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 90vw;
-    max-height: max(40vh, 250px);
-    width: auto;
-    height: auto;
-    margin-bottom: 2em;
+
+#placeholder-loading-status {
+    font-size: 0.75em;
+    margin-top: 2rem;
+    font-family: "IBM Plex Mono";
+    svg {
+        margin: 0;
+    }
+}
+#placeholder-loading-footer {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+
+    flex: 0 1 auto;
+    min-height: 0;
+    opacity: 0;
+    animation: fadein 5s ease 2s forwards;
 }
 
 @keyframes fadein {
@@ -87,21 +122,18 @@ html:not(.cp-app-noscroll) #placeholder.dark-theme {
     #placeholder {
         font-size: 16px !important;
     }
-    #placeholder .placeholder-message-container {
-        height: 206px;
+}
+@media screen and (max-width: 300px) {
+    #placeholder .placeholder-logo-container img {
+        max-height: 40px;
+    }
+    #placeholder .placeholder-logo-container span {
+        font-size: 20px;
     }
 }
-@media screen and (max-height: 700px) {
+@media screen and (max-height: 600px) {
     #placeholder {
         font-size: 16px !important;
-    }
-    #placeholder .placeholder-message-container {
-        height: 206px;
-    }
-}
-@media screen and (max-height: 500px) {
-    #placeholder .placeholder-logo-container {
-        display: none;
     }
 }
 :is(div, noscript) > p.noscript {

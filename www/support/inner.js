@@ -17,9 +17,9 @@ define([
     '/api/config',
     '/customize/application_config.js',
     '/customize/pages.js',
+    '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/support/app-support.less',
 ], function (
     $,
@@ -35,7 +35,8 @@ define([
     Support,
     ApiConfig,
     AppConfig,
-    Pages
+    Pages,
+    Icons
     )
 {
     var APP = window.APP = {};
@@ -226,7 +227,7 @@ define([
         Pages.documentationLink($div.find('a')[0], 'https://docs.cryptpad.org/en/user_guide/index.html');
 
         var form = APP.support.makeForm();
-
+        $div.find('button').prepend(Icons.get('send'));
         $div.find('button').click(function () {
             var data = APP.support.getFormData(form);
             APP.supportModule.execCommand('MAKE_TICKET', {
@@ -276,9 +277,9 @@ define([
     };
 
     var icons = {
-        tickets: 'fa-envelope-o',
-        new: 'fa-life-ring',
-        debugging: 'fa-wrench',
+        tickets: 'support-ticket',
+        new: 'support',
+        debugging: 'settings',
     };
 
     var createLeftside = function () {
@@ -296,9 +297,7 @@ define([
             }).appendTo($categories);
             var iconClass = icons[key];
             if (iconClass) {
-                $category.append(h('span', {
-                    class: 'fa ' + iconClass,
-                }));
+                $category.append(Icons.get(iconClass));
             }
 
             if (key === active) {

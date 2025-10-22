@@ -60,9 +60,9 @@
                     display: flex;
                     max-width: 100%;
                     align-items: center;
-                    .fa, .cptools {
-                        margin-right: 0;
-                        flex: 0;
+                    svg {
+                        min-width: @variables_icon_width;
+                        min-height: @variables_icon_height;
                     }
                     span.cp-sidebarlayout-category-name {
                         padding-left: 5px;
@@ -257,9 +257,6 @@
                 }
                 label.noTitle {
                     display: inline-flex;
-                    .fa {
-                        margin-left: 10px;
-                    }
                 }
                 margin-bottom: 20px;
             }
@@ -301,7 +298,7 @@
                 margin: 10px 0;
             }
             button.btn {
-                margin: 0 @sidebar_base-margin 0 0;
+                //margin: 0 @sidebar_base-margin 0 0;
                 &:last-child {
                     margin-right: 0;
                 }

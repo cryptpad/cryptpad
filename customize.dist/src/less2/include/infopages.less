@@ -51,6 +51,11 @@ body.html {
         outline: @variables_focus_style;
         border-radius: @variables_radius;
     }
+    .lucide {
+        width: @variables_icon_width;
+        height: @variables_icon_height;
+        margin-right: @variables_icon_margin;
+    }
     border: 0;
     padding: 0;
     margin: 0;
@@ -209,10 +214,8 @@ body.html {
                 border-radius: @infopages-radius;
                 padding: 0.5em 0.7em;
                 white-space: nowrap;
-                display: inline-block;
-                i {
-                    margin-right: 5px;
-                }
+                display: inline-flex;
+                align-items: center;
                 &:hover {
                     background-color: @cp_static-card-bg;
                     color: @cryptpad_text_col;
@@ -225,10 +228,8 @@ body.html {
         .cp-footer-language {
             padding: 10px;
             margin-right: 10px;
-            i {
-                font-size: 1.3em;
-                margin-right: 5px;
-            }
+            display: inline-flex;
+            align-items: center;
             select {
                 min-width: 0;
                 background-color: @cp_static-card-bg;
@@ -290,9 +291,11 @@ body.html {
             padding: 0.5em 0.7em;
             margin: 5px;
             color: @cp_static-link;
-            display: inline-block;
+            display: flex;
+            align-items: center;
             img {
-                max-height: 30px;
+                width: @variables_icon_width;
+                height: @variables_icon_height;
                 margin-right: 10px;
             }
             &.cp-back-home {
@@ -304,14 +307,10 @@ body.html {
             &:focus-visible {
                 outline: @variables_focus_style;
             }
-            i {
-                margin-right: 5px;
-            }
         }
         .cp-register-btn {
             background-color: @cp_static-topbar-fg;
             color: @cp_static-bg;
-            display: inline-block;
             &:hover {
                 background-color: @cp_static-card-bg;
                 color: @cryptpad_text_col;

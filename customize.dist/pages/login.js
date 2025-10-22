@@ -12,9 +12,15 @@ define([
     return function () {
         document.title = Msg.login_login;
 
-        var ssoEnabled = (Config.sso && Config.sso.list && Config.sso.list.length) ?'': '.cp-hidden';
-        var ssoEnforced = (Config.sso && Config.sso.force) ? '.cp-hidden' : '';
-
+        const ssoLength = Config?.sso?.list?.length;
+        const forceStandardLogin = window.location.hash === "#standard-login";
+        var ssoEnabled = (ssoLength && !forceStandardLogin) ? '': '.cp-hidden';
+        var ssoEnforced = (Config?.sso?.force && !forceStandardLogin) ? '.cp-hidden' : '';
+        if (ssoLength === 1 && ssoEnforced) {
+            // SSO enforced and only one provider:
+            // skip login page
+            return;
+        }
         return [h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [

@@ -17,9 +17,8 @@ define([
     '/common/hyperscript.js',
     '/common/extensions.js',
     '/customize/pages.js',
-
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
-], function (Config, $, Login, Cryptpad, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Extensions, Pages) {
+    '/common/common-icons.js',
+], function (Config, $, Login, Cryptpad, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Extensions, Pages, Icons) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;
     $(function () {
@@ -174,13 +173,12 @@ define([
             setTimeout(function () {
                 var span = h('span', [
                     h('h2', [
-                        h('i.fa.fa-warning'),
+                        Icons.get('alert'),
                         ' ',
                         Messages.register_warning,
                     ]),
                     Messages.register_warning_note
                 ]);
-
             UI.confirm(span, function (yes) {
                 if (!yes) { return; }
 

@@ -24,7 +24,7 @@ var map = {
     'pl': 'Polski',
     'pt-br': 'Português do Brasil',
     'pt-pt': 'Português do Portugal',
-    //'ro': 'Română',
+    'ro': 'Română',
     'ru': 'Русский',
     'sv': 'Svenska',
     //'te': 'తెలుగు',

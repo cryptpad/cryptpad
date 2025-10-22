@@ -25,6 +25,7 @@ const factory = (Sortify, UserObject, ProxyManager,
     const Saferphore = Util.Saferphore;
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
+    var onDriveReadyEvt = Util.mkEvent(true);
     var onPadRejectedEvt = Util.mkEvent(true);
 
     const setCustomize = data => {
@@ -392,7 +393,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            s.rpc.uploadStatus(data.size, function (err, res) {
+            s.rpc.uploadStatus({
+                id: data.id,
+                size: data.size
+            }, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);
             });
@@ -402,7 +406,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            s.rpc.uploadCancel(data.size, function (err, res) {
+            s.rpc.uploadCancel({
+                id: data.id,
+                size: data.size
+            }, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);
             });
@@ -412,7 +419,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            s.rpc.send.unauthenticated('UPLOAD', data.chunk, function (e, msg) {
+            s.rpc.send.unauthenticated('UPLOAD', {
+                chunk: data.chunk,
+                id: data.id
+            }, function (e, msg) {
                 cb({
                     error: e,
                     msg: msg
@@ -483,7 +493,8 @@ const factory = (Sortify, UserObject, ProxyManager,
 
         Store.isNewChannel = function (clientId, data, cb) {
             if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
-            var channelId = data.channel || Hash.hrefToHexChannelId(data.href, data.password);
+            let channelId = typeof(data) === "string" ? data :
+                (data.channel || Hash.hrefToHexChannelId(data.href, data.password));
             store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
                 if (response && response.length && typeof(response[0]) === 'object') {
@@ -1608,7 +1619,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             if (!Array.isArray(allowed)) { return void cb('ERESTRICTED'); }
 
             onPadRejectedEvt.fire();
-            onReadyEvt.reg(() => {
+            onDriveReadyEvt.reg(() => {
                 // There is an allow list: check if we can authenticate
                 if (!store.loggedIn || !store.proxy.edPublic) { return void cb('ERESTRICTED'); }
 
@@ -2570,6 +2581,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                     cacheCb(store.cacheReturned || store.returned);
                 });
                 onDriveReady(() => {
+                    onDriveReadyEvt.fire();
                     cb(store.returned);
                 });
 

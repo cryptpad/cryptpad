@@ -52,7 +52,6 @@
             font-size: 2.5em;
         }
     }
-
     .cp-home-hero {
         width: 100%;
         align-self: center;
@@ -90,9 +89,11 @@
         }
         .cp-instance-location {
             margin-top: 20px;
-            i {
+            display: inline-flex;
+            align-items: center;
+            svg {
                 font-size: 1.2em;
-                margin-right: 5px;
+                margin-right: @variables_icon_margin;
             }
         }
         .cp-instance-links {
@@ -126,15 +127,21 @@
             font-size: 1.4em;
             line-height: 100%;
             color: fade(@cryptpad_text_col, 80%);
-            i {
-                margin-right: 5px;
-            }
+            display: inline-flex;
+            align-items: center;
         }
         .cp-app-grid-apps {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             padding: 0 0.8rem;
+            svg {
+                margin: 0;
+            }
+            .lucide * {
+                stroke-width: 2.7;
+                vector-effect: non-scaling-stroke;
+            }
         }
         a {
             margin: 10px;
@@ -147,7 +154,7 @@
     @icons-text-size: 24px;
     .bs-callout {
         display: flex;
-        align-items: stretch;
+        align-items: center;
         margin: 0;
         box-sizing: border-box;
         position: relative;
@@ -167,11 +174,10 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            white-space: nowrap;
             text-overflow: ellipsis;
             font-size: 16px;
         }
-        .fa, .cptools {
+        svg {
             display: flex;
             align-items: center;
             font-size: 3.5em;
@@ -183,6 +189,8 @@
         .pad-button-text {
             color: @cryptpad_text_col;
             padding: 5px;
+            white-space: wrap;
+            text-align: center;
         }
     }
     .cp-index-appitem {
@@ -216,11 +224,11 @@
     each(@colortheme_apps, {
         .cp-callout-@{key} {
             border-radius: @infopages-radius;
-            i { color: @value; }
+            svg { color: @value; }
             &:hover {
                 @desat: desaturate(@value, 15%);
                 background-color: contrast(@cryptpad_text_col, lighten(@value, 30%), darken(@desat, 20%));
-                i { color: @cryptpad_text_col; }
+                svg { color: @cryptpad_text_col; }
             }
         }
     });
@@ -232,7 +240,8 @@
         a.cp-drive-btn {
             color: @cryptpad_text_col;
             font-size: 1.5rem;
-            display: block;
+            display: inline-flex;
+            align-items: center;
             height: min-content;
             flex-shrink: 0;
             width: fit-content;
@@ -245,10 +254,13 @@
             &:hover {
                 background-color: fade(@cryptpad_text_col, 10%);
             }
-            i {
+            svg {
                 color: @cryptpad_color_brand;
                 margin-right: 10px;
-                font-size: 1.3em;
+            }
+            svg.lucide, svg.lucide * {
+                stroke-width: 2;
+                vector-effect: non-scaling-stroke;
             }
         }
         .cp-sub-prompt {
@@ -263,7 +275,7 @@
                 margin: 10px 0;
                 border-radius: @infopages-radius-L;
                 padding: 0.75rem;
-                i {
+                svg {
                     display: inline;
                     margin-right: 10px;
                 }
@@ -288,10 +300,11 @@
         div {
             .infopages_link();
             color: @cryptpad_color_white;
-            .fa, .cptools {
+            svg {
                 font-size: inherit;
                 padding: 0;
-                width: 1em;
+                width: @variables_icon_width;
+                height: @variables_icon_height;
                 padding-left: 5px;
             }
         }

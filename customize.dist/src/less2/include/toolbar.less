@@ -51,10 +51,6 @@
     @toolbar_top-height: 76px;
     @toolbar_button-font: @colortheme_app-font;
 
-    // if we spell 'share' correctly, then adblock plus hides the share button
-    // this is a workaround
-    .fa-shhare-alt:before { content: "\f1e0"; }
-
     .ckeditor_fix();
 
     .cp-burn-after-reading {
@@ -77,7 +73,7 @@
             border-radius: @variables_radius;
             color: @toolbar-color;
             .toolbar_button;
-            padding: 3px 9px;
+            padding: 3px 7px;
             &:hover {
                 background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
             }
@@ -85,10 +81,11 @@
                 outline: @variables_focus_style;
             }
         }
-        @media screen and (max-width: @browser_media-medium-screen) {
-            button:nth-of-type(1) {
-                margin-left: 0;
-            }
+        svg {
+            margin: 0;
+        }
+        button:nth-of-type(1) {
+            margin-left: 0.2rem;
         }
     }
 
@@ -99,7 +96,7 @@
     .toolbar_button {
         height: @toolbar_line-height;
         box-sizing: border-box;
-        padding: 3px 10px;
+        padding: 5px 7px;
         margin: 0;
         transition: all 0.15s;
         .tools_unselectable();
@@ -166,6 +163,9 @@
         box-sizing: border-box;
         order: 100;
         z-index: 1;
+        span.cp-badge > svg.lucide {
+            width: 0.625rem; // ~10px
+        }
         .cp-toolbar-userlist-drawer-close {
             position: absolute;
             margin-top: -10px;
@@ -220,7 +220,7 @@
                 border-radius: @variables_radius;
                 border-right: 3px solid transparent;
                 .avatar_main(35px);
-                i.cp-badge {
+                span.cp-badge {
                     color: @cp_toolbar-bg2;
                     border-color: @cp_toolbar-bg2;
                 }
@@ -228,7 +228,7 @@
                     cursor: pointer;
                     &:hover {
                         background: @cp_toolbar-bg3;
-                        i.cp-badge {
+                        span.cp-badge {
                             color: @cp_toolbar-bg3;
                             border-color: @cp_toolbar-bg3;
                         }
@@ -259,6 +259,10 @@
                             border: none;
                             height: 20px;
                             cursor: pointer;
+                            svg {
+                                width: @variables_icon_width;
+                                margin: 0 0 @variables_icon_margin 0;
+                            }
                         }
                     }
                     .cp-toolbar-userlist-name-input {
@@ -280,10 +284,10 @@
                         padding: 0;
                     }
                     .cp-userlist-badge {
-                        i {
+                        span {
                             color: @cryptpad_color_brand;
                         }
-                        i.cp-badge-error {
+                        span.cp-badge-error {
                             color: @cryptpad_color_warn_red;
                         }
                     }
@@ -298,7 +302,16 @@
 
     #cp-app-toolbar-creation-dialog.cp-modal-container {
         .icons_main();
+        h3 {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
 
+            svg {
+                height: 2rem;
+                width: 2rem;
+            }
+        }
         li {
             color: @cp_drive-fg;
             border: 1px solid @cp_drive-icon-border;
@@ -310,8 +323,21 @@
         .cp-modal {
             display: flex;
             flex-flow: column;
-            li, li .fa {
+            li {
                 cursor: pointer;
+                svg.lucide * {
+                    stroke-width: 3.5;
+                    vector-effect: non-scaling-stroke;
+                }
+                @media screen and (max-width: @browser_media-medium-screen) {
+                    svg {
+                        margin: 0 @variables_icon_margin 0 @variables_icon_margin;
+                        width: 2.5rem;
+                    }
+                    svg.lucide, svg.lucide * {
+                        stroke-width: 2;
+                    }
+                }
             }
             &> p {
                 text-align: center;
@@ -359,10 +385,6 @@
                         width: 200px;
                         display: flex;
                         align-items: center;
-                        .fa, .cptools {
-                            font-size: 32px;
-                            min-width: 50px;
-                        }
                         .cp-icons-name {
                             height: auto;
                             text-align: left;
@@ -412,10 +434,6 @@
         color: @toolbar-bg-color;
         color: var(--toolbar-bg-color);
 
-        .fa {
-            font: normal normal normal 14px/1 FontAwesome;
-        }
-
         .tools_unselectable();
 
         font: @toolbar_button-font;
@@ -426,9 +444,13 @@
             //height: 100%;
             //display: inline-block;
             button {
-                height: 100%;
                 margin: 0;
                 background: transparent;
+            }
+            svg {
+                height: @variables_icon_height;
+                width: @variables_icon_width;
+                margin-right: @variables_icon_margin;
             }
         }
 
@@ -436,6 +458,11 @@
             .toolbar_button;
             &.cp-notifications-bell, &.cp-maintenance-wrench {
                 color: @cryptpad_text_col;
+                svg {
+                    margin:0;
+                    height: 2.5rem;
+                    width: 2.5rem;
+                }
             }
         }
 
@@ -526,9 +553,6 @@
                         line-height: @toolbar_line-height;
                         display: inline-flex;
 
-                        .fa {
-                            font-size: @colortheme_app-font-size;
-                        }
                     }
                     input {
                         height: @toolbar_line-height;
@@ -550,9 +574,6 @@
                     //transform: scale(0.5);
                     .cp-toolbar-link-logo {
                         padding: 5px;
-                        span {
-                            font-size: 24px;
-                        }
                     }
                 }
                 .cp-toolbar-user {
@@ -601,6 +622,12 @@
                         line-height: 32px;
                         margin: 0;
                     }
+                    .cp-notifications-bell {
+                        svg {
+                            width: @variables_icon_width;
+                            height: @variables_icon_height;
+                        }
+                    }
                 }
             }
         }
@@ -648,12 +675,7 @@
             .cp-toolbar-title-edit, .cp-toolbar-title-save {
                 display: flex;
                 align-items: center;
-                font-size: 20px;
-                vertical-align: middle;
                 border-radius: 0 @variables_radius @variables_radius 0;
-                .fa {
-                    font-size: 20px;
-                }
             }
             .cp-toolbar-title-readonly {
                 margin-left: 10px;
@@ -699,8 +721,8 @@
                 border: 1px solid transparent;
                 padding: 0 5px;
                 border-collapse: collapse;
-                span {
-                    cursor: pointer;
+                svg {
+                    margin: 0;
                 }
             }
             .cp-toolbar-title-save {
@@ -709,8 +731,8 @@
                 cursor: pointer;
                 padding: 5px;
                 border-collapse: collapse;
-                span {
-                    cursor: pointer;
+                svg {
+                    margin: 0;
                 }
             }
             .cp-toolbar-title-value {
@@ -780,7 +802,7 @@
                 .cp-dropdown-button-title {
                     position: absolute;
                     bottom: 10px;
-                    right: 16px;
+                    right: 13px;
                     font-size: 14px;
                     border: 1px solid;
                     border-radius: 50%;
@@ -814,36 +836,27 @@
             justify-content: center;
             cursor: pointer;
             order: 1;
-            .fa {
-                margin: 0;
-            }
             a.cp-toolbar-link-logo {
                 cursor: pointer;
                 display: inline-flex;
                 text-decoration: none;
+                position: absolute;
                 height: auto;
-                padding: 10px;
                 color: @toolbar-bg-color;
                 color: var(--toolbar-bg-color);
                 border-radius: @variables_radius;
-
-                span {
-                    font-size: 45px;
+                padding: 0;
+                line-height: 0;
+                svg {
+                    height: 3rem;
+                    width: 3rem;
+                    margin: 0;
                 }
 
-                &:hover {
-                    // Icons shown when hovering the toolbar icon (where logo used to be)
-                    .cptools::before {
-                        content: "\e920"; // shows drive icon in document toolbars
-                    }
-                    .fa::before {
-                        content: "\f0a0"; // shows hdd-o for all FA icons (settings, etc)
-                    }
-                    .fa-hdd-o::before {
-                        content: "\f015"; // shows home for drive
-                    }
+                .lucide * {
+                    stroke-width: 3;
+                    vector-effect: non-scaling-stroke;
                 }
-
                 // svg {
                 //     #outline, #squares {
                 //         fill: @toolbar-bg-color;
@@ -860,6 +873,21 @@
                 //     width: 100%;
                 // }
             }
+            @media screen and (max-height: @browser_media-medium-screen),
+            screen and (max-width: @browser_media-medium-screen) {
+                a.cp-toolbar-link-logo {
+                    svg {
+                        width: @variables_icon_width;
+                        height: @variables_icon_height;
+                    }
+                    .lucide * {
+                        stroke-width: 1.5;
+                    }
+                }
+            }
+            a.cp-toolbar-link-logo > svg:nth-of-type(2){ display: none; }
+            a.cp-toolbar-link-logo:hover > svg:nth-of-type(1){ display: none; }
+            a.cp-toolbar-link-logo:hover > svg:nth-of-type(2){ display: block; }
         }
         .cp-toolbar-user {
             height: @toolbar_top-height;
@@ -994,6 +1022,8 @@
     }
     .cp-toolbar-dropdown-nowrap {
         white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
     }
     .cp-toolbar-bottom {
         color: @cp_toolbar-bottom-fg;
@@ -1047,6 +1077,11 @@
                 border-color: @cryptpad_text_col;
                 color: @cryptpad_text_col;
             }
+            .cp-toolbar-userlist-button {
+                svg {
+                    margin: 0;
+                }
+            }
             &.cp-toolbar-button-active {
                 background-color: @cp_toolbar-bg;
                 border-color: @cp_toolbar-fg;
@@ -1080,8 +1115,8 @@
         you hover perfectly. The same is true of the drive's grid/list view toggle.
 */
             position: relative;
-            .fa {
-                margin-right: 0px;
+            svg {
+                margin-right: 0;
             }
             .cp-collapsed-notif {
                 display: inline-block;
@@ -1104,7 +1139,7 @@
                 .cp-toolbar-name, .cp-button-name, .cp-dropdown-button-title {
                     display: none;
                 }
-                i, span {
+                span, svg {
                     margin-right: 0;
                 }
             }
@@ -1166,24 +1201,24 @@
             .cp-toolbar-icon-pad_toc {
                 order: 8;
             }
-            .cp-toolbar-file {
-                li, button {
-                    .fa-plus { order: 0; }
-                    .fa-history { order: 5; }
-                    .fa-hashtag { order: 10; }
-                    .fa-bookmark { order: 15; }
-                    .fa-upload { order: 20; }
-                    .fa-files-o { order: 25; }
-                    .fa-download { order: 30; }
-                    .fa-print { order: 35; }
-                    .fa-trash { order: 40; }
-                    .cp-toolbar-icon-pad-settings { order: 75; }
-                    .fa-info-circle { order: 100; }
+            .cp-toolbar-file li > a {
+                &.cp-toolbar-icon-newpad .lucide        { order: 0; }
+                &.cp-toolbar-icon-snapshots .lucide    { order: 5; }
+                &.cp-toolbar-icon-template .lucide      { order: 10; }
+                &.cp-toolbar-icon-pad-settings .lucide { order: 15; }
+                &.cp-toolbar-icon-history .lucide       { order: 20; }
+                &.cp-toolbar-icon-hashtag .lucide       { order: 25; }
+                &.cp-toolbar-icon-import-template .lucide { order: 30; }
+                &.cp-toolbar-icon-import .lucide        { order: 35; }
+                &.cp-toolbar-icon-copy .lucide          { order: 40; }
+                &.cp-toolbar-icon-export .lucide        { order: 45; }
+                &.cp-toolbar-icon-print .lucide         { order: 50; }
+                &.cp-toolbar-icon-forget .lucide        { order: 60; }
 
-                    .fa-question { order: 150; }
+                &.cp-toolbar-icon-properties .lucide    { order: 100; }
+                &.cp-toolbar-icon-help .lucide          { order: 150; }
 
-                    span { order: 1000; } // text always after icon
-                }
+                > span { order: 1000; } // text always after icon
             }
 
             .cp-toolbar-drawer-contentsss:empty ~ .cp-toolbar-drawer-button {
@@ -1209,9 +1244,6 @@
                 z-index: 10000; //Z cp-toolbar-drawer-content
                 color: @cp_dropdown-fg;
                 .tools_unselectable();
-                .fa {
-                    font-size: 17px;
-                }
                 &> span {
                     order: 8;
                     box-sizing: border-box;
@@ -1259,26 +1291,11 @@
         min-width: 200px;
         box-sizing: border-box;
         margin-bottom: 5px;
-        &> span.fa {
-            height: 20px;
-            width: 20px;
-            //margin: 8px;
-            line-height: 20px;
-            font-size: 20px;
-            text-align: center;
-        }
     }
     .cp-toolbar-readonly {
         margin-right: 5px;
         font-weight: bold;
         text-transform: uppercase;
-    }
-    .cp-toolbar-share {
-        a {
-            .fa {
-                margin-right: 5px;
-            }
-        }
     }
 }
 

@@ -22,7 +22,7 @@ define([
 
     var OS_HINTS = {
         "Win": "Windows",
-        "Mac": "MacOS",
+        "Mac": "macOS",
         "X11": "UNIX",
         "Linux": "Linux",
     };
