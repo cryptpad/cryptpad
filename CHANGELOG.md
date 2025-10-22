@@ -4,6 +4,91 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+
+# 🍁 Autumn release (2025.9.0)
+
+## Goals
+
+This release improves the look and feel of CryptPad and resolves a long-standing technical debt by updating all icons in the product from Fontawesome 4.7 (2016) to [Lucide](https://lucide.dev/). Other improvements include a redesigned loading screen and bug fixes.
+
+## Features
+
+- Update icons [#1987](https://github.com/cryptpad/cryptpad/pull/1987)
+
+## Improvements
+
+- Loading screen [#2058](https://github.com/cryptpad/cryptpad/pull/2058)
+- Form participant UX fixes [#2007](https://github.com/cryptpad/cryptpad/pull/2007)
+- Improve keyboard & screen reader support for Forms [#1923](https://github.com/cryptpad/cryptpad/pull/1923)
+- Make client compatible with new server [#2059](https://github.com/cryptpad/cryptpad/pull/2059)
+- Guard against misconfiguration of `fileHost` setting [#2017](https://github.com/cryptpad/cryptpad/pull/2017) @ansuz
+- Add a checkup page test for `/upload-blob` [#1995](https://github.com/cryptpad/cryptpad/pull/1995) @ansuz
+- Add forceRedirect to SSO [#1868](https://github.com/cryptpad/cryptpad/pull/1868) @avinash-0007
+- SSO login redirect [#2057](https://github.com/cryptpad/cryptpad/pull/2057)
+
+
+## Fixes
+
+- OnlyOffice
+  - Make sure OnlyOffice user index does not change [#2066](https://github.com/cryptpad/cryptpad/pull/2066)
+  - Office documents corruption on server issues [#2064](https://github.com/cryptpad/cryptpad/pull/2064)
+  - Fix disappearing sheets [#1991](https://github.com/cryptpad/cryptpad/pull/1991)
+  - Hardcoded values in PDF export metadata [#2015](https://github.com/cryptpad/cryptpad/pull/2015)
+- Forms
+  - Fix deletion of conditional section contents [#2014](https://github.com/cryptpad/cryptpad/pull/2014)
+  - Remove nested conditionals [#2026](https://github.com/cryptpad/cryptpad/pull/2026)
+  -  Form auditor link fix [#2008](https://github.com/cryptpad/cryptpad/pull/2008)
+- Fix text-tools button visibility for Kanban card title editing [#2049](https://github.com/cryptpad/cryptpad/pull/2049)
+- Fix calendar-picker dropdown styling in event modal [#2031](https://github.com/cryptpad/cryptpad/pull/2031)
+- Can open files in read only mode from guest drive [#2025](https://github.com/cryptpad/cryptpad/pull/2025)
+- Update trigger/target branches for tests [#2023](https://github.com/cryptpad/cryptpad/pull/2023)
+- Switch to our new email address [#2018](https://github.com/cryptpad/cryptpad/pull/2018)
+- Very minor typo fix regarding macOS [#2056](https://github.com/cryptpad/cryptpad/pull/2056)
+- Fix minor typos in `docs/ARCHITECTURE.md` [#2050](https://github.com/cryptpad/cryptpad/pull/2050) @touilleMan
+
+## Deployment
+
+-  Performance improvements (2/3) to example-advanced.nginx.conf [#2005](https://github.com/cryptpad/cryptpad/pull/2005) @nisbet-hubbard
+
+## Dependencies
+
+- Upgraded
+  - `@node-saml/node-saml`: from ^4.0.5 to ^5.1.0
+  - `netflux-websocket`: from ^1.2.1 to ^1.3.0
+- Removed
+  - `components-font-awesome`
+  - `prompt-confirm`
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2025.6.0` please read the upgrade notes of all versions between yours and `2025.9.0` to avoid configuration issues.
+
+> [!WARNING]  
+> The CryptPad SSO plugin needs to be upgraded to a compatible version at the same time as CryptPad
+> - [SSO plugin 0.4.0](https://github.com/cryptpad/sso/releases/tag/0.4.0)
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch --depth 1 origin tag 2025.9.0
+git checkout 2025.9.0
+npm ci
+npm run install:components
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+## Contributors
+
+Community: @touilleMan, @ansuz, @nisbet-hubbard
+
+CryptPad team: @AAAMON @Chouhartem @dariiing @davidbenque @DianaXWiki @mathilde-cryptpad @wginolas @yflory @zuzanna-maria
+
+
 # 🌻 Summer 2025 release (2025.6.0)
 
 ## Goals
