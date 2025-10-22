@@ -449,38 +449,6 @@ define([
     }
 
     assert(function (cb, msg) {
-        setWarningClass(msg);
-
-        var printMessage = function (value) {
-            msg.appendChild(h('span', [
-                "This instance hasn't opted out of participation in Google's ",
-                code('FLoC'),
-                " targeted advertizing network. ",
-
-                "This can be done by setting a ",
-                code('permissions-policy'),
-                " HTTP header with a value of ",
-                code('"interest-cohort=()"'),
-                " in the configuration of its reverse proxy instead of the current value (",
-                code(value),
-                "). See the provided NGINX configuration file for an example. ",
-
-                h('p', [
-                    link("https://www.eff.org/deeplinks/2021/04/am-i-floced-launch", 'Learn more'),
-                ]),
-            ]));
-        };
-
-        Tools.common_xhr('/', function (xhr) {
-            var header = xhr.getResponseHeader('permissions-policy') || '';
-            var rules = header.split(',');
-            if (rules.includes('interest-cohort=()')) { return void cb(true); }
-            printMessage(JSON.stringify(header));
-            cb(header);
-        });
-    });
-
-    assert(function (cb, msg) {
         msg.appendChild(h('span', [
             code('/api/broadcast'),
             " could not be loaded. This can be caused by an outdated application server or an incorrectly configured reverse proxy. ",
