@@ -567,7 +567,12 @@ define([
                 var app = common.getMetadataMgr().getPrivateData().ooType;
                 var d;
                 if (app === 'doc') {
-                    d = editor.GetDocument().Document;
+                    if (editor.GetDocument()) {
+                        d = editor.GetDocument().Document
+                    } else {
+                        d = undefined
+                    }
+                    // d = editor.GetDocument() ? editor.GetDocument().Document : undefined;
                 } else if (app === 'presentation') {
                     d = editor.GetPresentation().Presentation;
                 }
@@ -575,7 +580,7 @@ define([
                     APP.oldCursor = d.GetSelectionState();
                 }
             }
-            if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
+            if (APP.docEditor && APP.docEditor.destroyEditor() ) { APP.docEditor.destroyEditor(); } // Kill the old editor
             $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
             ooLoaded = false;
             oldLocks = {};
@@ -606,15 +611,18 @@ define([
             blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var data = {
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
-                index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex
+                index:  APP.revert ? ooChannel.currentIndex : ooChannel.cpIndex
             };
+            if (APP.revert) {
+                APP.revert = false;
+            }
             fixSheets();
 
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
             ooChannel.ready = false;
-            ooChannel.queue = [];
+            // ooChannel.queue = [];
             data.callback = function () {
                 if (APP.template) { APP.template = false; }
                 resetData(blob, file);
@@ -1457,7 +1465,7 @@ define([
                 return;
             }
 
-            debug(obj, 'toOOClient');
+            // debug(obj, 'toOOClient');
             APP.docEditor.sendMessageToOO(obj);
             if (obj && obj.type === "saveChanges") {
                 evIntegrationSave.fire();
@@ -1465,7 +1473,7 @@ define([
         };
 
         const fromOOHandler = function (obj) {
-            debug(obj, 'fromOOClient');
+            // debug(obj, 'fromOOClient');
             switch (obj.type) {
                 case "auth":
                     // Handled by onlyoffice-editor now
@@ -2221,7 +2229,7 @@ define([
                 c.forcesave = true;
             }
 
-            console.error('updated config', ooconfig);
+            // console.error('updated config', ooconfig);
             return ooconfig;
         };
 
@@ -3158,7 +3166,29 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onCheckpoint = function (cp) {
                     // We want to load a checkpoint:
-                    loadCp(cp);
+                    loadCp(cp, true);
+                };
+                var onPatchBack = function (cp, msgs) {
+                    if (msgs) {
+                        msgsFormatted = [];
+                        msgs.forEach(function(msg) {
+                            var parsedMsg = JSON.parse(msg.msg);
+        
+                            var formattedMsg = {
+                                msg: parsedMsg,
+                                hash: msg.serverHash, 
+                                author: msg.author,
+                                time: msg.time
+                            };
+                            msgsFormatted.push(formattedMsg);
+                        })
+                        ooChannel.queue = msgsFormatted;
+                        setTimeout(function () {
+                            loadCp(cp, true);
+                        }, 200);
+                    } else {
+                        loadCp(cp);
+                    }
                 };
                 var setHistoryMode = function (bool) {
                     if (bool) {
@@ -3226,6 +3256,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     Feedback.send('OO_HISTORY');
                     var histConfig = {
                         onPatch: onPatch,
+                        onPatchBack: onPatchBack,
+                        loadCp: loadCp,
                         onCheckpoint: onCheckpoint,
                         onRevert: commit,
                         setHistory: setHistoryMode,
