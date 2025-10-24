@@ -276,7 +276,7 @@ define([
             return;
         }
         // This is not a friend yet: we can send a friend request
-        $button.text(Messages._getKey('userlist_addAsFriendTitle', [data.name || Messages.anonymous]))
+        $button.empty().append([Icons.get('add-friend'), h('span', Messages._getKey('userlist_addAsFriendTitle', [data.name || Messages.anonymous]))])
             .click(function () {
                 APP.common.sendFriendRequest({
                     curvePublic: data.curvePublic,
