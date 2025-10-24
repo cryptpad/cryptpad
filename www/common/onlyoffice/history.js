@@ -49,32 +49,8 @@ define([
                         config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
 
         var fillOO = function (messages, ooCheckpoints) {
-            // if (!id) { return; }
-
-            // if (ooMessages[id]) { return; }
-
-            ooMessages = {}
+            ooMessages = {};
             ooMessages[id] = messages;
-            // update();
-            // var checkpoints = [];
-            // Object.keys(ooCheckpoints).forEach(function(key) {
-            //     checkpoints.push(ooCheckpoints[key].index);
-            // })
-            // checkpoints.forEach((current, index) => {
-            //     var preceding = index > 0 ? checkpoints[index - 1] : 1;
-            //     ooMessages[index+1] = messages.slice(preceding-1, current-1);
-            // });
-            // var cpMessages = Object.values(ooMessages).flat().length;
-            // var messageDiff = messages.length - cpMessages;
-            // if (messageDiff !== 0 && cpMessages) {
-            //     var keys = Object.keys(ooMessages);
-            //     var currentM = parseInt(keys[keys.length - 1]);
-            //     ooMessages[currentM+1] = messages.slice(-messageDiff);
-            // } else if (messageDiff !== 0 && !cpMessages) {
-            //     ooMessages[1] = messages;
-            // }
-            // id = id ? id : getId();
-            // update();
         };
 
         if (endWithCp) { cpIndex = 0; }
@@ -88,22 +64,46 @@ define([
 
         var getVersion = function (position) {
             if (Object.keys(ooMessages).length) {
-                var major = id === 0 ? 0 : id-1;
+                var major = (id === -1 || id === 0) ? 0 : id;
+                console.log("MAJOR", id, ooMessages[id], )
                 return major + '.' + position;
             }
 
         };
         var showVersion = function (initial, position) {
+            if (!position) {
+                position = 0
+            }
             var v = getVersion(position);
             if (initial) {
                 v = Messages.oo_version_latest;
             }
+            
             $version.text(Messages.oo_version + v);
 
             var $pos = $hist.find('.cp-history-timeline-pos');
             if (!ooMessages[id]) { return; }
             var msgs = ooMessages[id];
-            var p = 100*((msgIndex+1) / (msgs.length));
+            var p;
+             
+            if (!Object.keys(hashes).length) {
+                p = 100-100*((msgIndex+1) / (-msgs.length));
+                p = Math.sign(p) === -1 ? 0 : p
+
+            } else {
+                var pId = id
+                if (id) {
+                    p = 100-100*(pId / Object.keys(hashes).length)
+
+
+                } else {
+                    p = 0
+                }
+                
+
+            }
+                        // console.log("VERSION", 10-((msgIndex+1) / (-msgs.length)), p)
+
             $pos.css('margin-left', p+'%');
 
             var time = msgs[msgIndex] && msgs[msgIndex].time;
@@ -212,12 +212,13 @@ define([
                 ) {
                 $prev.prop('disabled', 'disabled');
             }
-            var msgs = ooMessages[id]?.length;
-
+            
             if ((id === msgLength) && msgIndex === -1 || 
             id === -1 && msgIndex === -1 ||
             Object.keys(hashes)[0] === id && msgIndex === -1 && !prev ||
-            parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]) === id && parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length) {
+            parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]) === id 
+            && parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length ||
+            parseInt(Object.keys(hashes)[Object.keys(hashes).length - 2]) === id && msgIndex === -1) {
                 $fastNext.prop('disabled', 'disabled');
             } 
 
@@ -225,40 +226,26 @@ define([
             // id === -1 && msgIndex === -1,
             // (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev,
             // parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]) === id && parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length)
-            console.log(hashes, ooMessages, id, msgIndex, msgLength, ooMessages[id].length)  
-
-            // console.log(Object.keys(hashes)[Object.keys(hashes).length - 1] === Object.keys(ooMessages)[Object.keys(ooMessages).length - 1] === id && !ooMessages[id].length, 
-            // Object.keys(hashes)[Object.keys(hashes).length - 1] === Object.keys(ooMessages)[Object.keys(ooMessages).length - 1], id, typeof id, 
-            // typeof parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]), 
-            // parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]) === id && parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id, 
-            // ooMessages[id])  
-
-            // console.log((id === msgLength) && msgIndex === -1, 
-            // id === -1 && msgIndex === -1, 
-            // (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev || Object.keys(hashes)[Object.keys(hashes).length - 1] === Object.keys(ooMessages)[Object.keys(ooMessages).length - 1] === id && !ooMessages[id].length)
             
-            // console.log((id === msgLength) && msgIndex === -1, 
-            // id === -1 && msgIndex === -1, 
-            // (id === msgLength || id === msgLength-1) && msgIndex === -1 && !prev, 
-            //  Object.keys(hashes)[Object.keys(hashes).length - 1] === Object.keys(ooMessages)[Object.keys(ooMessages).length - 1] === id && !ooMessages[id].length)       
-            
-            var lastHash = hashes[hashes.length-1]
+            console.log(hashes, ooMessages, id, msgIndex, msgLength, ooMessages[id]?.length)  
+                        // console.log(typeof id, typeof Object.keys(hashes)[Object.keys(hashes).length - 2])  
+
 
             console.log(
                             Object.keys(hashes)[0] === id && msgIndex === -1,
             (id === msgLength) && msgIndex === -1, 
                 id === -1 && msgIndex === -1, 
-                // (id === msgLength || id+1 === msgLength) && !ooMessages[id].length && msgIndex === -1 && !prev,
             parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]) === id && 
-            parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length)
+            parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length,
+            parseInt(Object.keys(hashes)[Object.keys(hashes).length - 2]) === id && msgIndex === -1 )
 
             if (
             Object.keys(hashes)[0]=== id && msgIndex === -1 || 
             (id === msgLength) && msgIndex === -1 || 
             id === -1 && msgIndex === -1 || 
-            // id === msgLength && msgIndex === -1 && !prev ||
             parseInt(Object.keys(hashes)[Object.keys(hashes).length - 1]) === id && 
-            parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length) {
+            parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length ||
+            parseInt(Object.keys(hashes)[Object.keys(hashes).length - 2]) === id && msgIndex === -1) {
                 $next.prop('disabled', 'disabled');
             }
             
@@ -479,6 +466,7 @@ define([
                         msgIndex = -msgs.length-1
                         console.log("fastnext0.5", hashes, id, ooMessages, msgIndex)
                         setTimeout(function () {
+                            showVersion()
                             update();
                             loading = false;
                         }, 100);
@@ -494,6 +482,7 @@ define([
                     config.onPatchBack(cp, msgs);
                     
                 }
+                showVersion()
                 console.log("fastnext2", hashes, id, ooMessages, msgIndex)
 
                 setTimeout(function () {
@@ -518,10 +507,9 @@ define([
                 loadMoreOOHistory().then(() => {
                     var msgs = ooMessages[id];
                     msgIndex = -msgs.length-2;
+                    showVersion()
                     update(true);
-                console.log("fastprev2", hashes, id, ooMessages, msgIndex)
-
-
+                // console.log("fastprev2", hashes, id, ooMessages, msgIndex)
                 });
                 loading = false;
 
