@@ -125,8 +125,8 @@ define([
                     });
                     toPin = Utils.Util.deduplicateString(toPin);
                     toUnpin = Utils.Util.deduplicateString(toUnpin);
-                    Cryptpad.pinPads(toPin, function () {});
-                    Cryptpad.unpinPads(toUnpin, function () {});
+                    if (toPin.length) { Cryptpad.pinPads(toPin, function () {}); }
+                    if (toUnpin.length) { Cryptpad.unpinPads(toUnpin, function () {}); }
                     if (!toPin.length && !toUnpin.length) { return; }
                     Cryptpad.setPadAttribute('ooImages', list, function (err) {
                         if (err) { console.error(err); }
