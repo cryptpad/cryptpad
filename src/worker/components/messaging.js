@@ -5,13 +5,35 @@
 const factory = (Crypto, Hash, Util, Constants, Realtime) => {
     var Msg = {};
 
+    /*
+     * CRYPTOGRAPHIC IDENTITY NOTE:
+     *
+     * Throughout this module and the entire CryptPad application, we continue to use
+     * curve25519 public keys (curvePublic) as the primary identifier for users despite
+     * having post-quantum cryptography (PQC) keys (kemPublic) available.
+     *
+     * 1. Legacy compatibility: A complete migration to PQC for identification would require
+     *    changing all existing user relationships and channels
+     *
+     * 2. System integration: The curvePublic key is deeply integrated into friend relationships,
+     *    channel management, history keeper, and other core components
+     *
+     * 3. Risk management: Partially migrating identity systems can lead to inconsistencies
+     *    across the application, potentially creating security vulnerabilities
+     *
+     * A future coordinated migration will be necessary to fully replace curve25519 with PQC,
+     * which will require careful planning to ensure all components are updated simultaneously.
+     */
+
     var createData = Msg.createData = function (proxy, hash) {
         var data = {
             channel: hash || Hash.createChannelId(),
             displayName: proxy['cryptpad.username'],
             profile: proxy.profile && proxy.profile.view,
             edPublic: proxy.edPublic,
-            curvePublic: proxy.curvePublic,
+            curvePublic: proxy.curvePublic, // Still used as primary ID throughout the system
+            dsaPublic: proxy.dsaPublic,
+            kemPublic: proxy.kemPublic,    // PQC key available but not used as primary ID yet
             notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
             avatar: proxy.profile && proxy.profile.avatar,
             badge: proxy.profile && proxy.profile.badge,
@@ -21,6 +43,8 @@ const factory = (Crypto, Hash, Util, Constants, Realtime) => {
         return data;
     };
 
+    // Friend lookup still uses curvePublic as the key - changing this would require
+    // migrating all existing friendship relationships and updating all related code
     var getFriend = Msg.getFriend = function (proxy, pubkey) {
         if (!pubkey) { return; }
         if (pubkey === proxy.curvePublic) {

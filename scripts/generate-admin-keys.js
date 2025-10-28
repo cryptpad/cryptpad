@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-const Nacl = require('tweetnacl/nacl-fast');
+const Crypto = require('chainpad-crypto/crypto');
 const Util = require('../lib/common-util');
 
-const keyPair = Nacl.box.keyPair();
+const keyPair = Crypto.CryptoAgility.curveKeyPair();
 console.log("You've just generated a new key pair for your support mailbox.");
 
 console.log("The public key should first be added to your config.js file ('supportMailboxPublicKey'), then save and restart the server.");

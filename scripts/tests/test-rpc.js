@@ -5,7 +5,6 @@
 var Client = require("../../lib/client/");
 var Crypto = require("../../www/components/chainpad-crypto");
 var Mailbox = Crypto.Mailbox;
-var Nacl = require("tweetnacl/nacl-fast");
 var nThen = require("nthen");
 var Pinpad = require("../../www/common/pinpad");
 var Rpc = require("../../www/common/rpc");
@@ -41,7 +40,7 @@ process.on('unhandledRejection', function (err) {
 });
 
 var makeCurveKeys = function () {
-    var pair = Nacl.box.keyPair();
+    var pair = Crypto.CryptoAgility.curveKeyPair();
     return {
         curvePrivate: Util.encodeBase64(pair.secretKey),
         curvePublic: Util.encodeBase64(pair.publicKey),
@@ -49,7 +48,7 @@ var makeCurveKeys = function () {
 };
 
 var makeEdKeys = function () {
-    var keys = Nacl.sign.keyPair.fromSeed(Nacl.randomBytes(Nacl.sign.seedLength));
+    var keys = Crypto.CryptoAgility.signKeyPairFromSeed(Crypto.CryptoAgility.bytes(Crypto.CryptoAgility.signSeedLength()));
     return {
         edPrivate: Util.encodeBase64(keys.secretKey),
         edPublic: Util.encodeBase64(keys.publicKey),

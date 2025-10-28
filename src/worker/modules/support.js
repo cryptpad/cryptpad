@@ -11,7 +11,6 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
         ApiConfig = data.ApiConfig;
     };
 
-    var Nacl = Crypto.Nacl;
 
     // UTILS
 
@@ -40,13 +39,18 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                 return void cb('EFORBIDDEN');
             }
 
+            var supportKemKey = NewConfig.supportMailboxKemKey;
+
             if (isAdmin) {
                 return ctx.adminRdyEvt.reg(() => {
                     cb(null, {
                         supportKey: supportKey,
+                        supportKemKey: supportKemKey,
                         myCurve: data.adminCurvePrivate || Util.find(ctx.store.proxy, [
                                     'mailboxes', 'supportteam', 'keys', 'curvePrivate']),
                         theirPublic: data.curvePublic,
+                        myKem: ctx.store.proxy.kemPrivate,
+                        theirKem: data.kemPublic,
                         notifKey: data.curvePublic
                     });
                 });
@@ -54,8 +58,11 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
 
             cb(null, {
                 supportKey: supportKey,
+                supportKemKey: supportKemKey,
                 myCurve: ctx.store.proxy.curvePrivate,
                 theirPublic: data.curvePublic || supportKey, // old tickets may use deprecated key
+                myKem: ctx.store.proxy.kemPrivate,
+                theirKem: data.kemPublic || supportKemKey,    // Needed for PQC, currently making messages unreadable
                 notifKey: supportKey
             });
         });
@@ -64,7 +71,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
     // Get the content of a ticket mailbox and close it
     var getContent = function (ctx, data, isAdmin, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
-        var theirPublic, myCurve;
+        var theirPublic, myCurve, theirKem, myKem;
         nThen((waitFor) => {
             getKeys(ctx, isAdmin, data, waitFor((err, obj) => {
                 if (err) {
@@ -73,9 +80,11 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                 }
                 theirPublic = obj.theirPublic;
                 myCurve = obj.myCurve;
+                theirKem = obj.theirKem;
+                myKem = obj.myKem;
             }));
         }).nThen(() => {
-            var keys = Crypto.Curve.deriveKeys(theirPublic, myCurve);
+            var keys = Crypto.Curve.deriveKeys(theirPublic, myCurve, theirKem, myKem);
             var crypto = Crypto.Curve.createEncryptor(keys);
             var cfg = {
                 network: ctx.store.network,
@@ -122,7 +131,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
         var channel = data.channel;
         var title = data.title;
         var ticket = data.ticket;
-        var supportKey, theirPublic, myCurve;
+        var supportKey, theirPublic, myCurve, theirKem, myKem;
         var time = +new Date();
         nThen((waitFor) => {
             // Send ticket to the admins and call back
@@ -133,13 +142,15 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                 }
                 supportKey = obj.supportKey;
                 theirPublic = obj.theirPublic;
+                theirKem = obj.theirKem;
+                myKem = obj.myKem;
                 myCurve = obj.myCurve;
                 // No need for notifKey here: users can only create tickets for the
                 // currently used key
             }));
         }).nThen((waitFor) => {
             // Create ticket mailbox
-            var keys = Crypto.Curve.deriveKeys(theirPublic, myCurve);
+            var keys = Crypto.Curve.deriveKeys(theirPublic, myCurve, theirKem, myKem);
             var crypto = Crypto.Curve.createEncryptor(keys);
             var text = JSON.stringify(ticket);
             var ciphertext = crypto.encrypt(text);
@@ -228,7 +239,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
         if (!mailbox) { return void cb('E_NOT_READY'); }
         if (!anonRpc) { return void cb("anonymous rpc session not ready"); }
         if (!data?.ticket) { return void cb('E_NO_DATA'); }
-        var theirPublic, myCurve, notifKey;
+        var theirPublic, myCurve, notifKey, myKem, theirKem;
         var time;
         nThen((waitFor) => {
             // Get correct keys
@@ -239,11 +250,13 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                 }
                 theirPublic = obj.theirPublic;
                 myCurve = obj.myCurve;
+                theirKem = obj.theirKem;
+                myKem = obj.myKem;
                 notifKey = obj.notifKey;
             }));
         }).nThen((waitFor) => {
             // Send message
-            var keys = Crypto.Curve.deriveKeys(theirPublic, myCurve);
+            var keys = Crypto.Curve.deriveKeys(theirPublic, myCurve, theirKem, myKem);
             var crypto = Crypto.Curve.createEncryptor(keys);
             var text = JSON.stringify(data.ticket);
             var ciphertext = crypto.encrypt(text);
@@ -302,7 +315,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
         if (!curvePrivate) { return void cb('EFORBIDDEN'); }
         let edPrivate, edPublic;
         try {
-            let pair = Nacl.sign.keyPair.fromSeed(Util.decodeBase64(curvePrivate));
+            let pair = Crypto.CryptoAgility.signKeyPairFromSeed(Util.decodeBase64(curvePrivate));
             edPrivate = Util.encodeBase64(pair.secretKey);
             edPublic = Util.encodeBase64(pair.publicKey);
         } catch (e) {
@@ -418,7 +431,8 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                 var t = Util.clone(ctx.supportData[ticket]);
                 getContent(ctx, {
                     channel: ticket,
-                    curvePublic: t.curvePublic
+                    curvePublic: t.curvePublic,
+                    kemPublic: t.kemPublic
                 }, false, waitFor((err, messages) => {
                     if (err) {
                         if (err.type === 'EDELETED') {
@@ -830,6 +844,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                 name: Util.find(first, ['sender', 'name']),
                 notifications: Util.find(first, ['sender', 'notifications']),
                 curvePublic: Util.find(first, ['sender', 'curvePublic']),
+                kemPublic: Util.find(first, ['sender', 'kemPublic']),
                 channel: Hash.createChannelId(),
                 title: first.title,
                 time: last.time,
@@ -996,17 +1011,17 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
 
     // ADMIN COMMANDS
 
-    let updateServerKey = (ctx, curvePublic, curvePrivate, cb) => {
+    let updateServerKey = (ctx, curvePublic, curvePrivate, kemPublic, cb) => {
         let edPublic;
         try {
-            let pair = Nacl.sign.keyPair.fromSeed(Util.decodeBase64(curvePrivate));
+            let pair = Crypto.CryptoAgility.signKeyPairFromSeed(Util.decodeBase64(curvePrivate));
             edPublic = Util.encodeBase64(pair.publicKey);
         } catch (e) {
             return void cb(e);
         }
         ctx.Store.adminRpc(null, {
             cmd: 'ADMIN_DECREE',
-            data: ['SET_SUPPORT_KEYS', [curvePublic, edPublic]]
+            data: ['SET_SUPPORT_KEYS', [curvePublic, edPublic, kemPublic]]
         }, cb);
     };
     let getModerators = (ctx, data, cId, cb) => {
@@ -1021,12 +1036,15 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
         let proxy = ctx.store.proxy;
         let edPublic = proxy.edPublic;
 
-        const keyPair = Nacl.box.keyPair();
+        const keyPair = Crypto.CryptoAgility.curveKeyPair();
+        const kemPair = Crypto.CryptoAgility.generateKemKeypair();
         const newKeyPub = Util.encodeBase64(keyPair.publicKey);
         const newKey = Util.encodeBase64(keyPair.secretKey);
+        const newKemPublic = Util.encodeBase64(kemPair.publicKey);
 
         const oldKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePrivate']);
         const oldKeyPub = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePublic']);
+        const oldKemPublic = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'kemPublic']);
 
         if (!newKey || !newKeyPub) { return void cb({ error: 'INVALID_KEY' }); }
         let oldAdminChan;
@@ -1092,7 +1110,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
             });
         }).nThen((waitFor) => {
             // Send new key to server
-            updateServerKey(ctx, newKeyPub, newKey, waitFor((obj) => {
+            updateServerKey(ctx, newKeyPub, newKey, newKemPublic, waitFor((obj) => {
                 if (obj && obj.error) {
                     waitFor.abort();
                     return void cb(obj);
@@ -1123,7 +1141,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                     waitFor.abort();
                     if (oldSupportKey) {
                         // If we weren't able to store the new key, abort and restore old keys
-                        return updateServerKey(ctx, oldKeyPub, oldKey, () => {
+                        return updateServerKey(ctx, oldKeyPub, oldKey, oldKemPublic,() => {
                             return void cb(obj);
                         });
                     }
@@ -1205,7 +1223,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
         }).nThen((waitFor) => {
             ctx.Store.adminRpc(null, {
                 cmd: 'ADMIN_DECREE',
-                data: ['SET_SUPPORT_KEYS', ['', '']]
+                data: ['SET_SUPPORT_KEYS', ['', '', '']]
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();

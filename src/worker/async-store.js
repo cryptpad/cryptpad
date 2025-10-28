@@ -25,6 +25,7 @@ const factory = (Sortify, UserObject, ProxyManager,
     const Saferphore = Util.Saferphore;
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
+    var onDriveReadyEvt = Util.mkEvent(true);
     var onPadRejectedEvt = Util.mkEvent(true);
 
     const setCustomize = data => {
@@ -422,8 +423,8 @@ const factory = (Sortify, UserObject, ProxyManager,
 
         var initTempRpc = (clientId, cb) => {
             if (store.rpc) { return void cb(store.rpc); }
-            var kp = Crypto.Nacl.sign.keyPair();
-            var keys = store.tempKeys = {
+            var kp = Crypto.CryptoAgility.signKeyPair();
+            var keys = {
                 edPublic: Util.encodeBase64(kp.publicKey),
                 edPrivate: Util.encodeBase64(kp.secretKey)
             };
@@ -586,7 +587,9 @@ const factory = (Sortify, UserObject, ProxyManager,
                     color: Store.getUserColor(),
                     notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
                     curvePublic: proxy.curvePublic,
+                    kemPublic: proxy.kemPublic,
                     edPublic: proxy.edPublic,
+                    dsaPublic: proxy.dsaPublic,
                     netfluxId:  store?.network?.webChannels?.[0]?.myID,
                     badge: Util.find(proxy, ['profile', 'badge'])
                 },
@@ -595,6 +598,8 @@ const factory = (Sortify, UserObject, ProxyManager,
                     clientId: clientId,
                     edPublic: proxy.edPublic,
                     edPrivate: proxy.edPrivate,
+                    dsaPublic: proxy.dsaPublic,
+                    dsaPrivate: proxy.dsaPrivate,
                     friends: proxy.friends || {},
                     settings: proxy.settings || NEW_USER_SETTINGS,
                     thumbnails: disableThumbnails === false,
@@ -881,7 +886,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                 toSign.drive = store.driveChannel;
                 toSign.edPublic = edPublic;
                 var signKey = Util.decodeBase64(store.proxy.edPrivate);
-                var proof = Crypto.Nacl.sign.detached(Util.decodeUTF8(Sortify(toSign)), signKey);
+                var proof = Crypto.CryptoAgility.signDetached(Util.decodeUTF8(Sortify(toSign)), signKey);
 
                 var check = Crypto.Nacl.sign.detached.verify(Util.decodeUTF8(Sortify(toSign)),
                     proof,
@@ -1608,7 +1613,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             if (!Array.isArray(allowed)) { return void cb('ERESTRICTED'); }
 
             onPadRejectedEvt.fire();
-            onReadyEvt.reg(() => {
+            onDriveReadyEvt.reg(() => {
                 // There is an allow list: check if we can authenticate
                 if (!store.loggedIn || !store.proxy.edPublic) { return void cb('ERESTRICTED'); }
 
@@ -1782,7 +1787,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             if (!channel || !ownerKey) { return void console.error("Can't delete BAR pad"); }
             try {
                 var signKey = Hash.decodeBase64(ownerKey);
-                var pair = Crypto.Nacl.sign.keyPair.fromSecretKey(signKey);
+                var pair = Crypto.CryptoAgility.signKeyPairFromSecretKey(signKey);
                 Pinpad.create(store.network, {
                     edPublic: Hash.encodeBase64(pair.publicKey),
                     edPrivate: Hash.encodeBase64(pair.secretKey)
@@ -2570,6 +2575,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                     cacheCb(store.cacheReturned || store.returned);
                 });
                 onDriveReady(() => {
+                    onDriveReadyEvt.fire();
                     cb(store.returned);
                 });
 

@@ -78,10 +78,12 @@ proxy.mailboxes = {
 
     var getMyKeys = function (ctx) {
         var proxy = ctx.store && ctx.store.proxy;
-        if (!proxy.curvePrivate || !proxy.curvePublic) { return; }
+        if (!proxy.curvePrivate || !proxy.curvePublic || !proxy.kemPublic || !proxy.kemPrivate) { return; }
         return {
             curvePrivate: proxy.curvePrivate,
-            curvePublic: proxy.curvePublic
+            curvePublic: proxy.curvePublic,
+            kemPrivate: proxy.kemPrivate,
+            kemPublic: proxy.kemPublic
         };
     };
 
@@ -130,7 +132,10 @@ proxy.mailboxes = {
         }
 
         var text = JSON.stringify(obj);
-        var ciphertext = crypto.encrypt(text, user.curvePublic);
+        var ciphertext = crypto.encrypt(text, user.curvePublic, user.kemPublic);
+
+        // const bytes = Crypto.CryptoAgility.decodeBase64(ciphertext);
+        // if (bytes[0] !== 1) throw new Error("PQC not used for encryption");
 
         // If we've sent this message to one of our teams' mailbox, we may want to "dismiss" it
         // automatically
@@ -158,17 +163,42 @@ proxy.mailboxes = {
         });
     };
     Mailbox.sendToAnon = function (anonRpc, type, msg, user, cb) {
-        var Nacl = Crypto.Nacl;
-        var curveSeed = Nacl.randomBytes(32);
-        var curvePair = Nacl.box.keyPair.fromSecretKey(new Uint8Array(curveSeed));
+        var curveSeed = Crypto.CryptoAgility.bytes(32);
+        var curvePair = Crypto.CryptoAgility.boxKeyPairFromSecretKey(new Uint8Array(curveSeed));
         var curvePrivate = Util.encodeBase64(curvePair.secretKey);
         var curvePublic = Util.encodeBase64(curvePair.publicKey);
+
+        // Generate ephemeral PQC keys if PQC is available
+        var kemPrivate, kemPublic;
+        if (Crypto.PQC && Crypto.PQC.ml_kem && Crypto.PQC.ml_kem.ml_kem512) {
+            try {
+                var kemSeed = Crypto.CryptoAgility.bytes(64);
+                var kemPair = Crypto.PQC.ml_kem.ml_kem512.keygen(new Uint8Array(kemSeed));
+                kemPrivate = Util.encodeBase64(kemPair.secretKey);
+                kemPublic = Util.encodeBase64(kemPair.publicKey);
+            } catch (e) {
+                console.warn('Failed to generate ephemeral PQC keys:', e);
+            }
+        }
+
+        var proxyData = {
+            curvePrivate: curvePrivate,
+            curvePublic: curvePublic
+        };
+
+        if (kemPrivate && kemPublic) {
+            proxyData.kemPrivate = kemPrivate;
+            proxyData.kemPublic = kemPublic;
+        }
+
         sendTo({
             store: {
                 anon_rpc: anonRpc,
                 proxy: {
                     curvePrivate: curvePrivate,
-                    curvePublic: curvePublic
+                    curvePublic: curvePublic,
+                    kemPrivate: kemPrivate,
+                    kemPublic: kemPublic,
                 }
             }
         }, type, msg, user, cb);
