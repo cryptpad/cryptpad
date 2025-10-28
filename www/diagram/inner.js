@@ -186,6 +186,7 @@ define([
                 saveAndExit: 0,
                 noExitBtn: 1,
                 browser: 0,
+                ui: 'sketch',
 
                 noDevice: 1,
                 filesupport: 0,
