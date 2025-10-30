@@ -40,6 +40,11 @@
             padding: 10px 15px;
             height: 300px;
         }
+        textarea, input {
+            &:focus-visible {
+                outline: @variables_focus_style;
+            }
+        }
         .cp-support-list-send, .cp-support-reply-cancel {
             margin-right: @variables_icon_margin;
         }
