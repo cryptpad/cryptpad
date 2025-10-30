@@ -387,8 +387,8 @@ define([
         var privateData = metadataMgr.getPrivateData();
 
         var answer = h('button.btn.btn-primary.cp-support-answer', [Icons.get('reply'), Messages.support_answer]);
-        var close = h('button.btn.btn-danger.cp-support-close', [Icons.get('close'), Messages.support_close]);
-        var remove = h('button.btn.btn-danger.cp-support-hide', [Icons.get('close'), Messages.support_remove]);
+        var close = h('button.btn.btn-danger.cp-support-close', [Messages.support_close]);
+        var remove = h('button.btn.btn-danger.cp-support-hide', [Icons.get('trash-full'), Messages.support_remove]);
         var _actions = [answer, close];
         if (content.closed && !ctx.isAdmin) {
             _actions = [remove]; // XXX update key to "Delete permanently" ?
@@ -509,7 +509,6 @@ define([
                     $tags.toggle();
                 });
                 let close = h('button.btn.btn-secondary.cp-token-close', [
-                    Icons.get('close'),
                     h('span', Messages.filePicker_close)
                 ]);
                 Util.onClickEnter($(close), () => {
