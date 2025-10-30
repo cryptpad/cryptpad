@@ -40,6 +40,9 @@
             padding: 10px 15px;
             height: 300px;
         }
+        .cp-support-list-send, .cp-support-reply-cancel {
+            margin-right: @variables_icon_margin;
+        }
     }
     .cp-support-attachments {
         display: flex;
@@ -72,7 +75,7 @@
             border-radius: @variables_radius;
             .cp-support-ticket-header {
                 display: flex;
-                align-items: center;
+                align-items: flex-start;
                 justify-content: space-between;
                 .cp-support-header-data {
                     display: flex;
@@ -82,7 +85,7 @@
                     min-width: 0;
                     .cp-support-ticket-title {
                         width: 100%;
-                        margin-bottom: @sidebar_base-margin;
+                        margin-bottom: 1rem;
                         word-break: break-word;
                     }
                     .cp-tags-list {
