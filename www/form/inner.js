@@ -2643,6 +2643,7 @@ define([
         poll: {
             defaultOpts: {
                 type: 'text', // Text or Days or Time
+                required: false,
                 values: [1, 2, 3].map(function (i) {
                     return {
                         uid: Util.uid(),
@@ -2721,6 +2722,15 @@ define([
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
                     tag: tag,
+                    isEmpty: function () {
+                        var v = this.getValue();
+                        if (!v || !v.values) { return true; }      
+                        // check for at least one "Yes" answer
+                        var hasYes = Object.keys(v.values).some(function (key) {
+                            return v.values[key] === '1';
+                        });
+                        return !hasYes;
+                    },
                     getValue: function () {
                         var res = {};
                         $tag.find('.cp-form-poll-choice').each(function (i, el) {
