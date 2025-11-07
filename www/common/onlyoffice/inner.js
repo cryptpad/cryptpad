@@ -548,12 +548,7 @@ define([
                 var app = common.getMetadataMgr().getPrivateData().ooType;
                 var d;
                 if (app === 'doc') {
-                    if (editor.GetDocument()) {
-                        d = editor.GetDocument().Document
-                    } else {
-                        d = undefined
-                    }
-                    // d = editor.GetDocument() ? editor.GetDocument().Document : undefined;
+                    d = editor.GetDocument() ? editor.GetDocument().Document : undefined;
                 } else if (app === 'presentation') {
                     d = editor.GetPresentation().Presentation;
                 }
@@ -3147,7 +3142,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onPatchBack = function (cp, msgs) {
                     if (msgs) {
-                        msgsFormatted = [];
+                        var msgsFormatted = [];
                         msgs.forEach(function(msg) {
                             var parsedMsg = JSON.parse(msg.msg);
         
