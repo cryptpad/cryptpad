@@ -271,17 +271,27 @@ install_old_version() {
 }
 
 install_version() {
-    ensure_command_available curl
-    ensure_command_available sha512sum
-    ensure_command_available unzip
-
     local DIR=$1
     local VERSION=$2
     local HASH=$3
     local FULL_DIR=$OO_DIR/$DIR
     local LAST_DIR=$(pwd)
 
-    if [ ! -e "$FULL_DIR"/.version ] || [ "$(cat "$FULL_DIR"/.version)" != "$VERSION" ]; then
+    local ACTUAL_VERSION="not installed"
+    if [ -e "$FULL_DIR"/.version ]; then
+        ACTUAL_VERSION="$(cat "$FULL_DIR"/.version)"
+    fi
+
+    if [ "$ACTUAL_VERSION" != "$VERSION" ]; then
+        if [ ${CHECK+x} ]; then
+            echo "Wrong version in $FULL_DIR. Expected: $VERSION. Found: $ACTUAL_VERSION"
+            exit 1
+        fi
+
+        ensure_command_available sha512sum
+        ensure_command_available curl
+        ensure_command_available unzip
+
         rm -rf "$FULL_DIR"
         mkdir -p "$FULL_DIR"
 
