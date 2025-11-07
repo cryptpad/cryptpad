@@ -6,11 +6,10 @@ name: Trigger E2E tests
 
 on:
   push:
-    branches: [ staging, 2025.9-rc, 2025.9-test ]
+    branches: [ staging, 2025.12-rc, 2025.12-test ]
 
 jobs:
   trigger-tests:
-    if: github.ref_name == 'staging'
     runs-on: ubuntu-latest
     steps:
       - name: Trigger E2E test run (local)
@@ -19,9 +18,9 @@ jobs:
 
           if [ "$branch" = "staging" ]; then
             event_type="trigger-e2e-tests-staging"
-          elif [ "$branch" = "2025.9-rc" ]; then
+          elif [ "$branch" = "2025.12-rc" ]; then
             event_type="trigger-e2e-tests-rc"
-          elif [ "$branch" = "2025.9-test" ]; then
+          elif [ "$branch" = "2025.12-test" ]; then
             event_type="trigger-e2e-tests-test"
           fi 
 
