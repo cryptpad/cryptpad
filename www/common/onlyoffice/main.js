@@ -145,10 +145,14 @@ define([
                 Cryptpad.onlyoffice.execCommand(obj, cb);
             });
             sframeChan.on('EV_OO_OPENVERSION', function (obj) {
+                console.log("obj2", obj)
                 if (!obj || !obj.hash) { return; }
                 var parsed = Hash.parsePadUrl(window.location.href);
                 var opts = parsed.getOptions();
+
                 opts.versionHash = obj.hash;
+                                                console.log("opts", opts)
+
                 window.open(parsed.getUrl(opts));
             });
             Cryptpad.onlyoffice.onEvent.reg(function (obj) {

@@ -65,6 +65,9 @@ define([
         var Messages = common.Messages;
 
         var getVersion = function (position) {
+            if (!position) {
+                position = 0;
+            }
             if (Object.keys(ooMessages).length) {
                 var version = (id === -1 || id === 0) ? 0 : id;
                 return version + '.' + position;
@@ -72,9 +75,7 @@ define([
 
         };
         var showVersion = function (initial, position) {
-            if (!position) {
-                position = 0;
-            }
+            
             var v = getVersion(position);
             if (initial) {
                 v = Messages.oo_version_latest;
@@ -528,13 +529,17 @@ define([
                     onClick: function () {
                         var val = $input.val();
                         if (!val) { return true; }
+                        msgs = ooMessages[id]
+                        var patch = msgs.slice(0, msgIndex)
+                        console.log("patch", msgs.slice(0, msgIndex))
+                        console.log("bloop", msgs[msgIndex], msgs, msgIndex, ooMessages)
                         config.makeSnapshot(val, function (err) {
                             if (err) { return; }
                             $input.val('');
                             UI.log(Messages.saved);
                         }, {
                             hash: getVersion(),
-                            time: currentTime || 0
+                            time: currentTime || patch && patch.time || 0
                         });
                     },
                     keys: [13],
