@@ -470,6 +470,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             return hash;
         };
         ret.getUrl = function (options) {
+            console.log("url", options)
             options = options || {};
             var url = '/';
             if (!ret.type) { return url; }

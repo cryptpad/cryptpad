@@ -3188,10 +3188,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var makeSnapshot = function (title, cb, obj) {
                     var hash, time;
+                    console.log("obj", obj)
                     if (obj && obj.hash && obj.time) {
+                        console.log("i")
                         hash = obj.hash;
                         time = obj.time;
                     } else {
+                        console.log("11")
                         var major = Object.keys(content.hashes).length;
                         var cpIndex = getLastCp().index || 0;
                         var minor = ooChannel.cpIndex - cpIndex;
@@ -3205,11 +3208,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         title: title,
                         time: time
                     };
+                    console.log("spap", snapshots)
                     metadataMgr.updateMetadata(md);
                     APP.onLocal();
                     APP.realtime.onSettle(cb);
                 };
                 var loadSnapshot = function (hash) {
+                    console.log("hash", hash)
                     sframeChan.event('EV_OO_OPENVERSION', {
                         hash: hash
                     });
