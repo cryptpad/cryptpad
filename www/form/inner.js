@@ -2718,6 +2718,14 @@ define([
                 ]);
                 var $tag = $(tag);
 
+                if (APP.isEditor) {
+                    $tag[0].addEventListener('click', function (e) {
+                        const target = e.target;
+                        if (target.closest('.cp-form-required-radio')) {
+                            e.stopPropagation();
+                        }
+                    });
+                }
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
