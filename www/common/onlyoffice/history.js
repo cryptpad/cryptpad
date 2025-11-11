@@ -66,7 +66,9 @@ define([
         var getVersion = function (position, initial) {
             if (Object.keys(ooMessages).length) {
                 console.log('here', id)
+                
                 var version = (id === -1 || id === 0) ? 0 : id;
+                
                 if (!position) {
                     position = ooMessages[id].length || 0
                 }
