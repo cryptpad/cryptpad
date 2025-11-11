@@ -317,7 +317,8 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                 if (parsed.password || opts.password) { hash += 'p/'; }
                 if (opts.embed) { hash += 'embed/'; }
                 if (opts.present) { hash += 'present/'; }
-                var versionHash = typeof(opts.versionHash) !== "undefined" ? opts.versionHash : parsed.versionHash;
+                var versionHash = (typeof(opts.versionHash) !== "undefined") ? opts.versionHash : parsed.versionHash;
+
                 if (versionHash) {
                     hash += 'hash=' + Crypto.b64RemoveSlashes(versionHash) + '/';
                 }
@@ -470,7 +471,6 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             return hash;
         };
         ret.getUrl = function (options) {
-            console.log("url", options)
             options = options || {};
             var url = '/';
             if (!ret.type) { return url; }

@@ -810,9 +810,11 @@ define([
 
             var minor = Number(s[1]) + 1;
             if (APP.isDownload) { minor = undefined; }
-
             var toHash = cp.hash || 'NONE';
+            // var fromHash = content.hashes[1].hash
             var fromHash = nextCpId ? hashes[nextCpId].hash : 'NONE';
+                        console.log('hello version', version, major, minor )
+
 
             sframeChan.query('Q_GET_HISTORY_RANGE', {
                 channel: content.channel,
@@ -829,7 +831,10 @@ define([
                 // The first "cp" in history is the empty doc. It doesn't include the first patch
                 // of the history
                 var initialCp = major === 0 || !cp.hash;
-                var messages = (data.messages || []).slice(initialCp ? 0 : 1, minor);
+                const messages = data.messages
+                // var messages = (data.messages || []).slice(initialCp);
+
+                console.log("messages", initialCp, minor, messages, fromHash, toHash, ooChannel, content.hashes)
 
                 messages.forEach(function (obj) {
                     try { obj.msg = JSON.parse(obj.msg); } catch (e) { console.error(e); }
@@ -838,6 +843,7 @@ define([
                 // The version exists if we have results in the "messages" array
                 // or if we requested a x.0 version
                 var exists = !Number(s[1]) || messages.length;
+                // console.log("exists", exists, !Number(s[1]), messages.length)
                 var vHashEl;
 
                 if (!privateData.embed) {
@@ -862,7 +868,8 @@ define([
 
                 loadLastDocument(cp)
                     .then(({blob, fileType}) => {
-                        ooChannel.queue = messages;
+                        ooChannel.queue = messages.slice(0, minor);
+                        console.log("messages q2", ooChannel.queue)
                         resetData(blob, fileType);
                         UI.removeLoadingScreen();
                     })
@@ -874,11 +881,21 @@ define([
                             $(vHashEl).removeClass('alert-warning').addClass('alert-danger');
                             return;
                         }
+                        //FIXHERE: have to use version number in url to load cp and messages
+                        // var hashes = content.hashes
+                        // var s = version.split('.');
+                        // var major = parseInt(s[0])
+                        // var minor = s[1]
+                        // console.log("messages", messages)
+                        // if (hashes && major > 0) {
+                        //     loadCp(hashes[major])
+                        //     return;
+                        // }
                         var file = getFileType();
                         var type = common.getMetadataMgr().getPrivateData().ooType;
                         if (APP.downloadType) { type = APP.downloadType; }
                         var blob = loadInitDocument(type, true);
-                        ooChannel.queue = messages;
+                        ooChannel.queue = messages.slice
                         resetData(blob, file);
                         UI.removeLoadingScreen();
                     });
@@ -3213,10 +3230,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var makeSnapshot = function (title, cb, obj) {
                     var hash, time;
                     console.log("obj", obj)
-                    if (obj && obj.hash && obj.time) {
+                    if (obj && obj.hash) {
                         console.log("i")
                         hash = obj.hash;
-                        time = obj.time;
+                        time =                         time = +new Date();
+
                     } else {
                         console.log("11")
                         var major = Object.keys(content.hashes).length;
