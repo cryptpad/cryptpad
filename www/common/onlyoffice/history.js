@@ -29,6 +29,7 @@ define([
         var ooCheckpoints = {};
         var loading = false;
         var currentTime;
+        var position;
 
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
@@ -62,19 +63,52 @@ define([
         var $bottom = $toolbar.find('.cp-toolbar-bottom');
         var Messages = common.Messages;
 
-        var getVersion = function (position) {
-            if (!position) {
-                position = 0;
-            }
+        var getVersion = function (position, initial) {
             if (Object.keys(ooMessages).length) {
+                console.log('here', id)
                 var version = (id === -1 || id === 0) ? 0 : id;
+                if (!position) {
+                    position = ooMessages[id].length || 0
+                }
                 return version + '.' + position;
             }
+            // console.log("hello!", ooMessages)
+            // if (!position) {
+            //     position = 0
+            // }
+            // if (Object.keys(ooMessages).length) {
+            //     var msgs = ooMessages[id]
+            //     return id + '.' + msgs.length;
+
+            // }
+
+            // // console.log("hello", ooMessages, id)
+            // // if (initial) {
+            // //     return id + '.' + msgs.length
+            // // }
+            
+            // if (Object.keys(ooMessages).length) {
+            //                 var msgs = ooMessages[id]
+
+
+            //     var version = (id === -1 || id === 0) ? 0 : id;
+            //     if (msgs.length === position) {
+            //         version += 1;
+            //         position = 0;
+            //     }   
+
+            //     // if (position)             
+            //     console.log("hello")
+            //     return version + '.' + position;
+            // } else if (!position){
+            //     position =0
+            // }
 
         };
         var showVersion = function (initial, position) {
             
-            var v = getVersion(position);
+            var v = getVersion(position, initial);
+            console.log("vers",)
             if (initial) {
                 v = Messages.oo_version_latest;
             }
@@ -91,11 +125,18 @@ define([
             } else {
                 var pId = id;
                 if (id) {
-                    pHash = 100-100*(pId / Object.keys(hashes).length);
+                    pHash = 100-100*(pId / Object.keys(hashes).length+1);
+                                                            console.log("pos1", pId, )
+
                     if (messageIndex === -(msgs.length+2)) {
+                                        console.log("pos2", p)
+
                         p = pHash;
                     } else {
+
                         p = pHash+(pHash-Math.abs(messageIndex )*(pHash/msgs.length));
+                                                                console.log("pos3", pHash, Math.abs(messageIndex )*(pHash/msgs.length))
+
                     }
 
                 } else { 
@@ -107,6 +148,7 @@ define([
                 } else if (!p) {
                     p = 100;
                 }
+                console.log("pos", p)
             }
     
             $pos.css('margin-left', p+'%');
@@ -135,6 +177,7 @@ define([
 
                 let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
                 const messages = (data.messages || []).slice(initialCp || APP.ooconfig.documentType === 'spreadsheet' ? 0 : 1);
+                                console.log("messages", messages, fromHash, toHash)
 
                 if (config.debug) {
                     console.log(data.messages);
@@ -263,7 +306,9 @@ define([
                             return loadMoreOOHistory().then(() => {
                                 loadingFalse();
                                 msgIndex = -ooMessages[id].length-1;
-                                showVersion(false, msgs.indexOf(patch)+1);
+                                position = msgs.indexOf(patch)+1
+                                console.log("posiiton1", msgs.indexOf(patch)+1, msgs.length)
+                                showVersion(false, position);
                                 return;
                             });
                         }
@@ -271,7 +316,10 @@ define([
                         var patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined;
                         var cp = hashes[id];
                         config.onPatchBack(cp, [patch]);
-                        showVersion(false, msgs.indexOf(patch)+1);
+                        position = msgs.indexOf(patch)+1
+                                                        console.log("posiiton2", msgs.indexOf(patch)+1, msgs.length)
+
+                        showVersion(false, position);
                         loadingFalse();
                     })
                     return;
@@ -289,7 +337,10 @@ define([
             }
             var patch = msgs[msgs.length + msgIndex];
             config.onPatch(patch);
-            showVersion(false, msgs.indexOf(patch)+1);
+                                                                    console.log("posiiton2", msgs.indexOf(patch)+1, msgs.length)
+
+            position = msgs.indexOf(patch)+1
+            showVersion(false, position);
             loadingFalse();
         };
 
@@ -308,8 +359,9 @@ define([
                         msgs = ooMessages[id];
                         var queue = msgs.slice(0, msgIndex);
                         var cp = hashes[id];
-                        config.onPatchBack(cp, queue);                                          
-                        showVersion(false, queue.length);
+                        config.onPatchBack(cp, queue);  
+                        position = queue.length                                       
+                        showVersion(false, position);
                         msgIndex--;
                         loadingFalse();
                     });
@@ -318,8 +370,9 @@ define([
                 var cp = hashes[id];
             } 
             var queue = msgs.slice(0, msgIndex);
-            config.onPatchBack(cp, queue);                                          
-            showVersion(false, queue.length);
+            config.onPatchBack(cp, queue);  
+            position = queue.length                                        
+            showVersion(false, position);
             msgIndex--;
             loadingFalse();
         };
@@ -468,6 +521,8 @@ define([
                     update('end');
                     loading = false;
                 }, 100);
+                position = msgs.length
+                showVersion(position)
             });
             // Go to next checkpoint
             $fastPrev.click(function () {
@@ -484,6 +539,7 @@ define([
                     showVersion()
                     update(true);
                 });
+                position = 0;
                 loading = false;
             });
 
@@ -499,8 +555,9 @@ define([
 
             // Versioned link
             $share.click(function () {
+                console.log("hello %", position, getVersion(position))
                 common.getSframeChannel().event('EV_SHARE_OPEN', {
-                    versionHash: getVersion()
+                    versionHash: getVersion(position)
                 });
             });
             $(snapshot).click(function () {
@@ -528,14 +585,13 @@ define([
                         if (!val) { return true; }
                         msgs = ooMessages[id]
                         var patch = msgs.slice(0, msgIndex)
-                        console.log("patch", msgs.slice(0, msgIndex))
-                        console.log("bloop", msgs[msgIndex], msgs, msgIndex, ooMessages)
                         config.makeSnapshot(val, function (err) {
                             if (err) { return; }
                             $input.val('');
                             UI.log(Messages.saved);
                         }, {
-                            hash: getVersion(),
+                            hash: getVersion(position),
+                            //FIXHERE: get the time of the patch and pass here
                             time: currentTime || patch && patch.time || 0
                         });
                     },
