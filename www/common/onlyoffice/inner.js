@@ -801,6 +801,7 @@ define([
                 return hashes[a].index - hashes[b].index;
             });
             var s = version.split('.');
+            var version = parseInt(s[1])
             if (s.length !== 2) { return UI.errorLoadingScreen(Messages.error); }
 
             var major = Number(s[0]);
@@ -868,8 +869,7 @@ define([
 
                 loadLastDocument(cp)
                     .then(({blob, fileType}) => {
-                        ooChannel.queue = messages.slice(0, minor);
-                        console.log("messages q2", ooChannel.queue)
+                        ooChannel.queue = messages.slice(1, minor)
                         resetData(blob, fileType);
                         UI.removeLoadingScreen();
                     })
@@ -881,21 +881,11 @@ define([
                             $(vHashEl).removeClass('alert-warning').addClass('alert-danger');
                             return;
                         }
-                        //FIXHERE: have to use version number in url to load cp and messages
-                        // var hashes = content.hashes
-                        // var s = version.split('.');
-                        // var major = parseInt(s[0])
-                        // var minor = s[1]
-                        // console.log("messages", messages)
-                        // if (hashes && major > 0) {
-                        //     loadCp(hashes[major])
-                        //     return;
-                        // }
                         var file = getFileType();
                         var type = common.getMetadataMgr().getPrivateData().ooType;
                         if (APP.downloadType) { type = APP.downloadType; }
                         var blob = loadInitDocument(type, true);
-                        ooChannel.queue = messages.slice
+                        ooChannel.queue = messages.slice(0, version+1)
                         resetData(blob, file);
                         UI.removeLoadingScreen();
                     });
