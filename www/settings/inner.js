@@ -2010,6 +2010,9 @@ define([
         });
 
         cb(labelled);
+        setTimeout(() => {
+            editor.refresh();
+        }, 10);
     }, false, true);
 
 
