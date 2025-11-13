@@ -418,8 +418,6 @@
             left: -17px;
             top: 10px;
             overflow: hidden;
-            width: calc(1em - 2px) !important;
-            height: calc(1em - 2px) !important;
             background-color: @cp_sidebar-left-item-bg;
             padding: 0;
             margin: 0;
@@ -428,8 +426,6 @@
             display: inline-flex;
             svg {
                 margin: -1px;
-                width: 1em;
-                height: 1em;
             }
             &:focus-visible {
                 outline: none;
@@ -490,26 +486,6 @@
             padding-left: 10px;
             li {
                 position: relative;
-                &:before {
-                    position: absolute;
-                    left: -10px;
-                    top: -10px;
-                    content: '';
-                    display: block;
-                    border-left: 1px solid @cp_drive-tree-branch;
-                    height: ~"calc(1em + 11px)";
-                    border-bottom: 1px solid @cp_drive-tree-branch;
-                    width: 11px;
-                }
-                &:after {
-                    position: absolute;
-                    left: -10px;
-                    bottom: -7px;
-                    content: '';
-                    display: block;
-                    border-left: 1px solid @cp_drive-tree-branch;
-                    height: 100%;
-                }
                 &.cp-app-drive-tree-root {
                     margin: 0px 0px 0px -10px;
                     &:before {
