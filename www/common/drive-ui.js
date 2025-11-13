@@ -124,8 +124,8 @@ define([
     var $recentIcon = $(Icons.get('drive-recent'));
     var $trashIcon = $(Icons.get('trash-full'));
     var $trashEmptyIcon = $(Icons.get('trash-empty'));
-    var $expandIcon = $(Icons.get('expand'));
-    var $expandedIcon = $(Icons.get('collapse'));
+    var $expandIcon = $(Icons.get('chevron-right'));
+    var $expandedIcon = $(Icons.get('chevron-down'));
     var $sortAscIcon = $(Icons.get('sort-asc', {'class': 'sortasc'}));
     var $sortDescIcon = $(Icons.get('sort-desc', {'class': 'sortdesc'}));
     var $closeIcon = $(Icons.get('close'));
@@ -4643,9 +4643,7 @@ define([
             // Display the root element in the tree
             if (isRoot) {
                 var isRootOpened = manager.comparePath(path.slice(), currentPath);
-                var $rootIcon = manager.isFolderEmpty(files[ROOT]) ?
-                    (isRootOpened ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
-                    (isRootOpened ? $folderOpenedIcon : $folderIcon);
+                var $rootIcon = $(Icons.get('drive'));
                 var $rootElement = createTreeElement(rootName, $rootIcon.clone(), path.slice(), false, true, true, isRootOpened);
                 if (!manager.hasSubfolder(root)) {
                     $rootElement.find('.cp-app-drive-icon-expcol').addClass('cp-icon-hidden').attr('tabindex','-1');
