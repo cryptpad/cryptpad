@@ -26,11 +26,13 @@ define([
         var msgIndex = -1;
         var APP = window.APP;
         var ooMessages = {};
-        var ooCheckpoints = {};
         var loading = false;
         var currentTime;
         var position;
         var patch;
+        var v;
+        var fromHash;
+        var toHash
 
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
@@ -50,7 +52,7 @@ define([
         var endWithCp = sortedCp.length &&
                         config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
 
-        var fillOO = function (messages, ooCheckpoints) {
+        var fillOO = function (messages) {
             ooMessages = {};
             ooMessages[id] = messages;
         };
@@ -64,7 +66,7 @@ define([
         var $bottom = $toolbar.find('.cp-toolbar-bottom');
         var Messages = common.Messages;
 
-        var getVersion = function (position, initial) {
+        var getVersion = function (position) {
             if (Object.keys(ooMessages).length) {                
                 var version = (id === -1 || id === 0) ? 0 : id;
                 if (position === undefined) {
@@ -75,17 +77,17 @@ define([
                         version = version + 1;
                     }                    
                 }
-                return version + '.' + position;
+                v = version + '.' + position;
+                return v
             }
-
         };
+
         var showVersion = function (initial, position) {
             
             var v = getVersion(position, initial);
             if (initial) {
                 v = Messages.oo_version_latest;
             }
-            
             $version.text(Messages.oo_version + v);
 
             var $pos = $hist.find('.cp-history-timeline-pos');
@@ -96,40 +98,35 @@ define([
             if (!Object.keys(hashes).length) {
                 p = 100-100*((messageIndex ) / (-msgs.length));
             } else {
-                var pId = id;
-                if (id) {
-                    pHash = 100-100*(pId / Object.keys(hashes).length+1);
-                                                            console.log("pos1", pId, )
+                var lastHash = Object.keys(hashes).pop()
+                var lastestHash = hashes[lastHash].hash
+                if (lastestHash === config.onlyoffice.lastHash) {
+                    var hashLength = Object.keys(hashes).length
+                } else {
+                    var hashLength = Object.keys(hashes).length+1
 
-                    if (messageIndex === -(msgs.length+2)) {
-                                        console.log("pos2", p)
-
-                        p = pHash;
-                    } else {
-
-                        p = pHash+(pHash-Math.abs(messageIndex )*(pHash/msgs.length));
-                                                                console.log("pos3", pHash, Math.abs(messageIndex )*(pHash/msgs.length))
-
-                    }
-
-                } else { 
-                    p = pHash-Math.abs(messageIndex)*(pHash/msgs.length);
                 }
+                var checkpoints = id/hashLength
+                p = 100*(checkpoints) 
+                var poz = 100-p
 
-                if (Math.sign(p) === -1 ) {
-                    p = 0;
-                } else if (!p) {
-                    p = 100;
+                if (id === 0) {
+                    p= 0
+                    poz = 100/hashLength
                 }
-                // console.log("pos", p)
+                
+                var poz1 = ((position/msgs.length)*100)
+                var poz2 = (poz1/100)*(100/hashLength)
+                p = p+poz2
             }
-    
+
             $pos.css('margin-left', p+'%');
 
             var time = msgs[msgIndex] && msgs[msgIndex].time;
             currentTime = time;
             if (time) { $time.text(new Date(time).toLocaleString()); }
             else { $time.text(''); }
+            update()
         };
 
         function getMessages(fromHash, toHash, cpIndex, sortedCp, cp, config, fillOO, $share, ooCheckpoints, callback) {
@@ -147,6 +144,8 @@ define([
                 if (!Array.isArray(data.messages)) {
                     return;
                 }
+                console.log("from", fromHash)
+                                console.log("to", toHash)
 
                 let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
                 const messages = (data.messages || []).slice(initialCp || APP.ooconfig.documentType === 'spreadsheet' ? 0 : 1);
@@ -181,8 +180,8 @@ define([
                 
                 var nextId = hashes[id+1] ? hashes[id+1] : undefined;
                 
-                var toHash = nextId ? nextId.hash : config.onlyoffice.lastHash;
-                var fromHash = cp?.hash || 'NONE';
+                toHash = nextId ? nextId.hash : config.onlyoffice.lastHash;
+                fromHash = cp?.hash || 'NONE';
 
                 getMessages(toHash, fromHash, cpIndex, sortedCp, undefined, config, fillOO, $share, hashes, function (err, messages) {
                     if (err) {
@@ -213,8 +212,7 @@ define([
 
         var $fastPrev, $fastNext, $next, $prev;
 
-        var update = function (prev) {
-            var cps = sortedCp.length;
+        var update = function () {
             $fastPrev.show();
             $next.show();
             $prev.show();
@@ -222,36 +220,21 @@ define([
             $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous')
                 .prop('disabled', '');
 
-            var msgLength = Object.keys(hashes).length   
-
-            if (
-                (id === -1 || id === 0) && Math.abs(msgIndex) === ooMessages[id]?.length+2) {
+            if ((id === -1 || id === 0) && Math.abs(msgIndex) === ooMessages[id]?.length+2) {
                 $fastPrev.prop('disabled', 'disabled');
             }
-            if ((id === -1 || id === 0) && ooMessages[id]?.length+2=== Math.abs(msgIndex)
-                ) {
+            if ((id === -1 || id === 0) && ooMessages[id]?.length+2=== Math.abs(msgIndex)) {
                 $prev.prop('disabled', 'disabled');
             }
             
-            if ((id === msgLength) && msgIndex === -1 || 
-                id === -1 && msgIndex === -1 ||
-                Object.keys(hashes)[0] === id && msgIndex === -1 && !prev ||
-                parseInt(Object.keys(hashes)[msgLength - 1]) === id 
-                && parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length ||
-                parseInt(Object.keys(hashes)[msgLength - 2]) === id && msgIndex === -1 && APP.next) 
-            {
-                // $fastNext.prop('disabled', 'disabled');
-            } 
-
-            if (
-                Object.keys(hashes)[0]=== id && msgIndex === -1 || 
-                (id === msgLength) && msgIndex === -1 || 
-                id === -1 && msgIndex === -1 || 
-                parseInt(Object.keys(hashes)[msgLength - 1]) === id && 
-                parseInt(Object.keys(ooMessages)[Object.keys(ooMessages).length - 1]) === id && !ooMessages[id].length 
-                || parseInt(Object.keys(hashes)[msgLength - 2]) === id && msgIndex === -1 && APP.next) 
-            {
+            var version = v.split('.')
+            var hashesLength = Object.keys(hashes).length
+            
+            if ((hashesLength === parseInt(version[0]) && (ooMessages[id].length === parseInt(version[1]) || parseInt(version[1]) === 0)) 
+                // && lastestHash === config.onlyoffice.lastHash
+            ) {
                 // $next.prop('disabled', 'disabled');
+                // $fastNext.prop('disabled', 'disabled');
             }
             
         };
@@ -262,8 +245,6 @@ define([
                 loading = false;
             }, 200);
         }
-
-        // var patch;
 
         var next = async function () {
             APP.next = true;
@@ -447,15 +428,16 @@ define([
             $next.click(function () {
                 // if (loading) { return; }
                 loading = true;
-                next().then(
-                    update()
-                );
+                next()
+                // .then(
+                //     update()
+                // );
             });
             $prev.click(function () {
                 if (loading) { return; }
                 loading = true;
                 prev();
-                update(true);
+                // update(true);
             });
             // Go to previous checkpoint
             $fastNext.click(function () {
