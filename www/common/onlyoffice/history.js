@@ -100,20 +100,18 @@ define([
             if (!Object.keys(hashes).length) {
                 p = 100-100*((messageIndex ) / (-msgs.length));
             } else {
-                var lastHash = Object.keys(hashes).pop()
-                var lastestHash = hashes[lastHash].hash
+                var lastestHash = hashes[Object.keys(hashes).pop()].hash
                 if (lastestHash === config.onlyoffice.lastHash) {
                     var hashLength = Object.keys(hashes).length
                 } else {
                     var hashLength = Object.keys(hashes).length+1
-
                 }
                 var checkpoints = id/hashLength
                 p = 100*(checkpoints) 
                 var poz = 100-p
 
                 if (id === 0) {
-                    p= 0
+                    p = 0
                     poz = 100/hashLength
                 }
                 
@@ -146,8 +144,6 @@ define([
                 if (!Array.isArray(data.messages)) {
                     return;
                 }
-                console.log("from", fromHash)
-                                console.log("to", toHash)
 
                 let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
                 const messages = (data.messages || []).slice(initialCp || APP.ooconfig.documentType === 'spreadsheet' ? 0 : 1);
@@ -232,12 +228,13 @@ define([
             
             var version = v.split('.')
             var hashesLength = Object.keys(hashes).length
-            
-            if ((hashesLength === parseInt(version[0]) && (ooMessages[id].length === parseInt(version[1]) || parseInt(version[1]) === 0)) 
-                // && lastestHash === config.onlyoffice.lastHash
-            ) {
-                // $next.prop('disabled', 'disabled');
-                // $fastNext.prop('disabled', 'disabled');
+            var lastestHash = hashes[Object.keys(hashes).pop()].hash
+
+            if (hashesLength === parseInt(version[0]) && ooMessages[id].length === parseInt(version[1]) ||
+              hashesLength === parseInt(version[0]) && parseInt(version[1]) === 0 && lastestHash === config.onlyoffice.lastHash)
+            {
+                $next.prop('disabled', 'disabled');
+                $fastNext.prop('disabled', 'disabled');
             }
             
         };
