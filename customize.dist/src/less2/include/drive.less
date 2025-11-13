@@ -423,15 +423,11 @@
             cursor: default;
             display: inline-flex;
             svg {
-                margin: -1px;
+                margin: 0;
             }
             &:focus-visible {
-                outline: none;
-                svg {
-                    outline: @variables_focus_style;
-                    border-radius: @variables_radius_S;
-                    margin: 0;
-                }
+                outline: @variables_focus_style;
+                border-radius: @variables_radius_S;
             }
         }
         .cp-app-drive-tree-docs {
