@@ -15,6 +15,7 @@ define([
     '/common/common-feedback.js',
     '/common/hyperscript.js',
     '/api/config',
+    '/customize/application_config.js',
     '/customize/messages.js',
     '/components/chainpad/chainpad.dist.js',
     '/file/file-crypto.js',
@@ -44,6 +45,7 @@ define([
     Feedback,
     h,
     ApiConfig,
+    AppConfig,
     Messages,
     ChainPad,
     FileCrypto,
@@ -3219,6 +3221,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     text: Messages.historyText,
                     tippy: Messages.historyButton
                 });
+                if (!AppConfig.enableHistory) {
+                    $historyButton.css('display', 'none');
+                }
 
                 $historyButton.click(function () {
                     ooChannel.historyLastHash = ooChannel.lastHash;

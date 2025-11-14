@@ -896,16 +896,15 @@ define([
                 button = makeButton('print', 'cp-toolbar-icon-print', Messages.printButtonTitle2, Messages.printText);
                 break;
             case 'history':
-                if (!AppConfig.enableHistory) {
-                    button = $('<span>');
-                    break;
-                }
                 button = makeButton('history', 'cp-toolbar-icon-history', Messages.historyButton, Messages.historyText, Messages.historyButton);
                 if (data.histConfig) {
                     button.click(common.prepareFeedback(type)).on('click', function () {
                         common.getHistory(data.histConfig);
                         UI.clearTooltipsDelay();
                     });
+                }
+                if (!AppConfig.enableHistory) {
+                    button.css('display', 'none');
                 }
                 break;
             case 'mediatag':
