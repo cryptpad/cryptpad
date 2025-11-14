@@ -598,7 +598,6 @@ define([
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
             ooChannel.ready = false;
-            // ooChannel.queue = [];
             data.callback = function () {
                 if (APP.template) { APP.template = false; }
                 resetData(blob, file);
@@ -792,11 +791,9 @@ define([
 
             var minor = Number(s[1]) + 1;
             if (APP.isDownload) { minor = undefined; }
-            var toHash = cp.hash || 'NONE';
-            // var fromHash = content.hashes[1].hash
-            var fromHash = nextCpId ? hashes[nextCpId].hash : 'NONE';
-                        console.log('hello version', version, major, minor )
 
+            var toHash = cp.hash || 'NONE';
+            var fromHash = nextCpId ? hashes[nextCpId].hash : 'NONE';
 
             sframeChan.query('Q_GET_HISTORY_RANGE', {
                 channel: content.channel,
@@ -812,11 +809,7 @@ define([
 
                 // The first "cp" in history is the empty doc. It doesn't include the first patch
                 // of the history
-                var initialCp = major === 0 || !cp.hash;
-                const messages = data.messages
-                // var messages = (data.messages || []).slice(initialCp);
-
-                console.log("messages", initialCp, minor, messages, fromHash, toHash, ooChannel, content.hashes)
+                var messages = data.messages
 
                 messages.forEach(function (obj) {
                     try { obj.msg = JSON.parse(obj.msg); } catch (e) { console.error(e); }
@@ -825,7 +818,6 @@ define([
                 // The version exists if we have results in the "messages" array
                 // or if we requested a x.0 version
                 var exists = !Number(s[1]) || messages.length;
-                // console.log("exists", exists, !Number(s[1]), messages.length)
                 var vHashEl;
 
                 if (!privateData.embed) {
@@ -1448,7 +1440,7 @@ define([
                 return;
             }
 
-            // debug(obj, 'toOOClient');
+            debug(obj, 'toOOClient');
             APP.docEditor.sendMessageToOO(obj);
             if (obj && obj.type === "saveChanges") {
                 evIntegrationSave.fire();
@@ -1456,7 +1448,7 @@ define([
         };
 
         const fromOOHandler = function (obj) {
-            // debug(obj, 'fromOOClient');
+            debug(obj, 'fromOOClient');
             switch (obj.type) {
                 case "auth":
                     // Handled by onlyoffice-editor now
@@ -2212,7 +2204,7 @@ define([
                 c.forcesave = true;
             }
 
-            // console.error('updated config', ooconfig);
+            console.error('updated config', ooconfig);
             return ooconfig;
         };
 
@@ -3195,9 +3187,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var makeSnapshot = function (title, cb, obj) {
                     var hash, time;
-                    if (obj && obj.hash) {
+                    if (obj && obj.hash && obj.time) {
                         hash = obj.hash;
-                        time = time = +new Date();
+                        time = obj.time;
 
                     } else {
                         var major = Object.keys(content.hashes).length;
