@@ -19,7 +19,7 @@ define([
         var $toolbar = config.$toolbar;
         var sframeChan = common.getSframeChannel();
         History.readOnly = common.getMetadataMgr().getPrivateData().readOnly || !common.isLoggedIn();
-        
+
         if (!config.onlyoffice || !config.setHistory || !config.onCheckpoint || !config.onPatch || !config.makeSnapshot) {
             throw new Error("Missing config element");
         }
@@ -33,8 +33,6 @@ define([
         var position;
         var patch;
         var v;
-        var fromHash;
-        var toHash
 
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
@@ -69,24 +67,24 @@ define([
         var Messages = common.Messages;
 
         var getVersion = function (position) {
-            if (Object.keys(ooMessages).length) {                
-                var version = (id === -1 || id === 0) ? 0 : id;
+            if (Object.keys(ooMessages).length) {
+                let version = (id === -1 || id === 0) ? 0 : id;
+                
                 if (position === undefined) {
-                    position = ooMessages[id].length || 0
-                } else if (position === ooMessages[id]?.length && hashes[version+1]) {
+                    position = ooMessages[id]?.length || 0;
+                } else if (position === ooMessages[id]?.length && hashes[version + 1]) {
                     position = 0;
-                    if (ooMessages[id].length) {
-                        version = version + 1;
-                    }                    
+                    if (ooMessages[id]?.length) {
+                        version++;
+                    }
                 }
-                v = version + '.' + position;
-                return v
+                return version + '.' + position;
             }
         };
 
         var showVersion = function (initial, position) {
             
-            var v = getVersion(position, initial);
+            v = getVersion(position, initial);
             if (initial) {
                 v = Messages.oo_version_latest;
             }
@@ -124,7 +122,7 @@ define([
             currentTime = time;
             if (time) { $time.text(new Date(time).toLocaleString()); }
             else { $time.text(''); }
-            update()
+            update();
         };
 
         function getMessages(fromHash, toHash, cpIndex, sortedCp, cp, config, fillOO, $share, ooCheckpoints, callback) {
@@ -133,22 +131,13 @@ define([
                 lastKnownHash: fromHash,
                 toHash: toHash,
             }, function (err, data) {
-                if (err) {
-                    console.error(err);
-                    callback(err);
-                    return;
-                }
+                if (err) { return void console.error(err); }
+                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
 
-                if (!Array.isArray(data.messages)) {
-                    return;
-                }
-
+                var messages = (data.messages || []).slice(initialCp || APP.ooconfig.documentType === 'spreadsheet' ? 0 : 1);
                 let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
-                const messages = (data.messages || []).slice(initialCp || APP.ooconfig.documentType === 'spreadsheet' ? 0 : 1);
 
-                if (config.debug) {
-                    console.log(data.messages);
-                }
+                if (config.debug) { console.log(data.messages); }
                 id = id !== undefined ? id : getId();
                 fillOO(messages, ooCheckpoints);
                 loading = false;
@@ -176,8 +165,8 @@ define([
                 
                 var nextId = hashes[id+1] ? hashes[id+1] : undefined;
                 
-                toHash = nextId ? nextId.hash : config.onlyoffice.lastHash;
-                fromHash = cp?.hash || 'NONE';
+                var toHash = nextId ? nextId.hash : config.onlyoffice.lastHash;
+                var fromHash = cp?.hash || 'NONE';
 
                 getMessages(toHash, fromHash, cpIndex, sortedCp, undefined, config, fillOO, $share, hashes, function (err, messages) {
                     if (err) {
@@ -223,14 +212,12 @@ define([
             if ((id === -1 || id === 0) && ooMessages[id]?.length+2=== Math.abs(msgIndex)) {
                 $prev.prop('disabled', 'disabled');
             }
-            
-            var version = v.split('.')
-            var hashesLength = Object.keys(hashes).length
-            var lastestHash = hashes[Object.keys(hashes).pop()].hash
-
+            var version = v.split('.');
+            var hashesLength = Object.keys(hashes).length;
+            var lastestHash = hashes[Object.keys(hashes).pop()]?.hash;
+              
             if (hashesLength === parseInt(version[0]) && ooMessages[id].length === parseInt(version[1]) ||
-              hashesLength === parseInt(version[0]) && parseInt(version[1]) === 0 && lastestHash === config.onlyoffice.lastHash)
-            {
+              hashesLength === parseInt(version[0]) && parseInt(version[1]) === 0 && lastestHash === config.onlyoffice.lastHash) {
                 $next.prop('disabled', 'disabled');
                 $fastNext.prop('disabled', 'disabled');
             }
@@ -248,85 +235,72 @@ define([
             APP.next = true;
             msgIndex++;
             msgs = ooMessages[id];
+
             if (Object.keys(hashes).length) {
                 if (msgIndex === 0) {
                     id++;
-                    loadMoreOOHistory().then(() => {
-                        msgs = ooMessages[id];
-                        if (!msgs.length) {
-                            id++;
-                            config.loadCp(hashes[id]);
-                            return loadMoreOOHistory().then(() => {
-                                loadingFalse();
-                                msgIndex = -ooMessages[id].length-1;
-                                position = msgs.indexOf(patch)+1
-                                showVersion(false, position);
-                                return;
-                            });
-                        }
+                    await loadMoreOOHistory();
+                    msgs = ooMessages[id];
+
+                    if (!msgs.length) {
+                        id++;
+                        config.loadCp(hashes[id]);
+                        await loadMoreOOHistory();
+                        msgIndex = -ooMessages[id].length - 1;
+                    } else {
                         msgIndex = -msgs.length;
-                        patch = msgs[msgs.length + msgIndex] ? msgs[msgs.length + msgIndex] : undefined;
-                        var cp = hashes[id];
-                        config.onPatchBack(cp, [patch]);
-                        position = msgs.indexOf(patch)+1
-                        showVersion(false, position);
-                        loadingFalse();
-                    })
-                    return;
-                } 
-                else if (Math.abs(msgIndex) > msgs.length && msgs.length) {
-                    msgIndex = -msgs.length;
+                        patch = msgs[msgs.length + msgIndex];
+                        config.onPatchBack(hashes[id], [patch]);
+                    }
+                } else {
+                    if (!msgs.length) return config.onPatchBack(hashes[id + 1]);
+                    if (Math.abs(msgIndex) > msgs.length) msgIndex = -msgs.length;
                 }
-                else if (!msgs.length) {
-                    config.onPatchBack(hashes[id+1]);
-                    return;
-                }
-            } 
-            else if (msgs.length + msgIndex === -1) {
+            } else if (msgs.length + msgIndex === -1) {
                 msgIndex++;
             }
+
             patch = msgs[msgs.length + msgIndex];
-            config.onPatch(patch);
-            position = msgs.indexOf(patch)+1
+            position = msgs.indexOf(patch) + 1;
+            config.onPatch?.(patch);
             showVersion(false, position);
             loadingFalse();
         };
+
 
         var msgs;
 
         var prev = function () {
-            APP.next = false
+            APP.next = false;
             msgs = ooMessages[id];
-            if (!Object.keys(hashes).length) {
-                var cp = {};
-            } else {
-                if (msgs.length+1 === Math.abs(msgIndex) && id !== 0 || !msgs.length || msgs.length-Math.abs(msgIndex) === -2) {
-                    id--;
-                    msgIndex = -1;
-                    loadMoreOOHistory().then(() => {
-                        msgs = ooMessages[id];
-                        var queue = msgs.slice(0, msgIndex);
-                        var cp = hashes[id];
-                        config.onPatchBack(cp, queue);  
-                        position = queue.length
-                        patch = queue[queue.length-1]
-                        showVersion(false, position);
-                        msgIndex--;
-                        loadingFalse();
-                    });
-                    return; 
-                }
-                var cp = hashes[id];
-            } 
-            var queue = msgs.slice(0, msgIndex);
-            config.onPatchBack(cp, queue);  
-            position = queue.length  
-            patch = queue[queue.length-1]                                      
-            showVersion(false, position);
-            msgIndex--;
-            loadingFalse();
-        };
+            let hasHashes = Object.keys(hashes).length;
+            let cp = hasHashes ? hashes[id] : {};
+            let loadPrevCp = (!msgs.length) ||
+                    (msgs.length + 1 === Math.abs(msgIndex) && id !== 0) ||
+                    (msgs.length - Math.abs(msgIndex) === -2);
+            
+            var goBack = function () {
+                var q = msgs.slice(0, msgIndex);
+                config.onPatchBack(cp, q);
+                position = q.length;
+                patch = q[position - 1];
+                showVersion(false, position);
+                msgIndex--; 
+                loadingFalse();
+            }
 
+            if (hasHashes && loadPrevCp) {
+                id--; 
+                msgIndex = -1;
+                return loadMoreOOHistory().then(() => {
+                    msgs = ooMessages[id];
+                    cp = hashes[id];
+                    goBack();                    
+                });
+            }
+            
+            goBack();
+        };
 
         // Create the history toolbar
         var display = function () {
@@ -424,20 +398,17 @@ define([
 
             // Push one patch
             $next.click(function () {
-                // if (loading) { return; }
+                if (loading) { return; }
                 loading = true;
-                next()
-                // .then(
-                //     update()
-                // );
+                next();
             });
             $prev.click(function () {
                 if (loading) { return; }
                 loading = true;
                 prev();
-                // update(true);
             });
-            // Go to previous checkpoint
+
+            // Go to next checkpoint
             $fastNext.click(function () {
                 if (loading) { return; }
                 loading = true;
@@ -453,11 +424,8 @@ define([
                         config.loadCp(cp);
                         msgs = ooMessages[id];
                         msgIndex = -msgs.length-1
-                        setTimeout(function () {
-                            showVersion(false, 0)
-                            update();
-                            loading = false;
-                        }, 100);
+                        showVersion(false, 0)
+                        loading = false;
                         return;
                     });
                 } else {
@@ -466,15 +434,12 @@ define([
                     msgIndex = -1;
                     config.onPatchBack(cp, msgs);
                 }
-                showVersion(false, 0);
 
-                setTimeout(function () {
-                    update('end');
-                    loading = false;
-                }, 100);
-                position = msgs.length
+                loading = false;
+                position = msgs?.length
                 showVersion(false, position)
             });
+            
             // Go to next checkpoint
             $fastPrev.click(function () {
                 if (loading) { return; }
@@ -511,7 +476,7 @@ define([
                 });
             });
             $(snapshot).click(function () {
-                if (cpIndex === -1 && msgIndex === -1) { return void UI.warn(Messages.snapshots_ooPickVersion); }
+                // if (cpIndex === -1 && msgIndex === -1) { return void UI.warn(Messages.snapshots_ooPickVersion); }
                 var input = h('input', {
                     placeholder: Messages.snapshots_placeholder
                 });
