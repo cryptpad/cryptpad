@@ -83,7 +83,6 @@ define([
         };
 
         var showVersion = function (initial, position) {
-            
             v = getVersion(position, initial);
             if (initial) {
                 v = Messages.oo_version_latest;
@@ -164,7 +163,6 @@ define([
                 }
                 
                 var nextId = hashes[id+1] ? hashes[id+1] : undefined;
-                
                 var toHash = nextId ? nextId.hash : config.onlyoffice.lastHash;
                 var fromHash = cp?.hash || 'NONE';
 
@@ -177,7 +175,6 @@ define([
                     resolve(); 
                 });
             });
-            
         };
 
         loadMoreOOHistory();
@@ -221,7 +218,6 @@ define([
                 $next.prop('disabled', 'disabled');
                 $fastNext.prop('disabled', 'disabled');
             }
-            
         };
 
         var loadingFalse = function () {
@@ -298,7 +294,6 @@ define([
                     goBack();                    
                 });
             }
-            
             goBack();
         };
 
@@ -440,7 +435,7 @@ define([
                 showVersion(false, position)
             });
             
-            // Go to next checkpoint
+            // Go to previous checkpoint
             $fastPrev.click(function () {
                 if (loading) { return; }
                 loading = true;
@@ -458,7 +453,6 @@ define([
                 position = 0;
                 loading = false;
             });
-
             onKeyDown = function (e) {
                 var p = function () { e.preventDefault(); };
                 if ([38, 39].indexOf(e.which) >= 0) { p(); return $next.click(); } // Right
