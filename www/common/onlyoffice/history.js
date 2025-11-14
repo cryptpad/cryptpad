@@ -100,24 +100,22 @@ define([
             if (!Object.keys(hashes).length) {
                 p = 100-100*((messageIndex ) / (-msgs.length));
             } else {
-                var lastestHash = hashes[Object.keys(hashes).pop()].hash
-                if (lastestHash === config.onlyoffice.lastHash) {
-                    var hashLength = Object.keys(hashes).length
+                var lastHash = hashes[Object.keys(hashes).pop()].hash;
+                if (lastHash === config.onlyoffice.lastHash) {
+                    var hashLength = Object.keys(hashes).length;
                 } else {
-                    var hashLength = Object.keys(hashes).length+1
+                    var hashLength = Object.keys(hashes).length+1;
                 }
-                var checkpoints = id/hashLength
-                p = 100*(checkpoints) 
-                var poz = 100-p
+                var segments = id/hashLength;
+                p = 100*(segments); 
 
                 if (id === 0) {
-                    p = 0
-                    poz = 100/hashLength
+                    p = 0;
                 }
                 
-                var poz1 = ((position/msgs.length)*100)
-                var poz2 = (poz1/100)*(100/hashLength)
-                p = p+poz2
+                var percentage = ((position/msgs.length)*100);
+                var timelinePosition = (percentage/100)*(100/hashLength);
+                p += timelinePosition;
             }
 
             $pos.css('margin-left', p+'%');
