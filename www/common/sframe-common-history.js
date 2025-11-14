@@ -413,6 +413,7 @@ define([
             try {
                 var block = states[idx];
                 var hash = block.serverHash;
+                console.log("HASH", states, block, hash)
                 var md = config.getLastMetadata();
                 md.snapshots = md.snapshots || {};
                 if (md.snapshots[hash]) { return; }

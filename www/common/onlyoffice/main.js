@@ -27,6 +27,7 @@ define([
             var opts = parsed.getOptions();
             version = opts.versionHash;
         }
+        console.log(opts, parsed, version)
         if (isIntegration) {
             href = integration.href;
             hash = integration.hash;
@@ -36,6 +37,7 @@ define([
             let path = (integration && integration.pathname) || window.location.pathname;
             obj.ooType = path.replace(/^\//, '').replace(/\/$/, '');
             obj.ooVersionHash = version;
+            console.log("obj2 !!!", version)
             obj.ooForceVersion = localStorage.CryptPad_ooVersion || "";
         };
         var channels = {};
@@ -148,6 +150,7 @@ define([
                 if (!obj || !obj.hash) { return; }
                 var parsed = Hash.parsePadUrl(window.location.href);
                 var opts = parsed.getOptions();
+
                 opts.versionHash = obj.hash;
                 window.open(parsed.getUrl(opts));
             });
