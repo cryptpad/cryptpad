@@ -3190,7 +3190,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     if (obj && obj.hash && obj.time) {
                         hash = obj.hash;
                         time = obj.time;
-
                     } else {
                         var major = Object.keys(content.hashes).length;
                         var cpIndex = getLastCp().index || 0;
