@@ -4721,10 +4721,6 @@ define([
                     },
                     onFolderExpanded: function (clickedPath, isOpen) {
                         LS.setFolderOpened(clickedPath, isOpen);
-                        // Change the current opened folder if it was collapsed
-                        if (!isOpen && manager.isSubpath(currentPath, clickedPath)) {
-                            displayDirectory(clickedPath);
-                        }
                     }
                 },
                 openFolders: openFolders
