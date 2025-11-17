@@ -2266,7 +2266,17 @@ define([
             var href = data.href || data.roHref;
             if (!data) { return void logError("No data for the file", element); }
 
+            if (!data.href && manager.isInSharedFolder($element.data('path'))) {
+                Object.keys(files.filesData).forEach(function (file) {
+                    if (files.filesData[file].channel === data.channel && files.filesData[file].href &&  files.filesData[file].href.includes('edit')) {
+                        href = files.filesData[file].href;
+                        data.href = href;
+                    }
+                })
+            }
             var hrefData = Hash.parsePadUrl(href);
+                        console.log(hrefData)
+
             if (hrefData.type) {
                 $element.addClass('cp-border-color-'+hrefData.type);
             }
