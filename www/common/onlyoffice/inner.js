@@ -1458,6 +1458,7 @@ define([
             }
 
             debug(obj, 'toOOClient');
+            common.notify();
             APP.docEditor.sendMessageToOO(obj);
             if (obj && obj.type === "saveChanges") {
                 evIntegrationSave.fire();
