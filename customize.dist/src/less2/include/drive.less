@@ -366,7 +366,7 @@
                     display: flex;
                     align-items: center;
                     cursor: pointer;
-                    margin: 0 0 2px -5px;
+                    margin: 0 0 2px 0;
                     .cp-app-drive-element {
                         flex: 1;
                         min-width: 0;
@@ -416,28 +416,18 @@
             font-size: 14px;
             position: absolute;
             left: -17px;
-            top: 10px;
             overflow: hidden;
-            width: calc(1em - 2px) !important;
-            height: calc(1em - 2px) !important;
-            background-color: @cp_sidebar-left-item-bg;
             padding: 0;
             margin: 0;
             z-index: 10;
             cursor: default;
             display: inline-flex;
             svg {
-                margin: -1px;
-                width: 1em;
-                height: 1em;
+                margin: 0;
             }
             &:focus-visible {
-                outline: none;
-                svg {
-                    outline: @variables_focus_style;
-                    border-radius: @variables_radius_S;
-                    margin: 0;
-                }
+                outline: @variables_focus_style;
+                border-radius: @variables_radius_S;
             }
         }
         .cp-app-drive-tree-docs {
@@ -453,7 +443,7 @@
             .cp-app-drive-tree-root > .cp-app-drive-element-row {
                 margin-left: 0px;
                 .cp-icon-hidden ~ svg {
-                    margin-left: -21px;
+                    margin-left: -10px;
                 }
                 .cp-app-drive-icon-expcol {
                     top: -1px;
@@ -478,7 +468,7 @@
                     padding-left: 15px;
                 }
                 &> ul {
-                    padding-left: 30px;
+                    padding-left: 20px;
                 }
             }
         }
@@ -487,29 +477,9 @@
         .cp-app-drive-tree-docs ul {
             margin: 0px 0px 0px 10px;
             list-style: none;
-            padding-left: 10px;
+            padding-left: 5px;
             li {
                 position: relative;
-                &:before {
-                    position: absolute;
-                    left: -10px;
-                    top: -10px;
-                    content: '';
-                    display: block;
-                    border-left: 1px solid @cp_drive-tree-branch;
-                    height: ~"calc(1em + 11px)";
-                    border-bottom: 1px solid @cp_drive-tree-branch;
-                    width: 11px;
-                }
-                &:after {
-                    position: absolute;
-                    left: -10px;
-                    bottom: -7px;
-                    content: '';
-                    display: block;
-                    border-left: 1px solid @cp_drive-tree-branch;
-                    height: 100%;
-                }
                 &.cp-app-drive-tree-root {
                     margin: 0px 0px 0px -10px;
                     &:before {

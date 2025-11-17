@@ -124,8 +124,8 @@ define([
     var $recentIcon = $(Icons.get('drive-recent'));
     var $trashIcon = $(Icons.get('trash-full'));
     var $trashEmptyIcon = $(Icons.get('trash-empty'));
-    var $expandIcon = $(Icons.get('expand'));
-    var $expandedIcon = $(Icons.get('collapse'));
+    var $expandIcon = $(Icons.get('chevron-right'));
+    var $expandedIcon = $(Icons.get('chevron-down'));
     var $sortAscIcon = $(Icons.get('sort-asc', {'class': 'sortasc'}));
     var $sortDescIcon = $(Icons.get('sort-desc', {'class': 'sortdesc'}));
     var $closeIcon = $(Icons.get('close'));
