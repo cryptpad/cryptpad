@@ -4569,7 +4569,10 @@ define([
                 var elPath = $row.data('path');
                 if (!elPath || elPath.length === 0) { return; }
                 var pathToCheck = elPath[0] === 'root' ? elPath : [ROOT].concat(elPath);
-                $row.find('.cp-app-drive-icon-folder').css("color", getFolderColor(pathToCheck));
+                var folderColor = getFolderColor(pathToCheck);
+                $row.find('.cp-app-drive-icon-folder').css("color", folderColor);
+                $row.find('.cp-app-drive-icon-expcol').css("color", folderColor);
+                $row.find('.cp-app-drive-element').css("color", folderColor);
 
                 var checkRoot = manager.find([ROOT]);
                 var sfId = null;
