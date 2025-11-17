@@ -4682,13 +4682,10 @@ define([
             
             // build tree data structure
             var treeData = buildTreeData(root, path, currentPath);
-            var isRootCurrent = manager.comparePath(path, currentPath);
             var data = {
                 root: {
                     name: rootName,
-                    icon: manager.isFolderEmpty(files[ROOT]) ? 
-                        (isRootCurrent ? $folderOpenedEmptyIcon.clone() : $folderEmptyIcon.clone()) :
-                        (isRootCurrent ? $folderOpenedIcon.clone() : $folderIcon.clone()),
+                    icon: $(Icons.get('drive')),
                     content: treeData.content
                 }
             };

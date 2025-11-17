@@ -4629,8 +4629,8 @@ define([
             return false;
         };
 
-        var $expandIcon = $(Icons.get('expand'));
-        var $expandedIcon = $(Icons.get('collapse'));
+        var $expandIcon = $(Icons.get('chevron-right'));
+        var $expandedIcon = $(Icons.get('chevron-down'));
         var $folderIcon = $(Icons.get('folder'));
         var $folderOpenedIcon = $(Icons.get('folder-open'));
 
@@ -4751,7 +4751,7 @@ define([
             var rootPath = config.rootPath || ['root'];
             var $rootIcon = data.root.icon ? 
                 (typeof data.root.icon === 'string' ? $(Icons.get(data.root.icon)) : $(data.root.icon)) :
-                $folderIcon.clone();
+                $(Icons.get('drive'));
             
             var hasContent = data.root.content && Object.keys(data.root.content).length > 0;
             var isRootActive = config.currentPath && JSON.stringify(rootPath) === JSON.stringify(config.currentPath);
