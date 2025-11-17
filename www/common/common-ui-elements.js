@@ -4523,6 +4523,253 @@ define([
         observer.start();
     };
 
+    var lexicographicCompare = function(a, b) {
+        if (!Array.isArray(a)) {
+            a = [a];
+        }
+        if (!Array.isArray(b)) {
+            b = [b];
+        }
+
+        if (a.length === 0 && b.length === 0) {
+            return 0;
+        } else if (a.length === 0) {
+            return -1;
+        } else if (b.length === 0) {
+            return 1;
+        } else if (typeof (a[0]) !== typeof (b[0])) {
+            return String(a[0]) < String(b[0]) ? -1 : 1;
+        } else {
+            if (a[0] < b[0]) {
+                return -1;
+            } else if (a[0] > b[0]) {
+                return 1;
+            } else {
+                return lexicographicCompare(a.slice(1), b.slice(1));
+            }
+        }
+    };
+
+    var splitStringToTextAndNumbers = function(s) {
+        var textOrDigitsRe = /(?<text>\D+)?(?<digits>\d+)?/g;
+        var split = [];
+
+        for (var match of s.matchAll(textOrDigitsRe)) {
+            if (match.groups.text !== undefined) {
+                split.push(match.groups.text);
+            }
+            if (match.groups.digits !== undefined) {
+                split.push(parseInt(match.groups.digits));
+            }
+        }
+
+        return split;
+    };
+
+    var naturalSort = function(a, b) {
+        if (typeof(a) === "string") {
+            a = splitStringToTextAndNumbers(a);
+        }
+        if (typeof(b) === "string") {
+            b = splitStringToTextAndNumbers(b);
+        }
+
+        var comp = lexicographicCompare(a, b);
+        return comp;
+    };
+
+    UIElements.getTree = function (data, config) {
+        config = config || {};
+        config.events = config.events || {};
+        config.openFolders = config.openFolders || [];
+        config.currentPath = config.currentPath || null;
+
+        // Check if current path is a subpath of given path (is viewing a child folder)
+        var isSubpath = function(child, parent) {
+            if (!child || !parent || child.length <= parent.length) { return false; }
+            for (var i = 0; i < parent.length; i++) {
+                if (child[i] !== parent[i]) { return false; }
+            }
+            return true;
+        };
+
+        // Check if folder should be initially opened
+        var shouldBeOpened = function(path) {
+            if (config.openFolders && config.openFolders.length) {
+                for (var i = 0; i < config.openFolders.length; i++) {
+                    var openPath = config.openFolders[i];
+                    if (JSON.stringify(openPath) === JSON.stringify(path)) {
+                        return true;
+                    }
+                }
+            }
+            // Auto-expand parent folders of current path
+            if (config.currentPath && isSubpath(config.currentPath, path) && path.length < config.currentPath.length) {
+                return true;
+            }
+            
+            return false;
+        };
+
+        var hasOpenedChild = function(path) {
+            if (!config.openFolders || !config.openFolders.length) { return false; }
+            for (var i = 0; i < config.openFolders.length; i++) {
+                var openPath = config.openFolders[i];
+                if (openPath.length > path.length) {
+                    var match = true;
+                    for (var j = 0; j < path.length; j++) {
+                        if (openPath[j] !== path[j]) {
+                            match = false;
+                            break;
+                        }
+                    }
+                    if (match) { return true; }
+                }
+            }
+            return false;
+        };
+
+        var $expandIcon = $(Icons.get('expand'));
+        var $expandedIcon = $(Icons.get('collapse'));
+        var $folderIcon = $(Icons.get('folder'));
+        var $folderOpenedIcon = $(Icons.get('folder-open'));
+
+        var createTreeElement = function (name, $icon, path, collapsable, active) {
+            var $name = $('<span>', { 'class': 'cp-app-drive-element' }).text(name);
+            var $collapse;
+            if (collapsable) {
+                $collapse = $('<span>').attr('tabindex', 0).attr('class', 'cp-app-drive-icon-expcol').append($expandIcon.clone());
+            }
+            var $elementRow = $('<span>', {
+                'class': 'cp-app-drive-element-row cp-app-drive-element-folder',
+                'tabindex': 0
+            }).append($collapse).append($icon).append($name).on('click keypress', function (e) {
+                if (e.type === 'keypress' && e.which !== 13) {
+                    return;
+                }
+                e.stopPropagation();
+                if (config.events.onFolderClicked) {
+                    config.events.onFolderClicked(path, e);
+                }
+            });
+
+            if (config.events.onContextMenu) {
+                $elementRow.on('contextmenu', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    config.events.onContextMenu(path, e);
+                });
+            }
+
+            var $element = $('<li>').append($elementRow);
+            if (collapsable) {
+                $element.addClass('cp-app-drive-element-collapsed');
+                $collapse.on('click keypress', function(e) {
+                    if (e.type === 'keypress' && e.which !== 13) {
+                        return;
+                    }
+                    e.stopPropagation();
+                    if ($element.hasClass('cp-app-drive-element-collapsed')) {
+                        $element.removeClass('cp-app-drive-element-collapsed');
+                        $collapse.empty().append($expandedIcon.clone());
+                        if (config.events.onFolderExpanded) {
+                            config.events.onFolderExpanded(path, true);
+                        }
+                    } else {
+                        $element.addClass('cp-app-drive-element-collapsed');
+                        $collapse.empty().append($expandIcon.clone());
+                        if (config.events.onFolderExpanded) {
+                            config.events.onFolderExpanded(path, false);
+                        }
+                    }
+                });
+                if (shouldBeOpened(path) || hasOpenedChild(path)) {
+                    $element.removeClass('cp-app-drive-element-collapsed');
+                    $collapse.empty().append($expandedIcon.clone());
+                }
+            }
+            $elementRow.data('path', path);
+            if (active) {
+                $elementRow.addClass('cp-app-drive-element-active cp-leftside-active');
+            }
+            return $element;
+        };
+
+        var createTree = function ($container, folderData, path) {
+            if (!folderData || !folderData.content) { return; }
+
+            var $list = $('<ul>').appendTo($container);
+            var keys = Object.keys(folderData.content).sort(function (a, b) {
+                var nameA = folderData.content[a].name || a;
+                var nameB = folderData.content[b].name || b;
+                return naturalSort(nameA, nameB);
+            });
+
+            keys.forEach(function (key) {
+                var item = folderData.content[key];
+                if (!item) { return; }
+                
+                var name = item.name || key;
+                var newPath;
+                if (item.navPath) {
+                    // Shared folder: derive path without root
+                    newPath = item.navPath.slice(0, -1);
+                } else {
+                    // Regular folder: reconstruct from parent path
+                    var p = path.slice();
+                    p.push(key);
+                    newPath = p;
+                }
+
+                var pathForCurrentCheck = item.navPath || newPath;
+                var $icon;
+                if (item.icon) {
+                    if (typeof item.icon === 'string') {
+                        $icon = $(Icons.get(item.icon));
+                    } else {
+                        $icon = $(item.icon);
+                    }
+                } else {
+                    var shouldShowOpened = shouldBeOpened(pathForCurrentCheck);
+                    $icon = shouldShowOpened ? $folderOpenedIcon.clone() : $folderIcon.clone();
+                }
+                
+                var hasSubfolder = item.content && Object.keys(item.content).length > 0;
+                var isActive = config.currentPath && JSON.stringify(pathForCurrentCheck) === JSON.stringify(config.currentPath);
+                var $element = createTreeElement(name, $icon.clone(), newPath, hasSubfolder, isActive);
+                $element.appendTo($list);
+                
+                if (hasSubfolder) {
+                    var pathForRecursion = item.navPath || newPath;
+                    createTree($element, item, pathForRecursion);
+                }
+            });
+        };
+        var content = [];
+        if (data && data.root) {
+            var rootName = data.root.name || 'Root';
+            var rootPath = config.rootPath || ['root'];
+            var $rootIcon = data.root.icon ? 
+                (typeof data.root.icon === 'string' ? $(Icons.get(data.root.icon)) : $(data.root.icon)) :
+                $folderIcon.clone();
+            
+            var hasContent = data.root.content && Object.keys(data.root.content).length > 0;
+            var isRootActive = config.currentPath && JSON.stringify(rootPath) === JSON.stringify(config.currentPath);
+            var $rootElement = createTreeElement(rootName, $rootIcon, rootPath, hasContent, isRootActive);
+            $rootElement.addClass('cp-app-drive-tree-root');
+            
+            if (!hasContent) {
+                $rootElement.find('.cp-app-drive-icon-expcol').addClass('cp-icon-hidden').attr('tabindex','-1');
+            }
+            var $rootList = $('<ul>', {'class': 'cp-app-drive-tree-docs'}).append($rootElement);
+            content.push($rootList[0]);
+            
+            if (hasContent) {
+                createTree($rootElement, data.root, rootPath);
+            }
+        }
+        return h('div.cp-drive-tree', content);
+    };
 
 
     return UIElements;
