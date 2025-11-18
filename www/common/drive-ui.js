@@ -4570,10 +4570,7 @@ define([
                 if (!elPath || elPath.length === 0) { return; }
                 var pathToCheck = elPath[0] === 'root' ? elPath : [ROOT].concat(elPath);
                 var folderColor = getFolderColor(pathToCheck);
-                var isActive = $row.hasClass('cp-app-drive-element-active');
                 $row.find('.cp-app-drive-icon-folder').css("color", folderColor);
-                $row.find('.cp-app-drive-icon-expcol').css("color", folderColor);
-                $row.find('.cp-app-drive-element').css("color", isActive ? "white" : folderColor);
 
                 var checkRoot = manager.find([ROOT]);
                 var sfId = null;
