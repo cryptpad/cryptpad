@@ -316,7 +316,7 @@ const factory = (UserObject, Util, Hash,
         var userObjects = _getUserObjects(Env);
         var data = {};
         userObjects.some(function (uo) {
-            data = uo.getFileData(id, editable);
+            data = uo.getFileData(id, editable, Env.edPublic);
             if (data && Object.keys(data).length) { return true; }
         });
         return data;

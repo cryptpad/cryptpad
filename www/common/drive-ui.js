@@ -1253,8 +1253,9 @@ define([
         //        falsy (open in preview if default is not using the app)
         var defaultInApp = ['application/pdf'];
         var openFile = function (el, isRo, app) {
+            console.log("data check", edPublic)
             // In anonymous drives, `el` already contains file data
-            var data = el.channel ? el : manager.getFileData(el);
+            var data =  manager.getFileData(el, !isRo, edPublic);
 
             if (data.static) {
                 if (data.href) {
@@ -1263,7 +1264,7 @@ define([
                 }
                 return;
             }
-
+            console.log("data!", data)
             if (!data || (!data.href && !data.roHref)) {
                 return void logError("Missing data for the file", el, data);
             }
@@ -2275,7 +2276,7 @@ define([
                 })
             }
             var hrefData = Hash.parsePadUrl(href);
-                        console.log(hrefData)
+                        console.log("data add", data)
 
             if (hrefData.type) {
                 $element.addClass('cp-border-color-'+hrefData.type);
@@ -3827,10 +3828,11 @@ define([
                 if (isElementSelected($element)) {
                     selectElement($element);
                 }
+                addFileData(id, $element);
+
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
                 });
-                addFileData(id, $element);
                 $element.click(function(e) {
                     e.stopPropagation();
                     onElementClick(e, $element);

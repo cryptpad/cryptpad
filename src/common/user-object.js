@@ -318,7 +318,7 @@ const factory = (Util, Hash,
         };
 
         // Get data from AllFiles (Cryptpad_RECENTPADS)
-        var getFileData = exp.getFileData = function (file, editable) {
+        var getFileData = exp.getFileData = function (file, editable, edPub) {
             if (!file) { return; }
             var link;
             try {
@@ -338,6 +338,13 @@ const factory = (Util, Hash,
                 console.error(err);
                 data = {};
             }
+            if (data.owners) {
+
+                var owner = data?.owners.includes(edPub)
+                editable = owner ? true : editable
+
+            }
+            console.trace("data check2", data)
             if (!editable) {
                 data = JSON.parse(JSON.stringify(data));
                 if (data.href && data.href.indexOf('#') === -1) {
