@@ -161,8 +161,7 @@ const factory = (UserObject, Util, Hash,
         var userObjects = _getUserObjects(Env);
         var userObject = Env.user.userObject;
         userObjects.some(function (uo) {
-            console.log("hello2")
-            if (Object.keys(uo.getFileData(id, true)).length) {
+            if (Object.keys(uo.getFileData(id)).length) {
                 userObject = uo;
                 return true;
             }
@@ -188,8 +187,6 @@ const factory = (UserObject, Util, Hash,
             var data = Env.user.proxy[UserObject.SHARED_FOLDERS][id];
             if (data && !editable) { data = JSON.parse(JSON.stringify(data)); }
             // If it's not a shared folder, check the pads
-                        console.log("hello3")
-
             if (!data) { data = Env.user.userObject.getFileData(id, editable); }
             ret.push({
                 id: id,
@@ -199,8 +196,6 @@ const factory = (UserObject, Util, Hash,
         });
         Object.keys(Env.folders).forEach(function (fId) {
             Env.folders[fId].userObject.findChannels([channel]).forEach(function (id) {
-                            console.log("hello4")
-
                 ret.push({
                     id: id,
                     fId: fId,
@@ -217,8 +212,6 @@ const factory = (UserObject, Util, Hash,
     var findHref = function (Env, href) {
         var ret = [];
         var id = Env.user.userObject.getIdFromHref(href);
-                    console.log("hello5")
-
         if (id) {
             ret.push({
                 data: Env.user.userObject.getFileData(id),
@@ -228,8 +221,6 @@ const factory = (UserObject, Util, Hash,
         Object.keys(Env.folders).forEach(function (fId) {
             var id = Env.folders[fId].userObject.getIdFromHref(href);
             if (!id) { return; }
-                        console.log("hello6")
-
             ret.push({
                 fId: fId,
                 data: Env.folders[fId].userObject.getFileData(id),
@@ -425,8 +416,6 @@ const factory = (UserObject, Util, Hash,
     var _isDuplicateOwned = function (Env, path, id) {
         // if (path && _isInSharedFolder(Env, path)) { console.log ("beep!!")
         //     return true; }
-                    console.log("hello7")
-
         var data = _getFileData(Env, id || Env.user.userObject.find(path));
         if (!data) { return; }
         if (!_ownedByMe(Env, data.owners)) { return; }
