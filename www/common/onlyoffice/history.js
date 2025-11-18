@@ -133,7 +133,6 @@ define([
 
                 let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
                 var messages = (data.messages || []).slice(initialCp || APP.ooconfig.documentType === 'spreadsheet' ? 0 : 1);
-
                 if (config.debug) { console.log(data.messages); }
                 id = id !== undefined ? id : getId();
                 fillOO(messages, ooCheckpoints);
