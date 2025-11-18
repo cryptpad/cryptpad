@@ -131,8 +131,8 @@ define([
                 if (err) { return void console.error(err); }
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
 
-                var messages = (data.messages || []).slice(initialCp || APP.ooconfig.documentType === 'spreadsheet' ? 0 : 1);
                 let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
+                var messages = (data.messages || []).slice(initialCp || APP.ooconfig.documentType === 'spreadsheet' ? 0 : 1);
 
                 if (config.debug) { console.log(data.messages); }
                 id = id !== undefined ? id : getId();
