@@ -30,7 +30,7 @@ define([
         var currentTime;
         var position;
         var patch;
-        var v;
+        var currentVersion;
 
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
@@ -81,11 +81,11 @@ define([
         };
 
         var showVersion = function (initial, position) {
-            v = getVersion(position, initial);
+            currentVersion = getVersion(position, initial);
             if (initial) {
-                v = Messages.oo_version_latest;
+                currentVersion = Messages.oo_version_latest;
             }
-            $version.text(Messages.oo_version + v);
+            $version.text(Messages.oo_version + currentVersion);
 
             var $pos = $hist.find('.cp-history-timeline-pos');
             if (!ooMessages[id]) { return; }
@@ -205,7 +205,7 @@ define([
             if ((id === -1 || id === 0) && ooMessages[id]?.length+2=== Math.abs(msgIndex)) {
                 $prev.prop('disabled', 'disabled');
             }
-            var version = v.split('.');
+            var version = currentVersion.split('.');
             var hashesLength = Object.keys(hashes).length;
             var lastestHash = hashes[Object.keys(hashes).pop()]?.hash;
               
