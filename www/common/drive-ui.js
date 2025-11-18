@@ -4760,7 +4760,7 @@ define([
             var $trashElement = $(trashElement);
             addDriveFeatures($trashElement);
             var $trashElementContent = $trashElement.find('.cp-app-drive-tree-docs');
-            var $trashList = $('<ul>', { 'class': 'cp-app-drive-tree-category' }).append($trashElementContent);
+            var $trashList = $('<ul>', { 'class': 'cp-app-drive-tree-category' }).append($trashElementContent.contents());
             $container.append($trashList);
         };
 
