@@ -123,6 +123,7 @@ const factory = (Util, Hash,
         exp.cryptor = createCryptor(config.editKey);
 
         exp.setReadOnly = function (state, key) {
+            console.log("here!", state, key)
             config.editKey = key;
             exp.cryptor = createCryptor(key);
             exp.cryptor.k = Math.random();
@@ -318,11 +319,13 @@ const factory = (Util, Hash,
         };
 
         // Get data from AllFiles (Cryptpad_RECENTPADS)
-        var getFileData = exp.getFileData = function (file, editable) {
+        var getFileData = exp.getFileData = function (file, editable, edPub) {
             if (!file) { return; }
             var link;
+            // editable = true
             try {
                 link = (files[STATIC_DATA] || {})[file];
+                // console.log("hello#  1", link)
             } catch (err) {
                 console.error(err);
             }
@@ -334,12 +337,29 @@ const factory = (Util, Hash,
             var data;
             try {
                 data = files[FILES_DATA][file] || {};
+                                // console.log("hello#  2")
+
             } catch (err) {
                 console.error(err);
                 data = {};
             }
+            // console.log("hello#", files[FILES_DATA], file)
+            // for 
+            if (data.owners) {
+                // console.log("blorp!", data.owners, edPub)
+                var owner = data?.owners.includes(edPub)
+                editable = owner ? true : editable
+                // console.log("boink?", owner, editable)
+            }
+            
+
             if (!editable) {
+                // console.log("boink@", owner, editable)
                 data = JSON.parse(JSON.stringify(data));
+                                        // console.log("hello", data)
+                                        // console.log("hello", files)
+
+
                 if (data.href && data.href.indexOf('#') === -1) {
                     // Encrypted href: decrypt it if we can, otherwise remove it
                     if (config.editKey) {
@@ -348,7 +368,11 @@ const factory = (Util, Hash,
                         } catch (e) {
                             delete data.href;
                         }
-                    } else {
+                    } 
+                    // else if () {
+
+                    // } 
+                    else if (!data.owners && !data?.owners.includes(edPub)) {
                         delete data.href;
                     }
                 }
@@ -461,6 +485,7 @@ const factory = (Util, Hash,
         var _getFiles = {};
         _getFiles['array'] = function (cat) {
             if (!files[cat]) { files[cat] = []; }
+            console.log()
             return files[cat].slice();
         };
         getHrefArray().forEach(function (c) {

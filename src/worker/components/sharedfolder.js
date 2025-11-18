@@ -101,6 +101,8 @@ const factory = (Hash, Util, UserObject, Cache,
         // If we try to load an existing shared folder (isNew === false) but this folder
         // doesn't exist in the database, abort and cb
         nThen(function (waitFor) {
+                    console.log("here5")
+
             // If we're in onCacheReady, make sure we have a cache for this shared folder
             if (config.cache) {
                 Cache.getChannelCache(secret.channel, waitFor(function (err) {
@@ -112,6 +114,8 @@ const factory = (Hash, Util, UserObject, Cache,
                 }));
             }
         }).nThen(function (waitFor) {
+                    console.log("here4")
+
             isNewChannel(null, { channel: secret.channel }, waitFor(function (obj) {
                 if (obj.isNew && !isNew) {
                     store.manager.deprecateProxy(id, secret.channel, obj.reason);
@@ -120,6 +124,8 @@ const factory = (Hash, Util, UserObject, Cache,
                 }
             }));
         }).nThen(function () {
+                    console.log("here3")
+
             var sf = allSharedFolders[secret.channel];
             if (sf && sf.readOnly && secondaryKey) {
                 // We were in readOnly mode and now we know the edit keys!
@@ -269,6 +275,8 @@ const factory = (Hash, Util, UserObject, Cache,
 
 
     SF.upgrade = function (channel, secret) {
+                        console.log("here2")
+
         var sf = allSharedFolders[channel];
         if (!sf || !sf.readOnly) { return; }
         if (!sf.rt.setReadOnly) { return; }
@@ -276,10 +284,13 @@ const factory = (Hash, Util, UserObject, Cache,
         if (!secret.keys || !secret.keys.editKeyStr) { return; }
         var crypto = Crypto.createEncryptor(secret.keys);
         sf.readOnly = false;
+
         sf.rt.setReadOnly(false, crypto);
     };
 
     SF.leave = function (channel, teamId) {
+                console.log("here1")
+
         var sf = allSharedFolders[channel];
         if (!sf) { return; }
         var clients = sf.teams;

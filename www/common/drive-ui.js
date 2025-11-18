@@ -1254,8 +1254,7 @@ define([
         var defaultInApp = ['application/pdf'];
         var openFile = function (el, isRo, app) {
             // In anonymous drives, `el` already contains file data
-            var data = el.channel ? el : manager.getFileData(el);
-
+            var data =  manager.getFileData(el, isRo, edPublic);
             if (data.static) {
                 if (data.href) {
                     common.openUnsafeURL(data.href);
@@ -1269,6 +1268,7 @@ define([
             }
 
             var href = isRo ? data.roHref : (data.href || data.roHref);
+            console.log("hrefhere", href, isRo, data)
             var parsed = Hash.parsePadUrl(href);
 
             if (parsed.hashData && parsed.hashData.type === 'file' && !app
@@ -2265,10 +2265,13 @@ define([
 
             var href = data.href || data.roHref;
             if (!data) { return void logError("No data for the file", element); }
+            console.log("THIS here", data, edPublic)
+
 
             if (!data.href && manager.isInSharedFolder($element.data('path'))) {
                 Object.keys(files.filesData).forEach(function (file) {
-                    if (files.filesData[file].channel === data.channel && files.filesData[file].href &&  files.filesData[file].href.includes('edit')) {
+                    console.log("beepfile", files.filesData[file].channel, files.filesData[file])
+                    if (files.filesData[file].channel === data.channel && files.filesData[file].href && files.filesData[file].href.includes('edit') && data.owners.includes(edPublic)) {
                         href = files.filesData[file].href;
                         data.href = href;
                     }
@@ -2277,6 +2280,13 @@ define([
             var hrefData = Hash.parsePadUrl(href);
                         console.log(hrefData)
 
+            if (hrefData.type) {
+                $element.addClass('cp-border-color-'+hrefData.type);
+            }
+
+            console.log("href!", href, Hash.parsePadUrl(href))
+
+            var hrefData = Hash.parsePadUrl(href);
             if (hrefData.type) {
                 $element.addClass('cp-border-color-'+hrefData.type);
             }
