@@ -4568,9 +4568,6 @@ define([
                 var $row = $(this);
                 var elPath = $row.data('path');
                 if (!elPath || elPath.length === 0) { return; }
-                var pathToCheck = elPath[0] === 'root' ? elPath : [ROOT].concat(elPath);
-                var folderColor = getFolderColor(pathToCheck);
-                $row.find('.cp-app-drive-icon-folder').css("color", folderColor);
 
                 var checkRoot = manager.find([ROOT]);
                 var sfId = null;
