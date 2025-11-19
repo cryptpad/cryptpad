@@ -4761,6 +4761,7 @@ define([
             });
             var $trashElement = $(trashElement);
             addDriveFeatures($trashElement);
+            $trashElement.find('.cp-app-drive-element-row').first().removeAttr('draggable');
             var $trashElementContent = $trashElement.find('.cp-app-drive-tree-docs');
             var $trashList = $('<ul>', { 'class': 'cp-app-drive-tree-category' }).append($trashElementContent.contents());
             $container.append($trashList);
@@ -4814,6 +4815,7 @@ define([
             });
             var $categoriesElement = $(categoriesElement);
             addDriveFeatures($categoriesElement);
+            $categoriesElement.find('.cp-app-drive-element-row').first().removeAttr('draggable');
             if (options.droppable !== undefined) {
                 $categoriesElement.find('.cp-app-drive-element-row').each(function() {
                     var $row = $(this);
