@@ -4638,7 +4638,7 @@ define([
                     var isEmpty = manager.isFolderEmpty(root[key]);
                     subfolder = manager.hasSubfolder(root[key]);
                     isCurrentFolder = manager.comparePath(newPath, currentPath);
-                    $icon = isEmpty ? 
+                    $icon = isEmpty ?
                         (isCurrentFolder ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                         (isCurrentFolder ? $folderOpenedIcon : $folderIcon);
                     data.content[key] = {
@@ -4648,7 +4648,6 @@ define([
                         content: {}
                     };
                 }
-                
                 if (subfolder) {
                     var subRoot = isSharedFolder ? 
                         Util.find(manager, ['folders', sfId, 'proxy', manager.user.userObject.ROOT]) :
