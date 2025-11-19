@@ -4552,8 +4552,9 @@ define([
                 let fpath = currentPath;
                 if (opt?.init && !manager.isInSharedFolder(fpath) && !priv.anonSFHref) {
                     fixTags();
-                    _displayDirectory(path, force);
-                    cb();
+                    //  Wait for shared folder metadata
+                    // _displayDirectory(path, force);
+                    // cb();
                 }
                 updateSharedFolders(sframeChan, manager, files, folders, function () {
                     _displayDirectory(path, force);
