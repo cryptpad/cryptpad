@@ -2085,7 +2085,18 @@ define([
             if (sfId && folders[sfId] && folders[sfId].readOnly) {
                 return void UI.warn(Messages.fm_forbidden);
             }
-
+            if (newPath[0] === TEMPLATE) {
+                var oldPaths = data && JSON.parse(data).path;
+                if (oldPaths && oldPaths.length) {
+                    var hasFolder = oldPaths.some(function(p) {
+                        var el = manager.find(p.path);
+                        return manager.isFolder(el);
+                    });
+                    if (hasFolder) {
+                        return void UI.warn(Messages.fo_moveUnsortedError);
+                    }
+                }
+            }
             var fileDrop = ev.dataTransfer.items;
             if (fileDrop.length) {
                 // Filter out all the folders and use the correct function to upload them
@@ -4564,46 +4575,6 @@ define([
             });
         };
 
-        var addDriveFeatures = function ($treeElement) {
-            $treeElement.find('.cp-app-drive-element-row').each(function() {
-                var $row = $(this);
-                var elPath = $row.data('path');
-                if (!elPath || elPath.length === 0) { return; }
-                var pathToCheck = elPath[0] === 'root' ? elPath : [ROOT].concat(elPath);
-                var folderColor = getFolderColor(pathToCheck);
-                $row.find('.cp-app-drive-icon-folder').css("color", folderColor);
-
-                var checkRoot = manager.find([ROOT]);
-                var sfId = null;
-                var f = null;
-                var droppable = true;
-                
-                if (elPath.length > 1 && elPath[0] === 'root') {
-                    var firstKey = elPath[1];
-                    if (checkRoot && checkRoot[firstKey]) {
-                        sfId = manager.isSharedFolder(checkRoot[firstKey]) && checkRoot[firstKey];
-                        if (sfId) {
-                            f = folders[sfId];
-                            var editable = !(f && f.readOnly);
-                            droppable = editable;
-                            
-                            $row.addClass('cp-app-drive-element-sharedf');
-                            if (!editable) {
-                                $row.closest('li').attr('data-ro', true);
-                            } 
-                            var sfData = manager.getSharedFolderData(sfId);
-                            _addOwnership($row, $(), sfData);
-                            if (files.restrictedFolders[sfId]) {
-                                $row.addClass('cp-app-drive-element-restricted');
-                            }
-                        }
-                    }
-                }      
-                addDragAndDropHandlers($row, elPath, true, droppable);
-                $row.attr('draggable', true);
-            });
-        };
-
         // Build tree data recursively
         var buildTreeData = function (root, path, currentPath) {
             var data = { content: {} };
@@ -4733,7 +4704,44 @@ define([
             });
             
             var $treeElement = $(treeElement);
-            addDriveFeatures($treeElement);
+            // Drive specific features
+            $treeElement.find('.cp-app-drive-element-row').each(function() {
+                var $row = $(this);
+                var elPath = $row.data('path');
+                if (!elPath || elPath.length === 0) { return; }
+                var pathToCheck = elPath[0] === 'root' ? elPath : [ROOT].concat(elPath);
+                var folderColor = getFolderColor(pathToCheck);
+                $row.find('.cp-app-drive-icon-folder').css("color", folderColor);
+
+                var checkRoot = manager.find([ROOT]);
+                var sfId = null;
+                var f = null;
+                var droppable = true;
+                
+                if (elPath.length > 1 && elPath[0] === 'root') {
+                    var firstKey = elPath[1];
+                    if (checkRoot && checkRoot[firstKey]) {
+                        sfId = manager.isSharedFolder(checkRoot[firstKey]) && checkRoot[firstKey];
+                        if (sfId) {
+                            f = folders[sfId];
+                            var editable = !(f && f.readOnly);
+                            droppable = editable;
+                            
+                            $row.addClass('cp-app-drive-element-sharedf');
+                            if (!editable) {
+                                $row.closest('li').attr('data-ro', true);
+                            } 
+                            var sfData = manager.getSharedFolderData(sfId);
+                            _addOwnership($row, $(), sfData);
+                            if (files.restrictedFolders[sfId]) {
+                                $row.addClass('cp-app-drive-element-restricted');
+                            }
+                        }
+                    }
+                }      
+                addDragAndDropHandlers($row, elPath, true, droppable);
+                $row.attr('draggable', true);
+            });
             $treeElement.find('.cp-app-drive-element-row').first().removeAttr('draggable');
             $container.append($treeElement);
         };
@@ -4761,8 +4769,10 @@ define([
                 openFolders: []
             });
             var $trashElement = $(trashElement);
-            addDriveFeatures($trashElement);
-            $trashElement.find('.cp-app-drive-element-row').first().removeAttr('draggable');
+            var $trashRow = $trashElement.find('.cp-app-drive-element-row').first();
+            if ($trashRow.length) {
+                addDragAndDropHandlers($trashRow, [TRASH], true, true);
+            }
             var $trashElementContent = $trashElement.find('.cp-app-drive-tree-docs');
             var $trashList = $('<ul>', { 'class': 'cp-app-drive-tree-category' }).append($trashElementContent.contents());
             $container.append($trashList);
@@ -4815,13 +4825,11 @@ define([
                 openFolders: []
             });
             var $categoriesElement = $(categoriesElement);
-            addDriveFeatures($categoriesElement);
-            $categoriesElement.find('.cp-app-drive-element-row').first().removeAttr('draggable');
             if (options.droppable !== undefined) {
                 $categoriesElement.find('.cp-app-drive-element-row').each(function() {
                     var $row = $(this);
                     var elPath = $row.data('path');
-                    if (elPath && elPath.length > 0 && elPath[0] === 'root') {
+                    if (elPath && elPath.length > 0 && elPath[0] === cat) {
                         $row.off('dragover drop dragenter dragleave');
                         addDragAndDropHandlers($row, elPath, true, options.droppable);
                     }
