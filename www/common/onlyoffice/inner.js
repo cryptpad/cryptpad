@@ -930,6 +930,7 @@ define([
                             ooChannel.send(obj.data.msg);
                             ooChannel.lastHash = obj.data.hash;
                             ooChannel.cpIndex++;
+                            common.notify();
                         } else {
                             ooChannel.queue.push(obj.data);
                         }
@@ -1458,7 +1459,6 @@ define([
             }
 
             debug(obj, 'toOOClient');
-            common.notify();
             APP.docEditor.sendMessageToOO(obj);
             if (obj && obj.type === "saveChanges") {
                 evIntegrationSave.fire();
