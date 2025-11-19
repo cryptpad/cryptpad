@@ -4584,7 +4584,7 @@ define([
         config.openFolders = config.openFolders || [];
         config.currentPath = config.currentPath || null;
 
-        // Check if current path is a subpath of given path (is viewing a child folder)
+        // Check if current path is a subpath of given path
         var isSubpath = function(child, parent) {
             if (!child || !parent || child.length <= parent.length) { return false; }
             for (var i = 0; i < parent.length; i++) {
@@ -4603,9 +4603,12 @@ define([
                     }
                 }
             }
-            // Auto-expand parent folders of current path
-            if (config.currentPath && isSubpath(config.currentPath, path) && path.length < config.currentPath.length) {
-                return true;
+            // Auto-expand parent folders of current path, but only when viewing tree
+            if (config.currentPath && config.rootPath && isSubpath(config.currentPath, path) && path.length < config.currentPath.length) {
+                if (config.currentPath.length > 0 && config.rootPath.length > 0 &&
+                    config.currentPath[0] === config.rootPath[0]) {
+                    return true;
+                }
             }
             
             return false;
@@ -4683,7 +4686,20 @@ define([
                         }
                     }
                 });
-                if (shouldBeOpened(path) || hasOpenedChild(path)) {
+                // Auto-expand if explicitly marked as opened
+                var shouldExpand = shouldBeOpened(path);
+                
+                // Also expand if has opened children, but only when viewing this tree
+                if (!shouldExpand && hasOpenedChild(path)) {
+                    // Check if we're currently viewing this tree (same root category)
+                    if (config.currentPath && config.rootPath && 
+                        config.currentPath.length > 0 && config.rootPath.length > 0 &&
+                        config.currentPath[0] === config.rootPath[0]) {
+                        shouldExpand = true;
+                    }
+                }
+                
+                if (shouldExpand) {
                     $element.removeClass('cp-app-drive-element-collapsed');
                     $collapse.empty().append($expandedIcon.clone());
                 }

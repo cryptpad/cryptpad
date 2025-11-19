@@ -4614,7 +4614,7 @@ define([
                 newPath.push(key);
                 var isSharedFolder = manager.isSharedFolder(root[key]) && root[key];
                 var sfId = manager.isInSharedFolder(newPath) || (isSharedFolder && root[key]);
-                var folderName = key, $icon, subfolder;
+                var $icon, isCurrentFolder, subfolder, folderName = key;
                 if (isSharedFolder) {
                     var navPath = newPath.slice();
                     navPath.push(manager.user.userObject.ROOT);
@@ -4624,7 +4624,8 @@ define([
                     // Fix name
                     var sfData = manager.getSharedFolderData(sfId);
                     folderName = sfData.title || sfData.lastTitle || Messages.fm_deletedFolder;
-                    var isCurrentFolder = manager.comparePath(navPath, currentPath);
+                    isCurrentFolder = manager.comparePath(navPath, currentPath);
+                    // Fix icon
                     $icon = isCurrentFolder ? $sharedFolderOpenedIcon : $sharedFolderIcon;
                     data.content[key] = {
                         name: folderName,
@@ -4636,8 +4637,7 @@ define([
                 } else {
                     var isEmpty = manager.isFolderEmpty(root[key]);
                     subfolder = manager.hasSubfolder(root[key]);
-                    // Check if this is the current folder
-                    var isCurrentFolder = manager.comparePath(newPath, currentPath);
+                    isCurrentFolder = manager.comparePath(newPath, currentPath);
                     $icon = isEmpty ? 
                         (isCurrentFolder ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                         (isCurrentFolder ? $folderOpenedIcon : $folderIcon);
@@ -4722,7 +4722,8 @@ define([
                     },
                     onFolderExpanded: function (clickedPath, isOpen) {
                         LS.setFolderOpened(clickedPath, isOpen);
-                        // Also remove all child folders when collapsing a parent
+                        if (clickedPath.length === 1) { return; }
+                        // When collapsing a folder, close all its children
                         if (!isOpen) {
                             LS.removeFoldersOpened(clickedPath);
                         }
