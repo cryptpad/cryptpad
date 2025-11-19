@@ -4734,6 +4734,7 @@ define([
             
             var $treeElement = $(treeElement);
             addDriveFeatures($treeElement);
+            $treeElement.find('.cp-app-drive-element-row').first().removeAttr('draggable');
             $container.append($treeElement);
         };
 
