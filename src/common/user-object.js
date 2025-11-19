@@ -344,7 +344,7 @@ const factory = (Util, Hash,
                 editable = owner ? true : editable
 
             }
-            console.trace("data check2", data)
+            console.log("data check2", data)
             if (!editable) {
                 data = JSON.parse(JSON.stringify(data));
                 if (data.href && data.href.indexOf('#') === -1) {
