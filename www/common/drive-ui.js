@@ -1264,13 +1264,30 @@ define([
                 }
                 return;
             }
-            console.log("data!", data)
+            console.log("data!", data, el)
             if (!data || (!data.href && !data.roHref)) {
                 return void logError("Missing data for the file", el, data);
             }
 
             var href = isRo ? data.roHref : (data.href || data.roHref);
+
+            // if (!data.href
+            //     //  && manager.isInSharedFolder($element.data('path'))
+            //     ) {
+            //     Object.keys(files.filesData).forEach(function (file) {
+            //         if (files.filesData[file].channel === data.channel && files.filesData[file].href 
+            //             &&  files.filesData[file].href.includes('edit') && data.owners.includes(edPublic)
+            //         ) {
+            //             href = files.filesData[file].href;
+            //             console.log("parsed", href, Hash.parsePadUrl(href).hash)
+
+            //                 // data.href = href; 
+
+            //         }
+            //     })
+            // }
             var parsed = Hash.parsePadUrl(href);
+                        console.log("data!2", data, parsed)
 
             if (parsed.hashData && parsed.hashData.type === 'file' && !app
                     && (defaultInApp.indexOf(data.fileType) === -1 || app === false)) {
@@ -1292,6 +1309,8 @@ define([
             var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
             var hiddenHref = Hash.hashToHref(hash, parsed.type);
             common.openURL(Hash.getNewPadURL(hiddenHref, obj));
+                        console.log("data!3", hash, hiddenHref, obj, priv, Hash.getNewPadURL(hiddenHref, obj))
+
         };
         var openIn = function (type, path, team, fData) {
             var obj = {
@@ -2256,6 +2275,7 @@ define([
             if (!manager.isFile(element)) { return; }
 
             var data = manager.getFileData(element);
+            console.trace("datahere", data, element)
             if (data.static) {
                 return addStaticData(element, $element, data);
             }
@@ -2267,14 +2287,19 @@ define([
             var href = data.href || data.roHref;
             if (!data) { return void logError("No data for the file", element); }
 
-            if (!data.href && manager.isInSharedFolder($element.data('path'))) {
-                Object.keys(files.filesData).forEach(function (file) {
-                    if (files.filesData[file].channel === data.channel && files.filesData[file].href &&  files.filesData[file].href.includes('edit')) {
-                        href = files.filesData[file].href;
-                        data.href = href;
-                    }
-                })
-            }
+            // if (!data.href && manager.isInSharedFolder($element.data('path'))) {
+            //     Object.keys(files.filesData).forEach(function (file) {
+            //         if (files.filesData[file].channel === data.channel && files.filesData[file].href 
+            //             &&  files.filesData[file].href.includes('edit') && data.owners.includes(edPublic)
+            //         ) {
+            //             href = files.filesData[file].href;
+            //             console.log("parsed", href, Hash.parsePadUrl(href).hash)
+
+            //                 data.href = href; 
+
+            //         }
+            //     })
+            // }
             var hrefData = Hash.parsePadUrl(href);
                         console.log("data add", data)
 
@@ -2525,6 +2550,7 @@ define([
                 }
                 if (isTrash) { return; }
                 openFile(root[key]);
+                console.log("blop1")
             });
             var invalid;
             if (isFolder) {
@@ -3832,6 +3858,8 @@ define([
 
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
+                                    console.log("blop2")
+
                 });
                 $element.click(function(e) {
                     e.stopPropagation();
@@ -3872,6 +3900,8 @@ define([
                 });
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
+                                    console.log("blop3")
+
                 });
                 addFileData(id, $element);
                 $element.data('path', [FILES_DATA, id]);
@@ -4210,6 +4240,8 @@ define([
                 });
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
+                                    console.log("blop4")
+
                 });
                 addFileData(id, $element);
                 $element.data('path', path);
@@ -5004,6 +5036,8 @@ define([
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
                 openFile(el, null, false);
+                                console.log("blop5")
+
             }
             else if ($this.hasClass('cp-app-drive-context-open')) {
                 paths.forEach(function (p) {
@@ -5013,6 +5047,8 @@ define([
                         return;
                     }
                     openFile(el, false, true);
+                                    console.log("blop6")
+
                 });
             }
             else if ($this.hasClass('cp-app-drive-context-openro')) {
@@ -5028,6 +5064,8 @@ define([
                         if (!el || manager.isFolder(el)) { return; }
                     }
                     openFile(el, true, true);
+                                    console.log("blop7")
+
                 });
             }
             else if ($this.hasClass('cp-app-drive-context-makeacopy')) {

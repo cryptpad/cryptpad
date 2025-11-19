@@ -344,17 +344,17 @@ const factory = (Util, Hash,
                 editable = owner ? true : editable
 
             }
-            console.log("data check2", data)
+            console.log("data check2", file, editable, edPub, data)
             if (!editable) {
                 data = JSON.parse(JSON.stringify(data));
                 if (data.href && data.href.indexOf('#') === -1) {
                     // Encrypted href: decrypt it if we can, otherwise remove it
                     if (config.editKey) {
-                        try {
-                            data.href = exp.cryptor.decrypt(data.href);
-                        } catch (e) {
-                            delete data.href;
-                        }
+                        // try {
+                        //     // data.href = exp.cryptor.decrypt(data.href);
+                        // } catch (e) {
+                        //     delete data.href;
+                        // }
                     } else {
                         delete data.href;
                     }

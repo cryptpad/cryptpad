@@ -313,10 +313,14 @@ const factory = (UserObject, Util, Hash,
     };
 
     var _getFileData = function (Env, id, editable) {
+        console.log("manager", Env, id, editable)
         var userObjects = _getUserObjects(Env);
         var data = {};
         userObjects.some(function (uo) {
+            
             data = uo.getFileData(id, editable, Env.edPublic);
+                    console.log("manager uo", Env, id, editable)
+
             if (data && Object.keys(data).length) { return true; }
         });
         return data;
