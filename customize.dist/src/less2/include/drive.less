@@ -342,10 +342,9 @@
         .cp-app-drive-tree-docs {
             .droppable-tree-element();
             margin-top: 15px;
-            //padding: 0 0 0 20px;
-            padding: 0;
+            padding: 5px;
             background-color: @cp_sidebar-left-item-bg;
-            border-radius: @variables_radius;
+            border-radius: @variables_radius_L;
             cursor: auto;
             &li, li {
                 padding: 0;
@@ -366,7 +365,7 @@
                     display: flex;
                     align-items: center;
                     cursor: pointer;
-                    margin: 0 0 2px 0;
+                    margin: 0;
                     .cp-app-drive-element {
                         flex: 1;
                         min-width: 0;
@@ -386,7 +385,7 @@
             margin: 0;
             margin-top: 10px;
             background-color: @cp_sidebar-left-item-bg;
-            border-radius: @variables_radius;
+            border-radius: @variables_radius_L;
             box-shadow: @cryptpad_ui_shadow;
             .cp-app-drive-tree-root {
                 .droppable-tree-element();
@@ -415,19 +414,19 @@
         .cp-app-drive-icon-expcol {
             font-size: 14px;
             position: absolute;
-            left: -17px;
+            left: -20px;
             overflow: hidden;
             padding: 0;
             margin: 0;
             z-index: 10;
-            cursor: default;
+            cursor: pointer;
             display: inline-flex;
             svg {
                 margin: 0;
             }
             &:focus-visible {
                 outline: @variables_focus_style;
-                border-radius: @variables_radius_S;
+                border-radius: @variables_radius;
             }
         }
         .cp-app-drive-tree-docs {
@@ -441,7 +440,6 @@
                 }
             }
             .cp-app-drive-tree-root > .cp-app-drive-element-row {
-                margin-left: 0px;
                 .cp-icon-hidden ~ svg {
                     margin-left: -10px;
                 }
@@ -475,9 +473,8 @@
 
         // Expand/collapse lines
         .cp-app-drive-tree-docs ul {
-            margin: 0px 0px 0px 10px;
+            margin: 0px 0px 0px 12px;
             list-style: none;
-            padding-left: 5px;
             li {
                 position: relative;
                 &.cp-app-drive-tree-root {
