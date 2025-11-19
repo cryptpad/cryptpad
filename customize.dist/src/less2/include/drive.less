@@ -342,10 +342,9 @@
         .cp-app-drive-tree-docs {
             .droppable-tree-element();
             margin-top: 15px;
-            //padding: 0 0 0 20px;
-            padding: 0;
+            padding: 5px;
             background-color: @cp_sidebar-left-item-bg;
-            border-radius: @variables_radius;
+            border-radius: @variables_radius_L;
             cursor: auto;
             &li, li {
                 padding: 0;
@@ -366,7 +365,7 @@
                     display: flex;
                     align-items: center;
                     cursor: pointer;
-                    margin: 0 0 2px 0;
+                    margin: 0;
                     .cp-app-drive-element {
                         flex: 1;
                         min-width: 0;
@@ -440,8 +439,11 @@
                     }
                 }
             }
+            svg {
+                height: 1.5em;
+                width: 1.5em;
+            }
             .cp-app-drive-tree-root > .cp-app-drive-element-row {
-                margin-left: 0px;
                 .cp-icon-hidden ~ svg {
                     margin-left: -10px;
                 }
