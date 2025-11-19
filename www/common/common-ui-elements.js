@@ -4664,6 +4664,11 @@ define([
             var $element = $('<li>').append($elementRow);
             if (collapsable) {
                 $element.addClass('cp-app-drive-element-collapsed');
+                $collapse.attr({
+                    'aria-expanded': 'false',
+                    'role': 'button',
+                    'aria-label': Messages.ui_expand
+                });
                 $collapse.on('click keypress', function(e) {
                     if (e.type === 'keypress' && e.which !== 13) {
                         return;
@@ -4672,12 +4677,16 @@ define([
                     if ($element.hasClass('cp-app-drive-element-collapsed')) {
                         $element.removeClass('cp-app-drive-element-collapsed');
                         $collapse.empty().append($expandedIcon.clone());
+                        $collapse.attr('aria-expanded', 'true');
+                        $collapse.attr('aria-label', Messages.ui_collapse);
                         if (config.events.onFolderExpanded) {
                             config.events.onFolderExpanded(path, true);
                         }
                     } else {
                         $element.addClass('cp-app-drive-element-collapsed');
                         $collapse.empty().append($expandIcon.clone());
+                        $collapse.attr('aria-expanded', 'false');
+                        $collapse.attr('aria-label', Messages.ui_expand);
                         if (config.events.onFolderExpanded) {
                             config.events.onFolderExpanded(path, false);
                         }
@@ -4686,6 +4695,8 @@ define([
                 if (shouldBeOpened(path) || hasOpenedChild(path)) {
                     $element.removeClass('cp-app-drive-element-collapsed');
                     $collapse.empty().append($expandedIcon.clone());
+                    $collapse.attr('aria-expanded', 'true');
+                    $collapse.attr('aria-label', Messages.ui_collapse);
                 }
             }
             $elementRow.data('path', path);
