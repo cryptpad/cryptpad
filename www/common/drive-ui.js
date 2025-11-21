@@ -2085,6 +2085,7 @@ define([
             if (sfId && folders[sfId] && folders[sfId].readOnly) {
                 return void UI.warn(Messages.fm_forbidden);
             }
+
             if (newPath[0] === TEMPLATE) {
                 var oldPaths = data && JSON.parse(data).path;
                 if (oldPaths && oldPaths.length) {
@@ -4587,25 +4588,28 @@ define([
                 var isSharedFolder = manager.isSharedFolder(root[key]) && root[key];
                 var sfId = manager.isInSharedFolder(newPath) || (isSharedFolder && root[key]);
                 var $icon, isCurrentFolder, subfolder, folderName = key;
+                var randomKey = Util.uid();
+                var pathForRecursion = newPath;
                 if (isSharedFolder) {
                     var navPath = newPath.slice();
                     navPath.push(manager.user.userObject.ROOT);
+                    isCurrentFolder = manager.comparePath(navPath, currentPath);
                     // Subfolders?
                     var newRoot = Util.find(manager, ['folders', sfId, 'proxy', manager.user.userObject.ROOT]) || {};
                     subfolder = manager.hasSubfolder(newRoot);
                     // Fix name
                     var sfData = manager.getSharedFolderData(sfId);
                     folderName = sfData.title || sfData.lastTitle || Messages.fm_deletedFolder;
-                    isCurrentFolder = manager.comparePath(navPath, currentPath);
                     // Fix icon
                     $icon = isCurrentFolder ? $sharedFolderOpenedIcon : $sharedFolderIcon;
-                    data.content[key] = {
+                    data.content[randomKey] = {
                         name: folderName,
                         icon: $icon,
                         navPath: navPath,
                         content: {}
                     };
                     isSharedFolder = sfId;
+                    pathForRecursion = navPath;
                 } else {
                     var isEmpty = manager.isFolderEmpty(root[key]);
                     subfolder = manager.hasSubfolder(root[key]);
@@ -4613,10 +4617,10 @@ define([
                     $icon = isEmpty ?
                         (isCurrentFolder ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                         (isCurrentFolder ? $folderOpenedIcon : $folderIcon);
-                    data.content[key] = {
+                    data.content[randomKey] = {
                         name: folderName,
                         icon: $icon,
-                        // path: NOT stored for regular folders
+                        navPath: newPath,
                         content: {}
                     };
                 }
@@ -4625,9 +4629,7 @@ define([
                         Util.find(manager, ['folders', sfId, 'proxy', manager.user.userObject.ROOT]) :
                         root[key];
                     if (subRoot) {
-                        // For shared folders, add ROOT to path for subfolders
-                        var pathForSubfolders = isSharedFolder ? navPath : newPath;
-                        data.content[key].content = buildTreeData(subRoot, pathForSubfolders, currentPath).content;
+                        data.content[randomKey].content = buildTreeData(subRoot, pathForRecursion, currentPath).content;
                     }
                 }
             }); 
@@ -5145,29 +5147,36 @@ define([
                 }
                 var openRecursive = function (path, isSharedFolderRoot) {
                     LS.setFolderOpened(path, opened); 
-                    // For shared folders, we need to add root
                     var pathForContent = isSharedFolderRoot ? 
                         path.concat(manager.user.userObject.ROOT) : 
                         path;
                     var folderContent = manager.find(pathForContent);
+                    if (!folderContent) { 
+                        return; 
+                    }
                     var subfolders = [];
                     for (var k in folderContent) {
                         if (manager.isFolder(folderContent[k])) {
+                            // Build the full path for each subfolder
+                            var subPath = pathForContent.slice();
+                            subPath.push(k);
                             if (manager.isSharedFolder(folderContent[k])) {
-                                subfolders.push([k].concat(manager.user.userObject.ROOT));
+                                // Shared folders need ROOT appended
+                                subPath.push(manager.user.userObject.ROOT);
                             }
-                            else {
-                                subfolders.push(k);
-                            }
+                            subfolders.push(subPath);
                         }
                     }
-                    subfolders.forEach(function (p) {
-                        var subPath = pathForContent.concat(p);
+                    subfolders.forEach(function (subPath) {
                         openRecursive(subPath, false);
                     });
                 };
                 openRecursive(initialPath, isInitialSharedFolder);
-                refresh();
+                if (!opened) {
+                    APP.displayDirectory(initialPath);
+                } else {
+                    refresh();
+                }
             }
 
             else if ($this.hasClass('cp-app-drive-context-download')) {

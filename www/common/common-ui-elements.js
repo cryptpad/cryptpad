@@ -4698,16 +4698,6 @@ define([
                 // Auto-expand if explicitly marked as opened
                 var shouldExpand = shouldBeOpened(path);
                 
-                // Also expand if has opened children, but only when viewing this tree
-                if (!shouldExpand && hasOpenedChild(path)) {
-                    // Check if we're currently viewing this tree (same root category)
-                    if (config.currentPath && config.rootPath && 
-                        config.currentPath.length > 0 && config.rootPath.length > 0 &&
-                        config.currentPath[0] === config.rootPath[0]) {
-                        shouldExpand = true;
-                    }
-                }
-                
                 if (shouldExpand) {
                     $element.removeClass('cp-app-drive-element-collapsed');
                     $collapse.empty().append($expandedIcon.clone());
@@ -4739,16 +4729,13 @@ define([
                 var name = item.name || key;
                 var newPath;
                 if (item.navPath) {
-                    // Shared folder: derive path without root
-                    newPath = item.navPath.slice(0, -1);
+                    newPath = item.navPath;
                 } else {
-                    // Regular folder: reconstruct from parent path
+                    // Fallback: reconstruct from parent path (for backwards compatibility)
                     var p = path.slice();
                     p.push(key);
                     newPath = p;
                 }
-
-                var pathForCurrentCheck = item.navPath || newPath;
                 var $icon;
                 if (item.icon) {
                     if (typeof item.icon === 'string') {
@@ -4757,18 +4744,17 @@ define([
                         $icon = $(item.icon);
                     }
                 } else {
-                    var shouldShowOpened = shouldBeOpened(pathForCurrentCheck);
+                    var shouldShowOpened = shouldBeOpened(newPath);
                     $icon = shouldShowOpened ? $folderOpenedIcon.clone() : $folderIcon.clone();
                 }
                 
                 var hasSubfolder = item.content && Object.keys(item.content).length > 0;
-                var isActive = config.currentPath && JSON.stringify(pathForCurrentCheck) === JSON.stringify(config.currentPath);
+                var isActive = config.currentPath && JSON.stringify(newPath) === JSON.stringify(config.currentPath);
                 var $element = createTreeElement(name, $icon.clone(), newPath, hasSubfolder, isActive);
                 $element.appendTo($list);
                 
                 if (hasSubfolder) {
-                    var pathForRecursion = item.navPath || newPath;
-                    createTree($element, item, pathForRecursion);
+                    createTree($element, item, newPath);
                 }
             });
         };
