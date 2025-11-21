@@ -4730,8 +4730,8 @@ define([
                 var elPath = $row.data('path');
                 if (!elPath || elPath.length === 0) { return; }
                 var pathToCheck = elPath[0] === 'root' ? elPath : [ROOT].concat(elPath);
-                var folderColor = getFolderColor(pathToCheck);
-                $row.find('.cp-app-drive-icon-folder').css("color", folderColor);
+                var isSharedFolderPath = pathToCheck.length > 1 && pathToCheck[pathToCheck.length - 1] === ROOT;
+                $row.find('.cp-app-drive-icon-folder').css("color", isSharedFolderPath ? getFolderColor(pathToCheck.slice(0, -1)) : getFolderColor(pathToCheck));
 
                 var checkRoot = manager.find([ROOT]);
                 var sfId = null;
@@ -5163,7 +5163,7 @@ define([
                     if (!folderContent) { return; }
                     Object.keys(folderContent).forEach(function(k) {
                         if (manager.isFolder(folderContent[k])) {
-                            var subPath = path.slice();
+                            var subPath = pathForContent.slice();
                             subPath.push(k);
                             openRecursive(subPath);
                         }
