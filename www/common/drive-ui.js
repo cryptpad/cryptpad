@@ -1900,10 +1900,17 @@ define([
         var onDrag = function (ev, path) {
             var paths = [];
             var $element = findDataHolder($(ev.target));
+            var getRefPath = function(navPath) {
+                if (navPath && navPath.length > 1 && navPath[navPath.length - 1] === ROOT) {
+                    return navPath.slice(0, -1);
+                }
+                return navPath;
+            }; 
             if ($element.hasClass('cp-app-drive-element-selected')) {
                 var $selected = findSelectedElements();
                 $selected.each(function (idx, elmt) {
-                    var ePath = $(elmt).data('path');
+                    var navPath = $(elmt).data('path');
+                    var ePath = getRefPath(navPath);
                     if (ePath) {
                         var val = manager.find(ePath);
                         if (!val) { return; } // Error? A ".selected" element is not in the object
@@ -1919,12 +1926,13 @@ define([
             } else {
                 removeSelected();
                 selectElement($element);
-                var val = manager.find(path);
+                var dragPath = getRefPath(path);
+                var val = manager.find(dragPath);
                 if (!val) { return; } // The element is not in the object
                 paths = [{
-                    path: path,
+                    path: dragPath,
                     value: {
-                        name: getElementName(path),
+                        name: getElementName(dragPath),
                         el: val
                     }
                 }];
@@ -2905,7 +2913,10 @@ define([
                     iconClass: 'destroy',
                     name: Messages.fc_delete_owned,
                     onClick: function () {
-                        manager.emptyTrash(true, refresh);
+                        manager.emptyTrash(true, function() {
+                            LS.removeFoldersOpened([TRASH]);
+                            refresh();
+                        });
                     },
                     keys: []
                 });
@@ -2916,7 +2927,10 @@ define([
                 iconClass: 'trash-full',
                 name: hasOwned ? Messages.fc_remove : Messages.okButton,
                 onClick: function () {
-                    manager.emptyTrash(false, refresh);
+                    manager.emptyTrash(false, function() {
+                        LS.removeFoldersOpened([TRASH]);
+                        refresh();
+                    });
                 },
                 keys: [13]
             });
@@ -4664,6 +4678,9 @@ define([
                 }
             };
             var openFolders = LS.getOpenedFolders();
+            var filteredOpenFolders = openFolders.filter(function(p) {
+                return p && p.length > 0 && p[0] === path[0];
+            });
             var treeElement = UIElements.getTree(data, {
                 currentPath: currentPath,
                 rootPath: path,
@@ -4702,7 +4719,7 @@ define([
                         }
                     }
                 },
-                openFolders: openFolders
+                openFolders: filteredOpenFolders
             });
             
             var $treeElement = $(treeElement);
