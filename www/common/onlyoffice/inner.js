@@ -2911,12 +2911,16 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 resetData(blob, fileType);
             } catch (e) {
                 var file = getFileType();
-                var type = common.getMetadataMgr().getPrivateData().ooType;
+                var type = common.getMetadataMgr().gistoryetPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
                 if (!keepQueue) { ooChannel.queue = []; }
                 resetData(blob, file);
             }
         };
+
+        var loadHistoryCp = function (cp, keepQueue) {
+            loadCp(cp, keepQueue)
+        }
 
         var loadTemplate = function (href, pw, parsed) {
             APP.history = true;
@@ -3121,10 +3125,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             if (!privateData.ooVersionHash) {
             (function () {
                 /* add a history button */
-                var commit = function () {
+                var commit = function (revert) {
                     // Wait for the checkpoint to be uploaded before leaving history mode
                     // (race condition). We use "stopHistory" to remove the history
                     // flag only when the checkpoint is ready.
+                    // APP.revert = revert ? true : false;
                     APP.stopHistory = true;
                     makeCheckpoint(true);
                 };
@@ -3158,6 +3163,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         loadCp(cp);
                     }
                 };
+                var docType = function() {
+                    return APP.ooconfig.documentType;
+                }
                 var setHistoryMode = function (bool) {
                     if (bool) {
                         APP.history = true;
@@ -3225,7 +3233,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     var histConfig = {
                         onPatch: onPatch,
                         onPatchBack: onPatchBack,
+                        docType: docType,
                         loadCp: loadCp,
+                        loadHistoryCp: loadHistoryCp, 
                         onCheckpoint: onCheckpoint,
                         onRevert: commit,
                         setHistory: setHistoryMode,
