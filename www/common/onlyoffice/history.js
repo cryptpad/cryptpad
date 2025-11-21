@@ -24,17 +24,17 @@ define([
 
         var cpIndex = -1;
         var msgIndex = -1;
-        var APP = window.APP;
         var ooMessages = {};
         var loading = false;
         var currentTime;
         var position;
         var patch;
         var currentVersion;
+        var forward;
+        var APP = window.APP;
 
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
-        var sortedCp = Object.keys(hashes).map(Number);
         var id;
 
         var sortedCp = Object.keys(hashes).map(Number).sort(function (a, b) {
@@ -65,33 +65,28 @@ define([
         var Messages = common.Messages;
 
         var getVersion = function (position) {
-            if (Object.keys(ooMessages).length) {
-                let version = (id === -1 || id === 0) ? 0 : id;
-                
-                if (position === undefined) {
-                    position = ooMessages[id]?.length || 0;
-                } else if (position === ooMessages[id]?.length && hashes[version + 1]) {
-                    position = 0;
-                    if (ooMessages[id]?.length) {
-                        version++;
-                    }
-                }
-                return version + '.' + position;
+            if (!Object.keys(ooMessages).length) { return; }
+            let version = (id === -1 || id === 0) ? 0 : id;
+            
+            if (typeof(position) === "undefined") {
+                position = ooMessages[id]?.length || 0;
+            } else if (position === ooMessages[id]?.length && hashes[version + 1]) {
+                position = 0;
+                if (ooMessages[id]?.length) { version++; }
             }
+            return version + '.' + position;
         };
 
         var showVersion = function (initial, position) {
             currentVersion = getVersion(position, initial);
-            if (initial) {
-                currentVersion = Messages.oo_version_latest;
-            }
+            if (initial) { currentVersion = Messages.oo_version_latest; }
             $version.text(Messages.oo_version + currentVersion);
 
             var $pos = $hist.find('.cp-history-timeline-pos');
             if (!ooMessages[id]) { return; }
             var msgs = ooMessages[id];
             var p;
-            var messageIndex = APP.next ? msgIndex+1 : msgIndex;
+            var messageIndex = forward ? msgIndex+1 : msgIndex;
             if (!Object.keys(hashes).length) {
                 p = 100-100*((messageIndex ) / (-msgs.length));
             } else {
@@ -104,9 +99,7 @@ define([
                 var segments = id/hashLength;
                 p = 100*(segments); 
 
-                if (id === 0) {
-                    p = 0;
-                }
+                if (id === 0) { p = 0; }
                 
                 var percentage = ((position/msgs.length)*100);
                 var timelinePosition = (percentage/100)*(100/hashLength);
@@ -122,7 +115,7 @@ define([
             update();
         };
 
-        function getMessages(fromHash, toHash, cpIndex, sortedCp, cp, config, fillOO, $share, ooCheckpoints, callback) {
+        var getMessages = function(fromHash, toHash, cpIndex, sortedCp, cp, config, fillOO, $share, ooCheckpoints, callback) {
             sframeChan.query('Q_GET_HISTORY_RANGE', {
                 channel: config.onlyoffice.channel,
                 lastKnownHash: fromHash,
@@ -132,9 +125,9 @@ define([
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
 
                 let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
-                var messages = (data.messages || []).slice(initialCp || APP.ooconfig.documentType === 'spreadsheet' ? 0 : 1);
+                var messages = (data.messages || []).slice(initialCp || config.docType() === 'spreadsheet' ? 0 : 1);
                 if (config.debug) { console.log(data.messages); }
-                id = id !== undefined ? id : getId();
+                id = typeof(id) !== "undefined" ? id : getId();
                 fillOO(messages, ooCheckpoints);
                 loading = false;
                 // $share.show();
@@ -148,10 +141,10 @@ define([
             return new Promise((resolve, reject) => {
                 if (!Array.isArray(sortedCp)) { 
                     console.error("Wrong type");
-                    return resolve();
+                    return reject();
                 }
-                
-                id = id !== undefined ? id : getId();
+
+                id = typeof(id) !== "undefined" ? id : getId();
 
                 if (ooMessages[id-1] && !ooMessages[id-1].length) {
                     var cp = hashes[id-1];
@@ -169,7 +162,7 @@ define([
                         reject(err);
                         return;
                     }
-                    resolve(); 
+                    resolve();
                 });
             });
         };
@@ -178,8 +171,8 @@ define([
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
-            APP.revert = true
-            config.onRevert();
+            APP.revert = true;
+            config.onRevert(true);
         };
 
         config.setHistory(true);
@@ -224,7 +217,7 @@ define([
         }
 
         var next = async function () {
-            APP.next = true;
+            forward = true;
             msgIndex++;
             msgs = ooMessages[id];
 
@@ -245,12 +238,10 @@ define([
                         config.onPatchBack(hashes[id], [patch]);
                     }
                 } else {
-                    if (!msgs.length) return config.onPatchBack(hashes[id + 1]);
-                    if (Math.abs(msgIndex) > msgs.length) msgIndex = -msgs.length;
+                    if (!msgs.length) { return config.onPatchBack(hashes[id + 1]); }
+                    if (Math.abs(msgIndex) > msgs.length) { msgIndex = -msgs.length; }
                 }
-            } else if (msgs.length + msgIndex === -1) {
-                msgIndex++;
-            }
+            } else if (msgs.length + msgIndex === -1) { msgIndex++; }
 
             patch = msgs[msgs.length + msgIndex];
             position = msgs.indexOf(patch) + 1;
@@ -263,7 +254,7 @@ define([
         var msgs;
 
         var prev = function () {
-            APP.next = false;
+            forward = false;
             msgs = ooMessages[id];
             let hasHashes = Object.keys(hashes).length;
             let cp = hasHashes ? hashes[id] : {};
