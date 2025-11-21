@@ -4605,6 +4605,7 @@ define([
                 var randomKey = Util.uid();
                 var pathForRecursion = newPath;
                 if (isSharedFolder) {
+                    // Fix path
                     var navPath = newPath.slice();
                     navPath.push(manager.user.userObject.ROOT);
                     isCurrentFolder = manager.comparePath(navPath, currentPath);
@@ -5153,42 +5154,22 @@ define([
                 if (paths.length !== 1) { return; }
                 var opened = $this.hasClass('cp-app-drive-context-expandall');
                 var initialPath = paths[0].path;
-                var isInitialSharedFolder = false;
-                if (initialPath.length >= 2) {
-                    var parentPath = initialPath.slice(0, -1);
-                    var lastKey = initialPath[initialPath.length - 1];
-                    var parent = manager.find(parentPath);
-                    if (parent && parent[lastKey]) {
-                        isInitialSharedFolder = manager.isSharedFolder(parent[lastKey]);
-                    }
-                }
-                var openRecursive = function (path, isSharedFolderRoot) {
-                    LS.setFolderOpened(path, opened); 
-                    var pathForContent = isSharedFolderRoot ? 
-                        path.concat(manager.user.userObject.ROOT) : 
-                        path;
+                var openRecursive = function (path) {
+                    LS.setFolderOpened(path, opened);
+                    var folder = manager.find(path);
+                    var isSharedFolder = manager.isSharedFolder(folder);
+                    var pathForContent = isSharedFolder ? path.concat(manager.user.userObject.ROOT) : path;
                     var folderContent = manager.find(pathForContent);
-                    if (!folderContent) { 
-                        return; 
-                    }
-                    var subfolders = [];
-                    for (var k in folderContent) {
+                    if (!folderContent) { return; }
+                    Object.keys(folderContent).forEach(function(k) {
                         if (manager.isFolder(folderContent[k])) {
-                            // Build the full path for each subfolder
-                            var subPath = pathForContent.slice();
+                            var subPath = path.slice();
                             subPath.push(k);
-                            if (manager.isSharedFolder(folderContent[k])) {
-                                // Shared folders need ROOT appended
-                                subPath.push(manager.user.userObject.ROOT);
-                            }
-                            subfolders.push(subPath);
+                            openRecursive(subPath);
                         }
-                    }
-                    subfolders.forEach(function (subPath) {
-                        openRecursive(subPath, false);
                     });
                 };
-                openRecursive(initialPath, isInitialSharedFolder);
+                openRecursive(initialPath);
                 if (!opened) {
                     APP.displayDirectory(initialPath);
                 } else {
