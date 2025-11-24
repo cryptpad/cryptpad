@@ -584,6 +584,7 @@ define([
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
+            ooChannel.queue = [];
             ooChannel.ready = false;
             data.callback = function () {
                 if (APP.template) { APP.template = false; }
@@ -2887,7 +2888,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 resetData(blob, fileType);
             } catch (e) {
                 var file = getFileType();
-                var type = common.getMetadataMgr().gistoryetPrivateData().ooType;
+                var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
                 if (!keepQueue) { ooChannel.queue = []; }
                 resetData(blob, file);
@@ -2895,6 +2896,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var loadHistoryCp = function (cp, keepQueue) {
+            APP.history = true;
+            APP.stopHistory = false;
             loadCp(cp, keepQueue)
         }
 
@@ -3105,7 +3108,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // Wait for the checkpoint to be uploaded before leaving history mode
                     // (race condition). We use "stopHistory" to remove the history
                     // flag only when the checkpoint is ready.
-                    // APP.revert = revert ? true : false;
+                    APP.revert = revert ? true : false;
                     APP.stopHistory = true;
                     makeCheckpoint(true);
                 };
@@ -3118,6 +3121,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     loadCp(cp, true);
                 };
                 var onPatchBack = function (cp, msgs) {
+                    APP.history = true;
+                    APP.stopHistory = false;
                     if (msgs) {
                         var msgsFormatted = [];
                         msgs.forEach(function(msg) {
