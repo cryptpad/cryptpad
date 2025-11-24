@@ -161,6 +161,12 @@ define([
         let getInstanceURL = function () {
             return Config.httpUnsafeOrigin;
         };
+        let getBlobClient = (cb) => {
+            chan.send('GET_BLOB', obj => {
+                if (obj?.error) { console.error(obj?.error); }
+                cb(obj?.blob);
+            });
+        };
         let getBlobServer = function (documentURL, cb) {
             let xhr = new XMLHttpRequest();
             let data = encodeURIComponent(documentURL);
@@ -174,11 +180,11 @@ define([
                     // myBlob is now the blob that the object URL pointed to.
                     cb(null, blob);
                 } else {
-                    cb(this.status);
+                    getBlobClient(cb);
                 }
             };
-            xhr.onerror = function (e) {
-                cb(e.message);
+            xhr.onerror = function () {
+                getBlobClient(cb);
             };
             xhr.send();
         };
