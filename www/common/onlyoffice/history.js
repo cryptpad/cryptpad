@@ -33,7 +33,6 @@ define([
         var patch;
         var currentVersion;
         var forward;
-        var APP = window.APP;
 
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
@@ -67,8 +66,10 @@ define([
         var Messages = common.Messages;
 
         var getVersion = function (position) {
-            if (!Object.keys(ooMessages).length) { return; }
             let version = (id === -1 || id === 0) ? 0 : id;
+            if (!Object.keys(ooMessages).length) {
+                return version + '.0';
+            }
             
             if (typeof(position) === "undefined") {
                 position = ooMessages[id]?.length || 0;
@@ -117,7 +118,7 @@ define([
             update();
         };
 
-        var getMessages = function(fromHash, toHash, cpIndex, sortedCp, cp, config, fillOO, $share, ooCheckpoints, callback) {
+        var getMessages = function(fromHash, toHash, callback) {
             sframeChan.query('Q_GET_HISTORY_RANGE', {
                 channel: config.onlyoffice.channel,
                 lastKnownHash: fromHash,
@@ -126,13 +127,12 @@ define([
                 if (err) { return void console.error(err); }
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
 
-                let initialCp = cpIndex === sortedCp.length || cp ? !cp?.hash : undefined;
+                let initialCp = cpIndex === sortedCp.length;
                 var messages = (data.messages || []).slice(initialCp || config.docType() === 'spreadsheet' ? 0 : 1);
                 if (config.debug) { console.log(data.messages); }
                 id = typeof(id) !== "undefined" ? id : getId();
-                fillOO(messages, ooCheckpoints);
+                fillOO(messages);
                 loading = false;
-                // $share.show();
 
                 callback(null, messages);
             });
@@ -158,7 +158,7 @@ define([
                 var toHash = nextId ? nextId.hash : config.onlyoffice.lastHash;
                 var fromHash = cp?.hash || 'NONE';
 
-                getMessages(toHash, fromHash, cpIndex, sortedCp, undefined, config, fillOO, $share, hashes, function (err, messages) {
+                getMessages(toHash, fromHash, function (err, messages) {
                     if (err) {
                         console.error(err);
                         reject(err);
@@ -173,7 +173,6 @@ define([
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
-            APP.revert = true;
             config.onRevert(true);
         };
 
@@ -232,7 +231,7 @@ define([
 
                     if (!msgs.length) {
                         id++;
-                        config.loadCp(hashes[id]);
+                        config.loadHistoryCp(hashes[id]);
                         await loadMoreOOHistory();
                         msgIndex = -ooMessages[id].length - 1;
                     } else {
@@ -406,7 +405,7 @@ define([
                     loadMoreOOHistory().then(() => {
                         var cp = hashes[id];
                         loadMoreOOHistory();
-                        config.loadCp(cp);
+                        config.loadHistoryCp(cp);
                         msgs = ooMessages[id];
                         msgIndex = -msgs.length-1
                         showVersion(false, 0)
@@ -433,7 +432,7 @@ define([
                     id--;
                 } 
                 var cp = hashes[id];
-                config.loadCp(cp);
+                config.loadHistoryCp(cp);
                 loadMoreOOHistory().then(() => {
                     var msgs = ooMessages[id];
                     msgIndex = -msgs.length-2;
