@@ -3359,11 +3359,11 @@ define([
 
         var getSortFolderDesc = function () { // this way the icon change is triggered
             var v = APP.store[SORT_FOLDER_DESC];
-            return v === true;
+            return v === true || v === "true";
         };
         var getSortFileDesc = function () {
             var v = APP.store[SORT_FILE_DESC];
-            return v === true;
+            return v === true || v === "true";
         };
 
         var onSortByClick = function () {
