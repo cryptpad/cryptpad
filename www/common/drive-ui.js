@@ -5153,28 +5153,27 @@ define([
                      $this.hasClass('cp-app-drive-context-collapseall')) {
                 if (paths.length !== 1) { return; }
                 var opened = $this.hasClass('cp-app-drive-context-expandall');
-                var initialPath = paths[0].path;
                 var openRecursive = function (path) {
                     LS.setFolderOpened(path, opened);
-                    var folder = manager.find(path);
-                    var isSharedFolder = manager.isSharedFolder(folder);
-                    var pathForContent = isSharedFolder ? path.concat(manager.user.userObject.ROOT) : path;
-                    var folderContent = manager.find(pathForContent);
-                    if (!folderContent) { return; }
-                    Object.keys(folderContent).forEach(function(k) {
+                    var folderContent = manager.find(path);
+                    var subfolders = [];
+                    for (var k in folderContent) {
                         if (manager.isFolder(folderContent[k])) {
-                            var subPath = pathForContent.slice();
-                            subPath.push(k);
-                            openRecursive(subPath);
+                            if (manager.isSharedFolder(folderContent[k])) {
+                                subfolders.push([k].concat(manager.user.userObject.ROOT));
+                            }
+                            else {
+                                subfolders.push(k);
+                            }
                         }
+                    }
+                    subfolders.forEach(function (p) {
+                        var subPath = path.concat(p);
+                        openRecursive(subPath);
                     });
                 };
-                openRecursive(initialPath);
-                if (!opened) {
-                    APP.displayDirectory(initialPath);
-                } else {
-                    refresh();
-                }
+                openRecursive(paths[0].path);
+                refresh();
             }
 
             else if ($this.hasClass('cp-app-drive-context-download')) {
