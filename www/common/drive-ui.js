@@ -4666,7 +4666,6 @@ define([
             var openFolders = LS.getOpenedFolders();
             var treeElement = UIElements.getTree(data, {
                 currentPath: currentPath,
-                rootPath: path,
                 draggable: true,
                 droppable: true,
                 cb: {
@@ -4730,8 +4729,6 @@ define([
                     $row.off('dragover drop dragenter dragleave');
                     addDragAndDropHandlers($row, elPath, true, droppable);
                 }
-                // Ensure draggable is set (createTreeElement sets it, but we ensure it's correct)
-                $row.attr('draggable', true);
             });
             $treeElement.find('.cp-app-drive-element-row').first().removeAttr('draggable');
             $container.append($treeElement);
