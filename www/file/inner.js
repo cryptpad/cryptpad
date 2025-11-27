@@ -86,7 +86,7 @@ define([
                 var $mt = $dlview.find('media-tag');
                 $mt.attr('src', src);
                 $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
-                $mt.css('transform', 'scale(1)');
+                $mt.css('transform', 'scale(2)');
 
                 var rightsideDisplayed = false;
                 var metadataReceived = false;
