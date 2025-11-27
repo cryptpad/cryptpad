@@ -4666,8 +4666,6 @@ define([
             var openFolders = LS.getOpenedFolders();
             var treeElement = UIElements.getTree(data, {
                 currentPath: currentPath,
-                draggable: true,
-                droppable: true,
                 cb: {
                     addDragAndDropHandlers: addDragAndDropHandlers
                 },

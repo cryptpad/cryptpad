@@ -4741,9 +4741,7 @@ define([
                 
                 var hasSubfolder = item.content && Object.keys(item.content).length > 0;
                 var isActive = config.currentPath && JSON.stringify(newPath) === JSON.stringify(config.currentPath);
-                var draggable = config.draggable !== undefined ? config.draggable : true;
-                var droppable = config.droppable !== undefined ? config.droppable : true;
-                var $element = UIElements.createTreeElement(name, $icon.clone(), newPath, draggable, droppable, hasSubfolder, isActive, config.events, config.openFolders, config.currentPath, config.cb);
+                var $element = UIElements.createTreeElement(name, $icon.clone(), newPath, true, true, hasSubfolder, isActive, config.events, config.openFolders, config.currentPath, config.cb);
                 $element.appendTo($list);
                 
                 if (hasSubfolder) {
@@ -4763,9 +4761,7 @@ define([
             
             var hasContent = rootData.content && Object.keys(rootData.content).length > 0;
             var isRootActive = config.currentPath && JSON.stringify([rootKey]) === JSON.stringify(config.currentPath);
-            var rootDraggable = config.rootDraggable !== undefined ? config.rootDraggable : false;
-            var rootDroppable = config.rootDroppable !== undefined ? config.rootDroppable : (config.droppable !== undefined ? config.droppable : true);
-            var $rootElement = UIElements.createTreeElement(rootName, $rootIcon, [rootKey], rootDraggable, rootDroppable, hasContent, isRootActive, config.events, config.openFolders, config.currentPath, config.cb);
+            var $rootElement = UIElements.createTreeElement(rootName, $rootIcon, [rootKey], false, true, hasContent, isRootActive, config.events, config.openFolders, config.currentPath, config.cb);
             $rootElement.addClass('cp-app-drive-tree-root');
             
             if (!hasContent) {
