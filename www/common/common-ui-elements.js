@@ -4578,139 +4578,134 @@ define([
         return comp;
     };
 
-    UIElements.getTree = function (data, config) {
-        config = config || {};
-        config.events = config.events || {};
-        config.openFolders = config.openFolders || [];
-        config.currentPath = config.currentPath || null;
+    var isSubpath = function(child, parentPath) {
+        if (!child || !parentPath || child.length <= parentPath.length) { return false; }
+        for (var i = 0; i < parentPath.length; i++) {
+            if (child[i] !== parentPath[i]) { return false; }
+        }
+        return true;
+    };
 
-        // Check if current path is a subpath of given path
-        var isSubpath = function(child, parent) {
-            if (!child || !parent || child.length <= parent.length) { return false; }
-            for (var i = 0; i < parent.length; i++) {
-                if (child[i] !== parent[i]) { return false; }
-            }
-            return true;
-        };
-
-        // Check if folder should be initially opened
-        var shouldBeOpened = function(path) {
-            if (config.openFolders && config.openFolders.length) {
-                for (var i = 0; i < config.openFolders.length; i++) {
-                    var openPath = config.openFolders[i];
-                    if (JSON.stringify(openPath) === JSON.stringify(path)) {
-                        return true;
-                    }
-                }
-            }
-            // Auto-expand parent folders of current path, but only when viewing tree
-            if (config.currentPath && config.rootPath && isSubpath(config.currentPath, path) && path.length < config.currentPath.length) {
-                if (config.currentPath.length > 0 && config.rootPath.length > 0 &&
-                    config.currentPath[0] === config.rootPath[0]) {
+    var shouldBeOpened = function(path, openFolders, currentPath) {
+        if (openFolders && openFolders.length) {
+            for (var i = 0; i < openFolders.length; i++) {
+                var openPath = openFolders[i];
+                if (JSON.stringify(openPath) === JSON.stringify(path)) {
                     return true;
                 }
             }
-            
-            return false;
-        };
-
-        var hasOpenedChild = function(path) {
-            if (!config.openFolders || !config.openFolders.length) { return false; }
-            for (var i = 0; i < config.openFolders.length; i++) {
-                var openPath = config.openFolders[i];
-                if (openPath.length > path.length) {
-                    var match = true;
-                    for (var j = 0; j < path.length; j++) {
-                        if (openPath[j] !== path[j]) {
-                            match = false;
-                            break;
-                        }
-                    }
-                    if (match) { return true; }
-                }
+        }
+        // Auto-expand parent folders of current path
+        if (currentPath && isSubpath(currentPath, path) && path.length < currentPath.length) {
+            if (currentPath.length > 0) {
+                return true;
             }
-            return false;
-        };
+        }
+        return false;
+    };
 
+    UIElements.createTreeElement = function (name, $icon, path, draggable, droppable, collapsable, active, events, openFolders, currentPath, setup) {
+        events = events || {};
+        openFolders = openFolders || [];
+        currentPath = currentPath || null;
+        setup = setup || {};
         var $expandIcon = $(Icons.get('chevron-right'));
         var $expandedIcon = $(Icons.get('chevron-down'));
-        var $folderIcon = $(Icons.get('folder'));
-        var $folderOpenedIcon = $(Icons.get('folder-open'));
 
-        var createTreeElement = function (name, $icon, path, collapsable, active) {
-            var $name = $('<span>', { 'class': 'cp-app-drive-element' }).text(name);
-            var $collapse;
-            if (collapsable) {
-                $collapse = $('<span>').attr('tabindex', 0).attr('class', 'cp-app-drive-icon-expcol').append($expandIcon.clone());
+        var $name = $('<span>', { 'class': 'cp-app-drive-element' }).text(name);
+        var $collapse;
+        if (collapsable) {
+            $collapse = $('<span>').attr('tabindex', 0).attr('class', 'cp-app-drive-icon-expcol').append($expandIcon.clone());
+        }
+        var $elementRow = $('<span>', {
+            'class': 'cp-app-drive-element-row cp-app-drive-element-folder',
+            'tabindex': 0
+        }).append($collapse).append($icon).append($name).on('click keypress', function (e) {
+            if (e.type === 'keypress' && e.which !== 13) {
+                return;
             }
-            var $elementRow = $('<span>', {
-                'class': 'cp-app-drive-element-row cp-app-drive-element-folder',
-                'tabindex': 0
-            }).append($collapse).append($icon).append($name).on('click keypress', function (e) {
+            e.stopPropagation();
+            if (events.onFolderClicked) {
+                events.onFolderClicked(path, e);
+            }
+        });
+
+        if (events.onContextMenu) {
+            $elementRow.on('contextmenu', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                events.onContextMenu(path, e);
+            });
+        }
+
+        var $element = $('<li>').append($elementRow);
+        if (draggable) {
+            $elementRow.attr('draggable', true);
+        }
+        if (collapsable) {
+            $element.addClass('cp-app-drive-element-collapsed');
+            $collapse.attr({
+                'aria-expanded': 'false',
+                'role': 'button',
+                'aria-label': Messages.ui_expand
+            });
+            $collapse.on('click keypress', function(e) {
                 if (e.type === 'keypress' && e.which !== 13) {
                     return;
                 }
                 e.stopPropagation();
-                if (config.events.onFolderClicked) {
-                    config.events.onFolderClicked(path, e);
-                }
-            });
-
-            if (config.events.onContextMenu) {
-                $elementRow.on('contextmenu', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    config.events.onContextMenu(path, e);
-                });
-            }
-
-            var $element = $('<li>').append($elementRow);
-            if (collapsable) {
-                $element.addClass('cp-app-drive-element-collapsed');
-                $collapse.attr({
-                    'aria-expanded': 'false',
-                    'role': 'button',
-                    'aria-label': Messages.ui_expand
-                });
-                $collapse.on('click keypress', function(e) {
-                    if (e.type === 'keypress' && e.which !== 13) {
-                        return;
-                    }
-                    e.stopPropagation();
-                    if ($element.hasClass('cp-app-drive-element-collapsed')) {
-                        $element.removeClass('cp-app-drive-element-collapsed');
-                        $collapse.empty().append($expandedIcon.clone());
-                        $collapse.attr('aria-expanded', 'true');
-                        $collapse.attr('aria-label', Messages.ui_collapse);
-                        if (config.events.onFolderExpanded) {
-                            config.events.onFolderExpanded(path, true);
-                        }
-                    } else {
-                        $element.addClass('cp-app-drive-element-collapsed');
-                        $collapse.empty().append($expandIcon.clone());
-                        $collapse.attr('aria-expanded', 'false');
-                        $collapse.attr('aria-label', Messages.ui_expand);
-                        if (config.events.onFolderExpanded) {
-                            config.events.onFolderExpanded(path, false);
-                        }
-                    }
-                });
-                // Auto-expand if explicitly marked as opened
-                var shouldExpand = shouldBeOpened(path);
-                
-                if (shouldExpand) {
+                if ($element.hasClass('cp-app-drive-element-collapsed')) {
                     $element.removeClass('cp-app-drive-element-collapsed');
                     $collapse.empty().append($expandedIcon.clone());
                     $collapse.attr('aria-expanded', 'true');
                     $collapse.attr('aria-label', Messages.ui_collapse);
+                    if (events.onFolderExpanded) {
+                        events.onFolderExpanded(path, true);
+                    }
+                } else {
+                    $element.addClass('cp-app-drive-element-collapsed');
+                    $collapse.empty().append($expandIcon.clone());
+                    $collapse.attr('aria-expanded', 'false');
+                    $collapse.attr('aria-label', Messages.ui_expand);
+                    if (events.onFolderExpanded) {
+                        events.onFolderExpanded(path, false);
+                    }
                 }
+            });
+            // Auto-expand if explicitly marked as opened
+            var shouldExpand = shouldBeOpened(path, openFolders, currentPath);
+            
+            if (shouldExpand) {
+                $element.removeClass('cp-app-drive-element-collapsed');
+                $collapse.empty().append($expandedIcon.clone());
+                $collapse.attr('aria-expanded', 'true');
+                $collapse.attr('aria-label', Messages.ui_collapse);
             }
-            $elementRow.data('path', path);
-            if (active) {
-                $elementRow.addClass('cp-app-drive-element-active cp-leftside-active');
-            }
-            return $element;
-        };
+        }
+        $elementRow.data('path', path);
+        if (typeof setup.addDragAndDropHandlers === 'function') {
+            setup.addDragAndDropHandlers($elementRow, path, true, droppable);
+        }
+        if (active) {
+            $elementRow.addClass('cp-app-drive-element-active cp-leftside-active');
+        }
+        return $element;
+    };
+
+    UIElements.getTree = function (data, config) {
+        config = config || {};
+        config.events = config.events || {};
+        config.setup = config.setup || {};
+        // Support legacy cb parameter for backward compatibility
+        if (config.cb && !config.setup.addDragAndDropHandlers) {
+            config.setup.addDragAndDropHandlers = config.cb;
+        }
+        config.openFolders = config.openFolders || [];
+        config.currentPath = config.currentPath || null;
+
+        var $folderIcon = $(Icons.get('folder'));
+        var $folderOpenedIcon = $(Icons.get('folder-open'));
+
 
         var createTree = function ($container, folderData, path) {
             if (!folderData || !folderData.content) { return; }
@@ -4744,13 +4739,15 @@ define([
                         $icon = $(item.icon);
                     }
                 } else {
-                    var shouldShowOpened = shouldBeOpened(newPath);
+                    var shouldShowOpened = shouldBeOpened(newPath, config.openFolders, config.currentPath);
                     $icon = shouldShowOpened ? $folderOpenedIcon.clone() : $folderIcon.clone();
                 }
                 
                 var hasSubfolder = item.content && Object.keys(item.content).length > 0;
                 var isActive = config.currentPath && JSON.stringify(newPath) === JSON.stringify(config.currentPath);
-                var $element = createTreeElement(name, $icon.clone(), newPath, hasSubfolder, isActive);
+                var draggable = config.draggable !== undefined ? config.draggable : true;
+                var droppable = config.droppable !== undefined ? config.droppable : true;
+                var $element = UIElements.createTreeElement(name, $icon.clone(), newPath, draggable, droppable, hasSubfolder, isActive, config.events, config.openFolders, config.currentPath, config.setup);
                 $element.appendTo($list);
                 
                 if (hasSubfolder) {
@@ -4759,16 +4756,20 @@ define([
             });
         };
         var content = [];
-        if (data && data.root) {
-            var rootName = data.root.name || 'Root';
-            var rootPath = config.rootPath || ['root'];
-            var $rootIcon = data.root.icon ? 
-                (typeof data.root.icon === 'string' ? $(Icons.get(data.root.icon)) : $(data.root.icon)) :
+        var rootKey = Object.keys(data)[0];
+        var rootData = data[rootKey];
+        
+        if (rootData) {
+            var rootName = rootData.name || Messages.fm_rootName;
+            var $rootIcon = rootData.icon ? 
+                (typeof rootData.icon === 'string' ? $(Icons.get(rootData.icon)) : $(rootData.icon)) :
                 $(Icons.get('drive'));
             
-            var hasContent = data.root.content && Object.keys(data.root.content).length > 0;
-            var isRootActive = config.currentPath && JSON.stringify(rootPath) === JSON.stringify(config.currentPath);
-            var $rootElement = createTreeElement(rootName, $rootIcon, rootPath, hasContent, isRootActive);
+            var hasContent = rootData.content && Object.keys(rootData.content).length > 0;
+            var isRootActive = config.currentPath && JSON.stringify([rootKey]) === JSON.stringify(config.currentPath);
+            var rootDraggable = config.rootDraggable !== undefined ? config.rootDraggable : false;
+            var rootDroppable = config.rootDroppable !== undefined ? config.rootDroppable : (config.droppable !== undefined ? config.droppable : true);
+            var $rootElement = UIElements.createTreeElement(rootName, $rootIcon, [rootKey], rootDraggable, rootDroppable, hasContent, isRootActive, config.events, config.openFolders, config.currentPath, config.setup);
             $rootElement.addClass('cp-app-drive-tree-root');
             
             if (!hasContent) {
@@ -4778,7 +4779,7 @@ define([
             content.push($rootList[0]);
             
             if (hasContent) {
-                createTree($rootElement, data.root, rootPath);
+                createTree($rootElement, rootData, [rootKey]);
             }
         }
         return h('div.cp-drive-tree', content);
