@@ -4604,11 +4604,11 @@ define([
         return false;
     };
 
-    UIElements.createTreeElement = function (name, $icon, path, draggable, droppable, collapsable, active, events, openFolders, currentPath, setup) {
+    UIElements.createTreeElement = function (name, $icon, path, draggable, droppable, collapsable, active, events, openFolders, currentPath, cb) {
         events = events || {};
         openFolders = openFolders || [];
         currentPath = currentPath || null;
-        setup = setup || {};
+        cb = cb || {};
         var $expandIcon = $(Icons.get('chevron-right'));
         var $expandedIcon = $(Icons.get('chevron-down'));
 
@@ -4683,8 +4683,8 @@ define([
             }
         }
         $elementRow.data('path', path);
-        if (typeof setup.addDragAndDropHandlers === 'function') {
-            setup.addDragAndDropHandlers($elementRow, path, true, droppable);
+        if (typeof cb.addDragAndDropHandlers === 'function') {
+            cb.addDragAndDropHandlers($elementRow, path, true, droppable);
         }
         if (active) {
             $elementRow.addClass('cp-app-drive-element-active cp-leftside-active');
@@ -4695,11 +4695,7 @@ define([
     UIElements.getTree = function (data, config) {
         config = config || {};
         config.events = config.events || {};
-        config.setup = config.setup || {};
-        // Support legacy cb parameter for backward compatibility
-        if (config.cb && !config.setup.addDragAndDropHandlers) {
-            config.setup.addDragAndDropHandlers = config.cb;
-        }
+        config.cb = config.cb || {};
         config.openFolders = config.openFolders || [];
         config.currentPath = config.currentPath || null;
 
@@ -4747,7 +4743,7 @@ define([
                 var isActive = config.currentPath && JSON.stringify(newPath) === JSON.stringify(config.currentPath);
                 var draggable = config.draggable !== undefined ? config.draggable : true;
                 var droppable = config.droppable !== undefined ? config.droppable : true;
-                var $element = UIElements.createTreeElement(name, $icon.clone(), newPath, draggable, droppable, hasSubfolder, isActive, config.events, config.openFolders, config.currentPath, config.setup);
+                var $element = UIElements.createTreeElement(name, $icon.clone(), newPath, draggable, droppable, hasSubfolder, isActive, config.events, config.openFolders, config.currentPath, config.cb);
                 $element.appendTo($list);
                 
                 if (hasSubfolder) {
@@ -4769,7 +4765,7 @@ define([
             var isRootActive = config.currentPath && JSON.stringify([rootKey]) === JSON.stringify(config.currentPath);
             var rootDraggable = config.rootDraggable !== undefined ? config.rootDraggable : false;
             var rootDroppable = config.rootDroppable !== undefined ? config.rootDroppable : (config.droppable !== undefined ? config.droppable : true);
-            var $rootElement = UIElements.createTreeElement(rootName, $rootIcon, [rootKey], rootDraggable, rootDroppable, hasContent, isRootActive, config.events, config.openFolders, config.currentPath, config.setup);
+            var $rootElement = UIElements.createTreeElement(rootName, $rootIcon, [rootKey], rootDraggable, rootDroppable, hasContent, isRootActive, config.events, config.openFolders, config.currentPath, config.cb);
             $rootElement.addClass('cp-app-drive-tree-root');
             
             if (!hasContent) {
