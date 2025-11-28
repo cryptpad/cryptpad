@@ -38,9 +38,7 @@ define([
         var hashes = config.onlyoffice.hashes;
         var id;
 
-        var sortedCp = Object.keys(hashes).map(Number).sort(function (a, b) {
-            return hashes[a].index - hashes[b].index;
-        });
+        var sortedCp = Object.keys(hashes).map(Number);
 
         var getId = function () {
             var cps = sortedCp.length;
@@ -71,7 +69,7 @@ define([
                 return version + '.0';
             }
             
-            if (typeof(position) === "undefined") {
+            if (typeof(position) === "undefined" || position === -1) {
                 position = ooMessages[id]?.length || 0;
             } else if (position === ooMessages[id]?.length && hashes[version + 1]) {
                 position = 0;
