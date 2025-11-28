@@ -574,11 +574,9 @@ define([
             blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var data = {
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
-                index:  APP.revert ? ooChannel.currentIndex : ooChannel.cpIndex
+                index:  (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex
             };
-            if (APP.revert) {
-                APP.revert = false;
-            }
+
             fixSheets();
 
             if (!isLockedModal.modal) {
@@ -3104,11 +3102,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             if (!privateData.ooVersionHash) {
             (function () {
                 /* add a history button */
-                var commit = function (revert) {
+                var commit = function () {
                     // Wait for the checkpoint to be uploaded before leaving history mode
                     // (race condition). We use "stopHistory" to remove the history
                     // flag only when the checkpoint is ready.
-                    APP.revert = revert ? true : false;
                     APP.stopHistory = true;
                     makeCheckpoint(true);
                 };
