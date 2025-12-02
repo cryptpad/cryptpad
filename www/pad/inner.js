@@ -1083,6 +1083,7 @@ define([
 
         framework.onReady(function(newPad) {
             editor.focus();
+            editor.resetUndo();
 
             if (!module.isMaximized) {
                 module.isMaximized = true;
