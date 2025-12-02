@@ -593,7 +593,7 @@ define([
             blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var data = {
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
-                index:  (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex
+                index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex
             };
 
             fixSheets();
