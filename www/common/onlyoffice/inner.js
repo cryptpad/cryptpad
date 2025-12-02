@@ -767,7 +767,7 @@ define([
                 return hashes[a].index - hashes[b].index;
             });
             var s = version.split('.');
-            var version = parseInt(s[1])
+            var v = parseInt(s[1]);
             if (s.length !== 2) { return UI.errorLoadingScreen(Messages.error); }
 
             var major = Number(s[0]);
@@ -795,7 +795,7 @@ define([
 
                 // The first "cp" in history is the empty doc. It doesn't include the first patch
                 // of the history
-                var messages = data.messages
+                var messages = data.messages;
 
                 messages.forEach(function (obj) {
                     try { obj.msg = JSON.parse(obj.msg); } catch (e) { console.error(e); }
@@ -828,7 +828,7 @@ define([
 
                 loadLastDocument(cp)
                     .then(({blob, fileType}) => {
-                        ooChannel.queue = messages.slice(1, minor)
+                        ooChannel.queue = messages.slice(1, minor);
                         resetData(blob, fileType);
                         UI.removeLoadingScreen();
                     })
@@ -844,7 +844,7 @@ define([
                         var type = common.getMetadataMgr().getPrivateData().ooType;
                         if (APP.downloadType) { type = APP.downloadType; }
                         var blob = loadInitDocument(type, true);
-                        ooChannel.queue = messages.slice(0, version+1)
+                        ooChannel.queue = messages.slice(0, v+1);
                         resetData(blob, file);
                         UI.removeLoadingScreen();
                     });
@@ -2896,8 +2896,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         var loadHistoryCp = function (cp, keepQueue) {
             APP.history = true;
             APP.stopHistory = false;
-            loadCp(cp, keepQueue)
-        }
+            loadCp(cp, keepQueue);
+        };
 
         var loadTemplate = function (href, pw, parsed) {
             APP.history = true;
@@ -3132,7 +3132,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                                 time: msg.time
                             };
                             msgsFormatted.push(formattedMsg);
-                        })
+                        });
                         ooChannel.queue = msgsFormatted;
                         setTimeout(function () {
                             loadCp(cp, true);
@@ -3143,7 +3143,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var docType = function() {
                     return APP.ooconfig.documentType;
-                }
+                };
                 var setHistoryMode = function (bool) {
                     if (bool) {
                         APP.history = true;
