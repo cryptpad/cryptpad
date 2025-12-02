@@ -74,45 +74,6 @@ define([
             return version + '.' + position;
         };
 
-        // var showVersion = function (initial, position) {
-        //     currentVersion = getVersion(position, initial);
-        //     if (initial) { currentVersion = Messages.oo_version_latest; }
-        //     $version.text(Messages.oo_version + currentVersion);
-
-        //     var $pos = $hist.find('.cp-history-timeline-pos');
-        //     if (!ooMessages[id]) { return; }
-        //     var msgs = ooMessages[id];
-        //     var p;
-        //     var messageIndex = forward ? msgIndex+1 : msgIndex;
-        //     if (!Object.keys(hashes).length) {
-        //         p = 100-100*((messageIndex ) / (-msgs.length));
-        //     } else {
-        //         var lastHash = hashes[Object.keys(hashes).pop()].hash;
-        //         if (lastHash === config.onlyoffice.lastHash) {
-        //             var hashLength = Object.keys(hashes).length;
-        //         } else {
-        //             var hashLength = Object.keys(hashes).length+1;
-        //         }
-        //         var segments = id/hashLength;
-        //         p = 100*(segments); 
-
-        //         if (id === 0) { p = 0; }
-                
-        //         var percentage = ((position/msgs.length)*100);
-        //         var timelinePosition = (percentage/100)*(100/hashLength);
-        //         p += timelinePosition;
-        //     }
-
-        //     $pos.css('margin-left', p+'%');
-
-        //     var time = msgs[msgIndex] && msgs[msgIndex].time;
-        //     currentTime = time;
-        //     if (time) { $time.text(new Date(time).toLocaleString()); }
-        //     else { $time.text(''); }
-        //     update();
-        //     loadingFalse();
-        // };
-
         var getMessages = function(fromHash, toHash, callback) {
             sframeChan.query('Q_GET_HISTORY_RANGE', {
                 channel: config.onlyoffice.channel,
@@ -141,6 +102,7 @@ define([
                     return reject();
                 }
 
+                // Get the checkpoint ID
                 id = typeof(id) !== "undefined" ? id : getId();
                 var cp;
                 if (ooMessages[id-1] && !ooMessages[id-1].length) {
@@ -148,10 +110,18 @@ define([
                 } else {
                     cp = hashes[id];
                 }
+
+                // Get the history between "toHash" and "fromHash". This function is using
+                // "getOlderHistory", that's why we start from the more recent hash
+                // and we go back in time to an older hash
+
+                // We need to get all the patches between the current cp hash and the next cp hash
                 
                 var nextId = hashes[id+1] ? hashes[id+1] : undefined;
-                var toHash = nextId ? nextId.hash : config.onlyoffice.lastHash;
+                // Current cp or initial hash (invalid hash ==> initial hash)
                 var fromHash = cp?.hash || 'NONE';
+                // Next cp or last hash
+                var toHash = nextId ? nextId.hash : config.onlyoffice.lastHash;
 
                 getMessages(toHash, fromHash, function (err) {
                     if (err) {
@@ -168,7 +138,7 @@ define([
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
-            config.onRevert(true);
+            config.onRevert();
         };
 
         config.setHistory(true);
@@ -486,7 +456,7 @@ define([
                     config.onPatchBack(cp, msgs);
                 }
 
-                loading = false;
+                loadingFalse();
                 position = msgs?.length;
                 showVersion(false, position);
             });
@@ -508,7 +478,7 @@ define([
                     update(true);
                 });
                 position = 0;
-                loading = false;
+                loadingFalse();
             });
             onKeyDown = function (e) {
                 var p = function () { e.preventDefault(); };
@@ -527,7 +497,7 @@ define([
                 });
             });
             $(snapshot).click(function () {
-                // if (cpIndex === -1 && msgIndex === -1) { return void UI.warn(Messages.snapshots_ooPickVersion); }
+                if (cpIndex === -1 && msgIndex === -1) { return void UI.warn(Messages.snapshots_ooPickVersion); }
                 var input = h('input', {
                     placeholder: Messages.snapshots_placeholder
                 });
