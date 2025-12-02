@@ -29,7 +29,9 @@ define([
         var ooMessages = {};
         var loading = false;
         var currentTime;
+        //Defining position here means it can be passed to the showVersion and share functions
         var position;
+        //Defining patch here means it can be passed to the snapshot function
         var patch;
         var currentVersion;
         var forward;
@@ -66,16 +68,141 @@ define([
         var getVersion = function (position) {
             let version = (id === -1 || id === 0) ? 0 : id;
             if (!Object.keys(ooMessages).length) {
-                return version + '.0';
+                return '0.0';
             }
-            
             if (typeof(position) === "undefined" || position === -1) {
                 position = ooMessages[id]?.length || 0;
-            } else if (position === ooMessages[id]?.length && hashes[version + 1]) {
-                position = 0;
-                if (ooMessages[id]?.length) { version++; }
-            }
+            } 
             return version + '.' + position;
+        };
+
+        // var showVersion = function (initial, position) {
+        //     currentVersion = getVersion(position, initial);
+        //     if (initial) { currentVersion = Messages.oo_version_latest; }
+        //     $version.text(Messages.oo_version + currentVersion);
+
+        //     var $pos = $hist.find('.cp-history-timeline-pos');
+        //     if (!ooMessages[id]) { return; }
+        //     var msgs = ooMessages[id];
+        //     var p;
+        //     var messageIndex = forward ? msgIndex+1 : msgIndex;
+        //     if (!Object.keys(hashes).length) {
+        //         p = 100-100*((messageIndex ) / (-msgs.length));
+        //     } else {
+        //         var lastHash = hashes[Object.keys(hashes).pop()].hash;
+        //         if (lastHash === config.onlyoffice.lastHash) {
+        //             var hashLength = Object.keys(hashes).length;
+        //         } else {
+        //             var hashLength = Object.keys(hashes).length+1;
+        //         }
+        //         var segments = id/hashLength;
+        //         p = 100*(segments); 
+
+        //         if (id === 0) { p = 0; }
+                
+        //         var percentage = ((position/msgs.length)*100);
+        //         var timelinePosition = (percentage/100)*(100/hashLength);
+        //         p += timelinePosition;
+        //     }
+
+        //     $pos.css('margin-left', p+'%');
+
+        //     var time = msgs[msgIndex] && msgs[msgIndex].time;
+        //     currentTime = time;
+        //     if (time) { $time.text(new Date(time).toLocaleString()); }
+        //     else { $time.text(''); }
+        //     update();
+        //     loadingFalse();
+        // };
+
+        var getMessages = function(fromHash, toHash, callback) {
+            sframeChan.query('Q_GET_HISTORY_RANGE', {
+                channel: config.onlyoffice.channel,
+                lastKnownHash: fromHash,
+                toHash: toHash,
+            }, function (err, data) {
+                if (err) { return void console.error(err); }
+                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
+
+                let initialCp = cpIndex === sortedCp.length;
+                var messages = (data.messages || []).slice(initialCp || config.docType() === 'spreadsheet' ? 0 : 1);
+                if (config.debug) { console.log(data.messages); }
+                id = typeof(id) !== "undefined" ? id : getId();
+                fillOO(messages);
+                loading = false;
+
+                callback(null, messages);
+            });
+        };
+
+        // We want to load a checkpoint (or initial state)
+        var loadMoreOOHistory = function () {
+            return new Promise((resolve, reject) => {
+                if (!Array.isArray(sortedCp)) { 
+                    console.error("Wrong type");
+                    return reject();
+                }
+
+                id = typeof(id) !== "undefined" ? id : getId();
+                var cp;
+                if (ooMessages[id-1] && !ooMessages[id-1].length) {
+                    cp = hashes[id-1];
+                } else {
+                    cp = hashes[id];
+                }
+                
+                var nextId = hashes[id+1] ? hashes[id+1] : undefined;
+                var toHash = nextId ? nextId.hash : config.onlyoffice.lastHash;
+                var fromHash = cp?.hash || 'NONE';
+
+                getMessages(toHash, fromHash, function (err) {
+                    if (err) {
+                        console.error(err);
+                        reject(err);
+                        return;
+                    }
+                    resolve();
+                });
+            });
+        };
+
+        loadMoreOOHistory();
+
+        var onClose = function () { config.setHistory(false); };
+        var onRevert = function () {
+            config.onRevert(true);
+        };
+
+        config.setHistory(true);
+
+        $hist.html('').css('display', 'flex');
+        $bottom.hide();
+
+        UI.spinner($hist).get().show();
+
+        var $fastPrev, $fastNext, $next, $prev;
+
+        var update = function () {
+            $fastPrev.show();
+            $next.show();
+            $prev.show();
+            $fastNext.show();
+            $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous')
+                .prop('disabled', '');
+
+            if ((id === -1 || id === 0) && (ooMessages[id]?.length+1 === Math.abs(msgIndex) || ooMessages[id]?.length+2 === Math.abs(msgIndex))) {
+                $prev.prop('disabled', 'disabled');
+                $fastPrev.prop('disabled', 'disabled');
+            }
+            var version = currentVersion.split('.');
+            var hashesLength = Object.keys(hashes).length;
+            
+            if (hashesLength === parseInt(version[0]) && ooMessages[id].length === parseInt(version[1]) || 
+            hashesLength+1 === id && (msgIndex === -1) && forward  ||
+            hashes[hashesLength-1] === id && !ooMessages[id].length && msgIndex === 0) {
+                $next.prop('disabled', 'disabled');
+                $fastNext.prop('disabled', 'disabled');
+            }
         };
 
         var showVersion = function (initial, position) {
@@ -214,74 +341,110 @@ define([
                 $('iframe').blur();
                 loading = false;
             }, 200);
-        }
+        };
+
+        var lastPatchIndex;
+        var nextPatchIndex;
+        var msgs;
 
         var next = async function () {
             forward = true;
             msgIndex++;
             msgs = ooMessages[id];
-
+            lastPatchIndex = 0;
             if (Object.keys(hashes).length) {
+                //Check if the end of the checkpoint has been reached and the next one should be loaded
                 if (msgIndex === 0) {
                     id++;
                     await loadMoreOOHistory();
                     msgs = ooMessages[id];
-
+                    //Empty checkpoint (checkpoint created/history restored with no further changes)
                     if (!msgs.length) {
-                        id++;
                         config.loadHistoryCp(hashes[id]);
                         await loadMoreOOHistory();
-                        msgIndex = -ooMessages[id].length - 1;
+                        msgIndex = -ooMessages[id].length;
+                        showVersion(false);
+                        return;
                     } else {
-                        msgIndex = -msgs.length;
-                        patch = msgs[msgs.length + msgIndex];
-                        config.onPatchBack(hashes[id], [patch]);
+                        //Is the checkpoint the result of restoring history? If yes, we need to load an extra patch
+                        if (nextPatchIndex !== 0 &&  Math.abs(nextPatchIndex - JSON.parse(msgs[0].msg).changesIndex) <= 1) {
+                            msgIndex = -ooMessages[id].length;
+                            config.onPatchBack(hashes[id], [msgs[0]]);
+                            position = 1;
+                        } else {
+                            msgIndex = -ooMessages[id].length-1;
+                            config.loadHistoryCp(hashes[id]);
+                            position = 0;
+                        }            
+                        showVersion(false, position);
+                        return;
                     }
                 } else {
-                    if (!msgs.length) { return config.onPatchBack(hashes[id + 1]); }
+                    if (!msgs.length) {    
+                        position = 0;
+                        showVersion(false, 0);
+                        return config.loadHistoryCp(hashes[id + 1]); }
+                        //Adjust msgIndex after fastPrev 
                     if (Math.abs(msgIndex) > msgs.length) { msgIndex = -msgs.length; }
                 }
-            } else if (msgs.length + msgIndex === -1) { msgIndex++; }
+            } 
+            else if (msgs.length + msgIndex === -1) { msgIndex++; }
 
             patch = msgs[msgs.length + msgIndex];
             position = msgs.indexOf(patch) + 1;
             config.onPatch?.(patch);
+            nextPatchIndex = JSON.parse(patch.msg).changesIndex;
             showVersion(false, position);
-            loadingFalse();
         };
-
-
-        var msgs;
 
         var prev = function () {
             forward = false;
             msgs = ooMessages[id];
+            nextPatchIndex = 0;
             let hasHashes = Object.keys(hashes).length;
             let cp = hasHashes ? hashes[id] : {};
             let loadPrevCp = (!msgs.length) ||
                     (msgs.length + 1 === Math.abs(msgIndex) && id !== 0) ||
                     (msgs.length - Math.abs(msgIndex) === -2);
-            
-            var goBack = function () {
-                var q = msgs.slice(0, msgIndex);
-                config.onPatchBack(cp, q);
-                position = q.length;
-                patch = q[position - 1];
-                showVersion(false, position);
-                msgIndex--; 
-                loadingFalse();
-            }
 
+            //Check if the end of the checkpoint has been reached and the previous one should be loaded
             if (hasHashes && loadPrevCp) {
                 id--; 
                 msgIndex = -1;
                 return loadMoreOOHistory().then(() => {
+                    //Empty checkpoint - checkpoint saved with no further changes
+                    if (!msgs.length) {
+                        msgs = ooMessages[id];
+                        config.onPatchBack(hashes[id], msgs.slice(0, msgIndex));
+                        msgIndex--;
+                        showVersion(false);
+                        return;
+                    }
                     msgs = ooMessages[id];
                     cp = hashes[id];
-                    goBack();                    
+                    var q = msgs.slice(0, msgIndex);
+                    patch = msgs[msgs.length-1];
+                    var currentPatchIndex = JSON.parse(patch.msg).changesIndex;
+                    position = msgs.indexOf(patch);
+                    //Is the checkpoint the result of restoring history? If yes, we need to load an extra patch
+                    if (lastPatchIndex !==0 && Math.abs(lastPatchIndex - currentPatchIndex) <= 1) {
+                        config.onPatchBack(cp, q); 
+                        msgIndex--;
+                    } else {
+                        config.onPatchBack(cp, msgs);
+                    }
+                    showVersion(false, position);
                 });
             }
-            goBack();
+
+            patch = msgs[msgs.length + msgIndex];
+            var q = msgs.slice(0, msgIndex);
+            config.onPatchBack(cp, q);   
+            patch = msgs[msgs.length + msgIndex];
+            msgIndex--; 
+            position = msgs.indexOf(patch);
+            lastPatchIndex = JSON.parse(patch.msg).changesIndex;
+            showVersion(false, position);
         };
 
         // Create the history toolbar
@@ -392,6 +555,7 @@ define([
 
             // Go to next checkpoint
             $fastNext.click(function () {
+                lastPatchIndex = 0;
                 if (loading) { return; }
                 loading = true;
                 if (id < Object.keys(hashes).length && id !== -1) {
@@ -404,9 +568,10 @@ define([
                         var cp = hashes[id];
                         loadMoreOOHistory();
                         config.loadHistoryCp(cp);
-                        msgs = ooMessages[id];
-                        msgIndex = -msgs.length-1
-                        showVersion(false, 0)
+                        var msgs = ooMessages[id];
+                        msgIndex = -msgs.length-1;
+                        position = 0;
+                        showVersion(false, position);
                         loading = false;
                         return;
                     });
@@ -418,8 +583,8 @@ define([
                 }
 
                 loading = false;
-                position = msgs?.length
-                showVersion(false, position)
+                position = msgs?.length;
+                showVersion(false, position);
             });
             
             // Go to previous checkpoint
@@ -433,8 +598,9 @@ define([
                 config.loadHistoryCp(cp);
                 loadMoreOOHistory().then(() => {
                     var msgs = ooMessages[id];
+                    lastPatchIndex = JSON.parse(msgs[0].msg).changesIndex;
                     msgIndex = -msgs.length-2;
-                    showVersion(false, 0)
+                    showVersion(false, 0);
                     update(true);
                 });
                 position = 0;
@@ -479,7 +645,7 @@ define([
                     onClick: function () {
                         var val = $input.val();
                         if (!val) { return true; }
-                        msgs = ooMessages[id]
+                        msgs = ooMessages[id];
                         config.makeSnapshot(val, function (err) {
                             if (err) { return; }
                             $input.val('');
