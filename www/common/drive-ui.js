@@ -501,6 +501,7 @@ define([
                     h("ul.dropdown-menu", getNewPadTypes().map(function (app) {
                         return isAppEnabled(app) ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (restricted[app] === 0 ? '.cp-app-disabled' : ''), {
                             'tabindex': '-1',
+                            'data-type': app,
                         },[
                             Icons.get(AppConfig.applicationsIcon[app] || 'file'),
                             Messages.type[app]
@@ -5291,7 +5292,8 @@ define([
                 showUploadFolderModal();
             }
             else if ($this.hasClass("cp-app-drive-context-newdoc")) {
-                var ntype = $this.data('type') || 'pad';
+                console.log($this.data('type'));
+                var ntype = $this.data('type') || 'code';
                 if (ntype === 'link') {
                     return void showLinkModal();
                 }
