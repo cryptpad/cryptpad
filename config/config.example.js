@@ -50,7 +50,7 @@ module.exports = {
  */
     httpUnsafeOrigin: 'http://localhost:3000',
 
-/*  httpSafeOrigin is the URL that is used for the 'sandbox' described above.
+/*  httpSafeOrigin is the URL used for the 'sandbox' described above.
  *  If you're testing or developing with CryptPad on your local machine then
  *  it is appropriate to leave this blank. The default behaviour is to serve
  *  the main domain over port 3000 and to serve the sandbox content over port 3001.
