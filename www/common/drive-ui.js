@@ -5292,8 +5292,7 @@ define([
                 showUploadFolderModal();
             }
             else if ($this.hasClass("cp-app-drive-context-newdoc")) {
-                console.log($this.data('type'));
-                var ntype = $this.data('type') || 'code';
+                var ntype = $this.data('type') || 'pad';
                 if (ntype === 'link') {
                     return void showLinkModal();
                 }
