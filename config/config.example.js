@@ -256,8 +256,8 @@ module.exports = {
      */
     archivePath: './data/archive',
 
-    /*  CryptPad allows logged in users to request that particular documents be
-     *  stored by the server indefinitely. This is called 'pinning'.
+    /*  CryptPad allows logged in users to request that the server 
+     *  store particular documents indefinitely. This is called 'pinning'.
      *  Pin requests are stored in a pin-store. The location of this store is
      *  defined here.
      */
