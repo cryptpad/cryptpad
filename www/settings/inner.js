@@ -2010,9 +2010,6 @@ define([
         });
 
         cb(labelled);
-        setTimeout(() => {
-            editor.refresh();
-        }, 10);
     }, false, true);
 
 
@@ -2034,6 +2031,9 @@ define([
         cat.forEach(function(c) {
             APP.$rightside.find('.' + c).show();
         });
+        if (APP.editor) {
+            APP.editor.refresh();
+        }
     };
 
     var SIDEBAR_ICONS = {
