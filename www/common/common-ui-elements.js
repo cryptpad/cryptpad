@@ -4740,7 +4740,7 @@ define([
                 }
                 
                 var hasSubfolder = item.content && Object.keys(item.content).length > 0;
-                var isActive = config.currentPath && JSON.stringify(newPath) === JSON.stringify(config.currentPath);
+                var isActive = item.isActive !== undefined ? item.isActive : (config.currentPath && JSON.stringify(newPath) === JSON.stringify(config.currentPath));
                 var $element = UIElements.createTreeElement(name, $icon.clone(), newPath, true, true, hasSubfolder, isActive, config.events, config.openFolders, config.currentPath, config.cb);
                 $element.appendTo($list);
                 

@@ -4597,6 +4597,7 @@ define([
                 var sfId = manager.isInSharedFolder(newPath) || (isSharedFolder && root[key]);
                 var $icon, isCurrentFolder, subfolder, folderName = key;
                 var randomKey = Util.uid();
+                var navPath = newPath.slice();
                 if (isSharedFolder) {
                     // Fix path
                     newPath.push(manager.user.userObject.ROOT);
@@ -4621,7 +4622,8 @@ define([
                 data.content[randomKey] = {
                     name: folderName,
                     icon: $icon,
-                    navPath: newPath,
+                    navPath: navPath,
+                    isActive: isCurrentFolder,
                     content: {}
                 };
                 if (subfolder) {
@@ -4705,11 +4707,13 @@ define([
                 var isSharedFolderPath = pathToCheck.length > 1 && pathToCheck[pathToCheck.length - 1] === ROOT;
                 $row.find('.cp-app-drive-icon-folder').css("color", isSharedFolderPath ? getFolderColor(pathToCheck.slice(0, -1)) : getFolderColor(pathToCheck));
 
+                var element = manager.find(elPath);
+                var isSharedFolder = element && manager.isSharedFolder(element);
                 var sfId = manager.isInSharedFolder(elPath);
                 var f = null;
                 var droppable = true;
-                
-                if (sfId) {
+                if (isSharedFolder) {
+                    sfId = element;
                     f = folders[sfId];
                     var editable = !(f && f.readOnly);
                     droppable = editable;
@@ -4724,6 +4728,15 @@ define([
                         $row.addClass('cp-app-drive-element-restricted');
                     }
                     // Update drag/drop handlers if droppable changed for shared folder
+                    $row.off('dragover drop dragenter dragleave');
+                    addDragAndDropHandlers($row, elPath, true, droppable);
+                } else if (sfId) {
+                    f = folders[sfId];
+                    var editable = !(f && f.readOnly);
+                    droppable = editable;
+                    if (!editable) {
+                        $row.closest('li').attr('data-ro', true);
+                    }
                     $row.off('dragover drop dragenter dragleave');
                     addDragAndDropHandlers($row, elPath, true, droppable);
                 }
