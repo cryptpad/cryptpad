@@ -12,7 +12,8 @@ define([
     '/common/hyperscript.js',
     '/common/diffMarked.js',
     '/common/common-icons.js',
-], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd, Icons) {
+    '/common/proxy-manager.js',
+], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd, Icons, ProxyManager) {
     'use strict';
 
     var debug = console.log;
@@ -135,6 +136,7 @@ define([
 
         var notify = function (id) {
             find.inList(id).addClass('cp-app-contacts-notify');
+            
         };
         var unnotify = function (id) {
             find.inList(id).removeClass('cp-app-contacts-notify');
@@ -655,7 +657,17 @@ define([
             debug(message);
 
             var el_message = markup.message(message);
+                        console.log("PROXY", message, contactsData)
 
+            common.mailbox.sendTo("COMMENT_REPLY", {
+                channel: channel, 
+                content: "hello"
+            }, {
+                channel: contactsData[message.author].notifications, 
+                curvePublic: message.author
+            })
+            // ProxyManager.sendNotification()
+            console.log("hello!!")
             if (message.type === 'MSG') {
                 var name = UI.getDisplayName(typeof message.name !== "undefined" ?
                         message.name:
@@ -666,6 +678,10 @@ define([
                     force: toolbar && toolbar.team && !toolbar['chat'].hasClass('cp-leftside-active')
                 });
             }
+            // ctx.emit('FRIEND_REQUEST_ACCEPTED', {
+            //     curvePublic: curvePublic,
+            //     fromMe: true
+            // }, ctx.friendsClients);
             notifyToolbar();
 
             channel.messages.push(message);

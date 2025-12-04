@@ -1740,6 +1740,19 @@ const factory = (Sortify, UserObject, ProxyManager,
             cb();
         };
 
+        Store.sendMessageNotif = function () {
+            console.log("msgs")
+
+            store.mailbox.sendTo("GIVE_PAD_ACCESS", {
+                channel: channel,
+                href: href,
+                title: title
+            }, {
+                channel: data.user.notifications,
+                curvePublic: data.user.curvePublic
+            });
+        }
+
         // Delete a pad received with a burn after reading URL
 
         var notifyOwnerPadRemoved = function (data, obj) {

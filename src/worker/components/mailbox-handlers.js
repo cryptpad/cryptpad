@@ -181,6 +181,7 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
     };
     // UI for accepted friend request
     handlers['FRIEND_REQUEST_ACCEPTED'] = function (ctx, box, data, cb) {
+        console.log("here")
         ctx.updateMetadata();
         var curve = data.msg.content.user.curvePublic || data.msg.content.user;
         var toRemove = friendRequestDeclined[curve];
@@ -193,6 +194,7 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
         cb(false, toRemove);
     };
     removeHandlers['FRIEND_REQUEST_ACCEPTED'] = function (ctx, box, data) {
+        console.log("friend")
         var curve = data.content.user.curvePublic || data.content.user;
         if (friendRequestAccepted[curve]) { delete friendRequestAccepted[curve]; }
     };
@@ -347,6 +349,7 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
     };
 
     handlers['GIVE_PAD_ACCESS'] = function (ctx, box, data, cb) {
+        console.log("msgs2")
         var msg = data.msg;
         var content = msg.content;
 
@@ -678,6 +681,7 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
     // Keep only one notification per channel: the stronger and more recent one
     var comments = {};
     handlers['COMMENT_REPLY'] = function (ctx, box, data, cb) {
+        console.log("hello@")
         var msg = data.msg;
         var hash = data.hash;
         var content = msg.content;

@@ -364,6 +364,7 @@ define([
     };
 
     handlers['COMMENT_REPLY'] = function(common, data) {
+        console.log("hello$")
         var content = data.content;
         var msg = content.msg;
 

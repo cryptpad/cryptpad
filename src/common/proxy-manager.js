@@ -73,6 +73,7 @@ const factory = (UserObject, Util, Hash,
     };
 
     var sendNotification = (Env, sfId, title) => {
+        console.log("bloop")
         var mailbox = Env.store.mailbox;
         if (!mailbox) { return; }
         var team = Env.cfg.teamId;
@@ -1455,6 +1456,7 @@ const factory = (UserObject, Util, Hash,
             addSharedFolder: callWithEnv(_addSharedFolder),
             addPin: addPin,
             removePin: removePin,
+            sendNotification: sendNotification,
             // Drive
             command: callWithEnv(onCommand),
             getPadAttribute: callWithEnv(getPadAttribute),
@@ -1833,7 +1835,8 @@ const factory = (UserObject, Util, Hash,
     return {
         setCustomize,
         create: create,
-        createInner: createInner
+        createInner: createInner, 
+        sendNotification: sendNotification
     };
 };
 

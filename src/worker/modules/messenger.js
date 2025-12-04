@@ -293,6 +293,7 @@ const factory = (Crypto, Hash, Util, Realtime, Messaging,
     };
 
     var onDirectMessage = function (ctx, msg, sender) {
+        console.log("here!!")
         var hk = ctx.store.network.historyKeeper;
         if (sender !== hk) { return void onIdMessage(ctx, msg, sender); }
         var parsed = JSON.parse(msg);
@@ -397,9 +398,15 @@ const factory = (Crypto, Hash, Util, Realtime, Messaging,
     };
 
     var onMessage = function (ctx, msg, sender, chan) {
+        console.log("wkjhdkejdh")
         var channel = ctx.channels[chan.id];
         if (!channel) { return; }
         pushMsg(ctx, channel, msg);
+        // ctx.emit('FRIEND_REQUEST_ACCEPTED', {
+        //     curvePublic: curvePublic,
+        //     fromMe: true
+        // }, ctx.friendsClients);
+
     };
 
     var onFriendRemoved = function (ctx, curvePublic, chanId) {
