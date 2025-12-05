@@ -173,34 +173,88 @@ define([
             }
         };
 
-        var showVersion = function (initial, position) {
+        
+
+        var showVersion = function (initial, position, currentCp, nextCp) {
             currentVersion = getVersion(position, initial);
             if (initial) { currentVersion = Messages.oo_version_latest; }
             $version.text(Messages.oo_version + currentVersion);
 
             var $pos = $hist.find('.cp-history-timeline-pos');
+            var bar = $('.cp-history-timeline-container')
+            var snapshotsEl = []
+            var snapshots = h('div.cp-history-snapshots', [
+                snapshotsEl
+            ])
+            $(snapshots).css('height', '100%')
+            bar.html('').append([
+                snapshots
+            ]);
+
             if (!ooMessages[id]) { return; }
             var msgs = ooMessages[id];
             var p;
             var messageIndex = forward ? msgIndex+1 : msgIndex;
+            
             if (!Object.keys(hashes).length) {
                 p = 100-100*((messageIndex ) / (-msgs.length));
-            } else {
-                var lastHash = hashes[Object.keys(hashes).pop()].hash;
-                if (lastHash === config.onlyoffice.lastHash) {
-                    var hashLength = Object.keys(hashes).length;
-                } else {
-                    var hashLength = Object.keys(hashes).length+1;
+                for (var i = 1; i < msgs.length; i++) {
+                    var msg = msgs[i]
+                    var patchWidth = (1/msgs.length)*100
+                    var patchDiv = h('div.cp-history-patch', {
+                        style: 'width:'+patchWidth+'%; height: 100%',
+                        title: new Date(msg.time).toLocaleString(),
+                        data: [id, msgs.indexOf(msg)]
+                    })
+                    snapshotsEl.push(patchDiv);
                 }
-                var segments = id/hashLength;
-                p = 100*(segments); 
 
-                if (id === 0) { p = 0; }
+            } else {
+                                    console.log("hashes,", hashes, id, ooMessages[id], hashes, Object.keys(hashes)[Object.keys(hashes).length-2])
+
+                if (id === parseInt(Object.keys(hashes)[Object.keys(hashes).length-2])) {
+                    p = 100-100*((messageIndex ) / (-msgs.length));
+                    
+
                 
-                var percentage = ((position/msgs.length)*100);
-                var timelinePosition = (percentage/100)*(100/hashLength);
-                p += timelinePosition;
+
+
+                } else {
+                    spanWidth = (nextCp/(nextCp+currentCp))*100
+
+                    
+                    var cPSpan = h('span.cp-oohistory-bar-el');
+                    $(cPSpan).css('width', `${spanWidth}%`)
+                    bar.append(cPSpan)
+
+                }
+
+
+                // var lastHash = hashes[Object.keys(hashes).pop()].hash;
+                // if (lastHash === config.onlyoffice.lastHash) {
+                //     var hashLength = Object.keys(hashes).length;
+                // } else {
+                //     var hashLength = Object.keys(hashes).length+1;
+                // }
+                // var segments = id/hashLength;
+                // p = 100*(segments); 
+
+                // if (id === 0) { p = 0; }
+                
+                // var percentage = ((position/msgs.length)*100);
+                // var timelinePosition = (percentage/100)*(100/hashLength);
+                // p += timelinePosition;
             }
+
+            var snapshots = h('div.cp-history-snapshots', [
+                snapshotsEl
+            ])
+            $(snapshots).css('height', '100%')
+            $(snapshots).css('display', 'flex')
+
+            bar.html('').append([
+                snapshots
+            ]);
 
             $pos.css('margin-left', p+'%');
 
@@ -209,8 +263,23 @@ define([
             if (time) { $time.text(new Date(time).toLocaleString()); }
             else { $time.text(''); }
             update();
+
+        $('.cp-history-patch').on('click', function(e) {
+            var patchData = $(e.target).attr('data').split(',')
+            msgs = ooMessages[id]
+            if (parseInt(patchData[0]) === -1) {
+                var q = msgs.slice(0, patchData[1])
+                config.onPatchBack({}, q)
+            } else {
+                config.onPatchBack(hashes[patchData[0]], msgs[patchData[1]])
+            }
+            
+        })
+
             loadingFalse();
         };
+
+
 
         var loadingFalse = function () {
             setTimeout(function () {
@@ -285,9 +354,14 @@ define([
 
             //Check if the end of the checkpoint has been reached and the previous one should be loaded
             if (hasHashes && loadPrevCp) {
+
+                var currentCp = msgs.length
+
+
                 id--; 
                 msgIndex = -1;
                 return loadMoreOOHistory().then(() => {
+          
                     //Empty checkpoint - checkpoint saved with no further changes
                     if (!msgs.length) {
                         msgs = ooMessages[id];
@@ -297,6 +371,12 @@ define([
                         return;
                     }
                     msgs = ooMessages[id];
+
+                    var nextCp = msgs.length
+
+
+
+
                     cp = hashes[id];
                     var q = msgs.slice(0, msgIndex);
                     patch = msgs[msgs.length-1];
@@ -309,7 +389,7 @@ define([
                     } else {
                         config.onPatchBack(cp, msgs);
                     }
-                    showVersion(false, position);
+                    showVersion(false, position, currentCp, nextCp);
                 });
             }
 
@@ -558,6 +638,8 @@ define([
         display();
 
         showVersion(true);
+
+        
 
         //return void loadMoreOOHistory();
     };
