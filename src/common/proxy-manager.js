@@ -430,7 +430,9 @@ const factory = (UserObject, Util, Hash,
         paths.forEach(function (path, idx) {
             var el = userObject.find(path);
             var files = [];
-            var key = path[path.length - 1];
+            // For trash paths, the name is at index 1, not the last element
+            var isTrashPath = userObject.isPathIn && userObject.isPathIn(path, [userObject.TRASH]);
+            var key = isTrashPath && path.length >= 2 ? path[1] : path[path.length - 1];
 
             // Get the files ID from the current path (file or folder)
             if (userObject.isFile(el)) {
@@ -501,8 +503,14 @@ const factory = (UserObject, Util, Hash,
 
     // Move files or folders in the drive
     var _move = function (Env, data, cb) {
+        if (typeof console !== 'undefined' && console.log) {
+            console.log('[PROXY-MANAGER] _move called with paths:', JSON.stringify(data.paths), 'newPath:', JSON.stringify(data.newPath));
+        }
         var resolved = _resolvePaths(Env, data.paths);
         var newResolved = _resolvePath(Env, data.newPath);
+        if (typeof console !== 'undefined' && console.log) {
+            console.log('[PROXY-MANAGER] Resolved - main:', resolved.main.length, 'folders:', Object.keys(resolved.folders).length, 'newResolved.id:', newResolved.id);
+        }
 
         // NOTE: we can only copy when moving from one drive to another. We don't want
         // duplicates in the same drive
