@@ -5094,6 +5094,7 @@ define([
                      $this.hasClass('cp-app-drive-context-collapseall')) {
                 if (paths.length !== 1) { return; }
                 var opened = $this.hasClass('cp-app-drive-context-expandall');
+                var collapsedPath = paths[0].path;
                 var openRecursive = function (path) {
                     LS.setFolderOpened(path, opened);
                     var folderContent = manager.find(path);
@@ -5113,8 +5114,12 @@ define([
                         openRecursive(subPath);
                     });
                 };
-                openRecursive(paths[0].path);
-                refresh();
+                openRecursive(collapsedPath);
+                if (!opened && currentPath && manager.isSubpath(currentPath, collapsedPath)) {
+                    APP.displayDirectory(collapsedPath);
+                } else {
+                    refresh();
+                }
             }
 
             else if ($this.hasClass('cp-app-drive-context-download')) {
