@@ -2144,13 +2144,20 @@ define([
             var movedPaths = [];
 
             var sharedF = false;
+            var draggedSharedFolder = false;       
             oldPaths.forEach(function (p) {
                 movedPaths.push(p.path);
                 if (!sharedF && manager.isInSharedFolder(p.path)) {
                     sharedF = true;
                 }
+                if (!draggedSharedFolder && p.value && p.value.el && manager.isSharedFolder(p.value.el)) {
+                    draggedSharedFolder = true;
+                }
             });
 
+            if (draggedSharedFolder && manager.isInSharedFolder(newPath)) {
+                return void UI.warn(Messages.fo_sharedFolder_move_error);
+            }
             if (sharedF && manager.isPathIn(newPath, [TRASH])) {
                 // TODO create a key here?
                 // You can't move to YOUR trash documents stored in a shared folder
