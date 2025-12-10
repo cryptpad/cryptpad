@@ -150,7 +150,7 @@ define([
         $hist.html('').css('display', 'flex');
         $bottom.hide();
 
-        UI.spinner($hist).get().show();
+        // UI.spinner($hist).get().show();
 
         var $fastPrev, $fastNext, $next, $prev;
 
@@ -176,15 +176,15 @@ define([
                 $fastNext.prop('disabled', 'disabled');
             }
         };
-
         
 
         var showVersion = function (initial, position, currentCp, nextCp) {
+            
             currentVersion = getVersion(position, initial);
             if (initial) { currentVersion = Messages.oo_version_latest; }
             $version.text(Messages.oo_version + currentVersion);
 
-            var $pos = $hist.find('.cp-history-timeline-pos');
+            var $pos = $hist.find('.cp-history-timeline-pos-oo');            
             var bar = $('.cp-history-timeline-container')
             var snapshotsEl = []
             var snapshots = h('div.cp-history-snapshots', [
@@ -212,21 +212,26 @@ define([
                         title: new Date(msg.time).toLocaleString(),
                         data: [id, msgs.indexOf(msg)]
                     })
-                    console.log("PATCH",msgs.indexOf(patch), i, msgs.length-1)
-                    if (msgs[msgs.indexOf(patch)-1] === msg && !initial && patch && msgs[msgs.indexOf(patch)-1]) {
-                        $(patchDiv).addClass('cp-history-oo-timeline-pos')
-                    } else if (msgs.indexOf(patch) === -1 && i === msgs.length-1) {
-                        $(patchDiv).addClass('cp-history-oo-timeline-pos')
+                    console.log("PATCH",msgs.indexOf(patch), i, msgs.length-1, forward)
+                    if (msgs[msgs.indexOf(patch)-1] === msg && !initial && patch && msgs[msgs.indexOf(patch)-1] && !forward) {
+                        $(patchDiv).addClass('cp-history-oo-timeline-pos').append($pos)
+                    }  else if (msgs[msgs.indexOf(patch)] === msg && !initial && patch && msgs[msgs.indexOf(patch)] && forward) {
+                        $(patchDiv).addClass('cp-history-oo-timeline-pos').append($pos)
+
+                    } 
+                    
+                    else if (i === msgs.length-1 && (initial || msgs.indexOf(patch) === -1) ) {
+                        $(patchDiv).addClass('cp-history-oo-timeline-pos').append($pos)
                     } 
                     snapshotsEl.push(patchDiv);
                 }
                 var emptyPatchDiv = h('div.cp-history-patch', {
                         style: 'width:'+patchWidth+'%; height: 100%',
                         title: new Date().toLocaleString(),
-                        data: [0, 0]
+                        data: [-1, -1]
                     })
-                    if (msgs[0] === patch) {
-                        $(emptyPatchDiv).addClass('cp-history-oo-timeline-pos')
+                    if (msgs.indexOf(patch) === 0 && !initial && !forward) {
+                        $(emptyPatchDiv).addClass('cp-history-oo-timeline-pos').append($pos)
                     }
                 snapshotsEl.unshift(emptyPatchDiv);
             } else {
@@ -274,7 +279,7 @@ define([
                 snapshots
             ]);
 
-            $pos.css('margin-left', p+'%');
+            // $pos.css('margin-left', p+'%');
 
             var time = msgs[msgIndex] && msgs[msgIndex].time;
             currentTime = time;
@@ -441,7 +446,7 @@ define([
                 Icons.get('history-next'),
             ]);
             var _prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
-                h('i.fa.fa-step-backward')
+                Icons.get('history-prev')
             ]);
             $fastPrev = $(fastPrev);
             $prev = $(_prev);
@@ -449,7 +454,12 @@ define([
             $next = $(_next).prop('disabled', 'disabled');
             // .prop('disabled', 'disabled');
 
-            var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos'});
+            var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
+            $(pos).css('position', 'absolute')
+                        $(pos).css('margin-left', '6%')
+                                                $(pos).css('bottom', '65%')
+
+
             var time = h('div.cp-history-timeline-time');
             var version = h('div.cp-history-timeline-version');
             $time = $(time);
