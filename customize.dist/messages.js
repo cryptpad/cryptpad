@@ -133,6 +133,8 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
+    /// XXX
+    Messages.fo_trash_move_error = "Shared items cannot be moved to your trash folder. Use \"Remove\" option to remove them from the drive instead.";
 
     return Messages;
 
