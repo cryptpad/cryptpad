@@ -514,7 +514,7 @@
             }
 
             @media screen and (max-width: @browser_media-medium-screen),
-                   screen and (max-height: 500px) {
+                   screen and (max-height: @browser_media-short-screen) {
                 flex-wrap: wrap;
                 height: @toolbar_line-height;
                 .cp-toolbar-top-filler {
@@ -874,7 +874,7 @@
                 // }
             }
             @media screen and (max-width: @browser_media-medium-screen),
-            screen and (max-height: 500px) {
+            screen and (max-height: @browser_media-short-screen) {
                 a.cp-toolbar-link-logo {
                     svg {
                         width: @variables_icon_width;
