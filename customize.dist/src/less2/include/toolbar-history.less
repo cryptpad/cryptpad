@@ -168,7 +168,7 @@
             .cp-history-timeline-container {
                 flex: 1;
                 position: relative;
-                background-color: @history_lineBg;
+                background-color: @history_userBg2;
                 height: 39px;
                 .cp-oohistory-bar-el {
                     background-color: @history_userBg2;
@@ -262,8 +262,22 @@
             }
         }
 
+        .cp-history-oo-timeline-pos {
+            width: 2px;
+            border: 2px solid @cryptpad_text_col;
+            height: 37px;
+            //background: @pos-color;
+            // position: absolute;
+            &:before {
+                top: -17px;
+                font-size: 24px;
+                position: absolute;
+                // left: ~"calc(50% - 6px)";
+            }
+        }
+
         .cp-history-timeline-pos {
-            //width: 2px;
+            width: 2px;
             border: 2px solid @cryptpad_text_col;
             height: 37px;
             //background: @pos-color;
