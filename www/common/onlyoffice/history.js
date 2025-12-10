@@ -82,6 +82,7 @@ define([
                 lastKnownHash: fromHash,
                 toHash: toHash,
             }, function (err, data) {
+
                 if (err) { return void console.error(err); }
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
 
@@ -89,6 +90,7 @@ define([
                 var messages = (data.messages || []).slice(initialCp || config.docType() === 'spreadsheet' ? 0 : 1);
                 if (config.debug) { console.log(data.messages); }
                 id = typeof(id) !== "undefined" ? id : getId();
+
                 fillOO(messages);
                 loading = false;
 
@@ -193,32 +195,46 @@ define([
                 snapshots
             ]);
 
-            if (!ooMessages[id]) { return; }
+            if (!ooMessages[id] && !initial) { return; }
             var msgs = ooMessages[id];
             var p;
             var messageIndex = forward ? msgIndex+1 : msgIndex;
             
             if (!Object.keys(hashes).length) {
                 p = 100-100*((messageIndex ) / (-msgs.length));
-                for (var i = 1; i < msgs.length; i++) {
+                var patchWidth;
+                var patchDiv;
+                for (var i = 0; i < msgs.length; i++) {
                     var msg = msgs[i]
-                    var patchWidth = (1/msgs.length)*100
-                    var patchDiv = h('div.cp-history-patch', {
+                    patchWidth = (1/msgs.length)*100
+                    patchDiv = h('div.cp-history-patch', {
                         style: 'width:'+patchWidth+'%; height: 100%',
                         title: new Date(msg.time).toLocaleString(),
                         data: [id, msgs.indexOf(msg)]
                     })
+                    console.log("PATCH",msgs.indexOf(patch), i, msgs.length-1)
+                    if (msgs[msgs.indexOf(patch)-1] === msg && !initial && patch && msgs[msgs.indexOf(patch)-1]) {
+                        $(patchDiv).addClass('cp-history-oo-timeline-pos')
+                    } else if (msgs.indexOf(patch) === -1 && i === msgs.length-1) {
+                        $(patchDiv).addClass('cp-history-oo-timeline-pos')
+                    } 
                     snapshotsEl.push(patchDiv);
                 }
-
+                var emptyPatchDiv = h('div.cp-history-patch', {
+                        style: 'width:'+patchWidth+'%; height: 100%',
+                        title: new Date().toLocaleString(),
+                        data: [0, 0]
+                    })
+                    if (msgs[0] === patch) {
+                        $(emptyPatchDiv).addClass('cp-history-oo-timeline-pos')
+                    }
+                snapshotsEl.unshift(emptyPatchDiv);
             } else {
-                                    console.log("hashes,", hashes, id, ooMessages[id], hashes, Object.keys(hashes)[Object.keys(hashes).length-2])
+                console.log("hashes,", hashes, id, ooMessages[id], hashes, Object.keys(hashes)[Object.keys(hashes).length-2])
 
                 if (id === parseInt(Object.keys(hashes)[Object.keys(hashes).length-2])) {
                     p = 100-100*((messageIndex ) / (-msgs.length));
                     
-
-                
 
 
                 } else {
@@ -242,7 +258,7 @@ define([
                 // p = 100*(segments); 
 
                 // if (id === 0) { p = 0; }
-                
+                 
                 // var percentage = ((position/msgs.length)*100);
                 // var timelinePosition = (percentage/100)*(100/hashLength);
                 // p += timelinePosition;
@@ -266,22 +282,28 @@ define([
             else { $time.text(''); }
             update();
 
-        $('.cp-history-patch').on('click', function(e) {
-            var patchData = $(e.target).attr('data').split(',')
-            msgs = ooMessages[id]
-            if (parseInt(patchData[0]) === -1) {
-                var q = msgs.slice(0, patchData[1])
-                config.onPatchBack({}, q)
-            } else {
-                config.onPatchBack(hashes[patchData[0]], msgs[patchData[1]])
-            }
-            
-        })
+            $('.cp-history-patch').on('click', function(e) {
+                var patchData = $(e.target).attr('data').split(',')
+                var cpNo = parseInt(patchData[0])
+                var patchNo = parseInt(patchData[1])
+                msgs = ooMessages[id]
+                if (cpNo === -1) {
+                    var q = msgs.slice(0, patchNo+1)
+                    config.onPatchBack({}, q)
+                    patch = msgs[patchNo+1]
+                } else if (cpNo === 0 && patchNo === 0) {
+                    config.onPatchBack({})
+                    patch = msgs[0]
+                } else {
+                    config.onPatchBack(hashes[patchData[0]], msgs[patchData[1]])
+                    patch = msgs[patchData[1]]
+                }
+                position = msgs.indexOf(patch)+2
+                showVersion(false, position)
+            })
 
             loadingFalse();
         };
-
-
 
         var loadingFalse = function () {
             setTimeout(function () {
@@ -641,7 +663,13 @@ define([
 
         display();
 
-        showVersion(true);
+        setTimeout(() => {
+        showVersion(true);;
+        }, "1000");
+        
+
+
+
         //return void loadMoreOOHistory();
     };
 
