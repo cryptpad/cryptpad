@@ -90,6 +90,15 @@ define([
                 return;
             }
         }
+        if (window.location.hash === '#debug') {
+            let hash = LocalStore.getBlockHash();
+            let parsed;
+            if (hash) { parsed = Block.parseBlockHash(hash); }
+            alert(JSON.stringify({
+                blockId: parsed.href || '?'
+            }, 0, 2));
+            return;
+        }
         window.location.href = '/drive/';
     };
 
