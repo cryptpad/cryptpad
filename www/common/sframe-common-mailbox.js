@@ -10,9 +10,10 @@ define([
     '/common/common-ui-elements.js',
     '/common/notifications.js',
     '/common/hyperscript.js',
+    '/customize/application_config.js',
     '/customize/messages.js',
     '/common/common-icons.js',
-], function ($, Util, Hash, UI, UIElements, Notifications, h, Messages, Icons) {
+], function ($, Util, Hash, UI, UIElements, Notifications, h, AppConfig, Messages, Icons) {
     var Mailbox = {};
 
     Mailbox.create = function (Common) {
@@ -116,6 +117,13 @@ define([
             }
             if (typeof(data.content.getFormatText) === "function") {
                 $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
+                $(notif).find('a').click(e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const href = e.target.href || '';
+                    if (!/^(http|\/)/.test(href)) { return; }
+                    Common.openURL(e.target.href);
+                });
                 if (data.content.autorefresh) {
                     var it = setInterval(function () {
                         if (!data.content.autorefresh) {
@@ -198,6 +206,52 @@ define([
             }
             onMessageHandlers.forEach(todo);
         };
+
+        const custom = AppConfig.customBroadcast;
+        if (Array.isArray(custom)) {
+            const metadataMgr = Common.getMetadataMgr();
+            const customBcast = () => {
+                const priv = metadataMgr.getPrivateData();
+                if (priv.offline !== false) { return; } // reject undefined/true
+                const dismissed = priv.settings?.broadcast?.viewed || [];
+                const lang = Messages._getLanguage();
+                custom.forEach(obj => {
+                    const viewed = dismissed.includes(obj.id);
+                    if (!obj.filter(metadataMgr)) { return; }
+                    if (viewed) { return; }
+                    const msg = obj.msg[lang] || obj.msg['default'];
+                    const data = {
+                        type: 'broadcast',
+                        content: {
+                            hash: obj.id,
+                            markdown: true,
+                            dismiss: () => {
+                                let $notif = $(`.cp-notification[data-hash^="${obj.id}"]`);
+                                if ($notif.length) { $notif.remove(); }
+                                if (!dismissed.includes(obj.id)) {
+                                    dismissed.push(obj.id);
+                                }
+                                Common.setAttribute(['broadcast', 'viewed'],
+                                    dismissed);
+                                return true;
+                            },
+                            msg: {
+                                type: 'BROADCAST_CUSTOM',
+                                content: {
+                                    content: obj.msg
+                                }
+                            }
+                        }
+                    };
+                    mailbox.onMessage(data, () => {});
+                });
+
+                metadataMgr.off('change', customBcast);
+            };
+            metadataMgr.onChange(customBcast);
+        }
+
+
 
         var onViewed = function (data) {
             // data = { type: 'type', hash: 'hash' }
