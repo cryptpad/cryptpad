@@ -207,12 +207,38 @@ define([
             onMessageHandlers.forEach(todo);
         };
 
+        var onViewed = function (data) {
+            // data = { type: 'type', hash: 'hash' }
+            onViewedHandlers.forEach(function (f) {
+                try {
+                    f(data);
+                    if (isNotification(data.type)) {
+                        Notifications.remove(Common, data);
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            });
+            removeFromHistory(data.type, data.hash);
+        };
+
+        var onMessage = mailbox.onMessage = function (data, cb) {
+            // data = { type: 'type', content: {msg: 'msg', hash: 'hash'} }
+            pushMessage(data);
+            if (data.content && typeof (data.content.getFormatText) === "function") {
+                var text = $('<div>').html(data.content.getFormatText()).text();
+                cb({
+                    msg: text
+                });
+            }
+            if (!history[data.type]) { history[data.type] = []; }
+            history[data.type].push(data.content);
+        };
+
         const custom = AppConfig.customBroadcast;
         if (Array.isArray(custom)) {
-            const metadataMgr = Common.getMetadataMgr();
-            const customBcast = () => {
+            Common.onAccountOnline(metadataMgr => {
                 const priv = metadataMgr.getPrivateData();
-                if (priv.offline !== false) { return; } // reject undefined/true
                 const dismissed = priv.settings?.broadcast?.viewed || [];
                 const lang = Messages._getLanguage();
                 custom.forEach(obj => {
@@ -245,41 +271,10 @@ define([
                     };
                     mailbox.onMessage(data, () => {});
                 });
-
-                metadataMgr.off('change', customBcast);
-            };
-            metadataMgr.onChange(customBcast);
+            });
         }
 
 
-
-        var onViewed = function (data) {
-            // data = { type: 'type', hash: 'hash' }
-            onViewedHandlers.forEach(function (f) {
-                try {
-                    f(data);
-                    if (isNotification(data.type)) {
-                        Notifications.remove(Common, data);
-                    }
-                } catch (e) {
-                    console.error(e);
-                }
-            });
-            removeFromHistory(data.type, data.hash);
-        };
-
-        var onMessage = mailbox.onMessage = function (data, cb) {
-            // data = { type: 'type', content: {msg: 'msg', hash: 'hash'} }
-            pushMessage(data);
-            if (data.content && typeof (data.content.getFormatText) === "function") {
-                var text = $('<div>').html(data.content.getFormatText()).text();
-                cb({
-                    msg: text
-                });
-            }
-            if (!history[data.type]) { history[data.type] = []; }
-            history[data.type].push(data.content);
-        };
 
         mailbox.dismiss = function (data, cb) {
             var dataObj = {

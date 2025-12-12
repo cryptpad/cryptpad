@@ -92,6 +92,19 @@ define([
     funcs.getSframeChannel = function () { return ctx.sframeChan; };
     funcs.getAppConfig = function () { return AppConfig; };
 
+    funcs.onAccountOnline = function (f) {
+        const metadataMgr = ctx.metadataMgr;
+        const cb = Util.once(f);
+        const todo = () => {
+            const priv = metadataMgr.getPrivateData();
+            if (priv.offline !== false) { return; }
+            cb(metadataMgr);
+            metadataMgr.off('change', todo);
+        };
+        metadataMgr.onChange(todo);
+        todo();
+    };
+
     funcs.isLoggedIn = function () {
         return ctx.metadataMgr.getPrivateData().loggedIn;
     };
