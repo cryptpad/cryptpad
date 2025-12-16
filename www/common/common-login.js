@@ -316,6 +316,16 @@ define([
                 res.opt = allocateBytes(bytes);
                 res.blockHash = res.opt.blockHash;
                 blockKeys = res.opt.blockKeys;
+                if (window.location.hash === '#debug') {
+                    let hash = LocalStore.getBlockHash();
+                    let parsed;
+                    if (hash) { parsed = Block.parseBlockHash(hash); }
+                    alert(JSON.stringify({
+                        blockId: Util.encodeBase64(blockKeys.sign.publicKey)
+                    }, 0, 2));
+                    waitFor.abort();
+                    return;
+                }
                 if (ssoAuth && ssoAuth.name) { uname = res.uname = ssoAuth.name; }
             }));
         }).nThen(function (waitFor) {
