@@ -240,12 +240,10 @@ define([
             Common.onAccountOnline(metadataMgr => {
                 const priv = metadataMgr.getPrivateData();
                 const dismissed = priv.settings?.broadcast?.viewed || [];
-                const lang = Messages._getLanguage();
                 custom.forEach(obj => {
                     const viewed = dismissed.includes(obj.id);
                     if (!obj.filter(metadataMgr)) { return; }
                     if (viewed) { return; }
-                    const msg = obj.msg[lang] || obj.msg['default'];
                     const data = {
                         type: 'broadcast',
                         content: {
