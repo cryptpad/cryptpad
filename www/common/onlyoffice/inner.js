@@ -3429,7 +3429,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             APP.startNew = isNew;
 
             var version = OOCurrentVersion.currentVersion + '/';
-            console.log("v." + OOCurrentVersion.currentVersion);
             var msg;
             // Old version detected: use the old OO and start the migration if we can
             if (privateData.ooForceVersion) {
@@ -3502,6 +3501,22 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
             } else if (content && content.version <= 7) {
                 version = 'v7/';
+                APP.migrate = true;
+                // Registedred ~~users~~ editors can start the migration
+                if (common.isLoggedIn() && !readOnly) {
+                    content.migration = true;
+                    APP.onLocal();
+                } else {
+                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
+                    if (APP.helpMenu) {
+                        $(APP.helpMenu.menu).after(msg);
+                    } else {
+                        $('#cp-app-oo-editor').prepend(msg);
+                    }
+                    readOnly = true;
+                }
+            } else if (content && content.version <= 8) {
+                version = 'v8/';
                 APP.migrate = true;
                 // Registedred ~~users~~ editors can start the migration
                 if (common.isLoggedIn() && !readOnly) {
