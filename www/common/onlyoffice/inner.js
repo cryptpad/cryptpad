@@ -3429,6 +3429,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             APP.startNew = isNew;
 
             var version = OOCurrentVersion.currentVersion + '/';
+            console.log("v." + OOCurrentVersion.currentVersion);
             var msg;
             // Old version detected: use the old OO and start the migration if we can
             if (privateData.ooForceVersion) {
