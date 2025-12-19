@@ -375,8 +375,11 @@ const factory = (Util, Hash, Realtime) => {
                               elementPath[1] : elementPath.pop();
 
             if (typeof(newParent[newName]) !== "undefined") {
-                exp.log(Messages.fo_unavailableName);
-                return;
+                return {
+                    error: 'E_DUPLICATE_FOLDER_NAME',
+                    folderName: newName,
+                    message: Messages.fo_unavailableName
+                };
             }
             newParent[newName] = element;
             return true;

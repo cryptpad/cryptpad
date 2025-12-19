@@ -518,12 +518,17 @@ const factory = (UserObject, Util, Hash,
 
         if (!newResolved.userObject.isFolder(newResolved.path)) { return void cb(); }
 
+        var moveError = null;
         nThen(function (waitFor) {
             if (resolved.main.length) {
                 // Move from the main drive
                 if (!newResolved.id) {
                     // Move from the main drive to the main drive
-                    Env.user.userObject.move(resolved.main, newResolved.path, waitFor());
+                    Env.user.userObject.move(resolved.main, newResolved.path, waitFor(function (err) {
+                        if (err && !moveError) {
+                            moveError = err;
+                        }
+                    }));
                 } else {
                     // Move from the main drive to a shared folder
 
@@ -550,7 +555,11 @@ const factory = (UserObject, Util, Hash,
                     var paths = resolved.folders[fId];
                     if (newResolved.id === fId) {
                         // Move to the same shared folder
-                        newResolved.userObject.move(paths, newResolved.path, waitFor());
+                        newResolved.userObject.move(paths, newResolved.path, waitFor(function (err) {
+                            if (err && !moveError) {
+                                moveError = err;
+                            }
+                        }));
                     } else {
                         // Move to a different shared folder or to main drive
                         var uoFrom = Env.folders[fId].userObject;
@@ -570,6 +579,9 @@ const factory = (UserObject, Util, Hash,
                 });
             }
         }).nThen(function () {
+            if (moveError) {
+                return void cb(moveError);
+            }
             cb();
         });
     };
@@ -1498,7 +1510,17 @@ const factory = (UserObject, Util, Hash,
                 path: path,
                 newName: newName
             }
-        }, cb);
+        }, function (err, responseData) {
+            if (err) {
+                return void cb(err);
+            }
+            // responseData is what rename passed to cb(error)
+            if (responseData && typeof responseData === 'object' && responseData.error) {
+                return void cb(responseData);
+            }
+            // No error
+            cb(null);
+        });
     };
     var moveInner = function (Env, paths, newPath, cb, copy) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
@@ -1508,7 +1530,16 @@ const factory = (UserObject, Util, Hash,
                 newPath: newPath,
                 copy: copy
             }
-        }, cb);
+        }, function (err, responseData) {
+            if (err) {
+                return void cb(err);
+            }
+            if (responseData && typeof responseData === 'object' && responseData.error) {
+                return void cb(responseData);
+            }
+            // No error
+            cb(null);
+        });
     };
     var emptyTrashInner = function (Env, deleteOwned, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {

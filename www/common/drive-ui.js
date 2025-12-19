@@ -942,7 +942,13 @@ define([
         var removeInput =  function (cancel) {
             if (!cancel && $('.cp-app-drive-element-row > input').length === 1) {
                 var $input = $('.cp-app-drive-element-row > input');
-                manager.rename($input.data('path'), $input.val(), APP.refresh);
+                manager.rename($input.data('path'), $input.val(), function (err) {
+                    if (err && err.error === 'E_DUPLICATE_FOLDER_NAME') {
+                        UI.alert(err.message || Messages.fo_unavailableName);
+                        return;
+                    }
+                    APP.refresh();
+                });
             }
             $('.cp-app-drive-element-row > input').remove();
             $('.cp-app-drive-element-row > span:hidden').removeAttr('style');
@@ -990,7 +996,11 @@ define([
                         removeInput(true);
                         var newName = $input.val();
                         if (JSON.stringify(path) === JSON.stringify(currentPath)) {
-                            manager.rename(path, $input.val(), function () {
+                            manager.rename(path, $input.val(), function (err) {
+                                if (err && err.error === 'E_DUPLICATE_FOLDER_NAME') {
+                                    UI.alert(err.message || Messages.fo_unavailableName);
+                                    return;
+                                }
                                 if (isFolder) {
                                     LS.renameFoldersOpened(path, newName);
                                     path[path.length - 1] = newName;
@@ -999,7 +1009,11 @@ define([
                             });
                         }
                         else {
-                            manager.rename(path, $input.val(), function () {
+                            manager.rename(path, $input.val(), function (err) {
+                                if (err && err.error === 'E_DUPLICATE_FOLDER_NAME') {
+                                    UI.alert(err.message || Messages.fo_unavailableName);
+                                    return;
+                                }
                                 if (isFolder) {
                                     LS.renameFoldersOpened(path, newName);
                                     unselectElement($element);
@@ -1863,7 +1877,11 @@ define([
             if (manager.isPathIn(newPath, [TRASH]) && paths.length && paths[0][0] === TRASH) {
                 return;
             }
-            var newCb = function () {
+            var newCb = function (err) {
+                if (err && err.error === 'E_DUPLICATE_FOLDER_NAME') {
+                    UI.alert(err.message || Messages.fo_unavailableName);
+                    return;
+                }
                 paths.forEach(function (path) {
                     LS.moveFoldersOpened(path, newPath);
                 });
