@@ -316,7 +316,7 @@
         overflow: auto;
         width: auto;
         white-space: nowrap;
-        max-width: 500px;
+        max-width: 300px;
         min-width: 200px;
         padding: 10px 0px 0px 0px;
         color: @cp_sidebar-left-fg;
@@ -347,7 +347,8 @@
             border-radius: @variables_radius_L;
             cursor: auto;
             &li, li {
-                padding: 0;
+                padding: 0px;
+                margin-top: 2px;
                 &.cp-app-drive-element-collapsed ul {
                     display: none;
                 }
@@ -362,6 +363,7 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                     .leftside-menu-category_main();
+                    border-radius: @variables_radius_M;
                     display: flex;
                     align-items: center;
                     cursor: pointer;
@@ -518,6 +520,7 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
+            border-left: 1px solid transparent;
             &:hover {
                 border-left: 1px solid @cryptpad_text_col;
             }
