@@ -93,7 +93,7 @@ define([
 
                 fillOO(messages);
                 loading = false;
-
+                
                 callback(null, messages);
             });
         };
@@ -176,139 +176,26 @@ define([
                 $fastNext.prop('disabled', 'disabled');
             }
         };
-        
 
-        var showVersion = function (initial, position, currentCp, nextCp) {
+        var showVersion = function (initial, position) {
             
             currentVersion = getVersion(position, initial);
             if (initial) { currentVersion = Messages.oo_version_latest; }
             $version.text(Messages.oo_version + currentVersion);
+            $('.cp-history-timeline-pos-oo').remove()
+            $('.cp-history-oo-timeline-pos').removeClass('cp-history-oo-timeline-pos');
+            var currentpatch = $(`[data="${id},${position}"]`)
+            var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
+            $(currentpatch).addClass('cp-history-oo-timeline-pos').append(pos)
 
-            var $pos = $hist.find('.cp-history-timeline-pos-oo');            
-            var bar = $('.cp-history-timeline-container')
-            var snapshotsEl = []
-            var snapshots = h('div.cp-history-snapshots', [
-                snapshotsEl
-            ])
-            $(snapshots).css('height', '100%')
-            bar.html('').append([
-                snapshots
-            ]);
-
-            if (!ooMessages[id] && !initial) { return; }
-            var msgs = ooMessages[id];
-            var p;
-            var messageIndex = forward ? msgIndex+1 : msgIndex;
-            
-            if (!Object.keys(hashes).length) {
-                p = 100-100*((messageIndex ) / (-msgs.length));
-                var patchWidth;
-                var patchDiv;
-                for (var i = 0; i < msgs.length; i++) {
-                    var msg = msgs[i]
-                    patchWidth = (1/msgs.length)*100
-                    patchDiv = h('div.cp-history-patch', {
-                        style: 'width:'+patchWidth+'%; height: 100%',
-                        title: new Date(msg.time).toLocaleString(),
-                        data: [id, msgs.indexOf(msg)]
-                    })
-                    console.log("PATCH",msgs.indexOf(patch), i, msgs.length-1, forward)
-                    if (msgs[msgs.indexOf(patch)-1] === msg && !initial && patch && msgs[msgs.indexOf(patch)-1] && !forward) {
-                        $(patchDiv).addClass('cp-history-oo-timeline-pos').append($pos)
-                    }  else if (msgs[msgs.indexOf(patch)] === msg && !initial && patch && msgs[msgs.indexOf(patch)] && forward) {
-                        $(patchDiv).addClass('cp-history-oo-timeline-pos').append($pos)
-
-                    } 
-                    
-                    else if (i === msgs.length-1 && (initial || msgs.indexOf(patch) === -1) ) {
-                        $(patchDiv).addClass('cp-history-oo-timeline-pos').append($pos)
-                    } 
-                    snapshotsEl.push(patchDiv);
-                }
-                var emptyPatchDiv = h('div.cp-history-patch', {
-                        style: 'width:'+patchWidth+'%; height: 100%',
-                        title: new Date().toLocaleString(),
-                        data: [-1, -1]
-                    })
-                    if (msgs.indexOf(patch) === 0 && !initial && !forward) {
-                        $(emptyPatchDiv).addClass('cp-history-oo-timeline-pos').append($pos)
-                    }
-                snapshotsEl.unshift(emptyPatchDiv);
-            } else {
-                console.log("hashes,", hashes, id, ooMessages[id], hashes, Object.keys(hashes)[Object.keys(hashes).length-2])
-
-                if (id === parseInt(Object.keys(hashes)[Object.keys(hashes).length-2])) {
-                    p = 100-100*((messageIndex ) / (-msgs.length));
-                    
-
-
-                } else {
-                    spanWidth = (nextCp/(nextCp+currentCp))*100
-
-                    
-                    var cPSpan = h('span.cp-oohistory-bar-el');
-                    $(cPSpan).css('width', `${spanWidth}%`)
-                    bar.append(cPSpan)
-
-                }
-
-
-                // var lastHash = hashes[Object.keys(hashes).pop()].hash;
-                // if (lastHash === config.onlyoffice.lastHash) {
-                //     var hashLength = Object.keys(hashes).length;
-                // } else {
-                //     var hashLength = Object.keys(hashes).length+1;
-                // }
-                // var segments = id/hashLength;
-                // p = 100*(segments); 
-
-                // if (id === 0) { p = 0; }
-                 
-                // var percentage = ((position/msgs.length)*100);
-                // var timelinePosition = (percentage/100)*(100/hashLength);
-                // p += timelinePosition;
-            }
-
-            var snapshots = h('div.cp-history-snapshots', [
-                snapshotsEl
-            ])
-            $(snapshots).css('height', '100%')
-            $(snapshots).css('display', 'flex')
-
-            bar.html('').append([
-                snapshots
-            ]);
-
-            // $pos.css('margin-left', p+'%');
-
-            var time = msgs[msgIndex] && msgs[msgIndex].time;
-            currentTime = time;
-            if (time) { $time.text(new Date(time).toLocaleString()); }
-            else { $time.text(''); }
             update();
-
-            $('.cp-history-patch').on('click', function(e) {
-                var patchData = $(e.target).attr('data').split(',')
-                var cpNo = parseInt(patchData[0])
-                var patchNo = parseInt(patchData[1])
-                msgs = ooMessages[id]
-                if (cpNo === -1) {
-                    var q = msgs.slice(0, patchNo+1)
-                    config.onPatchBack({}, q)
-                    patch = msgs[patchNo+1]
-                } else if (cpNo === 0 && patchNo === 0) {
-                    config.onPatchBack({})
-                    patch = msgs[0]
-                } else {
-                    config.onPatchBack(hashes[patchData[0]], msgs[patchData[1]])
-                    patch = msgs[patchData[1]]
-                }
-                position = msgs.indexOf(patch)+2
-                showVersion(false, position)
-            })
-
             loadingFalse();
         };
+
+        setTimeout(() => {
+            displayCheckpointTimeline(true);
+        }, "1000");
+
 
         var loadingFalse = function () {
             setTimeout(function () {
@@ -379,14 +266,11 @@ define([
             let cp = hasHashes ? hashes[id] : {};
             let loadPrevCp = (!msgs.length) ||
                     (msgs.length + 1 === Math.abs(msgIndex) && id !== 0) ||
-                    (msgs.length - Math.abs(msgIndex) === -2);
-
+                    (msgs.length - Math.abs(msgIndex) === -2) 
+                    
             //Check if the end of the checkpoint has been reached and the previous one should be loaded
             if (hasHashes && loadPrevCp) {
-
                 var currentCp = msgs.length
-
-
                 id--; 
                 msgIndex = -1;
                 return loadMoreOOHistory().then(() => {
@@ -400,12 +284,7 @@ define([
                         return;
                     }
                     msgs = ooMessages[id];
-
                     var nextCp = msgs.length
-
-
-
-
                     cp = hashes[id];
                     var q = msgs.slice(0, msgIndex);
                     patch = msgs[msgs.length-1];
@@ -418,19 +297,132 @@ define([
                     } else {
                         config.onPatchBack(cp, msgs);
                     }
+                    displayCheckpointTimeline()
                     showVersion(false, position, currentCp, nextCp);
                 });
             }
-
-            patch = msgs[msgs.length + msgIndex];
+            patch = msgs[msgIndex]
             var q = msgs.slice(0, msgIndex);
             config.onPatchBack(cp, q);   
-            patch = msgs[msgs.length + msgIndex];
+            patch = msgs[msgs.length + msgIndex]
             msgIndex--; 
             position = msgs.indexOf(patch);
             lastPatchIndex = JSON.parse(patch.msg).changesIndex;
             showVersion(false, position);
         };
+
+
+        var displayCheckpointTimeline = function(initial) {          
+            var bar = $hist.find('.cp-history-timeline-container')
+            var messageIndex = forward ? msgIndex+1 : msgIndex;
+
+            if (initial) {
+                var snapshotsEl = []
+                loadMoreOOHistory()
+            } else {
+                snapshotsEl = Array.from($hist.find('.cp-history-snapshots')[0].childNodes)
+            }
+  
+            msgs = ooMessages[id]
+            if (!initial) {
+                var msgsRev = msgs.slice().reverse()
+            } else {
+                var msgsRev = msgs
+            }
+            var patchWidth;
+            var patchDiv;
+            for (var i = 0; i < msgs.length; i++) {
+                var msg = msgs[i]
+                if (initial || id === -1) {
+                    patchWidth = (1/msgs.length)*100
+                } else {
+                    patchWidth = (1/(msgs.length+Array.from($hist.find('.cp-history-snapshots')[0].childNodes).length))*100
+                }
+                patchDiv = h('div.cp-history-patch', {
+                    style: 'width:'+patchWidth+'%; height: 100%; position: relative',
+                    title: new Date(msg.time).toLocaleString(),
+                    data: [id, msgsRev.indexOf(msg)] 
+                })
+                if (initial) {
+                    snapshotsEl.push(patchDiv);
+                } else {
+                    snapshotsEl.unshift(patchDiv);
+                }
+            }
+
+            var finalpatchDiv = h('div.cp-history-patch', {
+                    style: 'width:'+patchWidth+'%; height: 100%; position: relative',
+                    title: new Date().toLocaleString(),
+                    data: [id, msgs.length] 
+                })
+                snapshotsEl.push(finalpatchDiv)
+            var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
+
+            if (!initial) {
+                Array.from($hist.find('.cp-history-snapshots')[0].childNodes).forEach(function(patch) {
+                    $(patch).css('width', `${patchWidth}%`)
+                })
+            } 
+            //If this is the first checkpoint in the document - add an extra empty patch
+            if (id === (-1 || 0)) {
+                var emptyPatchDiv = h('div.cp-history-patch', {
+                    style: 'width:'+patchWidth+'%; height: 100%',
+                    title: new Date().toLocaleString(),
+                    data: [-1, -1]
+                })
+                if (msgs.indexOf(patch) === 0 && !initial && !forward) {
+                    $(emptyPatchDiv).addClass('cp-history-oo-timeline-pos').append(pos)
+                }
+                snapshotsEl.unshift(emptyPatchDiv);
+            }
+
+            var snapshots = h('div.cp-history-snapshots', [
+                snapshotsEl
+            ])
+            $(snapshots).css('height', '100%')
+            $(snapshots).css('display', 'flex')
+
+            bar.html('').append([
+                snapshots
+            ]);
+
+            if (initial) {
+                $('.cp-history-patch').last().addClass('cp-history-oo-timeline-pos').append(pos)
+            }
+
+            $('.cp-history-patch').on('click', function(e) {
+                if ($('.cp-history-timeline-pos-oo')) {
+                    $('.cp-history-timeline-pos-oo').remove()
+                }
+                $('.cp-history-oo-timeline-pos').removeClass('cp-history-oo-timeline-pos');
+                var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
+
+                $(e.target).addClass('cp-history-oo-timeline-pos').append(pos)
+                var patchData = $(e.target).attr('data').split(',')
+
+                var cpNo = parseInt(patchData[0])
+                var patchNo = parseInt(patchData[1])
+                id = cpNo
+
+                loadMoreOOHistory().then(() => {
+                    msgs = ooMessages[id]
+                    if (cpNo === -1) {
+                        var q = msgs.slice(0, patchNo+1)
+                        config.onPatchBack({}, q)
+                        patch = msgs[patchNo+1]
+                    } else if (cpNo === 0 && patchNo === 0) {
+                        config.onPatchBack({})
+                        patch = msgs[0]
+                    } else {
+                        var q = msgs.slice(0, patchNo)
+                        config.onPatchBack(hashes[cpNo], q)
+                        patch = msgs[patchData[1]]
+                    }
+                    msgIndex = msgs.indexOf(patch) === -1 ? -1 : msgs.indexOf(patch) - msgs.length-1;
+                });
+
+            })
+        }
 
         // Create the history toolbar
         var display = function () {
@@ -452,13 +444,6 @@ define([
             $prev = $(_prev);
             $fastNext = $(fastNext).prop('disabled', 'disabled');
             $next = $(_next).prop('disabled', 'disabled');
-            // .prop('disabled', 'disabled');
-
-            var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
-            $(pos).css('position', 'absolute')
-                        $(pos).css('margin-left', '6%')
-                                                $(pos).css('bottom', '65%')
-
 
             var time = h('div.cp-history-timeline-time');
             var version = h('div.cp-history-timeline-version');
@@ -520,7 +505,6 @@ define([
 
             $share = $(share);
             $hist.append([timeline, actions]);
-            $(bar).append(pos);
 
             var onKeyDown, onKeyUp;
             var closeUI = function () {
@@ -669,18 +653,11 @@ define([
                     UI.log(Messages.history_restoreDone);
                 });
             });
+
         };
 
         display();
 
-        setTimeout(() => {
-        showVersion(true);;
-        }, "1000");
-        
-
-
-
-        //return void loadMoreOOHistory();
     };
 
     return History;
