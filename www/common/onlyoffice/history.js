@@ -93,7 +93,6 @@ define([
 
                 fillOO(messages);
                 loading = false;
-                
                 callback(null, messages);
             });
         };
@@ -439,6 +438,9 @@ define([
             ]);
             var _prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
                 Icons.get('history-prev')
+            ]);
+            var _prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
+                h('i.fa.fa-step-backward')
             ]);
             $fastPrev = $(fastPrev);
             $prev = $(_prev);
