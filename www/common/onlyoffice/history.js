@@ -58,7 +58,7 @@ define([
 
         if (endWithCp) { cpIndex = 0; }
 
-        var $version, $time, $share;
+        var $version, $share;
         var $hist = $toolbar.find('.cp-toolbar-history');
         $hist.addClass('cp-smallpatch');
         $hist.addClass('cp-history-oo');
@@ -176,26 +176,6 @@ define([
             }
         };
 
-        var showVersion = function (initial, position) {
-            
-            currentVersion = getVersion(position, initial);
-            if (initial) { currentVersion = Messages.oo_version_latest; }
-            $version.text(Messages.oo_version + currentVersion);
-            $('.cp-history-timeline-pos-oo').remove()
-            $('.cp-history-oo-timeline-pos').removeClass('cp-history-oo-timeline-pos');
-            var currentpatch = $(`[data="${id},${position}"]`)
-            var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
-            $(currentpatch).addClass('cp-history-oo-timeline-pos').append(pos)
-
-            update();
-            loadingFalse();
-        };
-
-        setTimeout(() => {
-            displayCheckpointTimeline(true);
-        }, "1000");
-
-
         var loadingFalse = function () {
             setTimeout(function () {
                 $('iframe').blur();
@@ -203,9 +183,130 @@ define([
             }, 200);
         };
 
+        var msgs;
+
+        var showVersion = function (initial, position) {
+            
+            currentVersion = getVersion(position, initial);
+            if (initial) { currentVersion = Messages.oo_version_latest; }
+            $version.text(Messages.oo_version + currentVersion);
+            $('.cp-history-timeline-pos-oo').remove();
+            $('.cp-history-oo-timeline-pos').removeClass('cp-history-oo-timeline-pos');
+            if (position === msgs.length && id < Object.keys(hashes)[Object.keys(hashes).length-1]) {
+                var currentPatch = $(`[data="${id+1},0"]`);
+            } else {
+                currentPatch = $(`[data="${id},${position}"]`);
+            }
+            
+            var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
+            $(currentPatch).addClass('cp-history-oo-timeline-pos').append(pos);
+
+            update();
+            loadingFalse();
+        };
+
+                var displayCheckpointTimeline = function(initial) {          
+            var bar = $hist.find('.cp-history-timeline-container');
+
+            if (initial) {
+                var snapshotsEl = [];
+                loadMoreOOHistory();
+                msgs = ooMessages[id];
+                var msgsRev = msgs;
+            } else {
+                msgs = ooMessages[id];
+                snapshotsEl = Array.from($hist.find('.cp-history-snapshots')[0].childNodes);
+                msgsRev = msgs.slice().reverse();
+            }
+
+            var patchWidth;
+            var patchDiv;
+            for (var i = 0; i < msgs.length; i++) {
+                var msg = msgs[i];
+                if (initial || id === -1) {
+                    patchWidth = (1/msgs.length)*100;
+                } else {
+                    patchWidth = (1/(msgs.length+Array.from($hist.find('.cp-history-snapshots')[0].childNodes).length))*100;
+                }
+                patchDiv = h('div.cp-history-patch', {
+                    style: 'width:'+patchWidth+'%; height: 100%; position: relative',
+                    title: new Date(msg.time).toLocaleString(),
+                    data: [id, msgsRev.indexOf(msg)] 
+                });
+                if (initial) {
+                    snapshotsEl.push(patchDiv);
+                } else {
+                    snapshotsEl.unshift(patchDiv);
+                }
+            }
+
+            var finalpatchDiv = h('div.cp-history-patch', {
+                style: 'width:'+patchWidth+'%; height: 100%; position: relative',
+                title: new Date().toLocaleString(),
+                data: [id, msgs.length] 
+            });
+            if (initial) {
+                snapshotsEl.push(finalpatchDiv);
+            } 
+                
+            var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
+
+            if (!initial) {
+                Array.from($hist.find('.cp-history-snapshots')[0].childNodes).forEach(function(patch) {
+                    $(patch).css('width', `${patchWidth}%`);
+                });
+            } 
+
+            var snapshots = h('div.cp-history-snapshots', [
+                snapshotsEl
+            ]);
+            $(snapshots).css('height', '100%');
+            $(snapshots).css('display', 'flex');
+
+            bar.html('').append([
+                snapshots
+            ]);
+
+            if (initial) {
+                $('.cp-history-patch').last().addClass('cp-history-oo-timeline-pos').append(pos);
+            }
+
+            $('.cp-history-patch').on('click', function(e) {
+                if ($('.cp-history-timeline-pos-oo')) {
+                    $('.cp-history-timeline-pos-oo').remove();
+                }
+                $('.cp-history-oo-timeline-pos').removeClass('cp-history-oo-timeline-pos');
+                var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
+
+                $(e.target).addClass('cp-history-oo-timeline-pos').append(pos);
+                var patchData = $(e.target).attr('data').split(',');
+
+                var cpNo = parseInt(patchData[0]);
+                var patchNo = parseInt(patchData[1]);
+                id = cpNo;
+
+                loadMoreOOHistory().then(() => {
+                    msgs = ooMessages[id];
+                    if (cpNo === -1) {
+                        var q = msgs.slice(0, patchNo);
+                        config.onPatchBack({}, q);
+                        patch = msgs[patchNo];
+                    } else if (cpNo === 0 && patchNo === 0) {
+                        config.onPatchBack({});
+                        patch = msgs[0];
+                    } else {
+                        q = msgs.slice(0, patchNo);
+                        config.onPatchBack(hashes[cpNo], q);
+                        patch = msgs[patchData[1]];
+                    }
+                    msgIndex = msgs.indexOf(patch) === -1 ? -1 : msgs.indexOf(patch) - msgs.length-1;
+                });
+
+            });
+        };
+
         var lastPatchIndex;
         var nextPatchIndex;
-        var msgs;
 
         var next = async function () {
             forward = true;
@@ -265,11 +366,11 @@ define([
             let cp = hasHashes ? hashes[id] : {};
             let loadPrevCp = (!msgs.length) ||
                     (msgs.length + 1 === Math.abs(msgIndex) && id !== 0) ||
-                    (msgs.length - Math.abs(msgIndex) === -2) 
+                    (msgs.length - Math.abs(msgIndex) === -2); 
                     
             //Check if the end of the checkpoint has been reached and the previous one should be loaded
             if (hasHashes && loadPrevCp) {
-                var currentCp = msgs.length
+                var currentCp = msgs.length;
                 id--; 
                 msgIndex = -1;
                 return loadMoreOOHistory().then(() => {
@@ -283,7 +384,7 @@ define([
                         return;
                     }
                     msgs = ooMessages[id];
-                    var nextCp = msgs.length
+                    var nextCp = msgs.length;
                     cp = hashes[id];
                     var q = msgs.slice(0, msgIndex);
                     patch = msgs[msgs.length-1];
@@ -296,132 +397,26 @@ define([
                     } else {
                         config.onPatchBack(cp, msgs);
                     }
-                    displayCheckpointTimeline()
+                    //Check if this checkpoint has already been added to the timeline
+                    if (!$(`[data="${id},0"]`).length) {
+                        displayCheckpointTimeline();
+                    }
+                    
                     showVersion(false, position, currentCp, nextCp);
                 });
             }
-            patch = msgs[msgIndex]
             var q = msgs.slice(0, msgIndex);
             config.onPatchBack(cp, q);   
-            patch = msgs[msgs.length + msgIndex]
+            patch = msgs[msgs.length + msgIndex];
             msgIndex--; 
             position = msgs.indexOf(patch);
             lastPatchIndex = JSON.parse(patch.msg).changesIndex;
             showVersion(false, position);
         };
 
-
-        var displayCheckpointTimeline = function(initial) {          
-            var bar = $hist.find('.cp-history-timeline-container')
-            var messageIndex = forward ? msgIndex+1 : msgIndex;
-
-            if (initial) {
-                var snapshotsEl = []
-                loadMoreOOHistory()
-            } else {
-                snapshotsEl = Array.from($hist.find('.cp-history-snapshots')[0].childNodes)
-            }
-  
-            msgs = ooMessages[id]
-            if (!initial) {
-                var msgsRev = msgs.slice().reverse()
-            } else {
-                var msgsRev = msgs
-            }
-            var patchWidth;
-            var patchDiv;
-            for (var i = 0; i < msgs.length; i++) {
-                var msg = msgs[i]
-                if (initial || id === -1) {
-                    patchWidth = (1/msgs.length)*100
-                } else {
-                    patchWidth = (1/(msgs.length+Array.from($hist.find('.cp-history-snapshots')[0].childNodes).length))*100
-                }
-                patchDiv = h('div.cp-history-patch', {
-                    style: 'width:'+patchWidth+'%; height: 100%; position: relative',
-                    title: new Date(msg.time).toLocaleString(),
-                    data: [id, msgsRev.indexOf(msg)] 
-                })
-                if (initial) {
-                    snapshotsEl.push(patchDiv);
-                } else {
-                    snapshotsEl.unshift(patchDiv);
-                }
-            }
-
-            var finalpatchDiv = h('div.cp-history-patch', {
-                    style: 'width:'+patchWidth+'%; height: 100%; position: relative',
-                    title: new Date().toLocaleString(),
-                    data: [id, msgs.length] 
-                })
-                snapshotsEl.push(finalpatchDiv)
-            var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
-
-            if (!initial) {
-                Array.from($hist.find('.cp-history-snapshots')[0].childNodes).forEach(function(patch) {
-                    $(patch).css('width', `${patchWidth}%`)
-                })
-            } 
-            //If this is the first checkpoint in the document - add an extra empty patch
-            if (id === (-1 || 0)) {
-                var emptyPatchDiv = h('div.cp-history-patch', {
-                    style: 'width:'+patchWidth+'%; height: 100%',
-                    title: new Date().toLocaleString(),
-                    data: [-1, -1]
-                })
-                if (msgs.indexOf(patch) === 0 && !initial && !forward) {
-                    $(emptyPatchDiv).addClass('cp-history-oo-timeline-pos').append(pos)
-                }
-                snapshotsEl.unshift(emptyPatchDiv);
-            }
-
-            var snapshots = h('div.cp-history-snapshots', [
-                snapshotsEl
-            ])
-            $(snapshots).css('height', '100%')
-            $(snapshots).css('display', 'flex')
-
-            bar.html('').append([
-                snapshots
-            ]);
-
-            if (initial) {
-                $('.cp-history-patch').last().addClass('cp-history-oo-timeline-pos').append(pos)
-            }
-
-            $('.cp-history-patch').on('click', function(e) {
-                if ($('.cp-history-timeline-pos-oo')) {
-                    $('.cp-history-timeline-pos-oo').remove()
-                }
-                $('.cp-history-oo-timeline-pos').removeClass('cp-history-oo-timeline-pos');
-                var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
-
-                $(e.target).addClass('cp-history-oo-timeline-pos').append(pos)
-                var patchData = $(e.target).attr('data').split(',')
-
-                var cpNo = parseInt(patchData[0])
-                var patchNo = parseInt(patchData[1])
-                id = cpNo
-
-                loadMoreOOHistory().then(() => {
-                    msgs = ooMessages[id]
-                    if (cpNo === -1) {
-                        var q = msgs.slice(0, patchNo+1)
-                        config.onPatchBack({}, q)
-                        patch = msgs[patchNo+1]
-                    } else if (cpNo === 0 && patchNo === 0) {
-                        config.onPatchBack({})
-                        patch = msgs[0]
-                    } else {
-                        var q = msgs.slice(0, patchNo)
-                        config.onPatchBack(hashes[cpNo], q)
-                        patch = msgs[patchData[1]]
-                    }
-                    msgIndex = msgs.indexOf(patch) === -1 ? -1 : msgs.indexOf(patch) - msgs.length-1;
-                });
-
-            })
-        }
+        setTimeout(() => {
+            displayCheckpointTimeline(true);
+        }, "1000");
 
         // Create the history toolbar
         var display = function () {
@@ -439,9 +434,6 @@ define([
             var _prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
                 Icons.get('history-prev')
             ]);
-            var _prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
-                h('i.fa.fa-step-backward')
-            ]);
             $fastPrev = $(fastPrev);
             $prev = $(_prev);
             $fastNext = $(fastNext).prop('disabled', 'disabled');
@@ -449,12 +441,10 @@ define([
 
             var time = h('div.cp-history-timeline-time');
             var version = h('div.cp-history-timeline-version');
-            $time = $(time);
             $version = $(version);
-            var bar;
             var timeline = h('div.cp-toolbar-history-timeline', [
                 h('div.cp-history-timeline-line', [
-                    bar = h('span.cp-history-timeline-container')
+                    h('span.cp-history-timeline-container')
                 ]),
                 h('div.cp-history-timeline-actions', [
                     h('span.cp-history-timeline-prev', [
