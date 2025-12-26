@@ -2273,6 +2273,7 @@ define([
 
             var $state = $('<span>', {'class': 'cp-app-drive-element-state'});
             if (hrefData.hashData && hrefData.hashData.mode === 'view') {
+                console.log("hello2")
                 var $ro = $readonlyIcon.clone().appendTo($state);
                 $ro.attr('title', Messages.readonly);
             }
@@ -2377,6 +2378,8 @@ define([
                 }
                 if (hrefData.hashData && hrefData.hashData.mode === 'view') {
                     $ro = $readonlyIcon.clone().appendTo($state);
+                                    console.log("hello3")
+
                     $ro.attr('title', Messages.readonly);
                 }
 
@@ -2389,6 +2392,8 @@ define([
                 $shared.attr('title', Messages.fm_canBeShared);
             } else if ($content.data('readOnlyFolder') || APP.readOnly) {
                 $ro = $readonlyIcon.clone().appendTo($state);
+                                console.log("hello4")
+
                 $ro.attr('title', Messages.readonly);
             }
 

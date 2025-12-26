@@ -748,12 +748,15 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
             'title': Messages.saveTitle
         }).hide();
         if (config.readOnly === 1) {
+            console.log("hello!!")
             $hoverable.append($('<span>', {'class': 'cp-toolbar-title-readonly'})
                 .text('('+Messages.readonly+')'));
             return $titleContainer;
         }
         $hoverable.append($('<span>', {'class': 'cp-toolbar-title-readonly cp-toolbar-title-unsync'})
             .text('('+Messages.readonly+')'));
+                            console.log("hello5")
+
         var $input = $('<input>', {
             type: 'text',
             placeholder: placeholder,

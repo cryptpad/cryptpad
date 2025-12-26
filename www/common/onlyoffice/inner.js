@@ -3188,6 +3188,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var deleteSnapshot = function (hash) {
                     var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
                     var snapshots = md.snapshots = md.snapshots || {};
+                                        console.log("hello", snapshots)
+
                     delete snapshots[hash];
                     metadataMgr.updateMetadata(md);
                     APP.onLocal();

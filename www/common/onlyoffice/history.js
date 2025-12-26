@@ -7,8 +7,9 @@ define([
     '/common/common-interface.js',
     '/common/hyperscript.js',
     '/common/common-icons.js',
+    '/common/common-util.js',
 
-], function ($, UI, h, Icons) {
+], function ($, UI, h, Icons, Util) {
     //var ChainPad = window.ChainPad;
     var History = {};
 
@@ -189,7 +190,7 @@ define([
             
             currentVersion = getVersion(position, initial);
             if (initial) { currentVersion = Messages.oo_version_latest; }
-            $version.text(Messages.oo_version + currentVersion);
+            $version.text(Messages.oo_version + currentVersion + ' ' + new Date(patch.time).toLocaleString());
             $('.cp-history-timeline-pos-oo').remove();
             $('.cp-history-oo-timeline-pos').removeClass('cp-history-oo-timeline-pos');
             if (position === msgs.length && id < Object.keys(hashes)[Object.keys(hashes).length-1]) {
@@ -205,9 +206,9 @@ define([
             loadingFalse();
         };
 
-                var displayCheckpointTimeline = function(initial) {          
+        var displayCheckpointTimeline = function(initial) {          
             var bar = $hist.find('.cp-history-timeline-container');
-
+            $(bar).addClass('cp-history-timeline-bar')
             if (initial) {
                 var snapshotsEl = [];
                 loadMoreOOHistory();
@@ -216,8 +217,15 @@ define([
             } else {
                 msgs = ooMessages[id];
                 snapshotsEl = Array.from($hist.find('.cp-history-snapshots')[0].childNodes);
+                var patchColor = snapshotsEl[0]
+                console.log("hello!", $(patchColor).css('background-color'))
                 msgsRev = msgs.slice().reverse();
             }
+
+            var cpNfInner = common.startRealtime(config);
+
+            var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
+            var snapshots = md.snapshots;
 
             var patchWidth;
             var patchDiv;
@@ -228,8 +236,9 @@ define([
                 } else {
                     patchWidth = (1/(msgs.length+Array.from($hist.find('.cp-history-snapshots')[0].childNodes).length))*100;
                 }
-                patchDiv = h('div.cp-history-patch', {
-                    style: 'width:'+patchWidth+'%; height: 100%; position: relative',
+                
+                patchDiv = h(`div.cp-history-patch`, {
+                    style: 'width:'+patchWidth+'%; height: 100%; position: relative; display: flex; justify-content: center; box-sizing: border-box;',
                     title: new Date(msg.time).toLocaleString(),
                     data: [id, msgsRev.indexOf(msg)] 
                 });
@@ -238,6 +247,14 @@ define([
                 } else {
                     snapshotsEl.unshift(patchDiv);
                 }
+                 if (snapshots) {
+                    var match = Object.values(snapshots).find(item => item.time === msg.time);
+                  if (match) {
+                    $(patchDiv).addClass('cp-history-snapshot').append(Icons.get('snapshot', {title: match.title}))
+                  }
+                 }
+                  
+                // if (msg.time)
             }
 
             var finalpatchDiv = h('div.cp-history-patch', {
@@ -270,6 +287,14 @@ define([
             if (initial) {
                 $('.cp-history-patch').last().addClass('cp-history-oo-timeline-pos').append(pos);
             }
+            var cpNfInner = common.startRealtime(config);
+
+            var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
+            var snapshots = md.snapshots
+            // Object.keys(snapshots).forEach(function(snap) {
+            //     if (snap.time === 
+            // })
+            console.log('snapshots', snapshots)
 
             $('.cp-history-patch').on('click', function(e) {
                 if ($('.cp-history-timeline-pos-oo')) {
@@ -569,6 +594,7 @@ define([
                     showVersion(false, 0);
                     update(true);
                 });
+                patch = msgs[msgs.length + msgIndex];
                 position = 0;
                 loadingFalse();
             });
