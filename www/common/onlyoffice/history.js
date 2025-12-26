@@ -208,7 +208,7 @@ define([
 
         var displayCheckpointTimeline = function(initial) {          
             var bar = $hist.find('.cp-history-timeline-container');
-            $(bar).addClass('cp-history-timeline-bar')
+            $(bar).addClass('cp-history-timeline-bar');
             if (initial) {
                 var snapshotsEl = [];
                 loadMoreOOHistory();
@@ -216,14 +216,11 @@ define([
                 var msgsRev = msgs;
             } else {
                 msgs = ooMessages[id];
-                snapshotsEl = Array.from($hist.find('.cp-history-snapshots')[0].childNodes);
-                var patchColor = snapshotsEl[0]
-                console.log("hello!", $(patchColor).css('background-color'))
+                snapshotsEl = Array.from($hist.find('.cp-history-snapshots-oo')[0].childNodes);
                 msgsRev = msgs.slice().reverse();
             }
 
             var cpNfInner = common.startRealtime(config);
-
             var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
             var snapshots = md.snapshots;
 
@@ -234,7 +231,7 @@ define([
                 if (initial || id === -1) {
                     patchWidth = (1/msgs.length)*100;
                 } else {
-                    patchWidth = (1/(msgs.length+Array.from($hist.find('.cp-history-snapshots')[0].childNodes).length))*100;
+                    patchWidth = (1/(msgs.length+Array.from($hist.find('.cp-history-snapshots-oo')[0].childNodes).length))*100;
                 }
                 
                 patchDiv = h(`div.cp-history-patch`, {
@@ -249,12 +246,8 @@ define([
                 }
                  if (snapshots) {
                     var match = Object.values(snapshots).find(item => item.time === msg.time);
-                  if (match) {
-                    $(patchDiv).addClass('cp-history-snapshot').append(Icons.get('snapshot', {title: match.title}))
-                  }
+                    if (match) { $(patchDiv).addClass('cp-history-snapshot').append(Icons.get('snapshot', {title: match.title})); }
                  }
-                  
-                // if (msg.time)
             }
 
             var finalpatchDiv = h('div.cp-history-patch', {
@@ -269,32 +262,24 @@ define([
             var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
 
             if (!initial) {
-                Array.from($hist.find('.cp-history-snapshots')[0].childNodes).forEach(function(patch) {
+                Array.from($hist.find('.cp-history-snapshots-oo')[0].childNodes).forEach(function(patch) {
                     $(patch).css('width', `${patchWidth}%`);
                 });
             } 
 
-            var snapshots = h('div.cp-history-snapshots', [
+            var patches = h('div.cp-history-snapshots-oo', [
                 snapshotsEl
             ]);
-            $(snapshots).css('height', '100%');
-            $(snapshots).css('display', 'flex');
+            $(patches).css('height', '100%');
+            $(patches).css('display', 'flex');
 
             bar.html('').append([
-                snapshots
+                patches
             ]);
 
             if (initial) {
                 $('.cp-history-patch').last().addClass('cp-history-oo-timeline-pos').append(pos);
             }
-            var cpNfInner = common.startRealtime(config);
-
-            var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
-            var snapshots = md.snapshots
-            // Object.keys(snapshots).forEach(function(snap) {
-            //     if (snap.time === 
-            // })
-            console.log('snapshots', snapshots)
 
             $('.cp-history-patch').on('click', function(e) {
                 if ($('.cp-history-timeline-pos-oo')) {

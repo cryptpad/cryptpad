@@ -3075,7 +3075,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             readOnly = privateData.readOnly;
 
             Title = common.createTitle({});
-
             var configTb = {
                 displayed: ['pad'],
                 title: Title.getTitleConfig(),
@@ -3172,8 +3171,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     if (bool) {
                         APP.history = true;
                         try { getEditor().asc_setRestriction(true); } catch (e) {}
+                        $('.cp-toolbar-title-readonly').css('display', 'inline-flex');
+                        $('.cp-toolbar-title-edit').hide();
                         return;
                     }
+                    $('.cp-toolbar-title-readonly').hide();
+                    $('.cp-toolbar-title-edit').show();
                     // Cancel button: redraw from lastCp
                     APP.history = false;
                     ooChannel.queue = [];
@@ -3188,8 +3191,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var deleteSnapshot = function (hash) {
                     var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
                     var snapshots = md.snapshots = md.snapshots || {};
-                                        console.log("hello", snapshots)
-
                     delete snapshots[hash];
                     metadataMgr.updateMetadata(md);
                     APP.onLocal();
@@ -3250,6 +3251,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                             lastHash: ooChannel.lastHash
                         },
                         $toolbar: $('.cp-toolbar-container')
+                    
                     };
                     History.create(common, histConfig);
                 });

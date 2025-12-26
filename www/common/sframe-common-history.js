@@ -158,7 +158,6 @@ define([
 
             var hash;
             for (var i = 1; i < states.length; i++) {
-                console.log("snapshots", snapshots)
                 hash = states[i].serverHash;
                 if (snapshots.indexOf(hash) !== -1) {
                     snapshotsEl.push(h('div.cp-history-snapshot', {
@@ -690,7 +689,7 @@ define([
 
         // Load all the history messages into a new chainpad object
         loadMoreHistory(config, common, function (err, newRt, isFull) {
-            History.readOnly = common.getMetadataMgr().getPrivateData().readOnly;
+            // History.readOnly = common.getMetadataMgr().getPrivateData().readOnly;
             History.loading = false;
             if (err) {
                 console.error(err);
