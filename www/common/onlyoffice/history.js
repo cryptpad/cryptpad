@@ -169,7 +169,7 @@ define([
             var version = currentVersion.split('.');
             var hashesLength = Object.keys(hashes).length;
             
-            if (hashesLength === parseInt(version[0]) && ooMessages[id].length === parseInt(version[1]) || 
+            if (hashesLength === parseInt(version[0]) && ooMessages[id]?.length === parseInt(version[1]) || 
             hashesLength+1 === id && (msgIndex === -1) && forward  ||
             hashes[hashesLength-1] === id && !ooMessages[id].length && msgIndex === 0) {
                 $next.prop('disabled', 'disabled');
@@ -187,7 +187,6 @@ define([
         var msgs;
 
         var showVersion = function (initial, position) {
-            
             currentVersion = getVersion(position, initial);
             if (initial) { currentVersion = Messages.oo_version_latest; }
             $version.text(Messages.oo_version + currentVersion + ' ' + new Date(patch.time).toLocaleString());
@@ -198,7 +197,6 @@ define([
             } else {
                 currentPatch = $(`[data="${id},${position}"]`);
             }
-            
             var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
             $(currentPatch).addClass('cp-history-oo-timeline-pos').append(pos);
 
@@ -282,13 +280,6 @@ define([
             }
 
             $('.cp-history-patch').on('click', function(e) {
-                if ($('.cp-history-timeline-pos-oo')) {
-                    $('.cp-history-timeline-pos-oo').remove();
-                }
-                $('.cp-history-oo-timeline-pos').removeClass('cp-history-oo-timeline-pos');
-                var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
-
-                $(e.target).addClass('cp-history-oo-timeline-pos').append(pos);
                 var patchData = $(e.target).attr('data').split(',');
 
                 var cpNo = parseInt(patchData[0]);
@@ -307,11 +298,13 @@ define([
                     } else {
                         q = msgs.slice(0, patchNo);
                         config.onPatchBack(hashes[cpNo], q);
-                        patch = msgs[patchData[1]];
+                        patch = msgs[patchNo];
                     }
-                    msgIndex = msgs.indexOf(patch) === -1 ? -1 : msgs.indexOf(patch) - msgs.length-1;
+                    position = msgs.indexOf(patch)
+                    msgIndex = position === -1 ? -1 : position - msgs.length-1;
+                    showVersion(false, position);
+                    update();
                 });
-
             });
         };
 
@@ -567,7 +560,7 @@ define([
             $fastPrev.click(function () {
                 if (loading) { return; }
                 loading = true;
-                if (!ooMessages[id].length || ooMessages[id].length+2 === Math.abs(msgIndex)) {
+                if (!ooMessages[id].length || ooMessages[id].length+1 === Math.abs(msgIndex)) {
                     id--;
                 } 
                 var cp = hashes[id];
@@ -575,12 +568,17 @@ define([
                 loadMoreOOHistory().then(() => {
                     var msgs = ooMessages[id];
                     lastPatchIndex = JSON.parse(msgs[0].msg).changesIndex;
-                    msgIndex = -msgs.length-2;
+                    msgIndex = -msgs.length-1;
+                    if (!$(`[data="${id},0"]`).length) {
+                        displayCheckpointTimeline();
+                    }
+                    patch = msgs[msgs.length-1];
+                    position = 0;
+
                     showVersion(false, 0);
                     update(true);
                 });
-                patch = msgs[msgs.length + msgIndex];
-                position = 0;
+                
                 loadingFalse();
             });
             onKeyDown = function (e) {
