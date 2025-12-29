@@ -595,14 +595,13 @@ define([
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
                 index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex
             };
-
             fixSheets();
 
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
-            ooChannel.queue = [];
             ooChannel.ready = false;
+            ooChannel.queue = [];
             data.callback = function () {
                 if (APP.template) { APP.template = false; }
                 resetData(blob, file);
@@ -918,7 +917,6 @@ define([
                             ooChannel.send(obj.data.msg);
                             ooChannel.lastHash = obj.data.hash;
                             ooChannel.cpIndex++;
-                            common.notify();
                         } else {
                             ooChannel.queue.push(obj.data);
                         }
@@ -3251,7 +3249,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                             lastHash: ooChannel.lastHash
                         },
                         $toolbar: $('.cp-toolbar-container')
-                    
                     };
                     History.create(common, histConfig);
                 });

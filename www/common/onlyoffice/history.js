@@ -206,7 +206,7 @@ define([
 
         var displayCheckpointTimeline = function(initial) {          
             var bar = $hist.find('.cp-history-timeline-container');
-            $(bar).addClass('cp-history-timeline-bar');
+            $(bar).addClass('cp-history-timeline-bar').addClass('cp-oohistory-bar-el');
             if (initial) {
                 var snapshotsEl = [];
                 loadMoreOOHistory();

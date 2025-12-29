@@ -314,7 +314,13 @@ const factory = (NaclUtil) => {
     };
 
     Util.deduplicateString = function (array) {
-        return Array.from(new Set(array));
+        var a = array.slice();
+        for(var i=0; i<a.length; i++) {
+            for(var j=i+1; j<a.length; j++) {
+                if(a[i] === a[j]) { a.splice(j--, 1); }
+            }
+        }
+        return a;
     };
 
     /*

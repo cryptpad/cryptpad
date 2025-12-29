@@ -10,6 +10,7 @@ on:
 
 jobs:
   trigger-tests:
+    if: github.ref_name == 'staging'
     runs-on: ubuntu-latest
     steps:
       - name: Trigger E2E test run (local)
