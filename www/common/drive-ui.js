@@ -2384,6 +2384,7 @@ define([
                     var $restricted = $restrictedIcon.clone().appendTo($state);
                     $restricted.attr('title', Messages.fm_restricted);
                 }
+
                 var $shared = $sharedIcon.clone().appendTo($state);
                 $shared.attr('title', Messages.fm_canBeShared);
             } else if ($content.data('readOnlyFolder') || APP.readOnly) {

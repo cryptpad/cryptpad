@@ -3073,6 +3073,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             readOnly = privateData.readOnly;
 
             Title = common.createTitle({});
+
             var configTb = {
                 displayed: ['pad'],
                 title: Title.getTitleConfig(),

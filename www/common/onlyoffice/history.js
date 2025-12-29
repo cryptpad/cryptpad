@@ -88,7 +88,7 @@ define([
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
 
                 let initialCp = cpIndex === sortedCp.length;
-                var messages = (data.messages || []).slice(initialCp || config.docType() === 'spreadsheet' ? 0 : 1);
+                var messages = (data.messages || []).slice(initialCp || (config.docType() === 'spreadsheet' && toHash === 'NONE') ? 0 : 1);
                 if (config.debug) { console.log(data.messages); }
                 id = typeof(id) !== "undefined" ? id : getId();
 
@@ -109,6 +109,7 @@ define([
                 // Get the checkpoint ID
                 id = typeof(id) !== "undefined" ? id : getId();
                 var cp;
+                console.log("HELLO", ooMessages, id, ooMessages[id-1])
                 if (ooMessages[id-1] && !ooMessages[id-1].length) {
                     cp = hashes[id-1];
                 } else {
@@ -300,7 +301,7 @@ define([
                         config.onPatchBack(hashes[cpNo], q);
                         patch = msgs[patchNo];
                     }
-                    position = msgs.indexOf(patch)
+                    position = msgs.indexOf(patch);
                     msgIndex = position === -1 ? -1 : position - msgs.length-1;
                     showVersion(false, position);
                     update();

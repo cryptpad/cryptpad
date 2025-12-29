@@ -689,7 +689,7 @@ define([
 
         // Load all the history messages into a new chainpad object
         loadMoreHistory(config, common, function (err, newRt, isFull) {
-            // History.readOnly = common.getMetadataMgr().getPrivateData().readOnly;
+            History.readOnly = common.getMetadataMgr().getPrivateData().readOnly;
             History.loading = false;
             if (err) {
                 console.error(err);
