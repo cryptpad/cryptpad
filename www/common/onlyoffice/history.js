@@ -88,7 +88,18 @@ define([
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
 
                 let initialCp = cpIndex === sortedCp.length;
-                var messages = (data.messages || []).slice(initialCp || (config.docType() === 'spreadsheet' && toHash === 'NONE') ? 0 : 1);
+                var messageSlice
+                if (config.docType() === 'spreadsheet' && toHash === 'NONE') {
+                    messageSlice = 0
+                } else if (initialCp || toHash === 'NONE') {
+                    messageSlice = 1
+                } else {
+                    messageSlice = 2
+                }
+                var messages = (data.messages || []).slice(messageSlice);
+                                console.log("messageslice", messageSlice, messages)
+
+                // console.log('hello', config.docType() === 'spreadsheet', toHash === 'NONE', initialCp, toHash, config.docType(), messages)
                 if (config.debug) { console.log(data.messages); }
                 id = typeof(id) !== "undefined" ? id : getId();
 
@@ -109,7 +120,7 @@ define([
                 // Get the checkpoint ID
                 id = typeof(id) !== "undefined" ? id : getId();
                 var cp;
-                console.log("HELLO", ooMessages, id, ooMessages[id-1])
+                // console.log("HELLO", ooMessages, id, ooMessages[id-1])
                 if (ooMessages[id-1] && !ooMessages[id-1].length) {
                     cp = hashes[id-1];
                 } else {
@@ -170,7 +181,14 @@ define([
             var version = currentVersion.split('.');
             var hashesLength = Object.keys(hashes).length;
             
-            if (hashesLength === parseInt(version[0]) && ooMessages[id]?.length === parseInt(version[1]) || 
+            // console.log(hashesLength === parseInt(version[0]) && ooMessages[id]?.length === parseInt(version[1]),
+            // hashesLength+1 === id && (msgIndex === -1) && forward,
+            // Object.keys(hashes)[hashesLength-1] === id && !ooMessages[id].length && msgIndex === 0, )
+
+            // console.log(hashes, Object.keys(hashes), hashesLength, id, msgs, msgIndex, (id === hashesLength-1))
+
+
+            if (hashesLength === parseInt(version[0]) && ooMessages[id]?.length === parseInt(version[1]) ||
             hashesLength+1 === id && (msgIndex === -1) && forward  ||
             hashes[hashesLength-1] === id && !ooMessages[id].length && msgIndex === 0) {
                 $next.prop('disabled', 'disabled');
@@ -188,9 +206,17 @@ define([
         var msgs;
 
         var showVersion = function (initial, position) {
+            // console.log("PATCH!", hashes[id])
             currentVersion = getVersion(position, initial);
             if (initial) { currentVersion = Messages.oo_version_latest; }
-            $version.text(Messages.oo_version + currentVersion + ' ' + new Date(patch.time).toLocaleString());
+            // if (patch) {
+            var patchTime = patch ? new Date(patch.time).toLocaleString() : ''
+            // console.log("patchtime", patch, patchTime)
+                $version.text(Messages.oo_version + currentVersion + ' ' + patchTime);
+            // } else {
+            //     $version.text(Messages.oo_version + currentVersion + ' ' + new Date(patch.time).toLocaleString());
+            // }
+            
             $('.cp-history-timeline-pos-oo').remove();
             $('.cp-history-oo-timeline-pos').removeClass('cp-history-oo-timeline-pos');
             if (position === msgs.length && id < Object.keys(hashes)[Object.keys(hashes).length-1]) {
@@ -198,6 +224,7 @@ define([
             } else {
                 currentPatch = $(`[data="${id},${position}"]`);
             }
+            // console.log("patch", id, position, currentPatch)
             var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
             $(currentPatch).addClass('cp-history-oo-timeline-pos').append(pos);
 
@@ -225,7 +252,7 @@ define([
 
             var patchWidth;
             var patchDiv;
-            for (var i = 0; i < msgs.length; i++) {
+            for (var i = 0; i < msgsRev.length; i++) {
                 var msg = msgs[i];
                 if (initial || id === -1) {
                     patchWidth = (1/msgs.length)*100;
@@ -235,7 +262,7 @@ define([
                 
                 patchDiv = h(`div.cp-history-patch`, {
                     style: 'width:'+patchWidth+'%; height: 100%; position: relative; display: flex; justify-content: center; box-sizing: border-box;',
-                    title: new Date(msg.time).toLocaleString(),
+                    title: new Date(msgsRev[i].time).toLocaleString(),
                     data: [id, msgsRev.indexOf(msg)] 
                 });
                 if (initial) {
@@ -299,9 +326,20 @@ define([
                     } else {
                         q = msgs.slice(0, patchNo);
                         config.onPatchBack(hashes[cpNo], q);
-                        patch = msgs[patchNo];
+                        // console.log("patchno", id, patchNo, msgs)
+                        // if (msgs.length) {
+                            patch = msgs[patchNo];
+                        // } else {
+                        //     id--
+                        //     loadMoreOOHistory().then(() => {
+                        //         msgs = ooMessages[id]
+                        //         patch = msgs[msgs.length-1]
+                        //     });
+                        // }
+
+                        // patch = !msgs.length ? msgsmsgs[patchNo];
                     }
-                    position = msgs.indexOf(patch);
+                    position = patch ? msgs.indexOf(patch) : 0;
                     msgIndex = position === -1 ? -1 : position - msgs.length-1;
                     showVersion(false, position);
                     update();
@@ -365,6 +403,7 @@ define([
         var prev = function () {
             forward = false;
             msgs = ooMessages[id];
+            // console.log("hello", msgs)
             nextPatchIndex = 0;
             let hasHashes = Object.keys(hashes).length;
             let cp = hasHashes ? hashes[id] : {};
@@ -384,7 +423,13 @@ define([
                         msgs = ooMessages[id];
                         config.onPatchBack(hashes[id], msgs.slice(0, msgIndex));
                         msgIndex--;
-                        showVersion(false);
+                        if (!$(`[data="${id},0"]`).length) {
+                            displayCheckpointTimeline();
+                        }
+                        patch = msgs[msgs.length-1]
+                        position = msgs.length-1
+
+                        showVersion(false, position);
                         return;
                     }
                     msgs = ooMessages[id];
@@ -400,6 +445,7 @@ define([
                         msgIndex--;
                     } else {
                         config.onPatchBack(cp, msgs);
+
                     }
                     //Check if this checkpoint has already been added to the timeline
                     if (!$(`[data="${id},0"]`).length) {
