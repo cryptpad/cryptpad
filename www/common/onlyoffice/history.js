@@ -88,18 +88,18 @@ define([
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
 
                 let initialCp = cpIndex === sortedCp.length;
-                var messageSlice
+                var messageSlice;
                 if (config.docType() === 'spreadsheet' && toHash === 'NONE') {
-                    messageSlice = 0
+                    messageSlice = 0;
                 } else if (initialCp || toHash === 'NONE') {
-                    messageSlice = 1
+                    messageSlice = 1;
+                } else if (JSON.parse(data.messages[1].msg).locks.length) {
+                    messageSlice = 2;
                 } else {
-                    messageSlice = 2
+                    messageSlice = 1;
                 }
                 var messages = (data.messages || []).slice(messageSlice);
-                                console.log("messageslice", messageSlice, messages)
 
-                // console.log('hello', config.docType() === 'spreadsheet', toHash === 'NONE', initialCp, toHash, config.docType(), messages)
                 if (config.debug) { console.log(data.messages); }
                 id = typeof(id) !== "undefined" ? id : getId();
 
@@ -120,7 +120,6 @@ define([
                 // Get the checkpoint ID
                 id = typeof(id) !== "undefined" ? id : getId();
                 var cp;
-                // console.log("HELLO", ooMessages, id, ooMessages[id-1])
                 if (ooMessages[id-1] && !ooMessages[id-1].length) {
                     cp = hashes[id-1];
                 } else {
@@ -180,13 +179,6 @@ define([
             }
             var version = currentVersion.split('.');
             var hashesLength = Object.keys(hashes).length;
-            
-            // console.log(hashesLength === parseInt(version[0]) && ooMessages[id]?.length === parseInt(version[1]),
-            // hashesLength+1 === id && (msgIndex === -1) && forward,
-            // Object.keys(hashes)[hashesLength-1] === id && !ooMessages[id].length && msgIndex === 0, )
-
-            // console.log(hashes, Object.keys(hashes), hashesLength, id, msgs, msgIndex, (id === hashesLength-1))
-
 
             if (hashesLength === parseInt(version[0]) && ooMessages[id]?.length === parseInt(version[1]) ||
             hashesLength+1 === id && (msgIndex === -1) && forward  ||
@@ -205,26 +197,22 @@ define([
 
         var msgs;
 
-        var showVersion = function (initial, position) {
-            // console.log("PATCH!", hashes[id])
-            currentVersion = getVersion(position, initial);
-            if (initial) { currentVersion = Messages.oo_version_latest; }
-            // if (patch) {
-            var patchTime = patch ? new Date(patch.time).toLocaleString() : ''
-            // console.log("patchtime", patch, patchTime)
-                $version.text(Messages.oo_version + currentVersion + ' ' + patchTime);
-            // } else {
-            //     $version.text(Messages.oo_version + currentVersion + ' ' + new Date(patch.time).toLocaleString());
-            // }
-            
+        var showVersion = function (initial, position, revert) {
             $('.cp-history-timeline-pos-oo').remove();
             $('.cp-history-oo-timeline-pos').removeClass('cp-history-oo-timeline-pos');
-            if (position === msgs.length && id < Object.keys(hashes)[Object.keys(hashes).length-1]) {
-                var currentPatch = $(`[data="${id+1},0"]`);
+
+            var currentPatch;
+            if (revert) {
+                currentPatch = $(`[data="${id},${position+1}"]`);
+                currentVersion = getVersion(position+1, initial);
             } else {
                 currentPatch = $(`[data="${id},${position}"]`);
+                currentVersion = getVersion(position, initial);
             }
-            // console.log("patch", id, position, currentPatch)
+                
+            if (initial) { currentVersion = Messages.oo_version_latest; }
+            var patchTime = patch ? new Date(patch.time).toLocaleString() : '';
+            $version.text(Messages.oo_version + currentVersion + ' ' + patchTime);
             var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
             $(currentPatch).addClass('cp-history-oo-timeline-pos').append(pos);
 
@@ -232,9 +220,10 @@ define([
             loadingFalse();
         };
 
-        var displayCheckpointTimeline = function(initial) {          
+        var displayCheckpointTimeline = function(initial, restore) {          
             var bar = $hist.find('.cp-history-timeline-container');
             $(bar).addClass('cp-history-timeline-bar').addClass('cp-oohistory-bar-el');
+
             if (initial) {
                 var snapshotsEl = [];
                 loadMoreOOHistory();
@@ -283,7 +272,9 @@ define([
             });
             if (initial) {
                 snapshotsEl.push(finalpatchDiv);
-            } 
+            } else if (restore) {
+                snapshotsEl.splice(msgs.length, 0, finalpatchDiv);
+            }
                 
             var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
 
@@ -323,21 +314,20 @@ define([
                     } else if (cpNo === 0 && patchNo === 0) {
                         config.onPatchBack({});
                         patch = msgs[0];
-                    } else {
+                    } 
+                    else if (patchNo === msgs.length && msgs.length < $(`[data^="${id},"][data*=","]`).length) {
                         q = msgs.slice(0, patchNo);
                         config.onPatchBack(hashes[cpNo], q);
-                        // console.log("patchno", id, patchNo, msgs)
-                        // if (msgs.length) {
-                            patch = msgs[patchNo];
-                        // } else {
-                        //     id--
-                        //     loadMoreOOHistory().then(() => {
-                        //         msgs = ooMessages[id]
-                        //         patch = msgs[msgs.length-1]
-                        //     });
-                        // }
-
-                        // patch = !msgs.length ? msgsmsgs[patchNo];
+                        patch = msgs[msgs.length-1];
+                        position = patch ? msgs.indexOf(patch)+1 : 0;
+                        msgIndex = position === -1 ? -1 : position - msgs.length-1;
+                        showVersion(false, position);
+                        update();
+                        return;
+                    } else  {
+                        q = msgs.slice(0, patchNo);
+                        config.onPatchBack(hashes[cpNo], q);
+                        patch = msgs[patchNo];
                     }
                     position = patch ? msgs.indexOf(patch) : 0;
                     msgIndex = position === -1 ? -1 : position - msgs.length-1;
@@ -349,6 +339,7 @@ define([
 
         var lastPatchIndex;
         var nextPatchIndex;
+        var revert;
 
         var next = async function () {
             forward = true;
@@ -361,16 +352,8 @@ define([
                     id++;
                     await loadMoreOOHistory();
                     msgs = ooMessages[id];
-                    //Empty checkpoint (checkpoint created/history restored with no further changes)
-                    if (!msgs.length) {
-                        config.loadHistoryCp(hashes[id]);
-                        await loadMoreOOHistory();
-                        msgIndex = -ooMessages[id].length;
-                        showVersion(false);
-                        return;
-                    } else {
                         //Is the checkpoint the result of restoring history? If yes, we need to load an extra patch
-                        if (nextPatchIndex !== 0 &&  Math.abs(nextPatchIndex - JSON.parse(msgs[0].msg).changesIndex) <= 1) {
+                        if (nextPatchIndex !== 0 &&  Math.abs(nextPatchIndex - JSON.parse(msgs[0].msg).changesIndex) <= 2) {
                             msgIndex = -ooMessages[id].length;
                             config.onPatchBack(hashes[id], [msgs[0]]);
                             position = 1;
@@ -381,7 +364,6 @@ define([
                         }            
                         showVersion(false, position);
                         return;
-                    }
                 } else {
                     if (!msgs.length) {    
                         position = 0;
@@ -403,56 +385,42 @@ define([
         var prev = function () {
             forward = false;
             msgs = ooMessages[id];
-            // console.log("hello", msgs)
             nextPatchIndex = 0;
             let hasHashes = Object.keys(hashes).length;
             let cp = hasHashes ? hashes[id] : {};
             let loadPrevCp = (!msgs.length) ||
                     (msgs.length + 1 === Math.abs(msgIndex) && id !== 0) ||
                     (msgs.length - Math.abs(msgIndex) === -2); 
-                    
+
             //Check if the end of the checkpoint has been reached and the previous one should be loaded
             if (hasHashes && loadPrevCp) {
-                var currentCp = msgs.length;
                 id--; 
                 msgIndex = -1;
                 return loadMoreOOHistory().then(() => {
-          
-                    //Empty checkpoint - checkpoint saved with no further changes
-                    if (!msgs.length) {
-                        msgs = ooMessages[id];
-                        config.onPatchBack(hashes[id], msgs.slice(0, msgIndex));
-                        msgIndex--;
-                        if (!$(`[data="${id},0"]`).length) {
-                            displayCheckpointTimeline();
-                        }
-                        patch = msgs[msgs.length-1]
-                        position = msgs.length-1
-
-                        showVersion(false, position);
-                        return;
-                    }
                     msgs = ooMessages[id];
-                    var nextCp = msgs.length;
                     cp = hashes[id];
                     var q = msgs.slice(0, msgIndex);
                     patch = msgs[msgs.length-1];
                     var currentPatchIndex = JSON.parse(patch.msg).changesIndex;
-                    position = msgs.indexOf(patch);
+                    position = msgs.indexOf(patch);                    
                     //Is the checkpoint the result of restoring history? If yes, we need to load an extra patch
-                    if (lastPatchIndex !==0 && Math.abs(lastPatchIndex - currentPatchIndex) <= 1) {
+                    if (lastPatchIndex !==0 && Math.abs(lastPatchIndex - currentPatchIndex) <= 2) {
                         config.onPatchBack(cp, q); 
                         msgIndex--;
                     } else {
+                        revert = true;
+                        if (!$(`[data="${id},${position}"]`).length) {
+                            displayCheckpointTimeline(false, revert);
+                        }
                         config.onPatchBack(cp, msgs);
-
                     }
                     //Check if this checkpoint has already been added to the timeline
                     if (!$(`[data="${id},0"]`).length) {
                         displayCheckpointTimeline();
                     }
                     
-                    showVersion(false, position, currentCp, nextCp);
+                    showVersion(false, position, revert);
+                    revert = false;
                 });
             }
             var q = msgs.slice(0, msgIndex);
