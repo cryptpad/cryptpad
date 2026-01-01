@@ -12,7 +12,6 @@ define([
     '/common/hyperscript.js',
     '/common/diffMarked.js',
     '/common/common-icons.js',
-    '/common/proxy-manager.js',
 ], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd, Icons) {
     'use strict';
 
@@ -667,23 +666,16 @@ define([
                     force: toolbar && toolbar.team && !toolbar['chat'].hasClass('cp-leftside-active')
                 });
 
-                // console.log("data", channel, contactsData[channel.curvePublic])
-                //                 console.log("common", common.getMetadataMgr().getUserData().curvePublic)
-                                console.log("message", message, channel.curvePublic)
-                //                 console.log("test", common.getMetadataMgr().getUserData().curvePublic !== message.author)
-                if (common.getMetadataMgr().getUserData().curvePublic !== message.author) {
+                if (common.getMetadataMgr().getUserData().curvePublic === message.author) {
                     common.mailbox.sendTo("SEND_CHAT_MESSAGE", {
-                    name: name, 
-                    author: message.author
-                    // messa
-                }, {
-                    channel: contactsData[channel.curvePublic].notifications, 
-                    // curvePublic: channel.curvePublic
-                   curvePublic: message.author
-                })
+                        name: name, 
+                        author: message.author
+                    }, {
+                        channel: contactsData[channel.curvePublic].notifications, 
+                        curvePublic: channel.curvePublic
+                    })
                 }
             }
-
             notifyToolbar();
 
             channel.messages.push(message);

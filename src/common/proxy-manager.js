@@ -1833,7 +1833,7 @@ const factory = (UserObject, Util, Hash,
     return {
         setCustomize,
         create: create,
-        createInner: createInner, 
+        createInner: createInner
     };
 };
 

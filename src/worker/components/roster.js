@@ -644,10 +644,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             // count messages received since the last checkpoint
             // even if they fail to parse
 
-            // if (lastHash !== hash) {
-            //     // Don't count duplicate lkh message on reconnect
-            //     ref.internal.sinceLastCheckpoint++;
-            // }
+            if (lastHash !== hash) {
+                // Don't count duplicate lkh message on reconnect
+                ref.internal.sinceLastCheckpoint++;
+            }
 
             lastHash = hash;
             var parsed = Util.tryParse(msg);

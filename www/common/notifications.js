@@ -90,7 +90,6 @@ define([
 
     // Share pad
     handlers['SHARE_PAD'] = function(common, data) {
-        console.log("here1", common, data)
         var content = data.content;
         var msg = content.msg;
         var type = Hash.parsePadUrl(msg.content.href).type;
@@ -146,10 +145,7 @@ define([
     handlers['SEND_CHAT_MESSAGE'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
-        var key = 'sent_chatMessage'; // Msg.notification_padSharedTeam
-        console.log("content", data.content.msg.content)
-        console.log("author", msg.author)
-                console.log("common", common.getMetadataMgr().getUserData())
+        var key = 'sent_chatMessage';
 
         var name = Util.fixHTML(msg.content.name) || Messages.anonymous;
         content.getFormatText = function() {
