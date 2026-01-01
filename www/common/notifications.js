@@ -660,17 +660,17 @@ define([
 
     return {
         add: function(common, data) {
-            // var type = data.content.msg.type;
+            var type = data.content.msg.type;
 
-            // if (handlers[type]) {
-            //     handlers[type](common, data);
-            //     // add getters to access simply some informations
-            //     data.content.isClickable = typeof data.content.handler === "function";
-            //     data.content.isDismissible = typeof data.content.dismissHandler === "function";
-            // } else {
-            //     data.content.dismissHandler = defaultDismiss(common, data);
-            //     data.content.isDismissible = typeof data.content.dismissHandler === "function";
-            // }
+            if (handlers[type]) {
+                handlers[type](common, data);
+                // add getters to access simply some informations
+                data.content.isClickable = typeof data.content.handler === "function";
+                data.content.isDismissible = typeof data.content.dismissHandler === "function";
+            } else {
+                data.content.dismissHandler = defaultDismiss(common, data);
+                data.content.isDismissible = typeof data.content.dismissHandler === "function";
+            }
         },
         remove: function(common, data) {
             common.removeFriendRequest(data.hash);

@@ -13,7 +13,7 @@ define([
     '/common/diffMarked.js',
     '/common/common-icons.js',
     '/common/proxy-manager.js',
-], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd, Icons, ProxyManager) {
+], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd, Icons) {
     'use strict';
 
     var debug = console.log;
@@ -136,7 +136,6 @@ define([
 
         var notify = function (id) {
             find.inList(id).addClass('cp-app-contacts-notify');
-            
         };
         var unnotify = function (id) {
             find.inList(id).removeClass('cp-app-contacts-notify');
@@ -658,7 +657,6 @@ define([
 
             var el_message = markup.message(message);
 
-
             if (message.type === 'MSG') {
                 var name = UI.getDisplayName(typeof message.name !== "undefined" ?
                         message.name:
@@ -684,7 +682,6 @@ define([
                    curvePublic: message.author
                 })
                 }
-
             }
 
             notifyToolbar();

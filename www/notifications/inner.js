@@ -189,9 +189,9 @@ define([
     };
 
     create['pads'] = function () {
-        // var key = 'pads';
-        // var filter = ["SHARE_PAD"];
-        // return makeNotificationList(key, filter);
+        var key = 'pads';
+        var filter = ["SHARE_PAD"];
+        return makeNotificationList(key, filter);
     };
 
     create['archived'] = function () {
