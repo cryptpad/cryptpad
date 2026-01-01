@@ -669,12 +669,22 @@ define([
                     force: toolbar && toolbar.team && !toolbar['chat'].hasClass('cp-leftside-active')
                 });
 
-                common.mailbox.sendTo("SEND_CHAT_MESSAGE", {
-                    name: name
+                // console.log("data", channel, contactsData[channel.curvePublic])
+                //                 console.log("common", common.getMetadataMgr().getUserData().curvePublic)
+                                console.log("message", message, channel.curvePublic)
+                //                 console.log("test", common.getMetadataMgr().getUserData().curvePublic !== message.author)
+                if (common.getMetadataMgr().getUserData().curvePublic !== message.author) {
+                    common.mailbox.sendTo("SEND_CHAT_MESSAGE", {
+                    name: name, 
+                    author: message.author
+                    // messa
                 }, {
                     channel: contactsData[channel.curvePublic].notifications, 
-                    curvePublic: channel.curvePublic
+                    // curvePublic: channel.curvePublic
+                   curvePublic: message.author
                 })
+                }
+
             }
 
             notifyToolbar();

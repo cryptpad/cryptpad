@@ -87,6 +87,7 @@ proxy.mailboxes = {
 
     // Send a message to someone else
     var sendTo = Mailbox.sendTo = function (ctx, type, msg, user, _cb) {
+        console.log("hello", user, msg)
         user = user || {};
         var cb = _cb || function (obj) {
             if (obj && obj.error) {
@@ -348,59 +349,59 @@ proxy.mailboxes = {
         };
         var lastReceivedHash; // Don't send a duplicate of the last known hash on reconnect
         box.onMessage = cfg.onMessage = function (msg, user, vKey, isCp, hash, author, data) {
-            if (hash === m.lastKnownHash) { return; }
-            if (hash === lastReceivedHash) { return; }
-            var time = data && data.time;
-            lastReceivedHash = hash;
-            try {
-                msg = JSON.parse(msg);
-            } catch (e) {
-                console.error(e);
-            }
-            if (author) { msg.author = author; }
-            box.history.push(hash);
-            if (isMessageNew(hash, m)) {
-                // Message should be displayed
-                var message = {
-                    msg: msg,
-                    hash: hash,
-                    time: time
-                };
-                var notify = box.ready;
-                Handlers.add(ctx, box, message, function (dismissed, toDismiss, invalid) {
-                    if (toDismiss) { // List of other messages to remove
-                        dismiss(ctx, toDismiss, '', function () {
-                            console.log('Notification handled automatically');
-                        });
-                    }
-                    if (invalid || dismissed) { // This message should be removed
-                        dismiss(ctx, {
-                            type: type,
-                            hash: hash
-                        }, '', function () {
-                            console.log('Notification handled automatically');
-                        });
-                        return;
-                    }
-                    msg.ctime = time || 0;
-                    box.content[hash] = msg;
-                    if (opts.dump) { return; }
-                    showMessage(ctx, type, message, null, function (obj) {
-                        if (!obj || !obj.msg || !notify) { return; }
-                        Notify.system(undefined, obj.msg);
-                    });
-                });
-            } else {
-                // Message has already been viewed by the user
-                if (Object.keys(box.content).length === 0) {
-                    // If nothing is displayed yet, we can bump our lastKnownHash and remove this hash
-                    // from our "viewed" array
-                    m.lastKnownHash = hash;
-                    box.history = [];
-                    var idxViewed = m.viewed.indexOf(hash);
-                    if (idxViewed !== -1) { m.viewed.splice(idxViewed, 1); }
-                }
-            }
+            // if (hash === m.lastKnownHash) { return; }
+            // if (hash === lastReceivedHash) { return; }
+            // var time = data && data.time;
+            // lastReceivedHash = hash;
+            // try {
+            //     msg = JSON.parse(msg);
+            // } catch (e) {
+            //     console.error(e);
+            // }
+            // if (author) { msg.author = author; }
+            // box.history.push(hash);
+            // if (isMessageNew(hash, m)) {
+            //     // // Message should be displayed
+            //     // var message = {
+            //     //     msg: msg,
+            //     //     hash: hash,
+            //     //     time: time
+            //     // };
+            //     // var notify = box.ready;
+            //     // Handlers.add(ctx, box, message, function (dismissed, toDismiss, invalid) {
+            //     //     // if (toDismiss) { // List of other messages to remove
+            //     //     //     dismiss(ctx, toDismiss, '', function () {
+            //     //     //         console.log('Notification handled automatically');
+            //     //     //     });
+            //     //     // }
+            //     //     // if (invalid || dismissed) { // This message should be removed
+            //     //     //     dismiss(ctx, {
+            //     //     //         type: type,
+            //     //     //         hash: hash
+            //     //     //     }, '', function () {
+            //     //     //         console.log('Notification handled automatically');
+            //     //     //     });
+            //     //     //     return;
+            //     //     // }
+            //     //     msg.ctime = time || 0;
+            //     //     box.content[hash] = msg;
+            //     //     if (opts.dump) { return; }
+            //     //     showMessage(ctx, type, message, null, function (obj) {
+            //     //         if (!obj || !obj.msg || !notify) { return; }
+            //     //         Notify.system(undefined, obj.msg);
+            //     //     });
+            //     // });
+            // } else {
+            //     // Message has already been viewed by the user
+            //     if (Object.keys(box.content).length === 0) {
+            //         // If nothing is displayed yet, we can bump our lastKnownHash and remove this hash
+            //         // from our "viewed" array
+            //         m.lastKnownHash = hash;
+            //         box.history = [];
+            //         var idxViewed = m.viewed.indexOf(hash);
+            //         if (idxViewed !== -1) { m.viewed.splice(idxViewed, 1); }
+            //     }
+            // }
         };
         cfg.onReady = function () {
             // Clean the "viewed" array: make sure all the "viewed" hashes are

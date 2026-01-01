@@ -259,53 +259,53 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
     // Keep only one notification per channel: the stronger and more recent one
     var channels = {};
     handlers['SHARE_PAD'] = function (ctx, box, data, cb) {
-                console.log("here2")
+        //         console.log("here2")
 
-        var msg = data.msg;
-        var hash = data.hash;
-        var content = msg.content;
-        // content.name, content.title, content.href, content.password
+        // var msg = data.msg;
+        // var hash = data.hash;
+        // var content = msg.content;
+        // // content.name, content.title, content.href, content.password
 
-        if (isMuted(ctx, data)) { return void cb(true); }
-        // if the shared content is a 'link' then we can't use the channel to deduplicate notifications
-        // use href instead.
-        var channel = content.isStatic ? content.href : Hash.hrefToHexChannelId(content.href, content.password);
-        var parsed = Hash.parsePadUrl(content.href);
-        var mode = parsed.hashData && parsed.hashData.mode || 'n/a';
+        // if (isMuted(ctx, data)) { return void cb(true); }
+        // // if the shared content is a 'link' then we can't use the channel to deduplicate notifications
+        // // use href instead.
+        // var channel = content.isStatic ? content.href : Hash.hrefToHexChannelId(content.href, content.password);
+        // var parsed = Hash.parsePadUrl(content.href);
+        // var mode = parsed.hashData && parsed.hashData.mode || 'n/a';
 
-        var old = channels[channel];
-        var toRemove;
-        if (old) {
-            // New hash is weaker, ignore
-            if (old.mode === 'edit' && mode === 'view') {
-                return void cb(true);
-            }
-            // New hash is not weaker, clear the old one
-            toRemove = old.data;
-        }
+        // var old = channels[channel];
+        // var toRemove;
+        // if (old) {
+        //     // New hash is weaker, ignore
+        //     if (old.mode === 'edit' && mode === 'view') {
+        //         return void cb(true);
+        //     }
+        //     // New hash is not weaker, clear the old one
+        //     toRemove = old.data;
+        // }
 
-        if (content.password) {
-            content.password = encryptPassword(ctx, content.password);
-        }
+        // if (content.password) {
+        //     content.password = encryptPassword(ctx, content.password);
+        // }
 
-        // Update the data
-        channels[channel] = {
-            mode: mode,
-            data: {
-                type: box.type,
-                hash: hash
-            }
-        };
+        // // Update the data
+        // channels[channel] = {
+        //     mode: mode,
+        //     data: {
+        //         type: box.type,
+        //         hash: hash
+        //     }
+        // };
 
-        cb(false, toRemove);
+        // cb(false, toRemove);
     };
     removeHandlers['SHARE_PAD'] = function (ctx, box, data, hash) {
-        var content = data.content;
-        var channel = Hash.hrefToHexChannelId(content.href, content.password);
-        var old = channels[channel];
-        if (old && old.data && old.data.hash === hash) {
-            delete channels[channel];
-        }
+        // var content = data.content;
+        // var channel = Hash.hrefToHexChannelId(content.href, content.password);
+        // var old = channels[channel];
+        // if (old && old.data && old.data.hash === hash) {
+        //     delete channels[channel];
+        // }
     };
 
     // Hide duplicates when receiving a SUPPORT_MESSAGE notification

@@ -41,6 +41,7 @@ define([
 
         mailbox.sendTo = function (type, content, user, cb) {
             cb = cb || function () {};
+            console.log("hii")
             execCommand('SENDTO', {
                 type: type,
                 msg: content,
