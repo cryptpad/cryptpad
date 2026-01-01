@@ -657,17 +657,8 @@ define([
             debug(message);
 
             var el_message = markup.message(message);
-                        console.log("PROXY", message, contactsData)
 
-            common.mailbox.sendTo("COMMENT_REPLY", {
-                channel: channel, 
-                content: "hello"
-            }, {
-                channel: contactsData[message.author].notifications, 
-                curvePublic: message.author
-            })
-            // ProxyManager.sendNotification()
-            console.log("hello!!")
+
             if (message.type === 'MSG') {
                 var name = UI.getDisplayName(typeof message.name !== "undefined" ?
                         message.name:
@@ -677,11 +668,15 @@ define([
                     msg: message.text,
                     force: toolbar && toolbar.team && !toolbar['chat'].hasClass('cp-leftside-active')
                 });
+
+                common.mailbox.sendTo("SEND_CHAT_MESSAGE", {
+                    name: name
+                }, {
+                    channel: contactsData[channel.curvePublic].notifications, 
+                    curvePublic: channel.curvePublic
+                })
             }
-            // ctx.emit('FRIEND_REQUEST_ACCEPTED', {
-            //     curvePublic: curvePublic,
-            //     fromMe: true
-            // }, ctx.friendsClients);
+
             notifyToolbar();
 
             channel.messages.push(message);

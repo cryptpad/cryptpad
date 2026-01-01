@@ -122,6 +122,8 @@ define([
                 channel: data.notifications,
                 curvePublic: data.curvePublic
             });
+
+            console.log("here!", privateData.channel, data.notifications, data.curvePublic)
         });
 
     };

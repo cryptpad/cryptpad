@@ -90,6 +90,7 @@ define([
 
     // Share pad
     handlers['SHARE_PAD'] = function(common, data) {
+        console.log("here1", common, data)
         var content = data.content;
         var msg = content.msg;
         var type = Hash.parsePadUrl(msg.content.href).type;
@@ -134,6 +135,25 @@ define([
                 pw: msg.content.password || ''
             };
             common.openURL(Hash.getNewPadURL(msg.content.href, obj));
+            defaultDismiss(common, data)();
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    // Send chat message
+    handlers['SEND_CHAT_MESSAGE'] = function(common, data) {
+        var content = data.content;
+        var msg = content.msg;
+        var key = 'sent_chatMessage'; // Msg.notification_padSharedTeam
+
+        var name = Util.fixHTML(msg.content.name) || Messages.anonymous;
+        content.getFormatText = function() {
+            return Messages._getKey(key, [name]);
+        };
+        content.handler = function() {
+            common.openURL('/contacts/');
             defaultDismiss(common, data)();
         };
         if (!content.archived) {
@@ -364,7 +384,6 @@ define([
     };
 
     handlers['COMMENT_REPLY'] = function(common, data) {
-        console.log("hello$")
         var content = data.content;
         var msg = content.msg;
 

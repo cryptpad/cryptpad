@@ -368,21 +368,20 @@ proxy.mailboxes = {
                 };
                 var notify = box.ready;
                 Handlers.add(ctx, box, message, function (dismissed, toDismiss, invalid) {
-                    console.log("hello???", toDismiss, invalid, dismissed)
-                    // if (toDismiss) { // List of other messages to remove
-                    //     dismiss(ctx, toDismiss, '', function () {
-                    //         console.log('Notification handled automatically');
-                    //     });
-                    // }
-                    // if (invalid || dismissed) { // This message should be removed
-                    //     dismiss(ctx, {
-                    //         type: type,
-                    //         hash: hash
-                    //     }, '', function () {
-                    //         console.log('Notification handled automatically');
-                    //     });
-                    //     return;
-                    // }
+                    if (toDismiss) { // List of other messages to remove
+                        dismiss(ctx, toDismiss, '', function () {
+                            console.log('Notification handled automatically');
+                        });
+                    }
+                    if (invalid || dismissed) { // This message should be removed
+                        dismiss(ctx, {
+                            type: type,
+                            hash: hash
+                        }, '', function () {
+                            console.log('Notification handled automatically');
+                        });
+                        return;
+                    }
                     msg.ctime = time || 0;
                     box.content[hash] = msg;
                     if (opts.dump) { return; }
