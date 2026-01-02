@@ -918,6 +918,7 @@ define([
                             ooChannel.send(obj.data.msg);
                             ooChannel.lastHash = obj.data.hash;
                             ooChannel.cpIndex++;
+                            common.notify();
                         } else {
                             ooChannel.queue.push(obj.data);
                         }
@@ -3170,13 +3171,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var setHistoryMode = function (bool) {
                     if (bool) {
                         APP.history = true;
+                        toolbar.setHistory(true);
                         try { getEditor().asc_setRestriction(true); } catch (e) {}
-                        $('.cp-toolbar-title-readonly').css('display', 'inline-flex');
-                        $('.cp-toolbar-title-edit').hide();
                         return;
                     }
-                    $('.cp-toolbar-title-readonly').hide();
-                    $('.cp-toolbar-title-edit').show();
+                    toolbar.setHistory(false);
                     // Cancel button: redraw from lastCp
                     APP.history = false;
                     ooChannel.queue = [];
