@@ -123,10 +123,10 @@ define([
                             toPin.push(id);
                         }
                     });
+                    toPin = Utils.Util.deduplicateString(toPin);
+                    toUnpin = Utils.Util.deduplicateString(toUnpin);
                     if (toPin.length) { Cryptpad.pinPads(toPin, function () {}); }
                     if (toUnpin.length) { Cryptpad.unpinPads(toUnpin, function () {}); }
-                    Cryptpad.pinPads(toPin, function () {});
-                    Cryptpad.unpinPads(toUnpin, function () {});
                     if (!toPin.length && !toUnpin.length) { return; }
                     Cryptpad.setPadAttribute('ooImages', list, function (err) {
                         if (err) { console.error(err); }
