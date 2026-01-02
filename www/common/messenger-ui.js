@@ -669,11 +669,10 @@ define([
                 if (common.getMetadataMgr().getUserData().curvePublic === message.author) {
                     common.mailbox.sendTo("SEND_CHAT_MESSAGE", {
                         name: name, 
-                        author: message.author
                     }, {
                         channel: contactsData[channel.curvePublic].notifications, 
                         curvePublic: channel.curvePublic
-                    })
+                    });
                 }
             }
             notifyToolbar();
