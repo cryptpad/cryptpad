@@ -298,12 +298,12 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
         cb(false, toRemove);
     };
     removeHandlers['SHARE_PAD'] = function (ctx, box, data, hash) {
-        // var content = data.content;
-        // var channel = Hash.hrefToHexChannelId(content.href, content.password);
-        // var old = channels[channel];
-        // if (old && old.data && old.data.hash === hash) {
-        //     delete channels[channel];
-        // }
+        var content = data.content;
+        var channel = Hash.hrefToHexChannelId(content.href, content.password);
+        var old = channels[channel];
+        if (old && old.data && old.data.hash === hash) {
+            delete channels[channel];
+        }
     };
 
     // Hide duplicates when receiving a SUPPORT_MESSAGE notification
