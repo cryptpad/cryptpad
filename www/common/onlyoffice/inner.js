@@ -847,7 +847,7 @@ define([
 
                 loadLastDocument(cp)
                     .then(({blob, fileType}) => {
-                        ooChannel.queue = messages.slice(1, minor);
+                        ooChannel.queue = messages.slice(1, minor+1);
                         resetData(blob, fileType);
                         UI.removeLoadingScreen();
                     })

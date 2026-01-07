@@ -219,17 +219,27 @@
                 .cp-history-snapshots {
                     position: absolute;
                     left: 1px;
-                    right: 1px;
-                    top: 1px;
+                    right: 0px;
+                    top: 0px;
                     bottom: 1px;
                     cursor: pointer;
                     .cp-history-snapshot {
                         position: absolute;
                         border: 2px solid @cryptpad_text_col;
-                        height: 100%;
+                        height: 98%;
                         display: flex;
-                        align-items: center;
+                        align-items: center !important;
                         justify-content: center;
+                    }
+                }
+
+                .cp-history-snapshots-oo {
+                    top: 0px;
+                    bottom: 0px;
+                    margin-left: -1px;
+                    width: 100%;
+                    .cp-history-snapshot {
+                        height: 100%;
                     }
                 }
             }
@@ -283,6 +293,7 @@
             width: 2px;
             border: 2px solid @cryptpad_text_col;
             height: 37px;
+            // left: 2px;
             &:before {
                 top: -17px;
                 font-size: 24px;

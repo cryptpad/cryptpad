@@ -87,13 +87,12 @@ define([
                 if (err) { return void console.error(err); }
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
 
-                let initialCp = cpIndex === sortedCp.length;
                 var messageSlice;
                 if (config.docType() === 'spreadsheet' && toHash === 'NONE') {
+                    //Ensure the first patch in spreadsheet documents loads correctly
                     messageSlice = 0;
-                } else if (initialCp || toHash === 'NONE') {
-                    messageSlice = 1;
-                } else if (JSON.parse(data.messages[1].msg).locks.length) {
+                } else if (data.messages[1] && JSON.parse(data.messages[1]?.msg).locks.length) {
+                    //Remove the 'empty' patch right after a checkpoint is created
                     messageSlice = 2;
                 } else {
                     messageSlice = 1;
@@ -119,12 +118,7 @@ define([
 
                 // Get the checkpoint ID
                 id = typeof(id) !== "undefined" ? id : getId();
-                var cp;
-                if (ooMessages[id-1] && !ooMessages[id-1].length) {
-                    cp = hashes[id-1];
-                } else {
-                    cp = hashes[id];
-                }
+                var cp = hashes[id];
 
                 // Get the history between "toHash" and "fromHash". This function is using
                 // "getOlderHistory", that's why we start from the more recent hash
@@ -180,7 +174,7 @@ define([
             var version = currentVersion.split('.');
             var hashesLength = Object.keys(hashes).length;
 
-            if (hashesLength === parseInt(version[0]) && ooMessages[id]?.length === parseInt(version[1]) ||
+            if (currentVersion === 'Latest' || hashesLength === parseInt(version[0]) && ooMessages[id]?.length === parseInt(version[1]) ||
             hashesLength+1 === id && (msgIndex === -1) && forward  ||
             hashes[hashesLength-1] === id && !ooMessages[id].length && msgIndex === 0) {
                 $next.prop('disabled', 'disabled');
@@ -191,26 +185,38 @@ define([
         var loadingFalse = function () {
             setTimeout(function () {
                 $('iframe').blur();
-                loading = false;
+                loading = false;  
             }, 200);
         };
 
         var msgs;
 
-        var showVersion = function (initial, position, revert) {
+        var showVersion = function (initial, revert, empty) {
             $('.cp-history-timeline-pos-oo').remove();
             $('.cp-history-oo-timeline-pos').removeClass('cp-history-oo-timeline-pos');
 
             var currentPatch;
-            if (revert) {
-                currentPatch = $(`[data="${id},${position+1}"]`);
-                currentVersion = getVersion(position+1, initial);
+            if (initial) {
+                currentPatch = $('.cp-history-patch').last();
+                currentVersion = getVersion();
+            } 
+            else if (empty) {
+                currentPatch = $(`[data="${id},0"]`);
+                currentVersion = getVersion(position, initial);
+            } 
+            else if (msgs.length === position || !msgs.length && forward) {
+                currentPatch = $(`[data="${id},${position}"]`);
+                currentVersion = getVersion(position, initial);
             } else {
                 currentPatch = $(`[data="${id},${position}"]`);
                 currentVersion = getVersion(position, initial);
             }
-                
-            if (initial) { currentVersion = Messages.oo_version_latest; }
+
+            if (initial || position === msgs.length && (id === -1 || 
+            id === Object.keys(hashes)[Object.keys(hashes).length-1])) { 
+                currentVersion = Messages.oo_version_latest; 
+            }
+
             var patchTime = patch ? new Date(patch.time).toLocaleString() : '';
             $version.text(Messages.oo_version + currentVersion + ' ' + patchTime);
             var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
@@ -231,7 +237,7 @@ define([
                 var msgsRev = msgs;
             } else {
                 msgs = ooMessages[id];
-                snapshotsEl = Array.from($hist.find('.cp-history-snapshots-oo')[0].childNodes);
+                snapshotsEl = Array.from($hist.find('.cp-history-snapshots')[0].childNodes);
                 msgsRev = msgs.slice().reverse();
             }
 
@@ -246,7 +252,7 @@ define([
                 if (initial || id === -1) {
                     patchWidth = (1/msgs.length)*100;
                 } else {
-                    patchWidth = (1/(msgs.length+Array.from($hist.find('.cp-history-snapshots-oo')[0].childNodes).length))*100;
+                    patchWidth = (1/(msgs.length+Array.from($hist.find('.cp-history-snapshots')[0].childNodes).length))*100;
                 }
                 
                 patchDiv = h(`div.cp-history-patch`, {
@@ -279,12 +285,12 @@ define([
             var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
 
             if (!initial) {
-                Array.from($hist.find('.cp-history-snapshots-oo')[0].childNodes).forEach(function(patch) {
+                Array.from($hist.find('.cp-history-snapshots')[0].childNodes).forEach(function(patch) {
                     $(patch).css('width', `${patchWidth}%`);
                 });
             } 
 
-            var patches = h('div.cp-history-snapshots-oo', [
+            var patches = h('div.cp-history-snapshots.cp-history-snapshots-oo', [
                 snapshotsEl
             ]);
             $(patches).css('height', '100%');
@@ -311,9 +317,24 @@ define([
                         var q = msgs.slice(0, patchNo);
                         config.onPatchBack({}, q);
                         patch = msgs[patchNo];
+                        position = (patchNo === msgs.length) ? msgs.length : msgs.indexOf(patch);
+                        msgIndex = position === -1 ? -1 : position - msgs.length-1;
+                        showVersion(false, true);
+                        update();
+                        return;
                     } else if (cpNo === 0 && patchNo === 0) {
                         config.onPatchBack({});
                         patch = msgs[0];
+                    } 
+                    else if (!msgs.length ) {
+                        q = msgs.slice(0, patchNo);
+                        config.onPatchBack(hashes[cpNo], q);
+                        patch = msgs[msgs.length-1];
+                        position = patch ? msgs.indexOf(patch)+1 : 0;
+                        msgIndex = position === -1 ? -1 : position - msgs.length-1;
+                        showVersion(false, false, true);
+                        update();
+                        return;
                     } 
                     else if (patchNo === msgs.length && msgs.length < $(`[data^="${id},"][data*=","]`).length) {
                         q = msgs.slice(0, patchNo);
@@ -321,7 +342,7 @@ define([
                         patch = msgs[msgs.length-1];
                         position = patch ? msgs.indexOf(patch)+1 : 0;
                         msgIndex = position === -1 ? -1 : position - msgs.length-1;
-                        showVersion(false, position);
+                        showVersion(false);
                         update();
                         return;
                     } else  {
@@ -331,7 +352,7 @@ define([
                     }
                     position = patch ? msgs.indexOf(patch) : 0;
                     msgIndex = position === -1 ? -1 : position - msgs.length-1;
-                    showVersion(false, position);
+                    showVersion(false);
                     update();
                 });
             });
@@ -339,7 +360,7 @@ define([
 
         var lastPatchIndex;
         var nextPatchIndex;
-        var revert;
+        // var revert;
 
         var next = async function () {
             forward = true;
@@ -352,34 +373,49 @@ define([
                     id++;
                     await loadMoreOOHistory();
                     msgs = ooMessages[id];
+                    //Empty checkpoint (checkpoint created/history restored with no further changes)
+                    if (!msgs.length) {
+                        config.loadHistoryCp(hashes[id]);
+                        // id++
+                        await loadMoreOOHistory();
+                        msgs = ooMessages[id];
+                        msgIndex = -msgs.length;
+                        patch = msgs[0];
+                        position = 0;
+                        showVersion(false);
+                        return;
+                    } else {
                         //Is the checkpoint the result of restoring history? If yes, we need to load an extra patch
                         if (nextPatchIndex !== 0 &&  Math.abs(nextPatchIndex - JSON.parse(msgs[0].msg).changesIndex) <= 2) {
                             msgIndex = -ooMessages[id].length;
                             config.onPatchBack(hashes[id], [msgs[0]]);
                             position = 1;
-                        } else {
+                            showVersion(false);
+                        } 
+                        else {
                             msgIndex = -ooMessages[id].length-1;
                             config.loadHistoryCp(hashes[id]);
                             position = 0;
+                            showVersion(false, true);
                         }            
-                        showVersion(false, position);
                         return;
+                    }
                 } else {
-                    if (!msgs.length) {    
+                    if (!msgs?.length) {    
                         position = 0;
-                        showVersion(false, 0);
-                        return config.loadHistoryCp(hashes[id + 1]); }
+                        showVersion(false);
+                        msgIndex = -1;
+                        return config.loadHistoryCp(hashes[id+1]); }
                         //Adjust msgIndex after fastPrev 
                     if (Math.abs(msgIndex) > msgs.length) { msgIndex = -msgs.length; }
                 }
             } 
             else if (msgs.length + msgIndex === -1) { msgIndex++; }
-
             patch = msgs[msgs.length + msgIndex];
             position = msgs.indexOf(patch) + 1;
             config.onPatch?.(patch);
             nextPatchIndex = JSON.parse(patch.msg).changesIndex;
-            showVersion(false, position);
+            showVersion(false);
         };
 
         var prev = function () {
@@ -398,29 +434,42 @@ define([
                 msgIndex = -1;
                 return loadMoreOOHistory().then(() => {
                     msgs = ooMessages[id];
+                    //Empty checkpoint - checkpoint saved with no further changes
+                    if (!msgs.length) {
+                        msgs = ooMessages[id];
+                        config.onPatchBack(hashes[id], msgs.slice(0, msgIndex));
+                        msgIndex--;
+                        patch = msgs[msgs.length-1];
+                        position = msgs.indexOf(patch);
+                        if (!$(`[data="${id},0"]`).length) {
+                            displayCheckpointTimeline();
+                        }
+                        showVersion(false);
+                        return;
+                    }
                     cp = hashes[id];
                     var q = msgs.slice(0, msgIndex);
                     patch = msgs[msgs.length-1];
                     var currentPatchIndex = JSON.parse(patch.msg).changesIndex;
-                    position = msgs.indexOf(patch);                    
+                    position = msgs.indexOf(patch);       
                     //Is the checkpoint the result of restoring history? If yes, we need to load an extra patch
                     if (lastPatchIndex !==0 && Math.abs(lastPatchIndex - currentPatchIndex) <= 2) {
                         config.onPatchBack(cp, q); 
                         msgIndex--;
                     } else {
-                        revert = true;
+                        // revert = true;
                         if (!$(`[data="${id},${position}"]`).length) {
-                            displayCheckpointTimeline(false, revert);
+                            displayCheckpointTimeline(false, true);
                         }
                         config.onPatchBack(cp, msgs);
+                        patch = msgs[msgs.length-1];
+                        position = msgs.length;
                     }
                     //Check if this checkpoint has already been added to the timeline
                     if (!$(`[data="${id},0"]`).length) {
                         displayCheckpointTimeline();
                     }
-                    
-                    showVersion(false, position, revert);
-                    revert = false;
+                    showVersion(false, true);
                 });
             }
             var q = msgs.slice(0, msgIndex);
@@ -429,11 +478,12 @@ define([
             msgIndex--; 
             position = msgs.indexOf(patch);
             lastPatchIndex = JSON.parse(patch.msg).changesIndex;
-            showVersion(false, position);
+            showVersion(false);
         };
 
         setTimeout(() => {
             displayCheckpointTimeline(true);
+            showVersion(true);
         }, "1000");
 
         // Create the history toolbar
@@ -555,7 +605,7 @@ define([
                         var msgs = ooMessages[id];
                         msgIndex = -msgs.length-1;
                         position = 0;
-                        showVersion(false, position);
+                        showVersion(false);
                         loading = false;
                         return;
                     });
@@ -568,7 +618,7 @@ define([
 
                 loadingFalse();
                 position = msgs?.length;
-                showVersion(false, position);
+                showVersion(false);
             });
             
             // Go to previous checkpoint
@@ -590,7 +640,7 @@ define([
                     patch = msgs[msgs.length-1];
                     position = 0;
 
-                    showVersion(false, 0);
+                    showVersion(false);
                     update(true);
                 });
                 
