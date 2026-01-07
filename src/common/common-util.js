@@ -24,13 +24,25 @@ const factory = (NaclUtil) => {
     };
 
     Util.u8ToBase64 = (u8, cb) => {
+        const bytes = u8 instanceof Uint8Array ? u8 : new Uint8Array(u8);
         const reader = new FileReader();
         reader.onload = () => {
-            let res = reader.result;
-            let trim = res.slice(res.indexOf(',') + 1);
-            cb(trim);
+            const res = reader.result;
+            if (typeof res !== 'string') {
+                cb(Util.encodeBase64(bytes));
+                return;
+            }
+            const commaIndex = res.indexOf(',');
+            if (commaIndex === -1) {
+                cb(Util.encodeBase64(bytes));
+                return;
+            }
+            cb(res.slice(commaIndex + 1));
         };
-        reader.readAsDataURL(new Blob([u8]));
+        reader.onerror = () => {
+            cb(Util.encodeBase64(bytes));
+        };
+        reader.readAsDataURL(new Blob([bytes]));
     };
 
 
