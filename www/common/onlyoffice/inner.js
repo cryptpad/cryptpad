@@ -863,9 +863,10 @@ define([
                         var type = common.getMetadataMgr().getPrivateData().ooType;
                         if (APP.downloadType) { type = APP.downloadType; }
                         var blob = loadInitDocument(type, true);
-                        ooChannel.queue = messages.slice(0, v+1);
+                        ooChannel.queue = file.doc === 'spreadsheet' ? messages.slice(0, v) : messages.slice(0, v+1);
                         resetData(blob, file);
                         UI.removeLoadingScreen();
+                       
                     });
             });
         };
