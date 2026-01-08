@@ -866,7 +866,6 @@ define([
                         ooChannel.queue = file.doc === 'spreadsheet' ? messages.slice(0, v) : messages.slice(0, v+1);
                         resetData(blob, file);
                         UI.removeLoadingScreen();
-                       
                     });
             });
         };
