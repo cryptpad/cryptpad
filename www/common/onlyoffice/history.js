@@ -442,7 +442,7 @@ define([
                     var currentPatchIndex = JSON.parse(patch.msg).changesIndex;
                     position = msgs.indexOf(patch);       
                     //Is the checkpoint the result of restoring history? If yes, we need to load an extra patch
-                    if (lastPatchIndex !==0 && Math.abs(lastPatchIndex - currentPatchIndex) <= 2) {
+                    if (lastPatchIndex !==0 && Math.abs(lastPatchIndex - currentPatchIndex) < 2) {
                         config.onPatchBack(cp, q); 
                         msgIndex--;
                     } else {
@@ -453,6 +453,7 @@ define([
                         config.onPatchBack(cp, msgs);
                         patch = msgs[msgs.length-1];
                         position = msgs.length;
+
                     }
                     //Check if this checkpoint has already been added to the timeline
                     if (!$(`[data="${id},0"]`).length) {
