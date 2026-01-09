@@ -1052,6 +1052,16 @@ define([
             boards: boards,
             _boards: Util.clone(boards),
         });
+        // disable dragging when editing
+        $(document).on('mousedown', '.kanban-item input, .kanban-title-board input', function (e) {
+            kanban.options.dragItems = false;
+            e.stopPropagation();
+        });
+        $(document).on('mouseup', function (e) {
+            var drag = kanban.drag;
+            kanban.options.dragItems = drag;
+            e.stopPropagation();
+        });
 
         framework._.cpNfInner.metadataMgr.onChange(function () {
             var md = framework._.cpNfInner.metadataMgr.getPrivateData();
