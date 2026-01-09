@@ -232,6 +232,11 @@
                     if (!config.events.onSave) { return void cb(); }
                     config.events.onSave(data, cb);
                 });
+                chan.on('GET_BLOB', (data, cb) => {
+                    getBlob((err, blob) => {
+                        cb({error: err, blob});
+                    });
+                });
                 chan.on('RELOAD', function () {
                     config.document.blob = blob;
                     if (!config.editorConfig) { // Not OnlyOffice shim
