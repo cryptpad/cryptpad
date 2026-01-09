@@ -1057,6 +1057,11 @@ define([
             kanban.options.dragItems = false;
             e.stopPropagation();
         });
+        $(document).on('mouseup', function (e) {
+            var drag = kanban.drag;
+            kanban.options.dragItems = drag;
+            e.stopPropagation();
+        });
 
         framework._.cpNfInner.metadataMgr.onChange(function () {
             var md = framework._.cpNfInner.metadataMgr.getPrivateData();
