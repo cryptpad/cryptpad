@@ -1911,6 +1911,9 @@ define([
                 mediasData: mediasData
             }, function (err, obj) {
                 if (err || !obj || !obj.data) {
+                    if (integrationChannel) {
+                        integrationChannel.event('EV_INTEGRATION_ERROR', 'X2T_ERROR');
+                    }
                     UI.alert(Messages.oo_couldNotConvertDocument, cb);
                     return;
                 }
@@ -1967,6 +1970,9 @@ define([
 
         const onError = function() {
             console.error(arguments);
+            if (integrationChannel) {
+                integrationChannel.event('EV_INTEGRATION_ERROR', 'DOCUMENT_ERROR');
+            }
             if (APP.isDownload) {
                 var sframeChan = common.getSframeChannel();
                 sframeChan.event('EV_OOIFRAME_DONE', '');
@@ -2072,9 +2078,7 @@ define([
                     delete APP.oldCursor;
                 }
                 if (integrationChannel) {
-                    APP.onDocumentUnlock = () => {
-                        integrationChannel.event('EV_INTEGRATION_READY');
-                    };
+                    integrationChannel.event('EV_INTEGRATION_READY');
                 }
             }
             delete APP.startNew;
@@ -2380,7 +2384,7 @@ define([
                 if (ec.editorConfig?.customization?.goback) {
                     c.goback.blank = true;
                 }
-                if (!privateData?.integrationConfig?.autosave) {
+                if (typeof(privateData?.integrationConfig?.autosave) !== "number") {
                     c.forcesave = true;
                 }
             }
@@ -3699,6 +3703,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         integrationSave(function (obj) {
                             if (obj && obj.error) { console.error(obj.error); }
                             cb();
+                        });
+                    });
+                    integrationChannel.on('EV_INTEGRATION_MANUAL_SAVE', function () {
+                        integrationSave(function () {
+                            console.log('Integration manual save');
                         });
                     });
 

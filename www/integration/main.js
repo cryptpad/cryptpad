@@ -138,6 +138,9 @@ define([
         var onInsertImage = function (data, cb) {
             chan.send('ON_INSERT_IMAGE', data, cb);
         };
+        var onError = function (err) {
+            chan.send('DOCUMENT_ERROR', err);
+        };
         var onReady = function () {
             chan.send('DOCUMENT_READY', {});
         };
@@ -155,6 +158,18 @@ define([
         };
         let onDownloadAs = function (blob) { // DownloadAs callback
             chan.send('ON_DOWNLOADAS', blob);
+        };
+
+        let manualSave;
+        chan.on('MANUAL_SAVE', function (format) {
+            if (typeof(manualSave) !== "function") {
+                console.error('UNSUPPORTED COMMAND', 'save');
+                return;
+            }
+            manualSave();
+        });
+        let setSave = f => {
+            manualSave = f;
         };
 
 
@@ -248,9 +263,11 @@ define([
                         _: data._config
                     },
                     utils: {
+                        onError,
                         onReady: onReady,
                         onDownloadAs,
                         setDownloadAs,
+                        setSave,
                         save: save,
                         reload: reload,
                         onHasUnsavedChanges: onHasUnsavedChanges,

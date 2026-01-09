@@ -126,6 +126,7 @@
 
                 var start = function () {
                     //config.document.key = key;
+                    const autosave = typeof(config.autosave) === "number" ? config.autosave : 10;
                     chan.send('START', {
                         key: key,
                         application: config.documentType,
@@ -134,7 +135,7 @@
                         documentKey: docID,
                         document: blob,
                         ext: config.document.fileType,
-                        autosave: config.events.onSave && (config.autosave || 10),
+                        autosave: config.events.onSave && autosave,
                         readOnly: config.mode === 'view',
                         editorConfig: config.editorConfig || {},
                         _config: serializedConfig()
@@ -214,6 +215,12 @@
                     onDocumentReady.forEach(f => {
                         try { f(); } catch (e) { console.error(e); }
                     });
+                });
+
+                chan.on('DOCUMENT_ERROR', function (err) {
+                    if (config.events.onError) {
+                        config.events.onError(err);
+                    }
                 });
 
                 chan.on('ON_DOWNLOADAS', blob => {
@@ -377,6 +384,15 @@
                 }
 
                 chan.send('DOWNLOAD_AS', arg);
+            };
+            ret.save = () => {
+                if (!chan) {
+                    return void onDocumentReady.push(() => {
+                        ret.save();
+                    });
+                }
+
+                chan.send('MANUAL_SAVE');
             };
 
             return ret;
