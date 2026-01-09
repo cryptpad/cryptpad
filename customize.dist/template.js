@@ -6,11 +6,17 @@ define([
     'jquery',
     '/common/hyperscript.js',
     '/customize/pages.js',
+    '/customize/application_config.js',
     '/components/nthen/index.js',
-], function ($, h, Pages, nThen) {
+], function ($, h, Pages, AppConfig, nThen) {
     // we consider that there is no valid reason to load any of the info pages
     // in an iframe. abort everything if you detect that you are embedded.
     if (window.top !== window) { return; }
+
+    if (AppConfig.integrationOnly) {
+        window.location.href = '/customize/404.html';
+        return;
+    }
 
 $(function () {
     var $body = $('body');
