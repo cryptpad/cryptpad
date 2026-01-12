@@ -481,7 +481,10 @@ define([
                 let input = UI.dialog.textInput({id: `cp-${Util.uid()}`});
                 $tags.append(input);
                 let existing = onTag.getAllTags();
-                let _field = UI.tokenField(input, existing).preventDuplicates(function (val) {
+                let close = h('button.btn.btn-secondary.cp-token-close', [
+                    h('span', Messages.filePicker_close)
+                ]);
+                let _field = UI.tokenField(input, existing, close).preventDuplicates(function (val) {
                     UI.warn(Messages._getKey('tags_duplicate', [val]));
                 });
                 _field.setTokens(content.tags || []);
@@ -508,15 +511,9 @@ define([
                     $list.toggle();
                     $tags.toggle();
                 });
-                let close = h('button.btn.btn-secondary.cp-token-close', [
-                    h('span', Messages.filePicker_close)
-                ]);
                 Util.onClickEnter($(close), () => {
                     $list.toggle(true);
                     $tags.toggle(false);
-                });
-                setTimeout(() => {
-                    $tags.find('.cp-tokenfield-form').append(close);
                 });
             }
 
