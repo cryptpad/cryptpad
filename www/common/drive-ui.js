@@ -3357,13 +3357,11 @@ define([
         var SORT_FILE_BY = 'sortFilesBy';
         var SORT_FILE_DESC = 'sortFilesDesc';
 
-        var getSortFolderDesc = function () { // this way the icon change is triggered
-            var v = APP.store[SORT_FOLDER_DESC];
-            return v === true || v === "true";
-        };
         var getSortFileDesc = function () {
-            var v = APP.store[SORT_FILE_DESC];
-            return v === true || v === "true";
+            return APP.store[SORT_FILE_DESC]+"" === "true";
+        };
+        var getSortFolderDesc = function () {
+            return APP.store[SORT_FOLDER_DESC]+"" === "true";
         };
 
         var onSortByClick = function () {
@@ -3408,8 +3406,12 @@ define([
         };
 
         var addFolderSortIcon = function ($list) {
+            var isDesc = APP.store[SORT_FOLDER_DESC];
+            if (typeof isDesc === 'string') {
+                isDesc = isDesc === 'true';
+            }
             var $icon = $sortAscIcon.clone();
-            if (getSortFolderDesc()) {
+            if (isDesc) {
                 $icon = $sortDescIcon.clone();
             }
             if (typeof(APP.store[SORT_FOLDER_DESC]) !== "undefined") {
@@ -3485,8 +3487,12 @@ define([
             return $fohElement;
         };
         var addFileSortIcon = function ($list) {
+            var isDesc = APP.store[SORT_FILE_DESC];
+            if (typeof isDesc === 'string') {
+                isDesc = isDesc === 'true';
+            }
             var $icon = $sortAscIcon.clone();
-            if (getSortFileDesc()) {
+            if (isDesc) {
                 $icon = $sortDescIcon.clone();
             }
             var classSorted;
