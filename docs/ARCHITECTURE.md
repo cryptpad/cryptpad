@@ -43,7 +43,7 @@ For the purposes of the document, it doesn't matter which becomes which, it must
 The research team at XWiki Labs created and continues to maintain a Javascript library called [Chainpad](https://github.com/xwiki-contrib/chainpad "Realtime Collaborative Editor Algorithm based on Nakamoto Blockchains") which simplifies this process, and provides a few guarantees about how differences will be resolved.
 
 The algorithm is based on Nakamoto Blockchains, a construct popularized by Bitcoin, and now a growing number of other cryptocurrencies.
-The core datatype is considered a [CRDT](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type "Conflict-free Replicated Data Type).
+The core datatype is considered a "Conflict-free Replicated Data Type" ([CRDT](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type)).
 CRDTs are also also employed by the popular source control managements software [Git](https://en.wikipedia.org/wiki/Git_%28software%29).
 
 Each patch references the [SHA-256 Hash](https://en.wikipedia.org/wiki/Secure_Hash_Algorithm "Secure Hashing Algorithms") of the previous state of the document.
