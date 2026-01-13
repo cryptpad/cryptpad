@@ -562,6 +562,7 @@ define([
             }
             myUniqueOOId = undefined;
             setMyId();
+            
             if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
             $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
             ooLoaded = false;

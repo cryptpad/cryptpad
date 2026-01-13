@@ -189,9 +189,17 @@
                 display: block;
                 height: 100%;
             }
-            .cp-history-patch:nth-child(odd) {
-                background-color: @history_userBg1
+            .cp-history-patch {
+                height: 100%;
+                position: relative;
+                display: flex;
+                justify-content: center;
+                box-sizing: border-box;
+                &:nth-child(odd) {
+                    background-color: @history_userBg1
+                }
             }
+
             .cp-history-timeline-bar {
                 display: flex;
                 flex-flow: column;
