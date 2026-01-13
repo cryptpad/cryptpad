@@ -134,7 +134,7 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
     /// XXX
-    Messages.fo_trash_move_error = "Shared folder contents cannot be moved ot trash. Use \"Remove\" instead.";
+    Messages.fo_trash_move_error = "Shared folder contents cannot be moved to trash. Use \"Remove\" instead.";
     Messages.fo_sharedFolder_move_error = "Shared folders cannot be moved inside other shared folders.";
 
     return Messages;
