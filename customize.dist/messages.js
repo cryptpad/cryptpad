@@ -133,6 +133,8 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
+    //XXX
+    Messages.form_poll_required_hint = "To answer a required poll question, you must interact with at least one option.";
 
     return Messages;
 
