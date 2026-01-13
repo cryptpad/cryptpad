@@ -3133,6 +3133,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // flag only when the checkpoint is ready.
                     APP.stopHistory = true;
                     makeCheckpoint(true);
+                    toolbar.setHistory(false);
+
                 };
                 var onPatch = function (patch) {
                     // Patch on the current cp
