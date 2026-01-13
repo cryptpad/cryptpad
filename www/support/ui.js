@@ -454,7 +454,7 @@ define([
             if (onMove && !onMove.disableMove) {
                 let text = onMove.isTicketActive ? Messages.support_movePending
                                                  : Messages.support_moveActive;
-                move = h('button.btn.btn-secondary', { title: text }, Icons.get('history'));
+                move = h('button.btn.btn-secondary', { title: text }, Icons.get('archive'));
                 Util.onClickEnter($(move), function () {
                     onMove(ticket, id, content);
                 });
