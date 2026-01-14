@@ -503,14 +503,8 @@ const factory = (UserObject, Util, Hash,
 
     // Move files or folders in the drive
     var _move = function (Env, data, cb) {
-        if (typeof console !== 'undefined' && console.log) {
-            console.log('[PROXY-MANAGER] _move called with paths:', JSON.stringify(data.paths), 'newPath:', JSON.stringify(data.newPath));
-        }
         var resolved = _resolvePaths(Env, data.paths);
         var newResolved = _resolvePath(Env, data.newPath);
-        if (typeof console !== 'undefined' && console.log) {
-            console.log('[PROXY-MANAGER] Resolved - main:', resolved.main.length, 'folders:', Object.keys(resolved.folders).length, 'newResolved.id:', newResolved.id);
-        }
 
         // NOTE: we can only copy when moving from one drive to another. We don't want
         // duplicates in the same drive
