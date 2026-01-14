@@ -775,9 +775,7 @@ define([
         var displayName = getDisplayName(data.displayName);
         // Avatar
         var avatar = h('span.cp-avatar.cp-team-member-avatar');
-        var userData = common.getMetadataMgr().getUserData();
-        var avatarUrl = data.uid === userData.uid ? userData.avatar : data.avatar; // latest avatar
-        common.displayAvatar($(avatar), avatarUrl, displayName, Util.noop, data.uid);
+        common.displayAvatar($(avatar), data.avatar, displayName, Util.noop, data.uid);
         // Name
         var name = h('span.cp-team-member-name', displayName);
         if (data.pendingOwner) {
