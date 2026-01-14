@@ -348,7 +348,11 @@
             cursor: auto;
             &li, li {
                 padding: 0px;
-                margin-top: 2px;
+                ul {
+                    li {
+                        margin-top: 2px;
+                    }
+                }
                 &.cp-app-drive-element-collapsed ul {
                     display: none;
                 }
