@@ -5123,6 +5123,11 @@ define([
                 var openRecursive = function (path) {
                     LS.setFolderOpened(path, opened);
                     var folderContent = manager.find(path);
+                    if (folderContent && manager.isSharedFolder(folderContent)) {
+                        path = path.concat(manager.user.userObject.ROOT);
+                        folderContent = manager.find(path);
+                    }
+                    if (!folderContent) { return; }
                     var subfolders = [];
                     for (var k in folderContent) {
                         if (manager.isFolder(folderContent[k])) {
@@ -5136,6 +5141,10 @@ define([
                     }
                     subfolders.forEach(function (p) {
                         var subPath = path.concat(p);
+                        if (Array.isArray(p) && p.length > 1 && p[p.length - 1] === ROOT) {
+                            var sharedFolderPath = subPath.slice(0, -1);
+                            LS.setFolderOpened(sharedFolderPath, opened);
+                        }
                         openRecursive(subPath);
                     });
                 };

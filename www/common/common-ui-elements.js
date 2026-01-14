@@ -4597,7 +4597,7 @@ define([
         }
         // Auto-expand parent folders of current path
         if (currentPath && isSubpath(currentPath, path) && path.length < currentPath.length) {
-            if (currentPath.length > 0) {
+            if (currentPath.length > 0 && currentPath.length - path.length > 1) { // only auto-expand if currentPath is at least 2 levels deeper than the folder path
                 return true;
             }
         }
