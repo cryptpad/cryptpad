@@ -845,10 +845,12 @@ const factory = (Util, Hash,
                     }
                 }
             });
-            if (duplicateError) {
-                return void cb(duplicateError);
-            }
-            exp.delete(toRemove, cb);
+            exp.delete(toRemove, function (err) {
+                if (err || duplicateError) {
+                    return void cb(err || duplicateError);
+                }
+                cb();
+            });
         };
         exp.restore = function (path, cb) {
             if (sframeChan) {

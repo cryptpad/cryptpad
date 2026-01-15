@@ -530,7 +530,13 @@ const factory = (UserObject, Util, Hash,
                     var toCopy = _getCopyFromPaths(Env, resolved.main, Env.user.userObject);
                     var newUserObject = newResolved.userObject;
                     toCopy.forEach(function (obj) {
-                        newUserObject.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
+                        try {
+                            newUserObject.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
+                        } catch (err) {
+                            if (!moveError) {
+                                moveError = err;
+                            }
+                        }
                     });
 
                     if (copy) { return; }
@@ -562,7 +568,13 @@ const factory = (UserObject, Util, Hash,
                         // Copy the elements to the new location
                         var toCopy = _getCopyFromPaths(Env, paths, uoFrom);
                         toCopy.forEach(function (obj) {
-                            uoTo.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
+                            try {
+                                uoTo.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
+                            } catch (err) {
+                                if (!moveError) {
+                                    moveError = err;
+                                }
+                            }
                         });
 
                         if (copy) { return; }
@@ -1505,15 +1517,10 @@ const factory = (UserObject, Util, Hash,
                 newName: newName
             }
         }, function (err, responseData) {
-            if (err) {
-                return void cb(err);
+            if (err || responseData?.error) {
+                return void cb(err || responseData);
             }
-            // responseData is what rename passed to cb(error)
-            if (responseData && typeof responseData === 'object' && responseData.error) {
-                return void cb(responseData);
-            }
-            // No error
-            cb(null);
+            cb();
         });
     };
     var moveInner = function (Env, paths, newPath, cb, copy) {
@@ -1525,14 +1532,10 @@ const factory = (UserObject, Util, Hash,
                 copy: copy
             }
         }, function (err, responseData) {
-            if (err) {
-                return void cb(err);
+            if (err || responseData?.error) {
+                return void cb(err || responseData);
             }
-            if (responseData && typeof responseData === 'object' && responseData.error) {
-                return void cb(responseData);
-            }
-            // No error
-            cb(null);
+            cb();
         });
     };
     var emptyTrashInner = function (Env, deleteOwned, cb) {

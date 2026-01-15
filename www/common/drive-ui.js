@@ -1880,6 +1880,10 @@ define([
             var newCb = function (err) {
                 if (err && err.error === 'E_DUPLICATE_FOLDER_NAME') {
                     UI.alert(err.message || Messages.fo_unavailableName);
+                    paths.forEach(function (path) {
+                        LS.moveFoldersOpened(path, newPath);
+                    });
+                    cb();
                     return;
                 }
                 paths.forEach(function (path) {
