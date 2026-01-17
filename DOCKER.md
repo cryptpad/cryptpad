@@ -6,8 +6,8 @@ All configuration variable are not documented here but can be found in file
 [config/config.example.js](config/config.example.js).
 
 Most of the configurable parameters are represented with the environments:
-- `CPAD_HTTP_UNSAFE_ORIGIN` (default: `http://localhost:3000`)
-- `CPAD_HTTP_SAFE_ORIGIN` (default: same as `CPAD_HTTP_UNSAFE_ORIGIN`)
+- `CPAD_HTTP_UNSAFE_ORIGIN` (default: `https://your-main-domain.com`)
+- `CPAD_HTTP_SAFE_ORIGIN` (default: `https://your-sandbox-domain.com`)
 - `CPAD_HTTP_ADDRESS` (default: `0.0.0.0`)
 - `CPAD_HTTP_PORT` (default: `3000`)
 - `CPAD_HTTP_SAFE_PORT` (default: `CPAD_HTTP_PORT + 1`)

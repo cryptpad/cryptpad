@@ -20,8 +20,8 @@ if [ -z "$CPAD_CONF" ]; then
     cp "$CPAD_HOME/config/config.docker.js" "$CRYPTPAD_CONFIG"
 
     # Use env variable or default if absent
-    : ${CPAD_HTTP_UNSAFE_ORIGIN:="http://localhost:3000"}
-    : ${CPAD_HTTP_SAFE_ORIGIN:="$CPAD_HTTP_UNSAFE_ORIGIN"}
+    : ${CPAD_HTTP_UNSAFE_ORIGIN:="https://your-main-domain.com"}
+    : ${CPAD_HTTP_SAFE_ORIGIN:="https://your-sandbox-domain.com"}
     : ${CPAD_HTTP_ADDRESS:="0.0.0.0"}
     : ${CPAD_HTTP_PORT:=3000}
     : ${CPAD_HTTP_SAFE_PORT:=$(( $CPAD_HTTP_PORT + 1 ))}
