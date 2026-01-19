@@ -421,7 +421,7 @@ define([
         // Msg.support_privacyHint.support_privacyTitle
         sidebar.addCheckboxItem({
             key: 'privacy',
-            getState: () => false,
+            getState: () => true,
             query: (val, setState) => {
                 APP.support.setAnonymous(val);
                 setState(val);
