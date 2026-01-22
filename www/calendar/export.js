@@ -52,7 +52,7 @@ define([
 
 
     module.main = function (userDoc) {
-        var content = userDoc.content;
+        var content = userDoc.content || {};
 
         var ICS = [
             'BEGIN:VCALENDAR',
