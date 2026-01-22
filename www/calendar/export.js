@@ -227,7 +227,7 @@ define([
 
                     if (ud.from) { // "From" updates are not supported by ICS: make a new event
                         var _new = Util.clone(prev);
-                        r.until = getICSDate(d - 1); // Stop previous recursion
+                        r.until = d - 1; // Stop previous recursion
                         delete r.count;
                         addEvent(ICS, prev, null); // Add previous event
                         Array.prototype.push.apply(ICS, toAdd); // Add individual updates
