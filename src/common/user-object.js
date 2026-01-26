@@ -826,6 +826,7 @@ const factory = (Util, Hash,
             }
             // Copy the elements to their new location
             var toRemove = [];
+            var duplicateError = null;
             paths.forEach(function (p) {
                 var parentPath = p.slice();
                 parentPath.pop();
@@ -835,11 +836,21 @@ const factory = (Util, Hash,
                     return;
                 }
                 // Try to copy, and if success, remove the element from the old location
-                if (exp.copyElement(p.slice(), newPath)) {
+                var result = exp.copyElement(p.slice(), newPath);
+                if (result === true) {
                     toRemove.push(p);
+                } else if (result && result.error === 'E_DUPLICATE_FOLDER_NAME') {
+                    if (!duplicateError) {
+                        duplicateError = result;
+                    }
                 }
             });
-            exp.delete(toRemove, cb);
+            exp.delete(toRemove, function (err) {
+                if (err || duplicateError) {
+                    return void cb(err || duplicateError);
+                }
+                cb();
+            });
         };
         exp.restore = function (path, cb) {
             if (sframeChan) {
@@ -870,7 +881,16 @@ const factory = (Util, Hash,
                 }, cb);
             }
             var parentEl = find(folderPath);
-            var folderName = getAvailableName(parentEl, name || NEW_FOLDER_NAME);
+            var requestedName = name || NEW_FOLDER_NAME;
+            var defaultFolderName = NEW_FOLDER_NAME;
+            if (requestedName !== defaultFolderName && typeof(parentEl[requestedName]) !== "undefined") {
+                return void cb({
+                    error: 'E_DUPLICATE_FOLDER_NAME',
+                    folderName: requestedName,
+                    message: Messages.fo_unavailableName
+                });
+            }
+            var folderName = getAvailableName(parentEl, requestedName);
             parentEl[folderName] = {};
             var newPath = folderPath.slice();
             newPath.push(folderName);
@@ -940,7 +960,13 @@ const factory = (Util, Hash,
                 if (!newName || !newName.trim() || oldName === newName) { return; }
                 var parentEl = find(parentPath);
                 if (typeof(parentEl[newName]) !== "undefined") {
-                    log(Messages.fo_existingNameError);
+                    if (typeof cb === "function") {
+                        return void cb({
+                            error: 'E_DUPLICATE_FOLDER_NAME',
+                            folderName: newName,
+                            message: Messages.fo_unavailableName
+                        });
+                    }
                     return;
                 }
                 parentEl[newName] = element;
