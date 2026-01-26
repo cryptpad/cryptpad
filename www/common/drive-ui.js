@@ -2166,7 +2166,8 @@ define([
             var movedPaths = [];
 
             var sharedF = false;
-            var draggedSharedFolder = false;       
+            var draggedSharedFolder = false;      
+            var folderContainsSharedFolder = false;      
             oldPaths.forEach(function (p) {
                 movedPaths.push(p.path);
                 if (!sharedF && manager.isInSharedFolder(p.path)) {
@@ -2175,9 +2176,15 @@ define([
                 if (!draggedSharedFolder && p.value && p.value.el && manager.isSharedFolder(p.value.el)) {
                     draggedSharedFolder = true;
                 }
+                if (!folderContainsSharedFolder && p.value && p.value.el && manager.hasSubSharedFolder(p.value.el)) {
+                    folderContainsSharedFolder = true;
+                }
             });
 
             if (draggedSharedFolder && manager.isInSharedFolder(newPath)) {
+                return void UI.warn(Messages.fo_sharedFolder_move_error);
+            }
+            if (manager.isPathIn(newPath, [SHARED_FOLDER])) {
                 return void UI.warn(Messages.fo_sharedFolder_move_error);
             }
             if (sharedF && manager.isPathIn(newPath, [TRASH])) {
@@ -2186,6 +2193,12 @@ define([
                 // TODO or keep deletePaths: trigger the "Remove from cryptdrive" modal
                 return void UI.warn(Messages.fo_trash_move_error);
                 //return void deletePaths(null, movedPaths);
+            }
+            if (folderContainsSharedFolder) {
+                var destEl = manager.find(newPath);
+                if (manager.isInSharedFolder(newPath) || (destEl && manager.hasSubSharedFolder(destEl))) {
+                    return void UI.warn(Messages.fo_sharedFolder_move_error);
+                }
             }
 
             var copy = false;
