@@ -4,7 +4,7 @@
 
 (() => {
 const factory = () => {
-    const version = 8;
+    const version = 9;
     return {
         currentVersionNumber: version,
         currentVersion: 'v' + version
