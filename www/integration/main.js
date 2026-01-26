@@ -161,7 +161,7 @@ define([
         };
 
         let manualSave;
-        chan.on('MANUAL_SAVE', function (format) {
+        chan.on('MANUAL_SAVE', function () {
             if (typeof(manualSave) !== "function") {
                 console.error('UNSUPPORTED COMMAND', 'save');
                 return;
