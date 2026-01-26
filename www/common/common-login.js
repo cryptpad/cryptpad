@@ -123,7 +123,12 @@ define([
     var legacyLogin = function (opt, isRegister, cb, res) {
         res = res || {};
         loadUserObject(opt, function (err, rt) {
-            if (err) { return void cb(err); }
+            if (err) {
+                // If the channel is empty, it probably means the credentials
+                // are invalid
+                console.error(err);
+                return void cb('NO_SUCH_USER');
+            }
 
             // if a proxy is marked as deprecated, it is because someone had a non-owned drive
             // but changed their password, and couldn't delete their old data.
