@@ -387,8 +387,8 @@ define([
         var privateData = metadataMgr.getPrivateData();
 
         var answer = h('button.btn.btn-primary.cp-support-answer', [Icons.get('reply'), Messages.support_answer]);
-        var close = h('button.btn.btn-danger.cp-support-close', [Icons.get('close'), Messages.support_close]);
-        var remove = h('button.btn.btn-danger.cp-support-hide', [Icons.get('close'), Messages.support_remove]);
+        var close = h('button.btn.btn-danger.cp-support-close', [Messages.support_close]);
+        var remove = h('button.btn.btn-danger.cp-support-hide', [Icons.get('trash-full'), Messages.support_remove]);
         var _actions = [answer, close];
         if (content.closed && !ctx.isAdmin) {
             _actions = [remove]; // XXX update key to "Delete permanently" ?
@@ -454,7 +454,7 @@ define([
             if (onMove && !onMove.disableMove) {
                 let text = onMove.isTicketActive ? Messages.support_movePending
                                                  : Messages.support_moveActive;
-                move = h('button.btn.btn-secondary', { title: text }, Icons.get('history'));
+                move = h('button.btn.btn-secondary', { title: text }, Icons.get('archive'));
                 Util.onClickEnter($(move), function () {
                     onMove(ticket, id, content);
                 });
@@ -481,7 +481,10 @@ define([
                 let input = UI.dialog.textInput({id: `cp-${Util.uid()}`});
                 $tags.append(input);
                 let existing = onTag.getAllTags();
-                let _field = UI.tokenField(input, existing).preventDuplicates(function (val) {
+                let close = h('button.btn.btn-secondary.cp-token-close', [
+                    h('span', Messages.filePicker_close)
+                ]);
+                let _field = UI.tokenField(input, existing, close).preventDuplicates(function (val) {
                     UI.warn(Messages._getKey('tags_duplicate', [val]));
                 });
                 _field.setTokens(content.tags || []);
@@ -508,16 +511,9 @@ define([
                     $list.toggle();
                     $tags.toggle();
                 });
-                let close = h('button.btn.btn-secondary.cp-token-close', [
-                    Icons.get('close'),
-                    h('span', Messages.filePicker_close)
-                ]);
                 Util.onClickEnter($(close), () => {
                     $list.toggle(true);
                     $tags.toggle(false);
-                });
-                setTimeout(() => {
-                    $tags.find('.cp-tokenfield-form').append(close);
                 });
             }
 
