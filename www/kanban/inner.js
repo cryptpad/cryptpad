@@ -1058,8 +1058,11 @@ define([
             e.stopPropagation();
         });
         $(document).on('mouseup', function (e) {
-            var drag = kanban.drag;
-            kanban.options.dragItems = drag;
+            var selectionActive = window.getSelection && window.getSelection().toString().length > 0;
+            if (!selectionActive) {
+                var drag = kanban.drag;
+                kanban.options.dragItems = drag;
+            }
             e.stopPropagation();
         });
 
