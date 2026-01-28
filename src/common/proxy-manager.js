@@ -541,7 +541,7 @@ const factory = (UserObject, Util, Hash,
 
                     if (copy) { return; }
 
-                    if (resolved.main.length) {
+                    if (resolved.main.length && !moveError) {
                         // Remove the elements from the old location (without unpinning)
                         Env.user.userObject.delete(resolved.main, waitFor()); // FIXME waitFor() is called synchronously
                     }
@@ -580,7 +580,9 @@ const factory = (UserObject, Util, Hash,
                         if (copy) { return; }
 
                         // Remove the elements from the old location (without unpinning)
-                        uoFrom.delete(paths, waitFor()); // FIXME waitFor() is called synchronously
+                        if (!moveError) {
+                            uoFrom.delete(paths, waitFor()); // FIXME waitFor() is called synchronously
+                        }
                     }
                 });
             }
