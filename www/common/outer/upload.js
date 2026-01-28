@@ -206,6 +206,7 @@ define([
                 metadata.owners = [edPublic];
             }));
         }).nThen(function () {
+            if (ApiConfig.isDegraded) { return onError('DEGRADED'); }
             module.uploadU8(common, {
                 teamId: teamId,
                 u8: u8,

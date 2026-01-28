@@ -942,6 +942,9 @@ define([
                             if (error === 'E_OVER_LIMIT') {
                                 return void UI.warn(Messages.pinLimitReached);
                             }
+                            if (error === "DEGRADED") {
+                                return void UI.alert("This instance is operating a degraded service due a technical issue. You can open and modify existing documents, but not add new things to your drive. We hope to resume regular service as soon as possible.");
+                            }
                             return void UI.warn(Messages.autostore_error);
                         }
                         $(document).trigger('cpPadStored');
@@ -3504,6 +3507,9 @@ define([
                 if (error) {
                     if (error === 'E_OVER_LIMIT') {
                         return void UI.warn(Messages.pinLimitReached);
+                    }
+                    if (error === "DEGRADED") {
+                        return void UI.alert("This instance is operating a degraded service due a technical issue. You can open and modify existing documents, but not add new things to your drive. We hope to resume regular service as soon as possible");
                     }
                     return void UI.warn(Messages.autostore_error);
                 }

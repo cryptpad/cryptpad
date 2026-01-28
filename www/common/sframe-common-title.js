@@ -85,6 +85,8 @@ define([
                 err = err || (obj && obj.error);
                 if (err === 'E_OVER_LIMIT') {
                     return void UI.alert(Messages.pinLimitNotPinned, null, true);
+                } else if (err === 'DEGRADED') {
+                    return void UI.alert('This instance is operating a degraded service due a technical issue. You can open and modify existing documents, but not add new things to your drive. We hope to resume regular service as soon as possible.');
                 } else if (err) {
                     return UI.alert(Messages.driveOfflineError);
                 }
