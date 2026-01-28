@@ -1493,6 +1493,7 @@ define([
 
             usage = unit === 'GB'? Util.bytesToGigabytes(usage):
                 Util.bytesToMegabytes(usage);
+            if (!usage && usage !== 0) { usage = '?'; }
             limit = unit === 'GB'? Util.bytesToGigabytes(limit):
                 Util.bytesToMegabytes(limit);
 
