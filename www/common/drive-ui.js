@@ -124,8 +124,6 @@ define([
     var $recentIcon = $(Icons.get('drive-recent'));
     var $trashIcon = $(Icons.get('trash-full'));
     var $trashEmptyIcon = $(Icons.get('trash-empty'));
-    var $expandIcon = $(Icons.get('chevron-right'));
-    var $expandedIcon = $(Icons.get('chevron-down'));
     var $sortAscIcon = $(Icons.get('sort-asc', {'class': 'sortasc'}));
     var $sortDescIcon = $(Icons.get('sort-desc', {'class': 'sortdesc'}));
     var $closeIcon = $(Icons.get('close'));
@@ -2161,7 +2159,7 @@ define([
                 }
             }
 
-            var oldPaths = data && JSON.parse(data).path;
+            oldPaths = data && JSON.parse(data).path;
             if (!oldPaths) { return; }
             // A moved element should be removed from its previous location
             var movedPaths = [];
@@ -4586,7 +4584,7 @@ define([
 
             appStatus.ready(true);
         };
-        var displayDirectory = APP.displayDirectory = function (path, force, cb, opt) {
+        APP.displayDirectory = function (path, force, cb, opt) {
             cb = Util.once(cb || function () {});
             if (APP.closed || (APP.$content && !$.contains(document.documentElement, APP.$content[0]))) { return; }
             if (history.isHistoryMode) {
@@ -4710,7 +4708,7 @@ define([
                     addDragAndDropHandlers: addDragAndDropHandlers
                 },
                 events: {
-                    onFolderClicked: function (clickedPath, event) {
+                    onFolderClicked: function (clickedPath) {
                         // Check for shared folder restrictions
                         var sfId = manager.isInSharedFolder(clickedPath);
                         if (sfId) {
@@ -4726,7 +4724,7 @@ define([
                         APP.displayDirectory(clickedPath);
                     },
                     onContextMenu: function (clickedPath, event) {
-                        openContextMenu('tree')(event);
+                        openContextMenu('tree')(event, clickedPath);
                     },
                     onFolderExpanded: function (clickedPath, isOpen) {
                         LS.setFolderOpened(clickedPath, isOpen);
@@ -4770,7 +4768,7 @@ define([
                     addDragAndDropHandlers($row, elPath, true, droppable);
                 } else if (sfId) {
                     f = folders[sfId];
-                    var editable = !(f && f.readOnly);
+                    editable = !(f && f.readOnly);
                     droppable = editable;
                     if (!editable) {
                         $row.closest('li').attr('data-ro', true);
@@ -4787,10 +4785,12 @@ define([
             var $icon = manager.isFolderEmpty(files[TRASH]) ? $trashEmptyIcon.clone() : $trashIcon.clone();
             var isOpened = manager.comparePath(path, currentPath);
             var $trashElement = UIElements.createTreeElement(TRASH_NAME, $icon, [TRASH], false, true, false, isOpened, {
-                onFolderClicked: function (clickedPath, event) {
+                onFolderClicked: function (clickedPath) {
                     APP.displayDirectory(clickedPath);
                 },
-                onContextMenu: openContextMenu('trashtree')
+                onContextMenu: function (clickedPath, event) {
+                    openContextMenu('trashtree')(event, clickedPath);
+                }
             }, [], currentPath, { addDragAndDropHandlers: addDragAndDropHandlers });
             $trashElement.addClass('cp-app-drive-tree-root');
             var $trashList = $('<ul>', { 'class': 'cp-app-drive-tree-category' }).append($trashElement);
@@ -4828,7 +4828,7 @@ define([
             var $icon = options.$icon.clone();
             var isOpened = manager.comparePath([cat], currentPath);
             var $element = UIElements.createTreeElement(options.name, $icon, [cat], false, options.droppable, false, isOpened, {
-                onFolderClicked: function (clickedPath, event) {
+                onFolderClicked: function (clickedPath) {
                     APP.displayDirectory(clickedPath);
                 }
             }, [], currentPath, { addDragAndDropHandlers: addDragAndDropHandlers });
