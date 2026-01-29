@@ -1,0 +1,112 @@
+networks:
+  traefik_proxy:
+    external: true
+
+services:
+  cryptpad:
+    image: "cryptpad/cryptpad:latest"
+    hostname: cryptpad
+    container_name: cryptpad
+    environment:
+      - CPAD_MAIN_DOMAIN=https://main.yourdomain.com
+      - CPAD_SANDBOX_DOMAIN=https://sandbox.yourdomain.com
+      - CPAD_CONF=/cryptpad/config/config.js
+      # Read and accept the license before uncommenting the following line:
+      # https://github.com/ONLYOFFICE/web-apps/blob/master/LICENSE.txt
+      - CPAD_INSTALL_ONLYOFFICE=yes
+    volumes:
+      - /volume3/docker/cryptpad/blob:/cryptpad/blob
+      - /volume3/docker/cryptpad/block:/cryptpad/block
+      - /volume3/docker/cryptpad/customize:/cryptpad/customize
+      - /volume3/docker/cryptpad/data:/cryptpad/data
+      - /volume3/docker/cryptpad/files:/cryptpad/datastore
+      - /volume3/docker/cryptpad/onlyoffice-dist:/cryptpad/www/common/onlyoffice/dist
+      - /volume3/docker/cryptpad/onlyoffice-conf:/cryptpad/onlyoffice-conf
+      - /volume3/docker/cryptpad/config/config.js:/cryptpad/config/config.js
+    #ports:
+      #- "3010:3000" # only if debugging
+      #- "3013:3003" # only if debugging
+    ulimits:
+      nofile:
+        soft: 1000000
+        hard: 1000000
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_proxy"
+      
+      # HTTP to HTTPS Redirect (Global)
+      # In Traefik, a Router is a complete object. Even if a Middleware (like your redirect) intercepts the
+      # request and stops it from ever reaching the "Service," the Router object itself must be valid and fully 
+      # defined at startup. If Traefik sees a Router without a Service, 
+      # it attempts its "Automatic Service Attachment." If it finds 2+ Services, 
+      # it fails with the error in logs: 
+      #  ERR Router cryptpad-sandbox cannot be linked automatically with multiple Services: ["cryptpad-service" "cryptpad-ws-service"] providerName=docker routerName=cryptpad-sandbox
+      - "traefik.http.routers.cryptpad-office.entrypoints=http"
+      - "traefik.http.routers.cryptpad-office.rule=Host(`main.yourdomain.com`)"
+      - "traefik.http.routers.cryptpad-office.middlewares=traefik-https-redirect"
+      - "traefik.http.routers.cryptpad-office.service=cryptpad-service"
+
+      - "traefik.http.routers.cryptpad-sandbox.entrypoints=http"
+      - "traefik.http.routers.cryptpad-sandbox.rule=Host(`sandbox.yourdomain.com`)"
+      - "traefik.http.routers.cryptpad-sandbox.middlewares=traefik-https-redirect"
+      - "traefik.http.routers.cryptpad-sandbox.service=cryptpad-service" 
+      
+      # Main Domain (Port 3000)
+      - "traefik.http.routers.cryptpad-office-secure.entrypoints=https"
+      - "traefik.http.routers.cryptpad-office-secure.rule=Host(`main.yourdomain.com`)"
+      - "traefik.http.routers.cryptpad-office-secure.tls=true"
+      - "traefik.http.routers.cryptpad-office-secure.priority=10" # Lower priority
+      - "traefik.http.routers.cryptpad-office-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.cryptpad-office-secure.service=cryptpad-service"
+      - "traefik.http.routers.cryptpad-secure.middlewares=cryptpad-headers"
+
+      # Sandbox Domain (Port 3000)
+      - "traefik.http.routers.cryptpad-sandbox-secure.entrypoints=https"
+      - "traefik.http.routers.cryptpad-sandbox-secure.rule=Host(`sandbox.yourdomain.com`)"
+      - "traefik.http.routers.cryptpad-sandbox-secure.tls=true"
+      - "traefik.http.routers.cryptpad-sandbox-secure.priority=20" # Lower priority
+      - "traefik.http.routers.cryptpad-sandbox-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.cryptpad-sandbox-secure.service=cryptpad-service"
+      - "traefik.http.routers.cryptpad-sandbox.middlewares=cryptpad-headers"
+      
+      # WebSocket Router (Port 3003)
+      - "traefik.http.routers.cryptpad-ws.entrypoints=https"
+      - "traefik.http.routers.cryptpad-ws.rule=PathPrefix(`/cryptpad_websocket`)"
+      - "traefik.http.routers.cryptpad-ws.tls=true"
+      - "traefik.http.routers.cryptpad-ws.priority=100" # Higher priority
+      - "traefik.http.routers.cryptpad-ws.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.cryptpad-ws.service=cryptpad-ws-service"
+      - "traefik.http.routers.cryptpad-ws.middlewares=cryptpad-headers,ws-upgrade"
+
+      # Service
+      - "traefik.http.services.cryptpad-service.loadbalancer.server.port=3000"
+      - "traefik.http.services.cryptpad-ws-service.loadbalancer.server.port=3003"
+
+      # Ensure Websocket upgrade headers are passed clearly
+      - "traefik.http.middlewares.ws-upgrade.headers.customRequestHeaders.Connection=Upgrade"
+      - "traefik.http.middlewares.ws-upgrade.headers.customRequestHeaders.Upgrade=websocket"
+      
+      # Ensure Content Security Policy (CSP) or CORS headers are not being stripped or incorrectly modified by Traefik.
+      # Allow the main domain to embed the sandbox
+      - "traefik.http.middlewares.cryptpad-headers.headers.customResponseHeaders.X-Frame-Options=ALLOW-FROM https://main.yourdomain.com"
+      # The modern way (CSP) to allow framing
+      - "traefik.http.middlewares.cryptpad-headers.headers.customResponseHeaders.Access-Control-Allow-Origin=https://main.yourdomain.com"
+      # Ensure Cookies can be shared across the domains if needed
+      - "traefik.http.middlewares.cryptpad-headers.headers.contentSecurityPolicy=frame-ancestors 'self' https://main.yourdomain.com"
+    
+      # Activate if /cryptpad_websocket return http responxe code 101 in console
+      # Allow the Sandbox to talk to the Main domain's WebSocket
+      # the Sandbox domain is trying to access the WebSocket through the Main domain, and the browser's security policy is
+      # stepping in at the last millisecond to kill the data flow.
+      # Even with a 101 status, the browser will drop the connection if the Access-Control-Allow-Origin doesn't explicitly permit the handshake between your two domains.
+      - "traefik.http.middlewares.cryptpad-headers.headers.accessControlAllowOriginList=https://main.yourdomain.com,https://sandbox.yourdomain.com"
+      - "traefik.http.middlewares.cryptpad-headers.headers.accessControlAllowMethods=GET,OPTIONS,PUT"
+      - "traefik.http.middlewares.cryptpad-headers.headers.accessControlAllowHeaders=*"
+      - "traefik.http.middlewares.cryptpad-headers.headers.accessControlAllowCredentials=true"
+
+      # Updated Middleware for CSP
+      - "traefik.http.middlewares.cryptpad-headers.headers.customResponseHeaders.Content-Security-Policy=frame-ancestors 'self' https://main.yourdomain.com; connect-src 'self' https://main.yourdomain.com wss://main.yourdomain.com"
+
+    networks:
+      - traefik_proxy
