@@ -4010,7 +4010,6 @@ define([
 
             var $spinnerContainer = $(h('div.cp-app-drive-search-spinner'));
             var spinner = UI.makeSpinner($spinnerContainer);
-            var searching = true;
             var $input = APP.Search.$input = $('<input>', {
                 id: 'cp-app-drive-search-input',
                 placeholder: Messages.fm_searchName,
@@ -4018,11 +4017,6 @@ define([
                 draggable: false,
                 tabindex: 1,
             }).keyup(function (e) {
-                if (searching) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return;
-                }
                 var currentValue = $input.val().trim();
                 if (search.to) { window.clearTimeout(search.to); }
                 if (e.which === 13) {
@@ -4030,7 +4024,6 @@ define([
                     var newLocation = [SEARCH, $input.val()];
                     search.cursor = $input[0].selectionStart;
                     if (!manager.comparePath(newLocation, currentPath.slice())) {
-                        searching = true;
                         APP.displayDirectory(newLocation);
                     }
                     return;
@@ -4038,7 +4031,6 @@ define([
                 if (e.which === 27) {
                     $input.val('');
                     search.cursor = 0;
-                    searching = true;
                     APP.displayDirectory([SEARCH]);
                     return;
                 }
@@ -4055,13 +4047,14 @@ define([
                     search.cursor = $input[0].selectionStart;
                     if (currentValue === search.value) { return; }
                     if (!manager.comparePath(newLocation, currentPath.slice())) {
-                        searching = true;
+                        spinner.spin();
                         APP.displayDirectory(newLocation);
                     }
                 }, 500);
             }).on('click mousedown mouseup', function (e) {
                 e.stopPropagation();
             }).val(value || '').appendTo($div);
+            search.value = typeof(value) === "string" ? value : '';
             $input[0].selectionStart = search.cursor || 0;
             $input[0].selectionEnd = search.cursor || 0;
 
@@ -4082,17 +4075,20 @@ define([
             if (typeof(value) === "string" && value.trim()) {
                 spinner.spin();
             } else {
-                searching = false;
                 return;
             }
 
             setTimeout(function () {
+                var latestValue = $input.val();
+                if (latestValue !== value) {
+                    spinner.hide();
+                    return;
+                }
                 //$list.closest('#cp-app-drive-content-folder').addClass('cp-app-drive-content-list');
                 var filesList = manager.search(value);
                 if (!filesList.length) {
                     $list.append(h('div.cp-app-drive-search-noresult', Messages.fm_noResult));
                     spinner.hide();
-                    searching = false;
                     return;
                 }
                 var sortable = {};
@@ -4157,7 +4153,6 @@ define([
                 });
                 setTimeout(collapseDrivePath);
                 spinner.hide();
-                searching = false;
             });
         };
 
