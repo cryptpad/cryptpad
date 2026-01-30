@@ -4,7 +4,7 @@
 
 const factory = (Sortify, UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
-                Realtime, Messaging, Pinpad, Rpc, Cache,
+                Realtime, Messaging, Pinpad, Rpc, Cryptget, Cache,
                 SF, AccountTS, DriveTS, PadTS, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
@@ -2231,6 +2231,62 @@ const factory = (Sortify, UserObject, ProxyManager,
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        Store.fixMissingRtChannel = (cb) => {
+            const all = {};
+            const addMissing = (missing) => {
+                missing.forEach(obj => {
+                    Object.keys(obj).forEach(chan => {
+                        let proxy = obj[chan];
+                        let href = proxy.roHref || proxy.href;
+                        all[chan] ||= {
+                            href,
+                            password: proxy.password,
+                            list: []
+                        };
+                        all[chan].list.push(proxy);
+                    });
+                });
+            };
+
+            const mine = store.manager.getMissingRtChannel();
+            addMissing(mine);
+            const teamsId = store.modules.team.getTeams();
+            teamsId.forEach(id => {
+                const team = store.modules.team.getTeam(id);
+                const teamMissing = team.manager.getMissingRtChannel();
+                addMissing(teamMissing);
+            });
+
+            if (Object.keys(all).length) {
+                Feedback.send('MISSING_RT_CHANNEL', true);
+            }
+
+            let n = nThen;
+            const opts = {
+                network: store.network
+            };
+            Object.keys(all).forEach(chan => {
+                n = n(waitFor => {
+                    const data = all[chan];
+                    const href = data.href;
+                    opts.password = data.password;
+                    const parsed = Hash.parsePadUrl(href);
+                    Cryptget.get(parsed.hash, waitFor((err, content) => {
+                        if (err) { return; }
+                        const p = Util.tryParse(content);
+                        const rtChannel = p?.content?.channel;
+                        if (!rtChannel) { return; }
+                        data.list.forEach(proxy => {
+                            proxy.rtChannel = rtChannel;
+                        });
+                    }), opts);
+                }).nThen;
+            });
+            n(() => {
+                setTimeout(cb);
+            });
+        };
+
         Store.refreshDriveUI = function () {
             getAllStores().forEach(function (_s) {
                 var send = _s.id ? _s.sendEvent : sendDriveEvent;
@@ -2384,6 +2440,8 @@ const factory = (Sortify, UserObject, ProxyManager,
                     // Make teams non-blocking
                     if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 });
+            }).nThen(function (waitFor) {
+                Store.fixMissingRtChannel(waitFor());
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
@@ -2983,6 +3041,7 @@ module.exports = factory(
     require('./components/messaging'),
     require('../common/pinpad'),
     require('../common/rpc'),
+    require('../common/cryptget'),
     require('../common/cache-store'),
     require('./components/sharedfolder'),
     require('./components/account'), // .ts

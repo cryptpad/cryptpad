@@ -1407,6 +1407,17 @@ const factory = (UserObject, Util, Hash,
         });
     };
 
+    const getMissingRtChannel = (Env) => {
+        const userObjects = _getUserObjects(Env);
+        const all = [];
+        userObjects.forEach(function (uo) {
+            const missing = uo.getMissingRtChannel();
+            if (!missing) { return; }
+            all.push(missing);
+        });
+        return all;
+    };
+
     var create = function (proxy, data, uoConfig) {
         var Env = {
             pinPads: data.pin,
@@ -1473,7 +1484,9 @@ const factory = (UserObject, Util, Hash,
             findFile: callWithEnv(findFile),
             getEditHash: callWithEnv(getEditHash),
             user: Env.user,
-            folders: Env.folders
+            folders: Env.folders,
+            // Fix rtChannel
+            getMissingRtChannel: callWithEnv(getMissingRtChannel)
         };
     };
 
