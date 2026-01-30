@@ -276,7 +276,7 @@ define([
                 proxy.curvePrivate = opt.curvePrivate;
                 proxy.login_name = res.uname;
                 proxy[Constants.displayNameKey] = res.uname;
-                proxy.version = 12;
+                proxy.version = 11;
 
                 Feedback.send('REGISTRATION', true);
             } else {
