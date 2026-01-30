@@ -140,6 +140,7 @@
         .cp-app-profile-displayname {
             font-weight: bold;
             font-size: 30px;
+            word-break: break-word;
         }
         .cp-app-profile-link {
             font-size: 25px;
@@ -193,6 +194,13 @@
     }
     .cp-app-profile-friend-request.btn-success {
         margin-right: 0.5rem;
+    }
+    #cp-sidebarlayout-container #cp-sidebarlayout-rightside .cp-app-profile-friend-container button.btn.cp-app-profile-friend-request {
+        height: auto;
+        > span {
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
     }
 
     // I tried using flexbox but messed with how the pencil icon was displayed
