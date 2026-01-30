@@ -295,7 +295,7 @@ install_version() {
 
         curl "https://github.com/cryptpad/onlyoffice-editor/releases/download/$VERSION/onlyoffice-editor.zip" --location --output "onlyoffice-editor.zip"
         echo "$HASH onlyoffice-editor.zip" >onlyoffice-editor.zip.sha512
-        if ! sha512sum --check onlyoffice-editor.zip.sha512; then
+        if ! sha512sum -c onlyoffice-editor.zip.sha512; then
             echo "onlyoffice-editor.zip does not match expected checksum"
             exit 1
         fi
@@ -338,7 +338,7 @@ install_x2t() {
         ensure_command_available unzip
         curl "https://github.com/cryptpad/onlyoffice-x2t-wasm/releases/download/$VERSION/x2t.zip" --location --output x2t.zip
         echo "$HASH x2t.zip" >x2t.zip.sha512
-        if ! sha512sum --check x2t.zip.sha512; then
+        if ! sha512sum -c x2t.zip.sha512; then
             echo "x2t.zip does not match expected checksum"
             exit 1
         fi

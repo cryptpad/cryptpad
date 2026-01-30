@@ -723,7 +723,7 @@ define([
                 if (window.sendCredentials) { xhr.withCredentials = true; }
                 xhr.responseType = 'arraybuffer';
                 xhr.onload = function () {
-                    if (/^4/.test('' + this.status)) {
+                    if (/^[45]/.test('' + this.status)) {
                         reject(this.status);
                         return void console.error('XHR error', this.status);
                     }

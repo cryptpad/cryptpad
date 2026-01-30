@@ -4940,6 +4940,12 @@ define([
                 opts.noExpiration = true;
             }
 
+            let attr = opts.attributes = {};
+            if (data.rtChannel) { attr.rtChannel = data.rtChannel; }
+            if (data.lastVersion) { attr.lastVersion = data.lastVersion; }
+            if (data.lastCpHash) { attr.lastCpHash = data.lastCpHash; }
+            if (data.answersChannel) { attr.answersChannel = data.answersChannel; }
+
             Access.getAccessModal(common, opts, cb);
         };
 
