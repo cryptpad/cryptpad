@@ -1656,6 +1656,35 @@ const factory = (UserObject, Util, Hash,
         });
         return ret;
     };
+    var searchAsync = function (Env, value, cb, opts) {
+        cb = Util.once(cb || function () {});
+        var ret = [];
+        var userObjects = _getUserObjects(Env);
+        var index = 0;
+        var next = function () {
+            if (index >= userObjects.length) { return void cb(ret); }
+            var uo = userObjects[index++];
+            var fPath = _getUserObjectPath(Env, uo);
+            var handleResults = function (results) {
+                if (!results || !results.length) { return void next(); }
+                if (fPath) {
+                    results.forEach(function (r) {
+                        r.inSharedFolder = true;
+                        r.paths.forEach(function (p) {
+                            Array.prototype.unshift.apply(p, fPath);
+                        });
+                    });
+                }
+                Array.prototype.push.apply(ret, results);
+                next();
+            };
+            if (uo.searchAsync) {
+                return void uo.searchAsync(value, handleResults, opts);
+            }
+            handleResults(uo.search(value));
+        };
+        next();
+    };
 
     var getRecentPads = function (Env) {
         var files = [];
@@ -1799,6 +1828,7 @@ const factory = (UserObject, Util, Hash,
             isStaticFile: callWithEnv(isStaticFile),
             getFiles: callWithEnv(getFiles),
             search: callWithEnv(search),
+            searchAsync: callWithEnv(searchAsync),
             getRecentPads: callWithEnv(getRecentPads),
             getOwnedPads: callWithEnv(getOwnedPads),
             getTagsList: callWithEnv(getTagsList),

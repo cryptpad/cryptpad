@@ -3931,6 +3931,9 @@ define([
         APP.Search = {};
         var displaySearch = function ($list, value) {
             var search = APP.Search;
+            var logSearch = function (message) {
+                console.log("SEARCH: " + new Date().toISOString() + " " + message);
+            };
             var $div = $('<div>', {'id': 'cp-app-drive-search', 'class': 'cp-unselectable'});
 
             $searchIcon.clone().appendTo($div);
@@ -3945,56 +3948,56 @@ define([
                 draggable: false,
                 tabindex: 1,
             }).keyup(function (e) {
-                if (searching) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return;
-                }
+                logSearch("new text detected");
                 var currentValue = $input.val().trim();
                 if (search.to) { window.clearTimeout(search.to); }
                 if (e.which === 13) {
                     spinner.spin();
-                    var newLocation = [SEARCH, $input.val()];
                     search.cursor = $input[0].selectionStart;
-                    if (!manager.comparePath(newLocation, currentPath.slice())) {
-                        searching = true;
-                        APP.displayDirectory(newLocation);
-                    }
+                    logSearch("search launched via enter");
+                    renderSearchResults($input.val());
                     return;
                 }
                 if (e.which === 27) {
                     $input.val('');
+                    logSearch("text field updated (escape clear)");
                     search.cursor = 0;
-                    searching = true;
-                    APP.displayDirectory([SEARCH]);
+                    renderSearchResults('');
                     return;
                 }
 
                 if (currentValue === "") {
                     search.cursor = 0;
-                    APP.displayDirectory([SEARCH]);
+                    renderSearchResults('');
                     return;
                 }
 
                 if (currentValue.length < 2) { return; } // Don't autosearch 1 character
+                search.inputVersion = (search.inputVersion || 0) + 1;
+                var inputVersion = search.inputVersion;
                 search.to = window.setTimeout(function () {
-                    var newLocation = [SEARCH, $input.val()];
+                    if (inputVersion !== search.inputVersion) { return; }
                     search.cursor = $input[0].selectionStart;
                     if (currentValue === search.value) { return; }
-                    if (!manager.comparePath(newLocation, currentPath.slice())) {
-                        searching = true;
-                        APP.displayDirectory(newLocation);
-                    }
+                    logSearch("search launched via debounce");
+                    renderSearchResults($input.val());
                 }, 500);
             }).on('click mousedown mouseup', function (e) {
                 e.stopPropagation();
+            }).on('focus', function () {
+                logSearch("input focus");
+            }).on('blur', function () {
+                logSearch("input blur");
             }).val(value || '').appendTo($div);
+            logSearch("text field updated (initial value)");
+            search.value = typeof(value) === "string" ? value : '';
             $input[0].selectionStart = search.cursor || 0;
             $input[0].selectionEnd = search.cursor || 0;
 
             var cancel = Icons.get('close', {class: 'cp-app-drive-search-cancel',title:Messages.cancel}); // not visible
             cancel.addEventListener('click', function () {
                 $input.val('');
+                logSearch("text field updated (cancel click)");
                 search.cursor = 0;
                 APP.displayDirectory([SEARCH]);
             });
@@ -4002,90 +4005,226 @@ define([
 
             $div.append($spinnerContainer);
             $list.append($div);
+            var $timing = $('<div>', {
+                'class': 'cp-app-drive-search-timing'
+            }).appendTo($div);
             setTimeout(function () {
                 $input.focus();
             });
 
-            if (typeof(value) === "string" && value.trim()) {
-                spinner.spin();
-            } else {
-                searching = false;
-                return;
-            }
+            var clearSearchResults = function () {
+                $list.children().not('#cp-app-drive-search').remove();
+            };
 
-            setTimeout(function () {
-                //$list.closest('#cp-app-drive-content-folder').addClass('cp-app-drive-content-list');
-                var filesList = manager.search(value);
-                if (!filesList.length) {
-                    $list.append(h('div.cp-app-drive-search-noresult', Messages.fm_noResult));
+            var renderSearchResults = function (nextValue) {
+                logSearch("launching search for value " + nextValue);
+		if (searching==true) {
+                    logSearch("search already in progress");
+                    setTimeout(function () {
+			logSearch("retrying search for value " + nextValue);
+			renderSearchResults(nextValue);
+                    }, 1000); 
+			return;
+		}
+
+                var searchValue = typeof(nextValue) === "string" ? nextValue : '';
+                search.value = searchValue;
+                clearSearchResults();
+                $timing.text('');
+                if (!searchValue.trim()) {
                     spinner.hide();
                     searching = false;
+                    logSearch("finished search (empty query)");
                     return;
                 }
-                var sortable = {};
-                var sortableFolders = [];
-                filesList.forEach(function (r) {
-                    // if r.id === null, then it's a folder, not a file
-                    r.paths.forEach(function (path) {
-                        if (!r.inSharedFolder &&
-                            APP.hideDuplicateOwned && manager.isDuplicateOwned(path)) { return; }
-                        var _path = path.slice();
-                        var key = path.pop();
-                        var root = manager.find(path);
-                        var obj = {
-                            path: path,
-                            _path: _path,
-                            key: key,
-                            root: root,
-                            data: r.data
-                        };
-                        if (manager.isFolder(root[key])) {
-                            sortableFolders.push(obj);
+                var searchStartedAt = Date.now();
+                spinner.spin();
+                searching = true;
+                search.displayVersion = (search.displayVersion || 0) + 1;
+                var displayVersion = search.displayVersion;
+                setTimeout(function () {
+                    if (displayVersion !== search.displayVersion) {
+                        spinner.hide();
+                        searching = false;
+                        return;
+                    }
+                    var latestValue = $input.val();
+                    if (latestValue !== searchValue) {
+                        spinner.hide();
+                        searching = false;
+                        return;
+                    }
+                    //$list.closest('#cp-app-drive-content-folder').addClass('cp-app-drive-content-list');
+                    logSearch("search execution scheduled for value " + searchValue);
+                    setTimeout(function () {
+                        if (displayVersion !== search.displayVersion) {
+                            spinner.hide();
+                            searching = false;
                             return;
                         }
-                        sortable[root[key]] = obj;
-                    });
-                });
-                var _folders = sortElements(true, [ROOT], sortableFolders, null, !getSortFolderDesc(), true);
-                var sortableKeys = Object.keys(sortable).map(Number);
-                var _files = sortElements(false, [ROOT], sortableKeys, APP.store[SORT_FILE_BY], !getSortFileDesc(), true);
+                        if ($input.val() !== searchValue) {
+                            spinner.hide();
+                            searching = false;
+                            return;
+                        }
+                        logSearch("search execution started for value " + searchValue);
+                        var searchExecStartedAt = Date.now();
+                        var handleSearchResults = function (filesList) {
+                            if (displayVersion !== search.displayVersion) {
+                                spinner.hide();
+                                searching = false;
+                                return;
+                            }
+                            if ($input.val() !== searchValue) {
+                                spinner.hide();
+                                searching = false;
+                                return;
+                            }
+                            var searchExecElapsed = Date.now() - searchExecStartedAt;
+                            logSearch("search execution done in " + searchExecElapsed + "ms");
+                            logSearch("starting render search results");
+                            var sortStartedAt = Date.now();
+                            if (!filesList.length) {
+                                $list.append(h('div.cp-app-drive-search-noresult', Messages.fm_noResult));
+                                spinner.hide();
+                                searching = false;
+                                var totalElapsed = Date.now() - searchStartedAt;
+                                logSearch("sort time 0ms (no results)");
+                                logSearch("render time 0ms (no results)");
+                                logSearch("total time " + totalElapsed + "ms");
+                                $timing.text(totalElapsed + 'ms');
+                                logSearch("finished render (no results)");
+                                return;
+                            }
+                            var sortable = {};
+                            var sortableFolders = [];
+                            filesList.forEach(function (r) {
+                            // if r.id === null, then it's a folder, not a file
+                            r.paths.forEach(function (path) {
+                                if (!r.inSharedFolder &&
+                                    APP.hideDuplicateOwned && manager.isDuplicateOwned(path)) { return; }
+                                var _path = path.slice();
+                                var key = path.pop();
+                                var root = manager.find(path);
+                                var obj = {
+                                    path: path,
+                                    _path: _path,
+                                    key: key,
+                                    root: root,
+                                    data: r.data
+                                };
+                                if (manager.isFolder(root[key])) {
+                                    sortableFolders.push(obj);
+                                    return;
+                                }
+                                sortable[root[key]] = obj;
+                            });
+                        });
+                            var _folders = sortElements(true, [ROOT], sortableFolders, null, !getSortFolderDesc(), true);
+                            var sortableKeys = Object.keys(sortable).map(Number);
+                            var _files = sortElements(false, [ROOT], sortableKeys, APP.store[SORT_FILE_BY], !getSortFileDesc(), true);
+                            var sortElapsed = Date.now() - sortStartedAt;
 
-                var addEl = function (obj, folder) {
-                    var $element = createElement(obj.path, obj.key, obj.root, folder);
-                    $element.addClass('cp-app-drive-element-notrash cp-app-drive-search-result');
-                    $element.off('contextmenu');
-                    $element.contextmenu(openContextMenu('default'));
-                    $element.data('context', 'default');
-                    if (folder) {
-                        $element.find('.cp-app-drive-element-list').css({
-                            visibility: 'hidden'
-                        }).text('');
-                    }
-                    if (manager.isPathIn(obj._path, ['hrefArray'])) {
-                        obj._path.pop();
-                        obj._path.push(obj.data.title);
-                    }
-                    var $path = $('<span>', {
-                        'class': 'cp-app-drive-search-path'
-                    }).appendTo($element.find('.cp-app-drive-element-name'));
-                    createTitle($path, obj._path);
+                        var addEl = function (obj, folder) {
+                            var $element = createElement(obj.path, obj.key, obj.root, folder);
+                            $element.addClass('cp-app-drive-element-notrash cp-app-drive-search-result');
+                            $element.off('contextmenu');
+                            $element.contextmenu(openContextMenu('default'));
+                            $element.data('context', 'default');
+                            if (folder) {
+                                $element.find('.cp-app-drive-element-list').css({
+                                    visibility: 'hidden'
+                                }).text('');
+                            }
+                            if (manager.isPathIn(obj._path, ['hrefArray'])) {
+                                obj._path.pop();
+                                obj._path.push(obj.data.title);
+                            }
+                            var $path = $('<span>', {
+                                'class': 'cp-app-drive-search-path'
+                            }).appendTo($element.find('.cp-app-drive-element-name'));
+                            createTitle($path, obj._path);
 
-                    $list.append($element);
-                };
-                if (_folders.length) { getFolderListHeader(true, true).appendTo($list); }
-                _folders.forEach(function (el) {
-                    var obj = el;
-                    addEl(obj, true);
+                            $list.append($element);
+                        };
+
+                            var renderStartedAt = Date.now();
+                            var appendQueue = [];
+                            if (_folders.length) {
+                                appendQueue.push(function () {
+                                    getFolderListHeader(true, true).appendTo($list);
+                                });
+                                _folders.forEach(function (el) {
+                                    var obj = el;
+                                    appendQueue.push(function () {
+                                        addEl(obj, true);
+                                    });
+                                });
+                            }
+                            if (_files.length) {
+                                appendQueue.push(function () {
+                                    getFileListHeader(true).appendTo($list);
+                                });
+                                _files.forEach(function (el) {
+                                    var obj = sortable[el];
+                                    appendQueue.push(function () {
+                                        addEl(obj, false);
+                                    });
+                                });
+                            }
+
+                            var appendIndex = 0;
+                            var appendBatch = function () {
+                                var batchStartedAt = Date.now();
+                                if (displayVersion !== search.displayVersion) {
+                                    spinner.hide();
+                                    searching = false;
+                                    return;
+                                }
+                                if ($input.val() !== searchValue) {
+                                    spinner.hide();
+                                    searching = false;
+                                    return;
+                                }
+                                var end = Math.min(appendIndex + 30, appendQueue.length);
+                                for (; appendIndex < end; appendIndex++) {
+                                    appendQueue[appendIndex]();
+                                }
+                                var batchElapsed = Date.now() - batchStartedAt;
+                                logSearch("render batch time " + batchElapsed + "ms (" + appendIndex + "/" + appendQueue.length + ")");
+                                if (appendIndex < appendQueue.length) {
+                                    window.requestAnimationFrame(appendBatch);
+                                    return;
+                                }
+                                var renderElapsed = Date.now() - renderStartedAt;
+                                setTimeout(collapseDrivePath);
+                                spinner.hide();
+                                searching = false;
+                                var totalElapsed = Date.now() - searchStartedAt;
+                                logSearch("sort time " + sortElapsed + "ms");
+                                logSearch("render time " + renderElapsed + "ms");
+                                logSearch("total time " + totalElapsed + "ms");
+                                $timing.text(totalElapsed + 'ms');
+                                logSearch("finished render (results displayed)");
+                            };
+
+                            appendBatch();
+                        };
+
+                        if (manager.searchAsync) {
+                            manager.searchAsync(searchValue, handleSearchResults);
+                        } else {
+                            handleSearchResults(manager.search(searchValue));
+                        }
+                    }, 0);
                 });
-                if (_files.length) { getFileListHeader(true).appendTo($list); }
-                _files.forEach(function (el) {
-                    var obj = sortable[el];
-                    addEl(obj, false);
-                });
-                setTimeout(collapseDrivePath);
-                spinner.hide();
+            };
+
+            if (typeof(value) === "string") {
+                renderSearchResults(value);
+            } else {
                 searching = false;
-            });
+            }
         };
 
         var displayRecent = function ($list, typeFilter) {
