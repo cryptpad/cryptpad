@@ -4718,7 +4718,17 @@ define([
                 }
                 var show = checkCondition(block);
                 block.opts.questions.forEach(function (_uid) {
-                    $container.find('.cp-form-block[data-id="'+_uid+'"]').toggle(show);
+                    var $blockEl = $container.find('.cp-form-block[data-id="'+_uid+'"]');
+                    $blockEl.toggle(show);
+                    
+                    // If section is being hidden, reset answers for questions in this section
+                    if (!show) {
+                        APP.formBlocks.forEach(function (formBlock) {
+                            if (formBlock.uid === _uid && formBlock.reset) {
+                                formBlock.reset();
+                            }
+                        });
+                    }
                 });
             });
         });
