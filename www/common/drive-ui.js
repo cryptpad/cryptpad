@@ -115,7 +115,7 @@ define([
     var $folderIcon = $(Icons.get(folder,{"class": "cp-app-drive-icon-folder cp-app-drive-content-icon"}));
     var $fileMenuIcon = $(Icons.get('ellipsis-horizontal'));
     var $folderEmptyIcon = $folderIcon.clone();
-    var $folderOpenedIcon = $(Icons.get('folder-open'));
+    var $folderOpenedIcon = $(Icons.get('folder-open', {"class": "cp-app-drive-icon-folder cp-app-drive-content-icon"}));
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
     var $sharedFolderIcon = $(Icons.get('drive-shared-folder', {"class": "cp-app-drive-icon-folder"}));
     var $sharedFolderOpenedIcon = $(Icons.get('folder-open', {"class": "cp-app-drive-icon-folder"}));
