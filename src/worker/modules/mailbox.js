@@ -14,7 +14,7 @@ const factory = (Util, Hash,
     var TYPES = [
         'notifications',
         'supportteam',
-        'broadcast'
+        //'broadcast'
     ];
     var BLOCKING_TYPES = [
     ];

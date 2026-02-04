@@ -50,6 +50,7 @@ define([
             'cp-support-list',
         ],
         'new': [ // Msg.support_cat_new
+            'cp-support-custom',
             'cp-support-subscribe',
             'cp-support-language',
             'cp-support-form',
@@ -218,6 +219,18 @@ define([
             content = ext.getContent(common);
         });
         return $(content);
+    };
+
+    create['custom'] = function () {
+        const msg = AppConfig.customSupportMsg;
+        if (!msg) { return $(); }
+        const lang = Messages._getLanguage();
+        const text = msg[lang] || msg['default'];
+        if (!text) { return $(); }
+        const div = h('div.cp-support-subscribe.cp-sidebarlayout-element', [
+            h('div.alert.alert-warning', text)
+        ]);
+        return $(div);
     };
 
     // Create a new tickets
