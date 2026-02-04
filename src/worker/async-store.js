@@ -2721,7 +2721,7 @@ const factory = (Sortify, UserObject, ProxyManager,
         const start = (clientId, data, cb) => {
             // Don't create a drive if the user only wants to
             // open an existing pad
-            const noDrive = data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash);
+            let noDrive = data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash);
             if (noDrive) {
                 if (data.neverDrive) { store.neverCache = true; }
                 return void onNoDrive(clientId, obj => {
