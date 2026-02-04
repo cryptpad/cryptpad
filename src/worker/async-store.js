@@ -2248,13 +2248,23 @@ const factory = (Sortify, UserObject, ProxyManager,
                 });
             };
 
-            const mine = store.manager.getMissingRtChannel();
-            addMissing(mine);
-            const teamsId = store.modules.team.getTeams();
+            try {
+                const mine = store.manager.getMissingRtChannel();
+                addMissing(mine);
+            } catch (e) {
+                Feedback.send('MISSING_RT_CHANNEL_ERROR', true);
+                return setTimeout(cb);
+            }
+            const teamsId = store.modules?.team?.getTeams() || [];
             teamsId.forEach(id => {
                 const team = store.modules.team.getTeam(id);
+                try {
                 const teamMissing = team.manager.getMissingRtChannel();
-                addMissing(teamMissing);
+                    addMissing(teamMissing);
+                } catch (e) {
+                    Feedback.send('MISSING_RT_CHANNEL_ERROR', true);
+                    return setTimeout(cb);
+                }
             });
 
             if (Object.keys(all).length) {
