@@ -849,7 +849,7 @@ const factory = (Util, Hash,
                 if (err || duplicateError) {
                     return void cb(err || duplicateError);
                 }
-                cb();
+                if (typeof(cb) === "function") { cb(); }
             });
         };
         exp.restore = function (path, cb) {
