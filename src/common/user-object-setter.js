@@ -316,6 +316,14 @@ const factory = (Util, Hash, Realtime) => {
             // Copy file or folder
             var newParent = exp.find(path);
             var tempName = exp.isFile(element) ? Hash.createChannelId() : key;
+            if (exp.isFolder(element) && tempName !== Messages.fm_newFolder &&
+                typeof(newParent[tempName]) !== "undefined") {
+                throw {
+                    error: 'E_DUPLICATE_FOLDER_NAME',
+                    folderName: tempName,
+                    message: Messages.fo_unavailableName
+                };
+            }
             var newName = exp.getAvailableName(newParent, tempName);
             if (Array.isArray(newParent)) {
                 newParent.push(element);
@@ -377,8 +385,11 @@ const factory = (Util, Hash, Realtime) => {
                               elementPath[1] : elementPath.pop();
 
             if (typeof(newParent[newName]) !== "undefined") {
-                exp.log(Messages.fo_unavailableName);
-                return;
+                return {
+                    error: 'E_DUPLICATE_FOLDER_NAME',
+                    folderName: newName,
+                    message: Messages.fo_unavailableName
+                };
             }
             newParent[newName] = element;
             return true;

@@ -315,7 +315,7 @@
         overflow: auto;
         width: auto;
         white-space: nowrap;
-        max-width: 500px;
+        max-width: 300px;
         min-width: 200px;
         padding: 10px 0px 0px 0px;
         color: @cp_sidebar-left-fg;
@@ -341,13 +341,17 @@
         .cp-app-drive-tree-docs {
             .droppable-tree-element();
             margin-top: 15px;
-            //padding: 0 0 0 20px;
-            padding: 0;
+            padding: 5px;
             background-color: @cp_sidebar-left-item-bg;
-            border-radius: @variables_radius;
+            border-radius: @variables_radius_L;
             cursor: auto;
             &li, li {
-                padding: 0;
+                padding: 0px;
+                ul {
+                    li {
+                        margin-top: 2px;
+                    }
+                }
                 &.cp-app-drive-element-collapsed ul {
                     display: none;
                 }
@@ -362,17 +366,18 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                     .leftside-menu-category_main();
+                    border-radius: @variables_radius_M;
                     display: flex;
                     align-items: center;
                     cursor: pointer;
-                    margin: 0 0 2px -5px;
+                    margin: 0;
                     .cp-app-drive-element {
                         flex: 1;
                         min-width: 0;
                         overflow: hidden;
                         text-overflow: ellipsis;
                     }
-                    &:focus-visible {
+                    &:focus-visible, input:focus-visible {
                         outline: @variables_focus_style;
                     }
                 }
@@ -385,7 +390,7 @@
             margin: 0;
             margin-top: 10px;
             background-color: @cp_sidebar-left-item-bg;
-            border-radius: @variables_radius;
+            border-radius: @variables_radius_L;
             box-shadow: @cryptpad_ui_shadow;
             .cp-app-drive-tree-root {
                 .droppable-tree-element();
@@ -414,29 +419,19 @@
         .cp-app-drive-icon-expcol {
             font-size: 14px;
             position: absolute;
-            left: -17px;
-            top: 10px;
+            left: -20px;
             overflow: hidden;
-            width: calc(1em - 2px) !important;
-            height: calc(1em - 2px) !important;
-            background-color: @cp_sidebar-left-item-bg;
             padding: 0;
             margin: 0;
             z-index: 10;
-            cursor: default;
+            cursor: pointer;
             display: inline-flex;
             svg {
-                margin: -1px;
-                width: 1em;
-                height: 1em;
+                margin: 0;
             }
             &:focus-visible {
-                outline: none;
-                svg {
-                    outline: @variables_focus_style;
-                    border-radius: @variables_radius_S;
-                    margin: 0;
-                }
+                outline: @variables_focus_style;
+                border-radius: @variables_radius;
             }
         }
         .cp-app-drive-tree-docs {
@@ -450,9 +445,8 @@
                 }
             }
             .cp-app-drive-tree-root > .cp-app-drive-element-row {
-                margin-left: 0px;
                 .cp-icon-hidden ~ svg {
-                    margin-left: -21px;
+                    margin-left: -10px;
                 }
                 .cp-app-drive-icon-expcol {
                     top: -1px;
@@ -477,38 +471,17 @@
                     padding-left: 15px;
                 }
                 &> ul {
-                    padding-left: 30px;
+                    padding-left: 20px;
                 }
             }
         }
 
         // Expand/collapse lines
         .cp-app-drive-tree-docs ul {
-            margin: 0px 0px 0px 10px;
+            margin: 0px 0px 0px 12px;
             list-style: none;
-            padding-left: 10px;
             li {
                 position: relative;
-                &:before {
-                    position: absolute;
-                    left: -10px;
-                    top: -10px;
-                    content: '';
-                    display: block;
-                    border-left: 1px solid @cp_drive-tree-branch;
-                    height: ~"calc(1em + 11px)";
-                    border-bottom: 1px solid @cp_drive-tree-branch;
-                    width: 11px;
-                }
-                &:after {
-                    position: absolute;
-                    left: -10px;
-                    bottom: -7px;
-                    content: '';
-                    display: block;
-                    border-left: 1px solid @cp_drive-tree-branch;
-                    height: 100%;
-                }
                 &.cp-app-drive-tree-root {
                     margin: 0px 0px 0px -10px;
                     &:before {
@@ -550,6 +523,7 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
+            border-left: 1px solid transparent;
             &:hover {
                 border-left: 1px solid @cryptpad_text_col;
             }
