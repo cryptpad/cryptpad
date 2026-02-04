@@ -43,6 +43,9 @@
             input {
                 flex: 1;
                 min-width: 0 !important;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                }
             }
             button {
                 // no radius in input + button combo
@@ -174,9 +177,6 @@
                 margin-right: @tokens_margin;
             }
             .tools_unselectable();
-            i {
-                margin-right: 5px;
-            }
         }
         .cp-tags-list {
             em {
@@ -186,6 +186,7 @@
             span {
                 cursor: pointer;
                 font-size: 14px;
+                margin-bottom: 0.3rem;
                 .tools_unselectable();
                 &.active {
                     background-color: @cp_kanban-fg;
