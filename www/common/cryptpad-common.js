@@ -915,6 +915,7 @@ define([
                     href: href,
                     title: data.title,
                     owners: optsPut.owners,
+                    attributes: common?.otherPadAttrs || {},
                     path: ['template']
                 }, function (obj) {
                     if (obj && obj.error) { return void cb(obj.error); }
@@ -1170,7 +1171,7 @@ define([
 
         // Make sure we also store additionnal data to pin all the channels
         // (OO and forms)
-        data.attributes = {};
+        data.attributes ||= {};
         Object.keys(common?.otherPadAttrs || {}).forEach(k => {
             data.attributes[k] = common.otherPadAttrs[k];
         });
@@ -1197,7 +1198,7 @@ define([
             return;
         }
 
-        let attributes = {};
+        let attributes = data.attributes || {};
         nThen(function (waitFor) {
             if (parsed.hashData.type !== 'pad') { return; }
             // Set the correct owner and expiration time if we can find them

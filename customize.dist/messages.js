@@ -20,7 +20,7 @@ var map = {
     'it': 'Italiano',
     'ja': '日本語',
     'nb': 'Norwegian Bokmål',
-    //'nl': 'Nederlands'
+    'nl': 'Nederlands',
     'pl': 'Polski',
     'pt-br': 'Português do Brasil',
     'pt-pt': 'Português do Portugal',
@@ -133,9 +133,11 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
+
     /// XXX
     Messages.fo_trash_move_error = "Shared folder contents cannot be moved to trash. Use \"Remove\" instead.";
     Messages.fo_sharedFolder_move_error = "Shared folders cannot be moved inside other shared folders.";
+    Messages.form_poll_required_hint = "To answer a required poll question, you must interact with at least one option.";
 
     return Messages;
 

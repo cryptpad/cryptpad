@@ -151,10 +151,20 @@ define([
                                 break;
 */
                             case 'DELETED_USER':
-                                UI.errorLoadingScreen(
-                                    UI.getDestroyedPlaceholder(result.reason, true), true, () => {
-                                        window.location.reload();
+                                if (result.reason === 'PASSWORD_CHANGE') {
+                                    UI.removeLoadingScreen(function () {
+                                        UI.alert(Messages.dph_account_pw, function () {
+                                                hashing = false;
+                                                $('#password').focus();
+                                            }
+                                        );
                                     });
+                                } else {
+                                    UI.errorLoadingScreen(
+                                        UI.getDestroyedPlaceholder(result.reason, true), true, () => {
+                                            window.location.reload();
+                                        });
+                                }
                                 break;
                             case 'INVAL_PASS':
                                 UI.removeLoadingScreen(function () {

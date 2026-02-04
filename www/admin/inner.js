@@ -568,7 +568,7 @@ define([
             row(Messages.admin_planName, data.plan || Messages.ui_none);
 
             // plan note
-            row(Messages.admin_creation_note, data.note || Messages.ui_none);
+            row(Messages.admin_note, data.note || Messages.ui_none);
 
             // storage limit
             if (data.limit) { row(Messages.admin_planlimit, getPrettySize(data.limit)); }

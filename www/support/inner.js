@@ -293,7 +293,8 @@ define([
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {
                 'class': 'cp-sidebarlayout-category',
-                'data-category': key
+                'data-category': key,
+                'tabindex': 0
             }).appendTo($categories);
             var iconClass = icons[key];
             if (iconClass) {
@@ -303,8 +304,7 @@ define([
             if (key === active) {
                 $category.addClass('cp-leftside-active');
             }
-
-            $category.click(function () {
+            Util.onClickEnter($category, function () {
                 if (!Array.isArray(categories[key]) && categories[key].onClick) {
                     categories[key].onClick();
                     return;
@@ -329,6 +329,7 @@ define([
             $container: APP.$toolbar,
             pageTitle: Messages.supportPage,
             metadataMgr: common.getMetadataMgr(),
+            skipLink: '#cp-sidebarlayout-container'
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();

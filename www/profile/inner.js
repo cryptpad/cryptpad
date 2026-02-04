@@ -236,7 +236,7 @@ define([
         // If this curve has sent us a friend request, we should not be able to sent it to them
         var friendRequests = common.getFriendRequests();
         if (friendRequests[data.curvePublic]) {
-            $button.append(Messages._getKey('friendRequest_received', [name || Messages.anonymous]))
+            $button.append(UI.setHTML(h('span'), Messages._getKey('friendRequest_received', [name || Messages.anonymous])))
                 .click(function () {
                 UIElements.displayFriendRequestModal(common, friendRequests[data.curvePublic]);
             });
@@ -276,7 +276,7 @@ define([
             return;
         }
         // This is not a friend yet: we can send a friend request
-        $button.text(Messages._getKey('userlist_addAsFriendTitle', [data.name || Messages.anonymous]))
+        $button.empty().append([Icons.get('add-friend'), h('span', Messages._getKey('userlist_addAsFriendTitle', [data.name || Messages.anonymous]))])
             .click(function () {
                 APP.common.sendFriendRequest({
                     curvePublic: data.curvePublic,

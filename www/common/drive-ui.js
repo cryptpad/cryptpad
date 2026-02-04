@@ -511,6 +511,7 @@ define([
                     h("ul.dropdown-menu", getNewPadTypes().map(function (app) {
                         return isAppEnabled(app) ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (restricted[app] === 0 ? '.cp-app-disabled' : ''), {
                             'tabindex': '-1',
+                            'data-type': app,
                         },[
                             Icons.get(AppConfig.applicationsIcon[app] || 'file'),
                             Messages.type[app]
@@ -3429,13 +3430,11 @@ define([
         var SORT_FILE_BY = 'sortFilesBy';
         var SORT_FILE_DESC = 'sortFilesDesc';
 
-        var getSortFolderDesc = function () { // this way the icon change is triggered
-            var v = APP.store[SORT_FOLDER_DESC];
-            return v === true;
-        };
         var getSortFileDesc = function () {
-            var v = APP.store[SORT_FILE_DESC];
-            return v === true;
+            return APP.store[SORT_FILE_DESC]+"" === "true";
+        };
+        var getSortFolderDesc = function () {
+            return APP.store[SORT_FOLDER_DESC]+"" === "true";
         };
 
         var onSortByClick = function () {
@@ -4945,6 +4944,12 @@ define([
             if (manager.isSharedFolder(el)) {
                 opts.noExpiration = true;
             }
+
+            let attr = opts.attributes = {};
+            if (data.rtChannel) { attr.rtChannel = data.rtChannel; }
+            if (data.lastVersion) { attr.lastVersion = data.lastVersion; }
+            if (data.lastCpHash) { attr.lastCpHash = data.lastCpHash; }
+            if (data.answersChannel) { attr.answersChannel = data.answersChannel; }
 
             Access.getAccessModal(common, opts, cb);
         };
