@@ -93,7 +93,7 @@ const _setMetadata: Callback = (ctx, clientId, data, cb) => {
         otherChannels.forEach(chan => {
             var _d = Util.clone(data);
             _d.channel = chan;
-            Store.setPadMetadata(clientId, _d, () => {});
+            s.rpc.setMetadata(_d, () => { });
         });
     }
 };

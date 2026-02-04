@@ -1117,6 +1117,7 @@ define([
                             href: data.href,
                             channel: data.channel,
                             title: data.title,
+                            attributes: data.attributes,
                             owners: data.metadata ? data.metadata.owners : data.owners,
                             expire: data.metadata ? data.metadata.expire : data.expire,
                             forceSave: true
