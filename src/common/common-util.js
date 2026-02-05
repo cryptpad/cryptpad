@@ -24,16 +24,8 @@ const factory = (NaclUtil) => {
     };
 
     Util.u8ToBase64 = (u8, cb) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-            let res = reader.result;
-            let trim = res.slice(res.indexOf(',') + 1);
-            cb(trim);
-        };
-        reader.readAsDataURL(new Blob([u8]));
+        cb(Util.encodeBase64(u8));
     };
-
-
 
     Util.shuffleArray = function (a) {
         for (var i = a.length - 1; i > 0; i--) {
