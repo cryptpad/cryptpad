@@ -962,7 +962,7 @@ define([
         // Replace a file/folder name by an input to change its value
         var displayRenameInput = function ($element, path) {
             // NOTE: setTimeout(f, 0) otherwise the "rename" button in the toolbar is not working
-            window.setTimeout(function () {
+            var renameInput = function () {
                 if (!APP.editable) { return; }
                 if (!path || path.length < 2) {
                     logError("Renaming a top level element (root, trash or filesData) is forbidden.");
@@ -1057,7 +1057,12 @@ define([
                     e.stopPropagation();
                     $input.parents('.cp-app-drive-element-row').attr("draggable", true);
                 });
-            },0);
+            };
+            if (APP.mobile()) {
+                renameInput();
+            } else {
+                window.setTimeout(renameInput, 0);
+            }
         };
 
 
