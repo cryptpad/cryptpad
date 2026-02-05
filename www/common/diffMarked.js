@@ -447,11 +447,17 @@ define([
         if (restrictedTags.indexOf(root.nodeName.toUpperCase()) === -1) { return true; }
         return root.getAttribute && /^(blob\:|\/lib\/pdfjs)/.test(root.getAttribute('src'));
     };
+    // Remove any iframe with srcdoc attribute
+    var checkSrcDoc = function (root) {
+        if (restrictedTags.indexOf(root.nodeName.toUpperCase()) === -1) { return true; }
+        return !(root.getAttribute && root.getAttribute('srcdoc'));
+    };
 
     var removeForbiddenTags = function (root) {
         if (!root) { return; }
         if (forbiddenTags.indexOf(root.nodeName.toUpperCase()) !== -1) { removeNode(root); }
-        if (!checkSrc(root)) { removeNode(root); }
+        if (!checkSrc(root)) { removeNode(root); }
+        if (!checkSrcDoc(root)) { removeNode(root); }
         slice(root.children).forEach(removeForbiddenTags);
     };
 
