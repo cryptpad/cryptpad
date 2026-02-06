@@ -1415,6 +1415,7 @@ define([
         });
 
         var getBlockId = (val) => {
+            if (val.length === 44) { return val; }
             var url;
             try {
                 url = new URL(val, ApiConfig.httpUnsafeOrigin);
