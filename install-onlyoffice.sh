@@ -98,7 +98,7 @@ main() {
                 rm -rf "$OO_DIR/v8/web-apps/apps/spreadsheeteditor/main/resources/help"
                 rm -rf "$OO_DIR/v8/web-apps/apps/common/main/resources/help/"
                 ;;
-            v9)  install_version v9 v9.2.0.119+1  b59cc10bc1da3c9160306241fb0b4c6919ccb6b896d053ddb153f9cceabe910e482846685cd66bf7435c7707032294d6ba1c7be1efdad654adab1f804fdec15e ;;
+            v9)  install_version v9 v9.2.0.119+2 41713e320bba1b62a26ad60b33f91c613bdb08d1259191632e8549df06de1f1bbc0bbde32a738073763451735f6b1d03a2485f806bd1f3ce11e11b11721e85e7 ;;
             x2t) install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1 ;;
             *)
                 echo "Unknown version: $version"
