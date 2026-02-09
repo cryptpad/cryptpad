@@ -134,6 +134,7 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.sent_chatMessage = "{0} has sent you a message"; // XXX
     return Messages;
 
 });
