@@ -4273,9 +4273,7 @@ define([
                         val = Number(val) || 0;
                         block.opts.allowOther = Boolean(val);
                         framework.localChange();
-                        framework._.cpNfInner.chainpad.onSettle(function () {
-                            UI.log(Messages.saved);
-                        });
+                        updateForm(framework, content, true);
                     });
                 }
 
