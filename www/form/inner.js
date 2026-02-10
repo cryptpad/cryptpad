@@ -1849,10 +1849,46 @@ define([
                     $(radio).find('input').data('val', data);
                     return radio;
                 });
-                var tag = h('div.radio-group.cp-form-type-radio', els);
+
+                // "Other" option: radio + text input (only when allowOther is enabled)
+                var otherInput, otherRadio, $otherInput, $otherRadio;
+                if (opts.allowOther) {
+                    otherInput = h('input.cp-form-other-input', {
+                        type: 'text',
+                        placeholder: Messages.form_other_placeholder || 'Other...',
+                        disabled: 'disabled'
+                    });
+                    $otherInput = $(otherInput);
+                    otherRadio = UI.createRadio(name, 'cp-form-'+name+'-other',
+                               Messages.form_other_placeholder || 'Other...', false, {});
+                    $otherRadio = $(otherRadio);
+                    $otherRadio.find('input').data('val', '_other');
+                    $otherInput.on('input', function () {
+                        evOnChange.fire(false, false, true);
+                    });
+                }
+
+                var otherDiv = otherRadio ? h('div.cp-form-other-container', [
+                    otherRadio,
+                    otherInput
+                ]) : undefined;
+                var tag = h('div', [
+                    h('div.radio-group.cp-form-type-radio', els),
+                    otherDiv
+                ]);
+                var $tag = $(tag);
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
-                $(tag).find('input[type="radio"]').on('change', function () {
+
+                // Handle change on all radio buttons (including "other")
+                $tag.find('input[type="radio"]').on('change', function () {
+                    if ($otherInput) {
+                        if (Util.isChecked($otherRadio.find('input'))) {
+                            $otherInput.removeAttr('disabled').focus();
+                        } else {
+                            $otherInput.val('').attr('disabled', 'disabled');
+                        }
+                    }
                     evOnChange.fire(false, false, true);
                 });
                 return {
@@ -1867,19 +1903,44 @@ define([
                                 return true;
                             }
                         });
+                        // Check if "other" radio is selected
+                        if (!res && otherRadio && Util.isChecked($otherRadio.find('input'))) {
+                            var otherVal = $otherInput.val().trim();
+                            if (otherVal) {
+                                res = '_other:' + otherVal;
+                            }
+                        }
                         return res;
                     },
                     reset: function () { 
-                        $(tag).find('input').each(function (i, input) {
+                        $tag.find('input[type="radio"]').each(function (i, input) {
                             var $i = $(input);
                             if (Util.isChecked($i)) { 
                                 $i.prop('checked', false);
                             }
                         });
+                        if (otherRadio) {
+                            $otherRadio.find('input').prop('checked', false);
+                            $otherInput.val('').attr('disabled', 'disabled');
+                        }
                     },
                     setEditable: function (state) {
-                        if (state) { $(tag).find('input').removeAttr('disabled'); }
-                        else { $(tag).find('input').attr('disabled', 'disabled'); }
+                        if (state) {
+                            $tag.find('input[type="radio"]').removeAttr('disabled');
+                            if (otherRadio) {
+                                $otherRadio.find('input').removeAttr('disabled');
+                                // Keep text input disabled unless "other" is checked
+                                if (!Util.isChecked($otherRadio.find('input'))) {
+                                    $otherInput.attr('disabled', 'disabled');
+                                } else {
+                                    $otherInput.removeAttr('disabled');
+                                }
+                            }
+                        } else {
+                            $tag.find('input[type="radio"]').attr('disabled', 'disabled');
+                            if ($otherInput) { $otherInput.attr('disabled', 'disabled'); }
+                            if ($otherRadio) { $otherRadio.find('input').attr('disabled', 'disabled'); }
+                        }
                     },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
@@ -1888,6 +1949,13 @@ define([
                     getCursor: function () { return cursorGetter(); },
                     setValue: function (val) {
                         this.reset();
+                        if (!val) { return; }
+                        // Check if this is an "other" value
+                        if (typeof(val) === 'string' && val.indexOf('_other:') === 0 && otherRadio) {
+                            $otherRadio.find('input').prop('checked', true);
+                            $otherInput.val(val.slice(7)).removeAttr('disabled');
+                            return;
+                        }
                         els.some(function (el) {
                             var $el = $(el).find('input');
                             if ($el.data('val') === val) {
