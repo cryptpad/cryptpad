@@ -843,7 +843,6 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
 
         if (sfDeleted[sfId]) { return void cb(true); }
         sfDeleted[sfId] = 1;
-
         // If it's a team SF, add the team name here
 
         if (!teamId) { return void cb(false); }
@@ -857,6 +856,22 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
     removeHandlers['SF_DELETED'] = function (ctx, box, data) {
         var id = data.content.sfId;
         delete sfDeleted[id];
+    };
+
+
+    var msgNotif = {};
+    handlers['SEND_CHAT_MESSAGE'] = function (ctx, box, data, cb) {
+
+        var msgSender = data.msg.author;
+
+        if (msgNotif[msgSender] || isMuted(ctx, data) || !ctx.store.proxy.friends[msgSender]) { return void cb(true); }
+        msgNotif[msgSender] = 1;
+
+        cb(false);
+    };
+    removeHandlers['SEND_CHAT_MESSAGE'] = function (ctx, box, data) {
+        var msgSender = data.author;
+        delete msgNotif[msgSender];
     };
 
     // New support

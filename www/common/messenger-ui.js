@@ -666,7 +666,8 @@ define([
                     force: toolbar && toolbar.team && !toolbar['chat'].hasClass('cp-leftside-active')
                 });
 
-                if (common.getMetadataMgr().getUserData().curvePublic === message.author) {
+                if (common.getMetadataMgr().getUserData().curvePublic === message.author
+                && contactsData[channel.curvePublic]) {
                     common.mailbox.sendTo("SEND_CHAT_MESSAGE", {
                         name: name, 
                     }, {
