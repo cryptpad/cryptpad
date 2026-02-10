@@ -843,6 +843,7 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
 
         if (sfDeleted[sfId]) { return void cb(true); }
         sfDeleted[sfId] = 1;
+
         // If it's a team SF, add the team name here
 
         if (!teamId) { return void cb(false); }
@@ -858,12 +859,12 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
         delete sfDeleted[id];
     };
 
-
     var msgNotif = {};
     handlers['SEND_CHAT_MESSAGE'] = function (ctx, box, data, cb) {
 
         var msgSender = data.msg.author;
 
+        //Check if sender is in contacts and not muted
         if (msgNotif[msgSender] || isMuted(ctx, data) || !ctx.store.proxy.friends[msgSender]) { return void cb(true); }
         msgNotif[msgSender] = 1;
 
