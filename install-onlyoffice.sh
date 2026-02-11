@@ -27,17 +27,17 @@ main() {
 
     ask_for_license
 
-    # Check if 'oldest_needed_version' is already set, if not, set it to v8
+    # Check if 'oldest_needed_version' is already set, if not, set it to v9
     if [ -z "${PROPS['oldest_needed_version']+set}" ]; then
-        echo "'oldest_needed_version' is not set. Setting it to v8."
-        set_prop "oldest_needed_version" "v8"
+        echo "'oldest_needed_version' is not set. Setting it to v9."
+        set_prop "oldest_needed_version" "v9"
     else
         echo "'oldest_needed_version' is already set to ${PROPS['oldest_needed_version']}. No changes made."
     fi
 
     mkdir -p "$OO_DIR"
 
-    available_versions=(v1 v2b v4 v5 v6 v7 v8 x2t)
+    available_versions=(v1 v2b v4 v5 v6 v7 v8 v9 x2t)
 
     start_installing=false
     for version in "${available_versions[@]}"; do
@@ -92,7 +92,13 @@ main() {
                 # From all the older versions only v7 has 'dictionaries', we remove it for the same reasons
                 rm -rf "$OO_DIR/v7/dictionaries/"
                 ;;
-            v8)  install_version v8 v8.3.3.23+5 de5056c12e1d91b054251b50a2326d5705ccd0c529b20b936ea1dc08d9d9458e99206de1fc52076af85df9352f1961c8ba9474c864f76bea59bce19b0595dd72 ;;
+            v8)  install_version v8 v8.3.3.23+5 de5056c12e1d91b054251b50a2326d5705ccd0c529b20b936ea1dc08d9d9458e99206de1fc52076af85df9352f1961c8ba9474c864f76bea59bce19b0595dd72
+                rm -rf "$OO_DIR/v8/web-apps/apps/documenteditor/main/resources/help"
+                rm -rf "$OO_DIR/v8/web-apps/apps/presentationeditor/main/resources/help"
+                rm -rf "$OO_DIR/v8/web-apps/apps/spreadsheeteditor/main/resources/help"
+                rm -rf "$OO_DIR/v8/web-apps/apps/common/main/resources/help/"
+                ;;
+            v9)  install_version v9 v9.2.0.119+3 e18b76c2f2e3021840e716b59049752d98b30790926af187302533d9851fe5be0ff3be402751dd33664241409f4638824f5c7dbab63b37695099194765b0542a ;;
             x2t) install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1 ;;
             *)
                 echo "Unknown version: $version"
