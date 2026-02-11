@@ -39,7 +39,7 @@
     "upgrade": "Upgrade",
     "MB": "MB",
     "GB": "GB",
-    "KB": "KB",
+    "KB": "kB",
     "formattedMB": "{0} MB",
     "formattedGB": "{0} GB",
     "formattedKB": "{0} KB",

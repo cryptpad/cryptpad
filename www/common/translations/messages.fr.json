@@ -1862,6 +1862,6 @@
     "color8": "Violet",
     "loading_encrypted": "chiffré de bout en bout",
     "form_poll_required_hint": "Ce sondage est requis, vous devez interagir avec au moins une option.",
-    "fo_trash_move_error": "Le contenu d'un dossier partagé ne peut pas être déplacé dans la corbeille. Veuillez utiliser \\\"Supprimer\\\".",
+    "fo_trash_move_error": "Le contenu d'un dossier partagé ne peut pas être déplacé dans la corbeille. Veuillez utiliser \"Supprimer\".",
     "fo_sharedFolder_move_error": "Un dossier partagé ne peut pas être déplacé dans un autre dossier partagé."
 }

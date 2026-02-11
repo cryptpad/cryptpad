@@ -11,11 +11,11 @@ const factory = (NaclUtil) => {
     window.btoa = window.btoa || function (str) { return Buffer.from(str, 'binary').toString('base64'); };
 
     Util.encodeBase64 = u8 => {
-        if (typeof(u8?.toBase64) === "function") {
+        if (typeof (u8?.toBase64) === "function") {
             return u8.toBase64();
         }
         return NaclUtil.encodeBase64(u8);
-    }
+    };
     Util.decodeBase64 = str => {
         if (typeof(Uint8Array?.fromBase64) === "function") {
             return Uint8Array.fromBase64(str);
