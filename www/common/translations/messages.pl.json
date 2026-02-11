@@ -1860,5 +1860,8 @@
     "color6": "Turkusowy",
     "color7": "Niebieski",
     "color8": "Fioletowy",
-    "loading_encrypted": "szyfrowane od końca do końca"
+    "loading_encrypted": "szyfrowane od końca do końca",
+    "form_poll_required_hint": "Ta ankieta jest obowiązkowa, należy wybrać co najmniej jedną opcję.",
+    "fo_trash_move_error": "Zawartości folderów współdzielonych nie można przenieść do kosza. Zamiast tego użyj opcji „Usuń”.",
+    "fo_sharedFolder_move_error": "Folderów współdzielonych nie można przenosić do innych folderów współdzielonych."
 }

@@ -1860,5 +1860,8 @@
     "help_close_button": "Închide notificarea de ajutor",
     "fc_open_formaud": "Deschide (ca auditor)",
     "admin_documentsDeletionTitle": "Arhivează documente multiple",
-    "admin_documentsDeletionHint": "Arhivează o listă de documente după id (un id per linie)"
+    "admin_documentsDeletionHint": "Arhivează o listă de documente după id (un id per linie)",
+    "form_poll_required_hint": "Această întrebare este obligatorie, trebuie să interacționați cu cel puțin o opțiune.",
+    "fo_trash_move_error": "Conținutul unui dosar distribuit nu poate fi mutat la gunoi. În schimb, folosiți funcția \"Elimină\".",
+    "fo_sharedFolder_move_error": "Dosarele distribuite nu pot fi mutate în alte dosare distribuite."
 }
