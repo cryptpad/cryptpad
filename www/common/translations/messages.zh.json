@@ -351,8 +351,8 @@
     "uploadButtonTitle": "将新文件上传到您的 CryptDrive",
     "uploadFolderButton": "上传文件夹",
     "uploadButton": "上传文件",
-    "form_required_on": "必要的",
-    "form_required_off": "选项",
+    "form_required_on": "必填",
+    "form_required_off": "选填",
     "form_preview": "表格预览",
     "form_changeTypeConfirm": "选择新的问题类型。",
     "form_corruptAnswers": "此表单已经有回复。 更改此问题类型可能会使以前的响应数据无效。",
@@ -1860,5 +1860,8 @@
     "password_note3": "您的密码是加密此实例上所有文档和管理员权限的密钥。",
     "computer_note": "如果您使用的是共享计算机，{0}请记住在操作完成后登出{1}。仅关闭浏览器窗口会导致账号暴露。",
     "import_note": "要保留您在未登录的情况下创建和/或存储的文档，请勾选“从访客会话导入文档”。",
-    "admin_creation_note": "在此页面创建首个管理员账号。管理员可管理实例设置，包括存储配额，并有权使用审核工具。"
+    "admin_creation_note": "在此页面创建首个管理员账号。管理员可管理实例设置，包括存储配额，并有权使用审核工具。",
+    "form_poll_required_hint": "此投票为必选项，您必须至少选择一个选项。",
+    "fo_trash_move_error": "共享文件夹内容无法移至回收站，请改用“移除”。",
+    "fo_sharedFolder_move_error": "共享文件夹无法移至其他共享文件夹内。"
 }
