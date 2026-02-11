@@ -1862,6 +1862,6 @@
     "color8": "Purple",
     "loading_encrypted": "end-to-end encrypted",
     "form_poll_required_hint": "This poll is required, you must interact with at least one option.",
-    "fo_trash_move_error": "Shared folder contents cannot be moved to trash. Use \\\"Remove\\\" instead.",
+    "fo_trash_move_error": "Shared folder contents cannot be moved to trash. Use \"Remove\" instead.",
     "fo_sharedFolder_move_error": "Shared folders cannot be moved inside other shared folders."
 }

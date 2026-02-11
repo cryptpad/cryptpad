@@ -1860,5 +1860,8 @@
     "password_note3": "Dein Passwort ist der geheime Schlüssel, der alle deine Dokumente und Administratorrechte auf dieser Instanz verschlüsselt.",
     "computer_note": "Wenn du einen gemeinsam genutzten Computer verwendest, {0}denke daran, dich abzumelden{1}, wenn du fertig bist. Durch bloßes Schließen des Browserfensters bleibt das Konto ungeschützt.",
     "import_note": "Um die Dokumente zu behalten, die du erstellt und/oder gespeichert hast, ohne eingeloggt zu sein, setze einen Haken bei \"Dokumente aus deiner Gast-Sitzung importieren\".",
-    "admin_creation_note": "Erstelle auf dieser Seite deinen ersten Administrator-Account. Administratoren verwalten die Einstellungen der Instanz einschließlich der Speicherplatzkontingente und haben Zugriff auf die Moderationswerkzeuge."
+    "admin_creation_note": "Erstelle auf dieser Seite deinen ersten Administrator-Account. Administratoren verwalten die Einstellungen der Instanz einschließlich der Speicherplatzkontingente und haben Zugriff auf die Moderationswerkzeuge.",
+    "fo_sharedFolder_move_error": "Geteilte Ordner können nicht in andere geteilte Ordner verschoben werden.",
+    "fo_trash_move_error": "Der Inhalt von geteilten Ordnern kann nicht in den Papierkorb verschoben werden. Verwende stattdessen \"Entfernen\".",
+    "form_poll_required_hint": "Die Beantwortung dieser Umfrage ist erforderlich, du musst mit mindestens einer Option interagieren."
 }
