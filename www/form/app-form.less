@@ -29,6 +29,7 @@
         font-size: 1rem;
         &.alert-info {
             color: @cryptpad_text_col !important;
+            margin-top: 0.625rem;
         }
     }
 
@@ -749,12 +750,23 @@
                             padding: 5px;
                             margin-top: -10px;
                             margin-right: -10px;
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 5px;
+                            svg.lucide {
+                                margin: 0;
+                            }
                             &.cp-is-empty {
                                 height: fit-content;
-                                padding: 3px;
                                 border-radius: 0 @variables_radius 0 0;
                                 background-color: @cp_alerts-danger-bg;
                                 color: @cp_alerts-danger-text;
+                            }
+                            .cp-form-poll-required-info {
+                                opacity: 0.7;
+                                &:hover {
+                                    opacity: 1;
+                                }
                             }
                         }
                     }
@@ -954,10 +966,10 @@
                             flex: 1;
                             min-width: 100px;
                             border-color: @cryptpad_text_col;
-                            border-right: 0px;
                         }
                         button {
                             svg { margin: 0 !important; }
+                            margin-left: 0.5rem;
                         }
 
                     }

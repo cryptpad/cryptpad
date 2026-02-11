@@ -41,7 +41,7 @@ define([
                         h('ul.cp-notes-list', [
                             h('li', [
                                 Icons.get('alert'),
-                                Msg.admin_note
+                                Msg.admin_creation_note
                             ]),
                             h('li', [
                                 Icons.get('alert'),
@@ -92,4 +92,3 @@ define([
     };
 
 });
-

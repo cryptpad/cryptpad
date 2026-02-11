@@ -837,6 +837,10 @@ define([
                             !Utils.PadTypes.isAvailable(parsed.type)) {
                         additionalPriv.disabledApp = true;
                     }
+                    if (AppConfig.integrationOnly && !cfg.integration) {
+                        additionalPriv.disabledApp = true;
+                    }
+
                     if (!Utils.LocalStore.isLoggedIn() &&
                         AppConfig.registeredOnlyTypes.indexOf(parsed.type) !== -1 &&
                         parsed.type !== "file") {
@@ -1113,6 +1117,7 @@ define([
                             href: data.href,
                             channel: data.channel,
                             title: data.title,
+                            attributes: data.attributes,
                             owners: data.metadata ? data.metadata.owners : data.owners,
                             expire: data.metadata ? data.metadata.expire : data.expire,
                             forceSave: true
@@ -1695,7 +1700,6 @@ define([
                             }
                         });
                     };
-                    data.blob = Utils.Util.decodeBase64(data.blob);
                     Files.upload(data, data.noStore, Cryptpad, updateProgress, onComplete, onError, onPending);
                     cb();
                 });
@@ -2122,6 +2126,11 @@ define([
                         cfg.integrationUtils.onHasUnsavedChanges(obj, cb);
                     }
                 });
+                sframeChan.on('Q_INTEGRATION_ERROR', function (obj) {
+                    if (cfg.integrationUtils && cfg.integrationUtils.onError) {
+                        cfg.integrationUtils.onError(obj);
+                    }
+                });
                 sframeChan.on('Q_INTEGRATION_ON_INSERT_IMAGE', function (data, cb) {
                     if (cfg.integrationUtils && cfg.integrationUtils.onInsertImage) {
                         cfg.integrationUtils.onInsertImage(data, cb);
@@ -2136,6 +2145,11 @@ define([
                         cfg.integrationUtils.setDownloadAs(format => {
                             sframeChan.event('EV_INTEGRATION_DOWNLOADAS', format);
                         });
+                    if (cfg.integrationUtils.setSave) {
+                        cfg.integrationUtils.setSave(() => {
+                            sframeChan.event('EV_INTEGRATION_MANUAL_SAVE');
+                        });
+                    }
                     }
                 }
 

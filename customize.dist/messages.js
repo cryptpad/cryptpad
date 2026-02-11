@@ -20,7 +20,7 @@ var map = {
     'it': 'Italiano',
     'ja': '日本語',
     'nb': 'Norwegian Bokmål',
-    //'nl': 'Nederlands'
+    'nl': 'Nederlands',
     'pl': 'Polski',
     'pt-br': 'Português do Brasil',
     'pt-pt': 'Português do Portugal',

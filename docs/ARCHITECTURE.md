@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 So you want to write a realtime collaborative application?
 
-This guide will focus on applications which require **multiple clients** to **collaboratively construct a single authoratative document**.
+This guide will focus on applications which require **multiple clients** to **collaboratively construct a single authoritative document**.
 
 [XWiki-Labs](https://labs.xwiki.com/) has published an open source suite (called [CryptPad](https://github.com/cryptpad/cryptpad)) of collaborative editors  which employ end to end encryption.
 This guide will refer to the techniques used in the prototypes developed therein.
@@ -82,7 +82,7 @@ Chainpad can handle out of order messages, but it performs best when its message
 By architecting your system such that all clients send to a server which then relays to other clients, you guarantee that a particular chain of patches is consistent between the participants of your session.
 
 CryptPad is capable of using a variety of data stores.
-Which data store your instance employs can be [easily configured](https://github.com/cryptpad/cryptpad/blob/master/config.example.js).
+Which data store your instance uses can be [easily configured](https://github.com/cryptpad/cryptpad/blob/master/config.example.js).
 
 You simply need to write an adaptor which conforms to a simple API.
 The documentation for writing such an adaptor, and the complete list of implemented adaptors, is available [here](https://github.com/cryptpad/cryptpad/tree/master/storage).
@@ -133,7 +133,7 @@ It is the application developers' responsibility to infer from the new content w
 In the process of developing its [Realtime CKEditor](https://cryptpad.fr) XWiki Labs discovered that many of the [existing Javascript libraries](https://github.com/Matt-Esch/virtual-dom) for updating a **DOM** are very destructive, and replace elements completely once a difference is detected within the tree (when scanning left to right).
 
 After testing several options, we ended up using a patched version of [**DiffDOM**](https://github.com/fiduswriter/diffDOM).
-Its diffing algorithm is _mostly correct_, but it lacks a move operation, namely, it determine that when the text of a paragraph gets bolded, that the textNode within the P should be moved into a STRONG element, with that STRONG element placed within the P.
+Its diffing algorithm is _mostly correct_, but it lacks a move operation, namely, it determines that when the text of a paragraph gets bolded, that the textNode within the P should be moved into a STRONG element, with that STRONG element placed within the P.
 As such, there are difficulties with applying styles to large portions of the document while someone is editing within that section.
 
 On the whole, however, contentEditable documents avoid many of the problems that a text editor faces with its rendering cycle.

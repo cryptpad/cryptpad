@@ -123,7 +123,12 @@ define([
     var legacyLogin = function (opt, isRegister, cb, res) {
         res = res || {};
         loadUserObject(opt, function (err, rt) {
-            if (err) { return void cb(err); }
+            if (err) {
+                // If the channel is empty, it probably means the credentials
+                // are invalid
+                console.error(err);
+                return void cb('NO_SUCH_USER');
+            }
 
             // if a proxy is marked as deprecated, it is because someone had a non-owned drive
             // but changed their password, and couldn't delete their old data.
@@ -316,6 +321,13 @@ define([
                 res.opt = allocateBytes(bytes);
                 res.blockHash = res.opt.blockHash;
                 blockKeys = res.opt.blockKeys;
+                if (window.location.hash === '#debug') {
+                    alert(JSON.stringify({
+                        blockId: Util.encodeBase64(blockKeys.sign.publicKey)
+                    }, 0, 2));
+                    waitFor.abort();
+                    return;
+                }
                 if (ssoAuth && ssoAuth.name) { uname = res.uname = ssoAuth.name; }
             }));
         }).nThen(function (waitFor) {

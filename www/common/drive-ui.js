@@ -115,7 +115,7 @@ define([
     var $folderIcon = $(Icons.get(folder,{"class": "cp-app-drive-icon-folder cp-app-drive-content-icon"}));
     var $fileMenuIcon = $(Icons.get('ellipsis-horizontal'));
     var $folderEmptyIcon = $folderIcon.clone();
-    var $folderOpenedIcon = $(Icons.get('folder-open'));
+    var $folderOpenedIcon = $(Icons.get('folder-open', {"class": "cp-app-drive-icon-folder cp-app-drive-content-icon"}));
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
     var $sharedFolderIcon = $(Icons.get('drive-shared-folder', {"class": "cp-app-drive-icon-folder"}));
     var $sharedFolderOpenedIcon = $(Icons.get('folder-open', {"class": "cp-app-drive-icon-folder"}));
@@ -124,8 +124,6 @@ define([
     var $recentIcon = $(Icons.get('drive-recent'));
     var $trashIcon = $(Icons.get('trash-full'));
     var $trashEmptyIcon = $(Icons.get('trash-empty'));
-    var $expandIcon = $(Icons.get('expand'));
-    var $expandedIcon = $(Icons.get('collapse'));
     var $sortAscIcon = $(Icons.get('sort-asc', {'class': 'sortasc'}));
     var $sortDescIcon = $(Icons.get('sort-desc', {'class': 'sortdesc'}));
     var $closeIcon = $(Icons.get('close'));
@@ -193,6 +191,18 @@ define([
         LS.wasFolderOpened = function (path) {
             var stored = JSON.parse(APP.store[LS_OPENED] || '[]');
             return stored.indexOf(JSON.stringify(path)) !== -1;
+        };
+        LS.getOpenedFolders = function () {
+            var stored = JSON.parse(APP.store[LS_OPENED] || '[]');
+            return stored.map(function(s) {
+                try {
+                    return JSON.parse(s);
+                } catch (e) {
+                    return null;
+                }
+            }).filter(function(p) {
+                return p !== null;
+            });
         };
         LS.setFolderOpened = function (path, opened) {
             var s = JSON.stringify(path);
@@ -501,6 +511,7 @@ define([
                     h("ul.dropdown-menu", getNewPadTypes().map(function (app) {
                         return isAppEnabled(app) ? h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable' + (restricted[app] === 0 ? '.cp-app-disabled' : ''), {
                             'tabindex': '-1',
+                            'data-type': app,
                         },[
                             Icons.get(AppConfig.applicationsIcon[app] || 'file'),
                             Messages.type[app]
@@ -930,7 +941,13 @@ define([
         var removeInput =  function (cancel) {
             if (!cancel && $('.cp-app-drive-element-row > input').length === 1) {
                 var $input = $('.cp-app-drive-element-row > input');
-                manager.rename($input.data('path'), $input.val(), APP.refresh);
+                manager.rename($input.data('path'), $input.val(), function (err) {
+                    if (err && err.error === 'E_DUPLICATE_FOLDER_NAME') {
+                        UI.alert(err.message || Messages.fo_unavailableName);
+                        return;
+                    }
+                    APP.refresh();
+                });
             }
             $('.cp-app-drive-element-row > input').remove();
             $('.cp-app-drive-element-row > span:hidden').removeAttr('style');
@@ -945,7 +962,7 @@ define([
         // Replace a file/folder name by an input to change its value
         var displayRenameInput = function ($element, path) {
             // NOTE: setTimeout(f, 0) otherwise the "rename" button in the toolbar is not working
-            window.setTimeout(function () {
+            var renameInput = function () {
                 if (!APP.editable) { return; }
                 if (!path || path.length < 2) {
                     logError("Renaming a top level element (root, trash or filesData) is forbidden.");
@@ -978,7 +995,11 @@ define([
                         removeInput(true);
                         var newName = $input.val();
                         if (JSON.stringify(path) === JSON.stringify(currentPath)) {
-                            manager.rename(path, $input.val(), function () {
+                            manager.rename(path, $input.val(), function (err) {
+                                if (err && err.error === 'E_DUPLICATE_FOLDER_NAME') {
+                                    UI.alert(err.message || Messages.fo_unavailableName);
+                                    return;
+                                }
                                 if (isFolder) {
                                     LS.renameFoldersOpened(path, newName);
                                     path[path.length - 1] = newName;
@@ -987,7 +1008,11 @@ define([
                             });
                         }
                         else {
-                            manager.rename(path, $input.val(), function () {
+                            manager.rename(path, $input.val(), function (err) {
+                                if (err && err.error === 'E_DUPLICATE_FOLDER_NAME') {
+                                    UI.alert(err.message || Messages.fo_unavailableName);
+                                    return;
+                                }
                                 if (isFolder) {
                                     LS.renameFoldersOpened(path, newName);
                                     unselectElement($element);
@@ -1032,7 +1057,12 @@ define([
                     e.stopPropagation();
                     $input.parents('.cp-app-drive-element-row').attr("draggable", true);
                 });
-            },0);
+            };
+            if (APP.mobile()) {
+                renameInput();
+            } else {
+                window.setTimeout(renameInput, 0);
+            }
         };
 
 
@@ -1851,7 +1881,15 @@ define([
             if (manager.isPathIn(newPath, [TRASH]) && paths.length && paths[0][0] === TRASH) {
                 return;
             }
-            var newCb = function () {
+            var newCb = function (err) {
+                if (err && err.error === 'E_DUPLICATE_FOLDER_NAME') {
+                    UI.alert(err.message || Messages.fo_unavailableName);
+                    paths.forEach(function (path) {
+                        LS.moveFoldersOpened(path, newPath);
+                    });
+                    cb();
+                    return;
+                }
                 paths.forEach(function (path) {
                     LS.moveFoldersOpened(path, newPath);
                 });
@@ -1888,10 +1926,17 @@ define([
         var onDrag = function (ev, path) {
             var paths = [];
             var $element = findDataHolder($(ev.target));
+            var getRefPath = function(navPath) {
+                if (navPath && navPath.length > 1 && navPath[navPath.length - 1] === ROOT) {
+                    return navPath.slice(0, -1);
+                }
+                return navPath;
+            }; 
             if ($element.hasClass('cp-app-drive-element-selected')) {
                 var $selected = findSelectedElements();
                 $selected.each(function (idx, elmt) {
-                    var ePath = $(elmt).data('path');
+                    var navPath = $(elmt).data('path');
+                    var ePath = getRefPath(navPath);
                     if (ePath) {
                         var val = manager.find(ePath);
                         if (!val) { return; } // Error? A ".selected" element is not in the object
@@ -1907,12 +1952,13 @@ define([
             } else {
                 removeSelected();
                 selectElement($element);
-                var val = manager.find(path);
+                var dragPath = getRefPath(path);
+                var val = manager.find(dragPath);
                 if (!val) { return; } // The element is not in the object
                 paths = [{
-                    path: path,
+                    path: dragPath,
                     value: {
-                        name: getElementName(path),
+                        name: getElementName(dragPath),
                         el: val
                     }
                 }];
@@ -2074,6 +2120,18 @@ define([
                 return void UI.warn(Messages.fm_forbidden);
             }
 
+            if (newPath[0] === TEMPLATE) {
+                var oldPaths = data && JSON.parse(data).path;
+                if (oldPaths && oldPaths.length) {
+                    var hasFolder = oldPaths.some(function(p) {
+                        var el = manager.find(p.path);
+                        return manager.isFolder(el);
+                    });
+                    if (hasFolder) {
+                        return void UI.warn(Messages.fo_moveUnsortedError);
+                    }
+                }
+            }
             var fileDrop = ev.dataTransfer.items;
             if (fileDrop.length) {
                 // Filter out all the folders and use the correct function to upload them
@@ -2106,25 +2164,45 @@ define([
                 }
             }
 
-            var oldPaths = data && JSON.parse(data).path;
+            oldPaths = data && JSON.parse(data).path;
             if (!oldPaths) { return; }
             // A moved element should be removed from its previous location
             var movedPaths = [];
 
             var sharedF = false;
+            var draggedSharedFolder = false;      
+            var folderContainsSharedFolder = false;      
             oldPaths.forEach(function (p) {
                 movedPaths.push(p.path);
                 if (!sharedF && manager.isInSharedFolder(p.path)) {
                     sharedF = true;
                 }
+                if (!draggedSharedFolder && p.value && p.value.el && manager.isSharedFolder(p.value.el)) {
+                    draggedSharedFolder = true;
+                }
+                if (!folderContainsSharedFolder && p.value && p.value.el && manager.hasSubSharedFolder(p.value.el)) {
+                    folderContainsSharedFolder = true;
+                }
             });
 
+            if (draggedSharedFolder && manager.isInSharedFolder(newPath)) {
+                return void UI.warn(Messages.fo_sharedFolder_move_error);
+            }
+            if (manager.isPathIn(newPath, [SHARED_FOLDER])) {
+                return void UI.warn(Messages.fo_sharedFolder_move_error);
+            }
             if (sharedF && manager.isPathIn(newPath, [TRASH])) {
                 // TODO create a key here?
                 // You can't move to YOUR trash documents stored in a shared folder
                 // TODO or keep deletePaths: trigger the "Remove from cryptdrive" modal
-                return void UI.warn(Messages.error);
+                return void UI.warn(Messages.fo_trash_move_error);
                 //return void deletePaths(null, movedPaths);
+            }
+            if (folderContainsSharedFolder) {
+                var destEl = manager.find(newPath);
+                if (manager.isInSharedFolder(newPath) || (destEl && manager.hasSubSharedFolder(destEl))) {
+                    return void UI.warn(Messages.fo_sharedFolder_move_error);
+                }
             }
 
             var copy = false;
@@ -3357,13 +3435,11 @@ define([
         var SORT_FILE_BY = 'sortFilesBy';
         var SORT_FILE_DESC = 'sortFilesDesc';
 
-        var getSortFolderDesc = function () { // this way the icon change is triggered
-            var v = APP.store[SORT_FOLDER_DESC];
-            return v === true;
-        };
         var getSortFileDesc = function () {
-            var v = APP.store[SORT_FILE_DESC];
-            return v === true;
+            return APP.store[SORT_FILE_DESC]+"" === "true";
+        };
+        var getSortFolderDesc = function () {
+            return APP.store[SORT_FOLDER_DESC]+"" === "true";
         };
 
         var onSortByClick = function () {
@@ -4349,7 +4425,9 @@ define([
                 if (!root) { return; }
             }
             if (!isVirtual && typeof(root) === "undefined") {
-                log(Messages.fm_unknownFolderError);
+                if (!force) {
+                    log(Messages.fm_unknownFolderError);
+                }
                 debug("Unable to locate the selected directory: ", path);
                 if (path.length === 1 && path[0] === ROOT) {
                     // Somehow we can't display ROOT. We should abort now because we'll
@@ -4516,7 +4594,7 @@ define([
 
             appStatus.ready(true);
         };
-        var displayDirectory = APP.displayDirectory = function (path, force, cb, opt) {
+        APP.displayDirectory = function (path, force, cb, opt) {
             cb = Util.once(cb || function () {});
             if (APP.closed || (APP.$content && !$.contains(document.documentElement, APP.$content[0]))) { return; }
             if (history.isHistoryMode) {
@@ -4540,8 +4618,9 @@ define([
                 let fpath = currentPath;
                 if (opt?.init && !manager.isInSharedFolder(fpath) && !priv.anonSFHref) {
                     fixTags();
-                    _displayDirectory(path, force);
-                    cb();
+                    //  Wait for shared folder metadata
+                    // _displayDirectory(path, force);
+                    // cb();
                 }
                 updateSharedFolders(sframeChan, manager, files, folders, function () {
                     _displayDirectory(path, force);
@@ -4551,75 +4630,58 @@ define([
             });
         };
 
-        var createTreeElement = function (name, $icon, path, draggable, droppable, collapsable, active, isSharedFolder) {
-            var $name = $('<span>', { 'class': 'cp-app-drive-element' }).text(name);
-            $icon.css("color", isSharedFolder ? getFolderColor(path.slice(0, -1)) : getFolderColor(path));
-            var $collapse;
-            if (collapsable) {
-                $collapse = $('<span>').attr('tabindex', 0).attr('class', 'cp-app-drive-icon-expcol').append($expandIcon.clone());
-            }
-            var $elementRow = $('<span>', {
-                'class': 'cp-app-drive-element-row cp-app-drive-element-folder',
-                'tabindex': 0
-            }).append($collapse).append($icon).append($name).on('click keypress', function (e) {
-                if (e.type === 'keypress' && e.which !== 13) {
-                    return;
+        // Build tree data recursively
+        var buildTreeData = function (root, path, currentPath) {
+            var data = { content: {} };
+            var keys = Object.keys(root);
+            keys.forEach(function (key) {
+                // Do not display files in the menu
+                if (!manager.isFolder(root[key])) { return; }
+                var newPath = path.slice();
+                newPath.push(key);
+                var isSharedFolder = manager.isSharedFolder(root[key]) && root[key];
+                var sfId = manager.isInSharedFolder(newPath) || (isSharedFolder && root[key]);
+                var $icon, isCurrentFolder, subfolder, folderName = key;
+                var randomKey = Util.uid();
+                var navPath = newPath.slice();
+                if (isSharedFolder) {
+                    // Fix path
+                    newPath.push(manager.user.userObject.ROOT);
+                    isCurrentFolder = manager.comparePath(newPath, currentPath);
+                    // Subfolders?
+                    var newRoot = Util.find(manager, ['folders', sfId, 'proxy', manager.user.userObject.ROOT]) || {};
+                    subfolder = manager.hasSubfolder(newRoot);
+                    // Fix name
+                    var sfData = manager.getSharedFolderData(sfId);
+                    folderName = sfData.title || sfData.lastTitle || Messages.fm_deletedFolder;
+                    // Fix icon
+                    $icon = isCurrentFolder ? $sharedFolderOpenedIcon : $sharedFolderIcon;
+                    isSharedFolder = sfId;
+                } else {
+                    var isEmpty = manager.isFolderEmpty(root[key]);
+                    subfolder = manager.hasSubfolder(root[key]);
+                    isCurrentFolder = manager.comparePath(newPath, currentPath);
+                    $icon = isEmpty ?
+                        (isCurrentFolder ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
+                        (isCurrentFolder ? $folderOpenedIcon : $folderIcon);
                 }
-                e.stopPropagation();
-                if (isSharedFolder && !manager.folders[isSharedFolder]) {
-                    UI.warn(Messages.fm_deletedFolder);
-                    return;
-                }
-                if (files.restrictedFolders[isSharedFolder]) {
-                    UI.warn(Messages.fm_restricted);
-                    return;
-                }
-                APP.displayDirectory(path);
-            });
-            if (files.restrictedFolders[isSharedFolder]) {
-                $elementRow.addClass('cp-app-drive-element-restricted');
-            }
-            if (isSharedFolder) {
-                var sfData = manager.getSharedFolderData(isSharedFolder);
-                _addOwnership($elementRow, $(), sfData);
-            }
-            var $element = $('<li>').append($elementRow);
-            if (draggable) { $elementRow.attr('draggable', true); }
-            if (collapsable) {
-                $element.addClass('cp-app-drive-element-collapsed');
-                $collapse.on('click keypress', function(e) {
-                    if (e.type === 'keypress' && e.which !== 13) {
-                        return;
+                data.content[randomKey] = {
+                    name: folderName,
+                    icon: $icon,
+                    navPath: navPath,
+                    isActive: isCurrentFolder,
+                    content: {}
+                };
+                if (subfolder) {
+                    var subRoot = isSharedFolder ? 
+                        Util.find(manager, ['folders', sfId, 'proxy', ROOT]) :
+                        root[key];
+                    if (subRoot) {
+                        data.content[randomKey].content = buildTreeData(subRoot, newPath, currentPath).content;
                     }
-                    e.stopPropagation();
-                    if ($element.hasClass('cp-app-drive-element-collapsed')) {
-                        // It is closed, open it
-                        $element.removeClass('cp-app-drive-element-collapsed');
-                        LS.setFolderOpened(path, true);
-                        $collapse.empty().append($expandedIcon.clone());
-                    } else {
-                        // Collapse the folder
-                        $element.addClass('cp-app-drive-element-collapsed');
-                        LS.setFolderOpened(path, false);
-                        $collapse.empty().append($expandIcon.clone());
-                        // Change the current opened folder if it was collapsed
-                        if (manager.isSubpath(currentPath, path)) {
-                            displayDirectory(path);
-                        }
-                    }
-                });
-                if (LS.wasFolderOpened(path) ||
-                        (manager.isSubpath(currentPath, path) && path.length < currentPath.length)) {
-                    $collapse.click();
                 }
-            }
-            var dataPath = isSharedFolder ? path.slice(0, -1) : path;
-            $elementRow.data('path', dataPath);
-            addDragAndDropHandlers($elementRow, dataPath, true, droppable);
-            if (active) {
-                $elementRow.addClass('cp-app-drive-element-active cp-leftside-active');
-            }
-            return $element;
+            }); 
+            return data;
         };
 
         var createTree = function ($container, path) {
@@ -4636,93 +4698,112 @@ define([
                     rootName = manager.getSharedFolderData(APP.newSharedFolder).title;
                 }
             }
-
+            
             // don't try to display what doesn't exist
             if (!root) { return; }
-
-            // Display the root element in the tree
-            if (isRoot) {
-                var isRootOpened = manager.comparePath(path.slice(), currentPath);
-                var $rootIcon = manager.isFolderEmpty(files[ROOT]) ?
-                    (isRootOpened ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
-                    (isRootOpened ? $folderOpenedIcon : $folderIcon);
-                var $rootElement = createTreeElement(rootName, $rootIcon.clone(), path.slice(), false, true, true, isRootOpened);
-                if (!manager.hasSubfolder(root)) {
-                    $rootElement.find('.cp-app-drive-icon-expcol').addClass('cp-icon-hidden').attr('tabindex','-1');
+            
+            // build tree data structure
+            var treeData = buildTreeData(root, path, currentPath);
+            var data = {
+                root: {
+                    name: rootName,
+                    icon: $(Icons.get('drive')),
+                    content: treeData.content
                 }
-                $rootElement.addClass('cp-app-drive-tree-root');
-                $rootElement.find('>.cp-app-drive-element-row')
-                    .contextmenu(openContextMenu('tree'));
-                $('<ul>', {'class': 'cp-app-drive-tree-docs'})
-                    .append($rootElement).appendTo($container);
-                $container = $rootElement;
-            } else if (manager.isFolderEmpty(root)) { return; }
-
-            // Display root content
-            var $list = $('<ul>').appendTo($container);
-            var keys = Object.keys(root).sort(function (a, b) {
-                var newA = manager.isSharedFolder(root[a]) ?
-                            manager.getSharedFolderData(root[a]).title : a;
-                var newB = manager.isSharedFolder(root[b]) ?
-                            manager.getSharedFolderData(root[b]).title : b;
-                return naturalSort(newA, newB);
+            };
+            var openFolders = LS.getOpenedFolders();
+            var treeElement = UIElements.getTree(data, {
+                currentPath: currentPath,
+                cb: {
+                    addDragAndDropHandlers: addDragAndDropHandlers
+                },
+                events: {
+                    onFolderClicked: function (clickedPath) {
+                        // Check for shared folder restrictions
+                        var sfId = manager.isInSharedFolder(clickedPath);
+                        if (sfId) {
+                            if (!manager.folders[sfId]) {
+                                UI.warn(Messages.fm_deletedFolder);
+                                return;
+                            }
+                            if (files.restrictedFolders[sfId]) {
+                                UI.warn(Messages.fm_restricted);
+                                return;
+                            }
+                        }
+                        APP.displayDirectory(clickedPath);
+                    },
+                    onContextMenu: function (clickedPath, event) {
+                        openContextMenu('tree')(event, clickedPath);
+                    },
+                    onFolderExpanded: function (clickedPath, isOpen) {
+                        LS.setFolderOpened(clickedPath, isOpen);
+                    }
+                },
+                openFolders: openFolders
             });
-            keys.forEach(function (key) {
-                // Do not display files in the menu
-                if (!manager.isFolder(root[key])) { return; }
-                var newPath = path.slice();
-                newPath.push(key);
-                var isSharedFolder = manager.isSharedFolder(root[key]) && root[key];
-                var sfId = manager.isInSharedFolder(newPath) || (isSharedFolder && root[key]);
-                var $icon, isCurrentFolder, subfolder;
+            
+            var $treeElement = $(treeElement);
+            // Drive specific features
+            $treeElement.find('.cp-app-drive-element-row').each(function() {
+                var $row = $(this);
+                var elPath = $row.data('path');
+                if (!elPath || elPath.length === 0) { return; }
+                var pathToCheck = elPath[0] === ROOT ? elPath : [ROOT].concat(elPath);
+                var isSharedFolderPath = pathToCheck.length > 1 && pathToCheck[pathToCheck.length - 1] === ROOT;
+                $row.find('.cp-app-drive-icon-folder').css("color", isSharedFolderPath ? getFolderColor(pathToCheck.slice(0, -1)) : getFolderColor(pathToCheck));
+
+                var element = manager.find(elPath);
+                var isSharedFolder = element && manager.isSharedFolder(element);
+                var sfId = manager.isInSharedFolder(elPath);
+                var f = null;
+                var droppable = true;
                 if (isSharedFolder) {
-                    // Fix path
-                    newPath.push(manager.user.userObject.ROOT);
-                    isCurrentFolder = manager.comparePath(newPath, currentPath);
-                    // Subfolders?
-                    var newRoot = Util.find(manager, ['folders', sfId, 'proxy', manager.user.userObject.ROOT]) || {};
-                    subfolder = manager.hasSubfolder(newRoot);
-                    // Fix name
+                    sfId = element;
+                    f = folders[sfId];
+                    var editable = !(f && f.readOnly);
+                    droppable = editable;
+                    
+                    $row.addClass('cp-app-drive-element-sharedf');
+                    if (!editable) {
+                        $row.closest('li').attr('data-ro', true);
+                    } 
                     var sfData = manager.getSharedFolderData(sfId);
-                    key = sfData.title || sfData.lastTitle || Messages.fm_deletedFolder;
-                    // Fix icon
-                    $icon = isCurrentFolder ? $sharedFolderOpenedIcon : $sharedFolderIcon;
-                    isSharedFolder = sfId;
-                } else {
-                    var isEmpty = manager.isFolderEmpty(root[key]);
-                    subfolder = manager.hasSubfolder(root[key]);
-                    isCurrentFolder = manager.comparePath(newPath, currentPath);
-                    $icon = isEmpty ?
-                        (isCurrentFolder ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
-                        (isCurrentFolder ? $folderOpenedIcon : $folderIcon);
+                    _addOwnership($row, $(), sfData);
+                    if (files.restrictedFolders[sfId]) {
+                        $row.addClass('cp-app-drive-element-restricted');
+                    }
+                    // Update drag/drop handlers if droppable changed for shared folder
+                    $row.off('dragover drop dragenter dragleave');
+                    addDragAndDropHandlers($row, elPath, true, droppable);
+                } else if (sfId) {
+                    f = folders[sfId];
+                    editable = !(f && f.readOnly);
+                    droppable = editable;
+                    if (!editable) {
+                        $row.closest('li').attr('data-ro', true);
+                    }
+                    $row.off('dragover drop dragenter dragleave');
+                    addDragAndDropHandlers($row, elPath, true, droppable);
                 }
-                var f = folders[sfId];
-                var editable = !(f && f.readOnly);
-                var $element = createTreeElement(key, $icon.clone(), newPath, true, editable,
-                                                subfolder, isCurrentFolder, isSharedFolder);
-                $element.appendTo($list);
-                $element.find('>.cp-app-drive-element-row').contextmenu(openContextMenu('tree'));
-                if (isSharedFolder) {
-                    $element.find('>.cp-app-drive-element-row')
-                        .addClass('cp-app-drive-element-sharedf');
-                }
-                if (sfId && !editable) {
-                    $element.attr('data-ro', true);
-                }
-                if (!subfolder) { return; }
-                createTree($element, newPath);
             });
+            $treeElement.find('.cp-app-drive-element-row').first().removeAttr('draggable');
+            $container.append($treeElement);
         };
 
         var createTrash = function ($container, path) {
             var $icon = manager.isFolderEmpty(files[TRASH]) ? $trashEmptyIcon.clone() : $trashIcon.clone();
             var isOpened = manager.comparePath(path, currentPath);
-            var $trashElement = createTreeElement(TRASH_NAME, $icon, [TRASH], false, true, false, isOpened);
+            var $trashElement = UIElements.createTreeElement(TRASH_NAME, $icon, [TRASH], false, true, false, isOpened, {
+                onFolderClicked: function (clickedPath) {
+                    APP.displayDirectory(clickedPath);
+                },
+                onContextMenu: function (clickedPath, event) {
+                    openContextMenu('trashtree')(event, clickedPath);
+                }
+            }, [], currentPath, { addDragAndDropHandlers: addDragAndDropHandlers });
             $trashElement.addClass('cp-app-drive-tree-root');
-            $trashElement.find('>.cp-app-drive-element-row')
-                         .contextmenu(openContextMenu('trashtree'));
-            var $trashList = $('<ul>', { 'class': 'cp-app-drive-tree-category' })
-                .append($trashElement);
+            var $trashList = $('<ul>', { 'class': 'cp-app-drive-tree-category' }).append($trashElement);
             $container.append($trashList);
         };
 
@@ -4756,7 +4837,11 @@ define([
             var options = categories[cat];
             var $icon = options.$icon.clone();
             var isOpened = manager.comparePath([cat], currentPath);
-            var $element = createTreeElement(options.name, $icon, [cat], options.draggable, options.droppable, false, isOpened);
+            var $element = UIElements.createTreeElement(options.name, $icon, [cat], false, options.droppable, false, isOpened, {
+                onFolderClicked: function (clickedPath) {
+                    APP.displayDirectory(clickedPath);
+                }
+            }, [], currentPath, { addDragAndDropHandlers: addDragAndDropHandlers });
             $element.addClass('cp-app-drive-tree-root');
             var $list = $('<ul>', { 'class': 'cp-app-drive-tree-category' }).append($element);
             $container.append($list);
@@ -4864,6 +4949,12 @@ define([
             if (manager.isSharedFolder(el)) {
                 opts.noExpiration = true;
             }
+
+            let attr = opts.attributes = {};
+            if (data.rtChannel) { attr.rtChannel = data.rtChannel; }
+            if (data.lastVersion) { attr.lastVersion = data.lastVersion; }
+            if (data.lastCpHash) { attr.lastCpHash = data.lastCpHash; }
+            if (data.answersChannel) { attr.answersChannel = data.answersChannel; }
 
             Access.getAccessModal(common, opts, cb);
         };
@@ -5055,9 +5146,15 @@ define([
                      $this.hasClass('cp-app-drive-context-collapseall')) {
                 if (paths.length !== 1) { return; }
                 var opened = $this.hasClass('cp-app-drive-context-expandall');
+                var collapsedPath = paths[0].path;
                 var openRecursive = function (path) {
                     LS.setFolderOpened(path, opened);
                     var folderContent = manager.find(path);
+                    if (folderContent && manager.isSharedFolder(folderContent)) {
+                        path = path.concat(manager.user.userObject.ROOT);
+                        folderContent = manager.find(path);
+                    }
+                    if (!folderContent) { return; }
                     var subfolders = [];
                     for (var k in folderContent) {
                         if (manager.isFolder(folderContent[k])) {
@@ -5071,11 +5168,19 @@ define([
                     }
                     subfolders.forEach(function (p) {
                         var subPath = path.concat(p);
+                        if (Array.isArray(p) && p.length > 1 && p[p.length - 1] === ROOT) {
+                            var sharedFolderPath = subPath.slice(0, -1);
+                            LS.setFolderOpened(sharedFolderPath, opened);
+                        }
                         openRecursive(subPath);
                     });
                 };
-                openRecursive(paths[0].path);
-                refresh();
+                openRecursive(collapsedPath);
+                if (!opened && currentPath && manager.isSubpath(currentPath, collapsedPath)) {
+                    APP.displayDirectory(collapsedPath);
+                } else {
+                    refresh();
+                }
             }
 
             else if ($this.hasClass('cp-app-drive-context-download')) {

@@ -27,17 +27,17 @@ main() {
 
     ask_for_license
 
-    # Check if 'oldest_needed_version' is already set, if not, set it to v8
+    # Check if 'oldest_needed_version' is already set, if not, set it to v9
     if [ -z "${PROPS['oldest_needed_version']+set}" ]; then
-        echo "'oldest_needed_version' is not set. Setting it to v8."
-        set_prop "oldest_needed_version" "v8"
+        echo "'oldest_needed_version' is not set. Setting it to v9."
+        set_prop "oldest_needed_version" "v9"
     else
         echo "'oldest_needed_version' is already set to ${PROPS['oldest_needed_version']}. No changes made."
     fi
 
     mkdir -p "$OO_DIR"
 
-    available_versions=(v1 v2b v4 v5 v6 v7 v8 x2t)
+    available_versions=(v1 v2b v4 v5 v6 v7 v8 v9 x2t)
 
     start_installing=false
     for version in "${available_versions[@]}"; do
@@ -92,7 +92,13 @@ main() {
                 # From all the older versions only v7 has 'dictionaries', we remove it for the same reasons
                 rm -rf "$OO_DIR/v7/dictionaries/"
                 ;;
-            v8)  install_version v8 v8.3.3.23+5 de5056c12e1d91b054251b50a2326d5705ccd0c529b20b936ea1dc08d9d9458e99206de1fc52076af85df9352f1961c8ba9474c864f76bea59bce19b0595dd72 ;;
+            v8)  install_version v8 v8.3.3.23+5 de5056c12e1d91b054251b50a2326d5705ccd0c529b20b936ea1dc08d9d9458e99206de1fc52076af85df9352f1961c8ba9474c864f76bea59bce19b0595dd72
+                rm -rf "$OO_DIR/v8/web-apps/apps/documenteditor/main/resources/help"
+                rm -rf "$OO_DIR/v8/web-apps/apps/presentationeditor/main/resources/help"
+                rm -rf "$OO_DIR/v8/web-apps/apps/spreadsheeteditor/main/resources/help"
+                rm -rf "$OO_DIR/v8/web-apps/apps/common/main/resources/help/"
+                ;;
+            v9)  install_version v9 v9.2.0.119+3 e18b76c2f2e3021840e716b59049752d98b30790926af187302533d9851fe5be0ff3be402751dd33664241409f4638824f5c7dbab63b37695099194765b0542a ;;
             x2t) install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1 ;;
             *)
                 echo "Unknown version: $version"
@@ -271,17 +277,27 @@ install_old_version() {
 }
 
 install_version() {
-    ensure_command_available curl
-    ensure_command_available sha512sum
-    ensure_command_available unzip
-
     local DIR=$1
     local VERSION=$2
     local HASH=$3
     local FULL_DIR=$OO_DIR/$DIR
     local LAST_DIR=$(pwd)
 
-    if [ ! -e "$FULL_DIR"/.version ] || [ "$(cat "$FULL_DIR"/.version)" != "$VERSION" ]; then
+    local ACTUAL_VERSION="not installed"
+    if [ -e "$FULL_DIR"/.version ]; then
+        ACTUAL_VERSION="$(cat "$FULL_DIR"/.version)"
+    fi
+
+    if [ "$ACTUAL_VERSION" != "$VERSION" ]; then
+        if [ ${CHECK+x} ]; then
+            echo "Wrong version in $FULL_DIR. Expected: $VERSION. Found: $ACTUAL_VERSION"
+            exit 1
+        fi
+
+        ensure_command_available sha512sum
+        ensure_command_available curl
+        ensure_command_available unzip
+
         rm -rf "$FULL_DIR"
         mkdir -p "$FULL_DIR"
 
@@ -289,7 +305,7 @@ install_version() {
 
         curl "https://github.com/cryptpad/onlyoffice-editor/releases/download/$VERSION/onlyoffice-editor.zip" --location --output "onlyoffice-editor.zip"
         echo "$HASH onlyoffice-editor.zip" >onlyoffice-editor.zip.sha512
-        if ! sha512sum --check onlyoffice-editor.zip.sha512; then
+        if ! sha512sum -c onlyoffice-editor.zip.sha512; then
             echo "onlyoffice-editor.zip does not match expected checksum"
             exit 1
         fi
@@ -332,7 +348,7 @@ install_x2t() {
         ensure_command_available unzip
         curl "https://github.com/cryptpad/onlyoffice-x2t-wasm/releases/download/$VERSION/x2t.zip" --location --output x2t.zip
         echo "$HASH x2t.zip" >x2t.zip.sha512
-        if ! sha512sum --check x2t.zip.sha512; then
+        if ! sha512sum -c x2t.zip.sha512; then
             echo "x2t.zip does not match expected checksum"
             exit 1
         fi

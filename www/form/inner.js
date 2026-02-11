@@ -2643,6 +2643,7 @@ define([
         poll: {
             defaultOpts: {
                 type: 'text', // Text or Days or Time
+                required: false,
                 values: [1, 2, 3].map(function (i) {
                     return {
                         uid: Util.uid(),
@@ -2659,6 +2660,7 @@ define([
                 var lines = makePollTable(answers, opts, false);
 
                 var disabled = false;
+                var hasInteracted = false;
 
                 var updateAriaLabel = function ($c, val, index) {
                     const optionLabel = $c.closest('.cp-form-type-poll').find(`.cp-form-poll-option[data-index=${index}] span`).text().trim();
@@ -2681,6 +2683,7 @@ define([
 
                     Util.onClickEnter($c, function () {
                         if (disabled) { return; }
+                        hasInteracted = true;
                         val = (val+1)%3;
                         $c.attr('data-value', val);
                         updateAriaLabel($c, val, index);
@@ -2717,10 +2720,24 @@ define([
                 ]);
                 var $tag = $(tag);
 
+                if (APP.isEditor) {
+                    $tag[0].addEventListener('click', function (e) {
+                        const target = e.target;
+                        if (target.closest('.cp-form-required-radio')) {
+                            e.stopPropagation();
+                        }
+                    });
+                }
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
                     tag: tag,
+                    isEmpty: function () {
+                        var v = this.getValue();
+                        if (!v || !v.values) { return true; }      
+                        // Poll is considered empty if user hasn't interacted with it
+                        return !hasInteracted;
+                    },
                     getValue: function () {
                         var res = {};
                         $tag.find('.cp-form-poll-choice').each(function (i, el) {
@@ -2733,6 +2750,7 @@ define([
                     },
                     reset: function () {
                         $tag.find('.cp-form-poll-choice').attr('data-value', 0);
+                        hasInteracted = false;
                     },
                     setEditable: function (state) {
                         disabled = !state;
@@ -2747,6 +2765,8 @@ define([
                         this.reset();
                         if (!res || !res.values) { return; }
                         var val = res.values;
+                        // If there are saved values, user has interacted
+                        hasInteracted = Object.keys(val).length > 0;
                         $tag.find('.cp-form-poll-choice').each(function (i, el) {
                             if (!el._setValue) { return; }
                             var $el = $(el);
@@ -4048,7 +4068,15 @@ define([
 
             var requiredTag;
             if (block.opts && block.opts.required) {
-                requiredTag = h('span.cp-form-required-tag', Messages.form_required_on);
+                var requiredContent = [Messages.form_required_on];
+                if (type === 'poll') {
+                    var infoIcon = Icons.get('help', {
+                        class: 'cp-form-poll-required-info',
+                        title: Messages.form_poll_required_hint
+                    });
+                    requiredContent.push(infoIcon);
+                }
+                requiredTag = h('span.cp-form-required-tag', requiredContent);
             }
 
             var dragHandle;

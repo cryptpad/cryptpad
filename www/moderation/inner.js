@@ -421,7 +421,7 @@ define([
         // Msg.support_privacyHint.support_privacyTitle
         sidebar.addCheckboxItem({
             key: 'privacy',
-            getState: () => false,
+            getState: () => true,
             query: (val, setState) => {
                 APP.support.setAnonymous(val);
                 setState(val);
@@ -949,6 +949,7 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
             $container: APP.$toolbar,
             pageTitle: Messages.moderationPage,
             metadataMgr: common.getMetadataMgr(),
+            skipLink: '#cp-sidebarlayout-container'
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();

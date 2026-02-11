@@ -78,6 +78,9 @@
             height: 5rem;
             min-width: 5rem;
             flex: 1;
+            &:focus-visible {
+                outline: @variables_focus_style;
+            }
         }
         .cp-moderation-userdata-inputs {
             display: flex;
@@ -87,6 +90,9 @@
             width: 25rem;
             :first-child {
                 margin-top: 0 !important;
+            }
+            input:focus-visible{
+                outline: @variables_focus_style;
             }
         }
     }
