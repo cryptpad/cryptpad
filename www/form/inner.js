@@ -3827,7 +3827,7 @@ define([
                     if (err || !obj || !obj.state) { return console.error('ENOTIFY'); }
                 });
             });
-            } // end doSubmit
+            } 
         });
 
         if (APP.hasAnswered && content.answers.cantEdit || APP.isClosed) {
@@ -5717,9 +5717,7 @@ define([
                     $(maxResponsesEl).text(Messages.form_maxResponsesReached);
                     $('.cp-help-container').before(maxResponsesEl);
                 }
-                // Hide submit buttons
                 $('.cp-form-send-container').find('.cp-open').hide();
-                // Disable form blocks
                 if (Array.isArray(APP.formBlocks)) {
                     APP.formBlocks.forEach(function (b) {
                         if (b.setEditable) { b.setEditable(false); }
@@ -5730,21 +5728,17 @@ define([
 
             var reopenIfAllowed = function () {
                 $(maxResponsesEl).remove();
-                // Only un-close if date doesn't also close it
-                var endDate = content.answers.endDate;
+                var endDate = content.answers.endDate; // check date to open the form
                 if (!(endDate && endDate < (+new Date()))) {
                     APP.isClosed = false;
                 }
             };
 
             // Always try to fetch fresh answers from the channel.
-            // The outer frame can decrypt via Utils.secret regardless
-            // of whether results are public or private.
             var sframeChan = framework._.sfCommon.getSframeChannel();
             var checkCount = function () {
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
                     if (err || (obj && obj.error)) {
-                        // Fallback: use the editor-synced answersCount
                         var count = content.answers.answersCount || 0;
                         if (count >= maxResponses) {
                             closeForm();
