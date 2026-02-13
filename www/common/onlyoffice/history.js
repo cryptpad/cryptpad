@@ -267,7 +267,6 @@ define([
 
             var patchWidth;
             var patchDiv;
-            var firstCp = (id === 0) ? true : false;
             for (var i = 0; i < msgsRev.length; i++) {
                 var msg = msgs[i];
                 if (initial || id === -1) {
