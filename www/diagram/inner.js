@@ -193,6 +193,8 @@ define([
                 modified: 'unsavedChanges',
                 proto: 'json',
 
+                ui: 'sketch',
+
                 lang: Messages._languageUsed
             });
 
@@ -209,7 +211,40 @@ define([
                 }
             }
         }, false);
+
+
+        var mkModeButton = function (framework) {
+            var modes = ['kennedy', 'sketch']
+            var types = [];
+            modes.forEach(function(mode){
+                types.push({
+                    tag: 'a',
+                    attributes: {
+                        'data-value': mode,
+                    },
+                    content: mode,
+                    action: function () {
+                        parameters.ui = mode;
+                        framework.onEditableChange();
+                    },
+                });
+            })
+                        
+            const $drawer = UIElements.createDropdown({
+                text: 'Modes', //XXXX
+                options: types,
+                common: framework._.sfCommon,
+                iconCls: 'color-palette'
+            });
+            framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
+            framework._.toolbar.$bottomL.append($drawer);
+            $drawer.addClass('cp-toolbar-appmenu');
+        };
+
+        mkModeButton(framework);
     };
+
+
 
     $('#cp-app-diagram-editor').hide();
     // Framework initialization
