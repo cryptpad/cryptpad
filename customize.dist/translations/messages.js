@@ -10,8 +10,12 @@
    but you should not change it directly (/common/translations/messages.{LANG}.js)
 */
 define(['/common/translations/messages.js'], function (Messages) {
-    // Replace the existing keys in your copied file here:
-    // Messages.button_newpad = "New Rich Text Document";
+  
+    Messages.form_maxResponses_setting = "Maximum responses";
+    Messages.form_maxResponses_placeholder = "No limit";
+    Messages.form_maxResponsesStr = "Limit: {0} responses";
+    Messages.form_maxResponses_remove = "Unset limit";
+    Messages.form_maxResponsesReached = "This form has reached the maximum number of responses and is now closed.";
 
     return Messages;
 });
