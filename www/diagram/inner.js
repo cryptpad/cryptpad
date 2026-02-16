@@ -190,10 +190,10 @@ define([
                 noDevice: 1,
                 filesupport: 0,
 
+                ui: 'sketch',
+
                 modified: 'unsavedChanges',
                 proto: 'json',
-
-                ui: 'sketch',
 
                 lang: Messages._languageUsed
             });
@@ -224,8 +224,9 @@ define([
                     },
                     content: mode,
                     action: function () {
-                        parameters.ui = mode;
-                        framework.onEditableChange();
+                        parameters.set('ui', mode);
+                        drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
+                        + parameters;
                     },
                 });
             })
@@ -240,8 +241,10 @@ define([
             framework._.toolbar.$bottomL.append($drawer);
             $drawer.addClass('cp-toolbar-appmenu');
         };
-
-        mkModeButton(framework);
+        if (!framework.isIntegrated()) {
+            mkModeButton(framework);
+        }
+        
     };
 
 
