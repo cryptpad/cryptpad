@@ -15,6 +15,7 @@ define([
     '/common/common-feedback.js',
     '/common/hyperscript.js',
     '/api/config',
+    '/customize/application_config.js',
     '/customize/messages.js',
     '/components/chainpad/chainpad.dist.js',
     '/file/file-crypto.js',
@@ -26,10 +27,10 @@ define([
 
     '/common/onlyoffice/current-version.js',
     '/common/onlyoffice/broken-formats.js',
+    '/common/common-icons.js',
     '/components/file-saver/FileSaver.min.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/common/onlyoffice/app-oo.less',
 ], function (
     $,
@@ -44,6 +45,7 @@ define([
     Feedback,
     h,
     ApiConfig,
+    AppConfig,
     Messages,
     ChainPad,
     FileCrypto,
@@ -53,7 +55,8 @@ define([
     EmptySlide,
     Channel,
     OOCurrentVersion,
-    BrokenFormats)
+    BrokenFormats,
+    Icons)
 {
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
@@ -104,6 +107,7 @@ define([
         var oldLocks = {};
         var myUniqueOOId;
         var myOOId;
+        let myIndex;
         var cpNfInner;
         let integrationChannel;
 
@@ -202,7 +206,9 @@ define([
             }
 
             const myId = getId();
-            const myIndex = getNextUserIndex();
+            if (!myIndex) {
+                myIndex = getNextUserIndex();
+            }
 
             ids[myId] = {
                 ooid: myOOId,
@@ -352,8 +358,23 @@ define([
             cpIndex: 0
         };
 
-        var getContent = function () {
+        const fixProps = (title) => {
             try {
+                const props = getEditor().asc_getCoreProps();
+                if (!props) { return; }
+                props.title = title;
+                if (!content.hashes || !Object.keys(content.hashes).length) {
+                    // No CP: document is using our templates
+                    // --> fix the "creator" field
+                    props.creator = "";
+                }
+                getEditor().asc_setCoreProps(props);
+            } catch {}
+        };
+        var getContent = function (title) {
+            try {
+                // Update document metadata with latest title
+                fixProps(title);
                 return getEditor().asc_nativeGetFile();
             } catch (e) {
                 console.error(e);
@@ -403,7 +424,7 @@ define([
         // Add a lock
         var isLockedModal = {
             content: UI.dialog.customModal(h('div.cp-oo-x2tXls', [
-                h('span.fa.fa-spin.fa-spinner'),
+                Icons.get('loading'),
                 h('span', Messages.oo_isLocked)
             ]))
         };
@@ -543,19 +564,7 @@ define([
             }
             myUniqueOOId = undefined;
             setMyId();
-            var editor = getEditor();
-            if (editor) {
-                var app = common.getMetadataMgr().getPrivateData().ooType;
-                var d;
-                if (app === 'doc') {
-                    d = editor.GetDocument().Document;
-                } else if (app === 'presentation') {
-                    d = editor.GetPresentation().Presentation;
-                }
-                if (d) {
-                    APP.oldCursor = d.GetSelectionState();
-                }
-            }
+            
             if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
             $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
             ooLoaded = false;
@@ -587,7 +596,8 @@ define([
             blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var data = {
                 hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
-                index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex
+                index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex,
+                time: new Date()
             };
             fixSheets();
 
@@ -713,7 +723,7 @@ define([
                 if (window.sendCredentials) { xhr.withCredentials = true; }
                 xhr.responseType = 'arraybuffer';
                 xhr.onload = function () {
-                    if (/^4/.test('' + this.status)) {
+                    if (/^[45]/.test('' + this.status)) {
                         reject(this.status);
                         return void console.error('XHR error', this.status);
                     }
@@ -745,7 +755,7 @@ define([
         var refreshReadOnly = function () {
             var cancel = h('button.cp-corner-cancel', Messages.cancel);
             var reload = h('button.cp-corner-primary', [
-                h('i.fa.fa-refresh'),
+                Icons.get('refresh'),
                 Messages.oo_refresh
             ]);
 
@@ -779,6 +789,7 @@ define([
                 return hashes[a].index - hashes[b].index;
             });
             var s = version.split('.');
+            var v = parseInt(s[1]);
             if (s.length !== 2) { return UI.errorLoadingScreen(Messages.error); }
 
             var major = Number(s[0]);
@@ -806,8 +817,7 @@ define([
 
                 // The first "cp" in history is the empty doc. It doesn't include the first patch
                 // of the history
-                var initialCp = major === 0 || !cp.hash;
-                var messages = (data.messages || []).slice(initialCp ? 0 : 1, minor);
+                var messages = data.messages;
 
                 messages.forEach(function (obj) {
                     try { obj.msg = JSON.parse(obj.msg); } catch (e) { console.error(e); }
@@ -840,7 +850,7 @@ define([
 
                 loadLastDocument(cp)
                     .then(({blob, fileType}) => {
-                        ooChannel.queue = messages;
+                        ooChannel.queue = messages.slice(1, minor+1);
                         resetData(blob, fileType);
                         UI.removeLoadingScreen();
                     })
@@ -856,7 +866,7 @@ define([
                         var type = common.getMetadataMgr().getPrivateData().ooType;
                         if (APP.downloadType) { type = APP.downloadType; }
                         var blob = loadInitDocument(type, true);
-                        ooChannel.queue = messages;
+                        ooChannel.queue = file.doc === 'spreadsheet' ? messages.slice(0, v) : messages.slice(0, v+1);
                         resetData(blob, file);
                         UI.removeLoadingScreen();
                     });
@@ -911,6 +921,7 @@ define([
                             ooChannel.send(obj.data.msg);
                             ooChannel.lastHash = obj.data.hash;
                             ooChannel.cpIndex++;
+                            common.notify();
                         } else {
                             ooChannel.queue.push(obj.data);
                         }
@@ -1891,6 +1902,9 @@ define([
                 mediasData: mediasData
             }, function (err, obj) {
                 if (err || !obj || !obj.data) {
+                    if (integrationChannel) {
+                        integrationChannel.event('EV_INTEGRATION_ERROR', 'X2T_ERROR');
+                    }
                     UI.alert(Messages.oo_couldNotConvertDocument, cb);
                     return;
                 }
@@ -1947,6 +1961,9 @@ define([
 
         const onError = function() {
             console.error(arguments);
+            if (integrationChannel) {
+                integrationChannel.event('EV_INTEGRATION_ERROR', 'DOCUMENT_ERROR');
+            }
             if (APP.isDownload) {
                 var sframeChan = common.getSframeChannel();
                 sframeChan.event('EV_OOIFRAME_DONE', '');
@@ -1958,7 +1975,7 @@ define([
             var onMigrateRdy = Util.mkEvent();
             onMigrateRdy.reg(function () {
                 var div = h('div.cp-oo-x2tXls', [
-                    h('span.fa.fa-spin.fa-spinner'),
+                    Icons.get('loading'),
                     h('span', Messages.oo_sheetMigration_loading)
                 ]);
                 APP.migrateModal = UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
@@ -2037,24 +2054,8 @@ define([
                     getEditor().asc_setDefaultLanguage(l);
                 }
 
-                if (APP.oldCursor) {
-                    var app = common.getMetadataMgr().getPrivateData().ooType;
-                    var d;
-                    if (app === 'doc') {
-                        d = getEditor().GetDocument().Document;
-                    } else if (app === 'presentation') {
-                        d = getEditor().GetPresentation().Presentation;
-                    }
-                    if (d) {
-                        d.SetSelectionState(APP.oldCursor);
-                        d.UpdateSelection();
-                    }
-                    delete APP.oldCursor;
-                }
                 if (integrationChannel) {
-                    APP.onDocumentUnlock = () => {
-                        integrationChannel.event('EV_INTEGRATION_READY');
-                    };
+                    integrationChannel.event('EV_INTEGRATION_READY');
                 }
             }
             delete APP.startNew;
@@ -2360,7 +2361,7 @@ define([
                 if (ec.editorConfig?.customization?.goback) {
                     c.goback.blank = true;
                 }
-                if (!privateData?.integrationConfig?.autosave) {
+                if (typeof(privateData?.integrationConfig?.autosave) !== "number") {
                     c.forcesave = true;
                 }
             }
@@ -2593,10 +2594,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var exportXLSXFile = function() {
-            var text = getContent();
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+            var md = common.getMetadataMgr().getMetadataLazy();
+            var title = md.title || md.defaultTitle || type;
+            var text = getContent(title);
             var suggestion = Title.suggestTitle(Title.defaultTitle);
             var ext = ['.xlsx', '.ods', '.bin', '.pdf'];
-            var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
             if (type==="presentation") {
                 ext = ['.pptx', '.odp', '.bin', '.pdf'];
@@ -2648,7 +2651,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
 
                 var content = h('div.cp-oo-x2tXls', [
-                    h('span.fa.fa-spin.fa-spinner'),
+                    Icons.get('loading'),
                     h('span', Messages.oo_exportInProgress)
                 ]);
                 UI.openCustomModal(UI.dialog.customModal(content, {buttons: []}));
@@ -2780,7 +2783,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 return void UI.alert(Messages.oo_invalidFormat);
             }
             var div = h('div.cp-oo-x2tXls', [
-                h('span.fa.fa-spin.fa-spinner'),
+                Icons.get('loading'),
                 h('span', Messages.oo_importInProgress)
             ]);
             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
@@ -2811,9 +2814,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                             file: fileType
                         });
                     })
-                    .catch(() => {
+                    .catch((err) => {
                         // Checkpoint error: load the previous one
-                        deleteLastCp(i);
+                        if (err === "DECRYPTION_ERROR" || err === "E_METADATA_DECRYPTION") {
+                            deleteLastCp(i);
+                        }
                         i = i || 0;
                         loadDocument(noCp, useNewDefault, ++i, cb);
                     });
@@ -2917,6 +2922,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 if (!keepQueue) { ooChannel.queue = []; }
                 resetData(blob, file);
             }
+        };
+
+        var loadHistoryCp = function (cp, keepQueue) {
+            APP.history = true;
+            APP.stopHistory = false;
+            loadCp(cp, keepQueue);
         };
 
         var loadTemplate = function (href, pw, parsed) {
@@ -3100,7 +3111,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                 var $dlMedias = common.createButton('', true, {
                     name: 'dlmedias',
-                    icon: 'fa-download',
+                    icon: 'download',
                 }, function () {
                     require(['/components/jszip/dist/jszip.min.js'], function (JsZip) {
                         var zip = new JsZip();
@@ -3128,6 +3139,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // flag only when the checkpoint is ready.
                     APP.stopHistory = true;
                     makeCheckpoint(true);
+                    toolbar.setHistory(false);
+
                 };
                 var onPatch = function (patch) {
                     // Patch on the current cp
@@ -3135,14 +3148,43 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onCheckpoint = function (cp) {
                     // We want to load a checkpoint:
-                    loadCp(cp);
+                    loadCp(cp, true);
+                };
+                var onPatchBack = function (cp, msgs) {
+                    APP.history = true;
+                    APP.stopHistory = false;
+                    if (msgs) {
+                        var msgsFormatted = [];
+                        msgs.forEach(function(msg) {
+                            var parsedMsg = JSON.parse(msg.msg);
+        
+                            var formattedMsg = {
+                                msg: parsedMsg,
+                                hash: msg.serverHash, 
+                                author: msg.author,
+                                time: msg.time
+                            };
+                            msgsFormatted.push(formattedMsg);
+                        });
+                        ooChannel.queue = msgsFormatted;
+                        setTimeout(function () {
+                            loadCp(cp, true);
+                        }, 200);
+                    } else {
+                        loadCp(cp);
+                    }
+                };
+                var docType = function() {
+                    return APP.ooconfig.documentType;
                 };
                 var setHistoryMode = function (bool) {
                     if (bool) {
                         APP.history = true;
+                        toolbar.setHistory(true);
                         try { getEditor().asc_setRestriction(true); } catch (e) {}
                         return;
                     }
+                    toolbar.setHistory(false);
                     // Cancel button: redraw from lastCp
                     APP.history = false;
                     ooChannel.queue = [];
@@ -3192,10 +3234,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                 var $historyButton = common.createButton('', true, {
                     name: 'history',
-                    icon: 'fa-history',
+                    icon: 'history',
                     text: Messages.historyText,
                     tippy: Messages.historyButton
                 });
+                if (!AppConfig.enableHistory) {
+                    $historyButton.css('display', 'none');
+                }
 
                 $historyButton.click(function () {
                     ooChannel.historyLastHash = ooChannel.lastHash;
@@ -3203,6 +3248,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     Feedback.send('OO_HISTORY');
                     var histConfig = {
                         onPatch: onPatch,
+                        onPatchBack: onPatchBack,
+                        docType: docType,
+                        loadCp: loadCp,
+                        loadHistoryCp: loadHistoryCp, 
                         onCheckpoint: onCheckpoint,
                         onRevert: commit,
                         setHistory: setHistoryMode,
@@ -3265,7 +3314,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             if (window.CP_DEV_MODE || DISPLAY_RESTORE_BUTTON) {
                 common.createButton('', true, {
                     name: 'delete',
-                    icon: 'fa-trash',
+                    icon: 'trash-full',
                     hiddenReadOnly: true
                 }).click(function () {
                     if (initializing) { return void console.error('initializing'); }
@@ -3273,7 +3322,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }).attr('title', 'Delete last checkpoint').appendTo(toolbar.$bottomM);
                 common.createButton('', true, {
                     name: 'restore',
-                    icon: 'fa-history',
+                    icon: 'history',
                     hiddenReadOnly: true
                 }).click(function () {
                     if (initializing) { return void console.error('initializing'); }
@@ -3492,6 +3541,22 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }
                     readOnly = true;
                 }
+            } else if (content && content.version <= 8) {
+                version = 'v8/';
+                APP.migrate = true;
+                // Registedred ~~users~~ editors can start the migration
+                if (common.isLoggedIn() && !readOnly) {
+                    content.migration = true;
+                    APP.onLocal();
+                } else {
+                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
+                    if (APP.helpMenu) {
+                        $(APP.helpMenu.menu).after(msg);
+                    } else {
+                        $('#cp-app-oo-editor').prepend(msg);
+                    }
+                    readOnly = true;
+                }
             }
 
             // If the sheet is locked by an offline user, remove it
@@ -3675,6 +3740,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         integrationSave(function (obj) {
                             if (obj && obj.error) { console.error(obj.error); }
                             cb();
+                        });
+                    });
+                    integrationChannel.on('EV_INTEGRATION_MANUAL_SAVE', function () {
+                        integrationSave(function () {
+                            console.log('Integration manual save');
                         });
                     });
 

@@ -21,14 +21,14 @@ define([
     '/checkup/checkup-tools.js',
     '/customize/application_config.js',
     '/common/onlyoffice/current-version.js',
+    '/common/common-icons.js',
 
     '/components/tweetnacl/nacl-fast.min.js',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/checkup/app-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
             NetConfig, Block, Pages, Tools, AppConfig,
-            OOCurrentVersion) {
+            OOCurrentVersion, Icons) {
     window.CHECKUP_MAIN_LOADED = true;
 
     var Assert = Assertions();
@@ -447,38 +447,6 @@ define([
             });
         });
     }
-
-    assert(function (cb, msg) {
-        setWarningClass(msg);
-
-        var printMessage = function (value) {
-            msg.appendChild(h('span', [
-                "This instance hasn't opted out of participation in Google's ",
-                code('FLoC'),
-                " targeted advertizing network. ",
-
-                "This can be done by setting a ",
-                code('permissions-policy'),
-                " HTTP header with a value of ",
-                code('"interest-cohort=()"'),
-                " in the configuration of its reverse proxy instead of the current value (",
-                code(value),
-                "). See the provided NGINX configuration file for an example. ",
-
-                h('p', [
-                    link("https://www.eff.org/deeplinks/2021/04/am-i-floced-launch", 'Learn more'),
-                ]),
-            ]));
-        };
-
-        Tools.common_xhr('/', function (xhr) {
-            var header = xhr.getResponseHeader('permissions-policy') || '';
-            var rules = header.split(',');
-            if (rules.includes('interest-cohort=()')) { return void cb(true); }
-            printMessage(JSON.stringify(header));
-            cb(header);
-        });
-    });
 
     assert(function (cb, msg) {
         msg.appendChild(h('span', [
@@ -1649,6 +1617,27 @@ define([
         });
     });
 
+    // confirm that POST requests to the `/upload-blob` endpoint
+    // return something other than a 404, which would probably indicate
+    // a reverse proxy misconfiguration
+    assert(function (cb, msg) {
+        msg.appendChild(h('span', [
+            `The server returned a 404 error when attempting to reach the `,
+            h('code', `/upload-blob`),
+            ` endpoint. This can be caused by an incorrectly configured reverse proxy.`,
+        ]));
+
+        fetch('/upload-blob', {
+            method: 'POST',
+        }).then(res => {
+            console.log({ upload_fetch_response: res });
+            cb(res.status !== 404);
+        }).catch(err => {
+            console.error(err);
+            cb(false);
+        });
+    });
+
     var row = function (cells) {
         return h('tr', cells.map(function (cell) {
             return h('td', cell);
@@ -1816,7 +1805,7 @@ define([
         $progress.html('').append(h('div.report.pending.summary', [
             versionStatement(),
             h('p', [
-                h('i.fa.fa-spinner.fa-pulse'),
+                Icons.get('loading'),
                 h('span', Messages._getKey('assert_numberOfTestsCompleted', [completed, total]))
             ])
         ]));

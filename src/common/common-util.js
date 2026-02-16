@@ -10,8 +10,16 @@ const factory = (NaclUtil) => {
     window.atob = window.atob || function (str) { return Buffer.from(str, 'base64').toString('binary'); };
     window.btoa = window.btoa || function (str) { return Buffer.from(str, 'binary').toString('base64'); };
 
-    Util.encodeBase64 = NaclUtil.encodeBase64;
+    Util.encodeBase64 = u8 => {
+        if (typeof (u8?.toBase64) === "function") {
+            return u8.toBase64();
+        }
+        return NaclUtil.encodeBase64(u8);
+    };
     Util.decodeBase64 = str => {
+        if (typeof(Uint8Array?.fromBase64) === "function") {
+            return Uint8Array.fromBase64(str);
+        }
         let i = str.length % 4;
         if (i) { str += '='.repeat(4-i); }
         return NaclUtil.decodeBase64(str);
@@ -22,18 +30,6 @@ const factory = (NaclUtil) => {
     Util.slice = function (A, start, end) {
         return Array.prototype.slice.call(A, start, end);
     };
-
-    Util.u8ToBase64 = (u8, cb) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-            let res = reader.result;
-            let trim = res.slice(res.indexOf(',') + 1);
-            cb(trim);
-        };
-        reader.readAsDataURL(new Blob([u8]));
-    };
-
-
 
     Util.shuffleArray = function (a) {
         for (var i = a.length - 1; i > 0; i--) {
@@ -314,13 +310,7 @@ const factory = (NaclUtil) => {
     };
 
     Util.deduplicateString = function (array) {
-        var a = array.slice();
-        for(var i=0; i<a.length; i++) {
-            for(var j=i+1; j<a.length; j++) {
-                if(a[i] === a[j]) { a.splice(j--, 1); }
-            }
-        }
-        return a;
+        return Array.from(new Set(array));
     };
 
     /*

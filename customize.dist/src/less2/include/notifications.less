@@ -11,6 +11,11 @@
     --LessLoader_require: LessLoader_currentFile();
 }
 & {
+    .lucide {
+        width: @variables_icon_width;
+        height: @variables_icon_height;
+        margin-right: @variables_icon_margin;
+    }
     @notif-height: 50px;
     .cp-notifications-container {
         max-width: 300px;
@@ -24,13 +29,16 @@
         .cp-notification {
             min-height: @notif-height;
             display: flex;
+            align-items: center;
+            svg {
+                margin: @variables_icon_margin;
+            }
             .cp-broadcast {
-                display: flex;
-                font-size: 30px;
-                align-items: center;
-                padding: 0 5px;
+                margin: @variables_icon_margin;
+                width: var(--avatar-width);
+                height: var(--avatar-width);
                 color: @cp_dropdown-fg;
-                &.preview:not(.fa-calendar) {
+                &.preview:not(.lucide-calendar-days) {
                     color: @cryptpad_color_red;
                 }
             }
@@ -39,7 +47,7 @@
             }
             .cp-avatar {
                 .avatar_main(30px);
-                padding: 0 5px;
+                padding: 5px;
             }
             .cp-avatar-image {
                 display: inline-flex;
@@ -50,8 +58,9 @@
                 }
             }
             .cp-notification-content {
+                display: flex;
                 flex: 1;
-                align-items: stretch;
+                align-items: center;
                 min-width: 0;
                 p {
                     word-break: break-word;
@@ -59,10 +68,12 @@
                 &.cp-clickable {
                     cursor: pointer;
                 }
+                a {
+                    color: @cryptpad_color_link;
+                }
             }
             .cp-notification-dismiss {
                 color: @cp_dropdown-fg;
-                width: 25px;
                 display: flex;
                 align-items: center;
                 justify-content: center;

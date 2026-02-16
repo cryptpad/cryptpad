@@ -32,6 +32,9 @@
         &.cp-history-init {
             padding: 0;
             height: 32px;
+            svg {
+                animation: spin 10s linear infinite;
+            }
         }
 
         .cp-toolbar-history-timeline {
@@ -53,6 +56,12 @@
                 font-size: 12px;
                 margin-right: 10px;
             }
+
+            .cp-toolbar-history-previous, .cp-toolbar-history-next {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
         }
         .cp-toolbar-history-actions {
             display: flex;
@@ -62,6 +71,11 @@
             align-self: baseline;
             margin-right: 5px;
             .cp-history-actions-first {
+                .cp-history-create-snapshot {
+                    svg {
+                        margin: 0;
+                    }
+                }
                 margin-right: @fill-width;
             }
             button {
@@ -104,6 +118,13 @@
             }
             .cp-toolbar-history-loadmore {
                 font-size: 10px !important;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
+                .cp-loadmore-loading {
+                    animation: spin 10s linear infinite;
+                }
             }
             .cp-history-timeline-actions {
                 margin-left: 21px !important;
@@ -114,18 +135,13 @@
         }
         &.cp-smallpatch {
             .cp-history-snapshot {
-                border: none !important;
-                width: 2px !important;
-                background: @pos-color;
+                border: 2px solid !important;
             }
             .cp-history-timeline-pos {
                 border-right: none;
                 border-left: none;
                 width: 2px !important;
                 background: @pos-color;
-                &:before {
-                    left: -6px;
-                }
             }
         }
         &.cp-history-oo {
@@ -133,6 +149,7 @@
                 height: 20px !important;
                 .cp-history-timeline-pos {
                     height: 20px !important;
+                    margin-left: 100%;
                 }
             }
             .cp-history-timeline-actions {
@@ -159,9 +176,6 @@
                     height: 100%;
                     background: @history_lineBg;
                     margin-right: 1px;
-                    .fa-refresh {
-                        font-size: 13px;
-                    }
                 }
             }
             .cp-history-timeline-container {
@@ -170,10 +184,25 @@
                 background-color: @history_lineBg;
                 height: 39px;
             }
+            .cp-oohistory-bar-el {
+                background-color: @history_userBg2;
+                display: block;
+                height: 100%;
+            }
+            .cp-history-patch {
+                height: 100%;
+                position: relative;
+                display: flex;
+                justify-content: center;
+                box-sizing: border-box;
+                &:nth-child(odd) {
+                    background-color: @history_userBg1
+                }
+            }
+
             .cp-history-timeline-bar {
                 display: flex;
                 flex-flow: column;
-                padding: 1px;
                 & > span {
                     height: 18px;
                     display: flex;
@@ -198,17 +227,27 @@
                 .cp-history-snapshots {
                     position: absolute;
                     left: 1px;
-                    right: 1px;
-                    top: 1px;
+                    right: 0px;
+                    top: 0px;
                     bottom: 1px;
                     cursor: pointer;
                     .cp-history-snapshot {
                         position: absolute;
                         border: 2px solid @cryptpad_text_col;
-                        height: 100%;
+                        height: 98%;
                         display: flex;
-                        align-items: center;
+                        align-items: center !important;
                         justify-content: center;
+                    }
+                }
+
+                .cp-history-snapshots-oo {
+                    top: 0px;
+                    bottom: 0px;
+                    margin-left: -1px;
+                    width: 100%;
+                    .cp-history-snapshot {
+                        height: 100%;
                     }
                 }
             }
@@ -222,8 +261,8 @@
                 width: 50px;
                 color: @cp_toolbar-fg;
                 border-radius: @variables_radius;
-                .fa:first-child:not(:last-child) {
-                    margin-right: 5px;
+                svg {
+                    margin: 0;
                 }
                 &:disabled {
                     cursor: not-allowed !important;
@@ -251,17 +290,27 @@
             }
         }
 
+        .cp-history-oo-timeline-pos {
+            border: 2px solid @cryptpad_text_col;
+            height: 37px;
+            svg {
+                position: absolute;
+                left: 50%;
+                bottom: 70%;
+                transform: translateX(-50%)
+            }
+        }
+
         .cp-history-timeline-pos {
             //width: 2px;
             border: 2px solid @cryptpad_text_col;
             height: 37px;
             //background: @pos-color;
             position: absolute;
-            &:before {
-                top: -17px;
-                font-size: 24px;
+            svg {
+                top: -14px;
                 position: absolute;
-                left: ~"calc(50% - 6px)";
+                left: ~"calc(50% - 9px)";
             }
         }
         @media screen and (max-width: 870px) {
@@ -272,6 +321,9 @@
                 height: auto;
                 .cp-history-actions-first {
                     margin-right: 0 !important;
+                }
+                .cp-history-actions-last {
+                    margin-right: 0.5rem;
                 }
                 button {
                     margin: 0.1rem;

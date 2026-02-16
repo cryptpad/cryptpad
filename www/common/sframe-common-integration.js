@@ -125,7 +125,7 @@ define([
             if (!data || !data.msg) { return; }
             debug('Integration onMessage', data);
             if (data.msg === "MYID") {
-                const { uid, user, netfluxId } = data;
+                const { user, netfluxId } = data;
                 if (users[netfluxId]) { return; }
                 users[netfluxId] = user;
                 updateUserList();

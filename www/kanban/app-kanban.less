@@ -37,6 +37,9 @@
         button.kanban-edit-item, .cp-kanban-arrow {
             color: @cryptpad_color_grey_800;
         }
+        svg {
+            margin: 0;
+        }
     }
     .kanban-board {
         .kanban-board-inner {
@@ -47,6 +50,10 @@
             flex-flow: column;
             border-radius: @variables_radius;
             box-shadow: @cryptpad_ui_shadow;
+
+            svg {
+                margin: 0;
+            }
         }
         color: @cp_kanban-fg;
         button {
@@ -56,6 +63,16 @@
 
     .cp-kanban-palette-nocolor {
         background-color: @palette0;
+    }
+    .cp-palette-container {
+        .cp-palette-color {
+            svg.lucide {
+                margin-bottom: 0.3rem;
+            }
+            .is-hidden {
+                display: none;
+            }
+        }   
     }
 
     .kanban-colors(@kanban-colors; @index) when (@index > 0){
@@ -104,6 +121,9 @@
         overflow: hidden;
         .cp-markdown-toolbar {
             display: block;
+            svg {
+                margin: 0;
+            }
         }
     }
     #cp-kanban-edit-conflicts {
@@ -139,6 +159,10 @@
         &.cp-toolbar-button-active {
             background-color: transparent;
         }
+        .lucide-pencil {
+            margin: 0;
+            width: 1em;
+        }
     }
 
     #cp-kanban-edit-body {
@@ -160,10 +184,6 @@
             .btn {
             outline: 0;
             border-radius: @variables_radius;
-            .fa {
-                font: normal normal normal 14px/1 FontAwesome;
-                font-family: FontAwesome;
-            }
             &:hover {
                 background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
             }
@@ -220,6 +240,9 @@
         {
             margin-right:0px;
         }
+        .lucide-pencil {
+            width: 1em;
+        }
     }
 
     .item-icon-container{ // Board arrows
@@ -234,6 +257,9 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        svg {
+            margin: 0;
+        }
     }
    
 
@@ -358,9 +384,6 @@
             overflow-wrap: anywhere;
             display: flex;
             flex: 1;
-            &:empty::before {
-              content: "\200b";
-            }
             input#kanban-edit {
                 margin: 0;
                 padding: 0;
@@ -368,6 +391,9 @@
             }
             .kanban-item-text {
                 width: 100%;
+            }
+            svg {
+                margin: 0;
             }
         }
         &.kanban-item-hidden {
@@ -464,9 +490,6 @@
                 &:hover {
                     background-color: @cp_kanban-add-hover;
                 }
-                .fa {
-                    margin-right: 5px;
-                }
                 &:focus-visible {
                     outline: @variables_focus_style;
                 }
@@ -513,9 +536,6 @@
                     margin-right: 10px;
                 }
                 .tools_unselectable();
-                i {
-                    margin-right: 5px;
-                }
             }
             .cp-kanban-filterTags-list {
                 margin-right: 10px;
@@ -564,9 +584,9 @@
                 width: 30px;
                 margin: 0;
                 padding: 1px 4px;
-                line-height: 30px;
                 text-align: center;
-                display: inline-block;
+                display: inline-flex;
+                align-items: center;
                 background-color: @board-bg;
                 color: @cp_kanban-fg !important;
                 cursor: pointer;
@@ -582,6 +602,9 @@
                 &:focus-visible {
                     outline: @variables_focus_style;
                 }
+            }
+            svg {
+                margin: 0;
             }
         }
     }
@@ -666,8 +689,10 @@
                 height: 60px;
                 font-size: 40px;
             }
-            i {
+            svg {
                 position: fixed;
+                width: 2rem;
+                height: 2rem;
             }
             div {
                 width: 100%;
@@ -719,6 +744,9 @@
             }
             &:focus-visible {
                 outline: @variables_focus_style;
+            }
+            svg {
+                margin: 0;
             }
         }
 

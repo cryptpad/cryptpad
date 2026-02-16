@@ -40,15 +40,9 @@
         position: relative;
         .cp-avatar-default, media-tag {
             display: inline-flex;
-
-            width: @avatar-width;
             width: var(--avatar-width);
-
-            height: @avatar-width;
             height: var(--avatar-width);
             border-radius: @variables_radius;
-
-
             justify-content: center;
             align-items: center;
             overflow: hidden;
@@ -84,7 +78,7 @@
             }
         }
         .badges_include();
-        & > i.cp-badge {
+        & > span.cp-badge {
             position: absolute;
             z-index: 10;
             bottom: var(--badges-offset);

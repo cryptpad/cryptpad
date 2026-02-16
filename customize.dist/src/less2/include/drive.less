@@ -27,6 +27,18 @@
     max-height: 100%;
     min-height: auto;
 
+    .lucide {
+        width: @variables_icon_width;
+        height: @variables_icon_height;
+        margin-right: @variables_icon_margin;
+    }
+    .cp-icon-hidden {
+        display: none;
+    }
+    .cp-icon-hidden > svg {
+        visibility: hidden;
+        position: absolute;
+    }
     .cp-unselectable {
         .tools_unselectable();
     }
@@ -51,7 +63,12 @@
             padding-top: 5px;
             padding-bottom: 5px;
             border: 1px solid transparent;
-
+            svg.cp-app-drive-element-icon {
+                min-width: 1.25em;
+                min-height: 1.25em;
+                font-size: 1em;
+                margin-right: 0.2rem;
+            }
             &:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-selected-tmp) {
                 border: 1px solid @cp_drive-icon-border;
             }
@@ -83,15 +100,15 @@
                 max-width: none;
                 margin: 8px 0;
             }
-            .fa, .cptools {
-                display: block;
-                margin: auto;
-                font-size: 64px;
+            svg {
                 margin: 18px 0;
                 text-align: center;
                 &.listonly {
                     display: none;
                 }
+            }
+            svg {
+                font-size: 55px; //temporary XXX
             }
 
             &.cp-app-hidden {
@@ -99,7 +116,7 @@
             }
             &.cp-app-disabled {
                 cursor: not-allowed !important;
-                .fa, .cptools { cursor: not-allowed !important; }
+                svg { cursor: not-allowed !important; }
                 opacity: 0.5;
             }
         }
@@ -151,13 +168,6 @@
     //    outline: none;
     //}
 
-    .fa {
-        font-family: FontAwesome;
-    }
-    .cptools {
-        font-family: cptools;
-    }
-
     ul {
         list-style: none;
         padding-left: 0px; // Remove the default padding
@@ -180,12 +190,6 @@
     .cp-app-drive-element-selected {
         background: @cp_drive-selected-bg !important;
         color: @cp_drive-selected-fg;
-        .fa-minus-square-o, .fa-plus-square-o {
-            color: @cp_sidebar-left-fg;
-        }
-        .cptools {
-            color: @cp_drive-selected-fg;
-        }
         &.cp-app-drive-element-active {
             background: @cp_drive-selected-bg !important;
             color: @cryptpad_text_col !important;
@@ -195,9 +199,6 @@
     .cp-app-drive-element-selected-tmp {
         background: @cp_drive-selection-bg;
         color: @cp_drive-selection-fg;
-        .fa-minus-square-o, .fa-plus-square-o {
-            color: @cp_sidebar-left-fg;
-        }
     }
 
     .cp-app-drive-color-picker {
@@ -217,16 +218,8 @@
                 position: absolute;
                 font-size: 50px;
             }
-            .cptools-folder-no-color {
+            .folder-no-color {
                 color: @cryptpad_color_grey_500;
-            }
-            .fa-check {
-                position: absolute;
-                top: 40%; left: 35%;
-                color: transparent;
-            }
-            &.cp-app-drive-current-color > .fa-check {
-                color: @cryptpad_color_grey_900;
             }
         }
     }
@@ -235,16 +228,18 @@
     #cp-app-drive-search {
         display: inline-flex;
         align-items: center;
-        max-width: 400px;
+        max-width: 500px;
         font-size: 30px;
         margin: 15px;
+        height: 2.5rem;
         input {
             background: transparent;
             color: @cp_drive-fg;
+            width: 20rem;
             .tools_placeholder-color();
             outline-width: 0px;
             border-radius: 0;
-            width: 100%;
+            max-width: 100%;
             border: 0;
             border-bottom: 3px solid @cp_drive-fg;
             margin: 0 5px;
@@ -270,9 +265,16 @@
     .cp-app-drive-search-spinner {
         display: inline-flex;
         color: @cp_drive-fg;
-        font-size: 40px;
         align-items: center;
         justify-content: center;
+        svg {
+            height: 2rem;
+            width: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .cp-spinner svg {
+            animation: spin 10s linear infinite;
+        }
     }
     .cp-app-drive-search-noresult {
         font-size: 30px;
@@ -281,6 +283,26 @@
         color: fade(@cryptpad_text_col, 80%);
     }
 
+    //make search drive component responsive
+    @media screen and (max-width: @browser_media-medium-screen) {
+        #cp-app-drive-search {
+            max-width: 100%;
+            font-size: 22px;
+            margin: 10px;
+            input {
+                border-bottom-width: 2px;
+                width: 17rem;
+            }
+        }
+        .cp-app-drive-search-spinner svg {
+            width: 1.5rem;
+            margin-bottom: 1rem;          
+        }
+        .cp-app-drive-search-noresult {
+            font-size: 22px;
+            padding: 10px;
+        }
+    }
 
     /* TREE */
 
@@ -293,7 +315,7 @@
         overflow: auto;
         width: auto;
         white-space: nowrap;
-        max-width: 500px;
+        max-width: 300px;
         min-width: 200px;
         padding: 10px 0px 0px 0px;
         color: @cp_sidebar-left-fg;
@@ -319,13 +341,17 @@
         .cp-app-drive-tree-docs {
             .droppable-tree-element();
             margin-top: 15px;
-            //padding: 0 0 0 20px;
-            padding: 0;
+            padding: 5px;
             background-color: @cp_sidebar-left-item-bg;
-            border-radius: @variables_radius;
+            border-radius: @variables_radius_L;
             cursor: auto;
             &li, li {
-                padding: 0;
+                padding: 0px;
+                ul {
+                    li {
+                        margin-top: 2px;
+                    }
+                }
                 &.cp-app-drive-element-collapsed ul {
                     display: none;
                 }
@@ -340,25 +366,18 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                     .leftside-menu-category_main();
+                    border-radius: @variables_radius_M;
                     display: flex;
                     align-items: center;
                     cursor: pointer;
-                    margin: 0 0 2px -5px;
-                    padding-left: 5px;
-                    .fa, .cptools {
-                        display: inline-block;
-                        min-width: 0;
-                        width: 20px;
-                        margin-right: 0px;
-                        z-index: 99;
-                    }
+                    margin: 0;
                     .cp-app-drive-element {
                         flex: 1;
                         min-width: 0;
                         overflow: hidden;
                         text-overflow: ellipsis;
                     }
-                    &:focus-visible {
+                    &:focus-visible, input:focus-visible {
                         outline: @variables_focus_style;
                     }
                 }
@@ -371,18 +390,17 @@
             margin: 0;
             margin-top: 10px;
             background-color: @cp_sidebar-left-item-bg;
-            border-radius: @variables_radius;
+            border-radius: @variables_radius_L;
             box-shadow: @cryptpad_ui_shadow;
             .cp-app-drive-tree-root {
                 .droppable-tree-element();
-                .fa-trash-o {
-                    padding-left: 2px;
-                }
             }
             li {
                 padding: 0;
                 .cp-app-drive-element-row {
-                    display: block;
+                    display: inline-flex;
+                    align-items: center;
+                    width: 100%;
                     padding-left: 20px;
                     .leftside-menu-category_main();
                     margin: 0;
@@ -398,26 +416,22 @@
         .cp-limit-container {
             margin-top: 5px;
         }
-        .fa.cp-app-drive-icon-expcol {
-            margin-left: -10px;
+        .cp-app-drive-icon-expcol {
             font-size: 14px;
             position: absolute;
-            left: -17px;
-            top: 11px;
-            width: 11px !important;
-            height: 11px !important;
-            background-color: @cp_sidebar-left-item-bg;
+            left: -20px;
+            overflow: hidden;
             padding: 0;
             margin: 0;
             z-index: 10;
-            cursor: default;
-            &:before {
-                position: relative;
-                top: -1px;
+            cursor: pointer;
+            display: inline-flex;
+            svg {
+                margin: 0;
             }
             &:focus-visible {
                 outline: @variables_focus_style;
-                border-radius: @variables_radius_S;
+                border-radius: @variables_radius;
             }
         }
         .cp-app-drive-tree-docs {
@@ -431,7 +445,12 @@
                 }
             }
             .cp-app-drive-tree-root > .cp-app-drive-element-row {
-                margin-left: 0px;
+                .cp-icon-hidden ~ svg {
+                    margin-left: -10px;
+                }
+                .cp-app-drive-icon-expcol {
+                    top: -1px;
+                }
                 &.cp-app-drive-element-active {
                     .cp-app-drive-icon-expcol {
                         color: @cp_sidebar-left-active-fg; // +/- expand icon for drive
@@ -444,46 +463,25 @@
                 left: -10px;
                 background-color: transparent;
             }
-            .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-folder {
-                margin-left: -5px;
+            .cp-app-drive-tree-root > .cp-app-drive-element-row > svg {
+                margin-left: -6px;
             }
             .cp-app-drive-tree-root {
                 &> .cp-app-drive-element-row {
                     padding-left: 15px;
                 }
                 &> ul {
-                    padding-left: 30px;
+                    padding-left: 20px;
                 }
             }
         }
 
         // Expand/collapse lines
         .cp-app-drive-tree-docs ul {
-            margin: 0px 0px 0px 10px;
+            margin: 0px 0px 0px 12px;
             list-style: none;
-            padding-left: 10px;
             li {
                 position: relative;
-                &:before {
-                    position: absolute;
-                    left: -12px;
-                    top: -10px;
-                    content: '';
-                    display: block;
-                    border-left: 1px solid @cp_drive-tree-branch;
-                    height: ~"calc(1em + 11px)";
-                    border-bottom: 1px solid @cp_drive-tree-branch;
-                    width: 15px;
-                }
-                &:after {
-                    position: absolute;
-                    left: -12px;
-                    bottom: -7px;
-                    content: '';
-                    display: block;
-                    border-left: 1px solid @cp_drive-tree-branch;
-                    height: 100%;
-                }
                 &.cp-app-drive-tree-root {
                     margin: 0px 0px 0px -10px;
                     &:before {
@@ -511,7 +509,7 @@
         .cp-splitter {
             position: absolute;
             height: 100%;
-            width: 8px;
+            width: 1rem;
             top: 0;
             left: 0;
             cursor: col-resize;
@@ -525,12 +523,13 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
+            border-left: 1px solid transparent;
             &:hover {
                 border-left: 1px solid @cryptpad_text_col;
             }
-            i {
+            svg {
                 color: @cryptpad_text_col;
-                font-size: 1.6rem;
+                transform: scale(2.5);
             }
         }
         &.cp-app-drive-readonly { // applied to offline drive (not read-only shared folders)
@@ -577,10 +576,11 @@
                 color: @cryptpad_color_link;
                 text-decoration: underline;
             }
-            span {
+            svg {
                 cursor: pointer;
                 float: right;
                 margin-top: 0.5em;
+                margin-right: 0;
             }
         }
         li {
@@ -589,6 +589,7 @@
                 &:hover {
                     &:not(.-cp-app-drive-element-selected, .cp-app-drive-element-selected-tmp) {
                         background-color: @cp_drive-icon-hover;
+                        cursor: pointer;
                     }
                 }
             }
@@ -623,6 +624,10 @@
                         line-height: 16px;
                         color: @cp_drive-header-fg;
                     }
+                    .cp-icon {
+                        height: 1.5rem;
+                        width: 1.5rem;
+                    }
                 }
                 &.cp-app-drive-tags-list {
                     width: 100%;
@@ -646,6 +651,9 @@
         }
         .cp-app-drive-element {
             .cp-app-drive-element-truncated { display: none; }
+             span.cp-app-drive-element-name {
+                padding: 0;
+            }
         }
 
         .cp-app-drive-new-ghost {
@@ -658,7 +666,7 @@
             &:hover {
                 opacity: 0.7;
             }
-            .fa, .cptools {
+            svg {
                 cursor: pointer;
             }
         }
@@ -691,15 +699,12 @@
                 .cp-app-drive-element-state, .cp-app-drive-element-menu {
                     position: absolute;
                     top: 3px;
-                    .fa, .cptools {
+                    display: flex;
+                    flex-direction: column;
+                    svg {
                         margin: 0;
-                        font-size: 18px;
+                        font-size: 16px;
                     }
-                }
-                .cp-app-drive-element-icon {
-                    font-size: 0.9rem;
-                    margin: 0;
-                    margin-right: 0.3rem;
                 }
                 .cp-app-drive-element-name-text {
                     overflow: hidden;
@@ -717,7 +722,7 @@
                     max-width: 100px;
                     max-height: 100px;
                     background: @cp_drive-thumb-bg;
-                    & ~ .fa, & ~ .cptools {
+                    & ~ svg {
                         display: none;
                         font-size: 17px;
                         position: absolute;
@@ -729,10 +734,9 @@
             }
             .cp-app-drive-new-ghost {
                 flex-flow: column;
-                .fa, .cptools {
+                svg {
                     font-size: 90px;
-                    margin-top: 5px;
-                    margin-bottom: 0;
+                    margin: 0;
                 }
             }
             .cp-app-drive-element-list {
@@ -741,9 +745,6 @@
         }
 
         div.cp-app-drive-content-list {
-            .cp-app-drive-element-icon {
-                display: none !important;
-            }
             .cp-app-drive-element-grid {
                 display: none;
             }
@@ -758,7 +759,14 @@
             }
             li {
                 display: flex;
+                align-items: center;
                 border-radius: @variables_radius;
+                 &.cp-app-drive-element-row:not(.cp-app-drive-element-header) {
+                    svg * {
+                        stroke-width: 1.5;
+                        vector-effect: non-scaling-stroke;
+                    }
+                }
                 input {
                     border: 1px solid transparent;
                     margin: 0;
@@ -793,7 +801,7 @@
                         align-items: center;
                         justify-content: end;
                         height: @variables_bar-height;
-                        .fa, .cptools {
+                        svg {
                             &:not(:last-child) {
                                 margin-right: 2px;
                             }
@@ -815,9 +823,6 @@
                             color: inherit;
                             background: none;
                             border: none;
-                            .fa {
-                                margin-right: 5px;
-                            }
                         }
                     }
                 }
@@ -838,7 +843,7 @@
                     cursor: default;
                     color: @cp_drive-header-fg;
                     span {
-                        &:not(.fa):not(.cptools) {
+                        &:not(svg) {
                             text-align: left;
                         }
                         &.sortasc, &.sortdesc {
@@ -966,6 +971,11 @@
     #cp-app-drive-content-folder {
         padding-right: 10px;
         flex: 1;
+        .cp-app-drive-element-row.cp-app-drive-element-file > svg.lucide *,
+        .cp-app-drive-element-row.cp-app-drive-element-folder > svg.lucide * {
+            stroke-width: 3.5;
+            vector-effect: non-scaling-stroke;
+        }
     }
 
     #cp-app-drive-new-ghost-dialog.cp-modal-container {
@@ -977,12 +987,33 @@
         .cp-modal {
             display: flex;
             flex-flow: column;
-            li, li .fa, li .cptools {
+            li, li svg.lucide {
                 cursor: pointer;
                 border-radius: @variables_radius;
                 &:focus {
                     outline: @cryptpad_color_brand solid 2px;
                 }
+            }
+            li svg.lucide * {
+                stroke-width: 3.5;
+                vector-effect: non-scaling-stroke;
+            }
+            ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            li {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                text-align: center;
+            }
+            h3 {
+                display:inline-flex;
+                align-items: center;
+                justify-content: center;
             }
             &> p {
                 display: flex;
@@ -1004,7 +1035,10 @@
 
         .cp-app-drive-new-name {
             color: @cp_drive-fg;
+            overflow: hidden;
+            text-overflow: ellipsis;
             white-space: nowrap;
+            max-width: 100%;
         }
 
         @media screen and (max-width: @browser_media-medium-screen),
@@ -1020,7 +1054,7 @@
                         display: flex;
                         align-items: center;
                         align-content: unset;
-                        .fa, .cptools {
+                        svg {
                             font-size: 32px;
                             min-width: 50px;
                         }
@@ -1050,17 +1084,16 @@
             }
         }
         .cp-toolbar-bottom-right {
-            .fa-history { order: 50; }
-            // .fa-list, .fa-th-large,
+            .lucide-history { order: 50; }
             .cp-app-drive-viewmode-button {
                 order: 25;
-                i {
-                    margin-right: 0;
-                }
+            }
+            svg {
+                margin-right: 0;
             }
             #cp-app-drive-toolbar-context-mobile, #cp-app-drive-toolbar-contextbuttons { order: 0; }
             #cp-app-drive-toolbar-context-mobile {
-                .fa { margin: 0 !important; }
+                .svg { margin: 0 !important; }
             }
             #cp-app-drive-toolbar-contextbuttons {
                 height: @variables_bar-height;
@@ -1080,6 +1113,12 @@
     .cp-app-drive-button {
         order: 15;
         margin: 0 1em;
+        .btn.btn-danger {
+            svg.lucide {
+                width: @variables_icon_width;
+                height: @variables_icon_height;
+            }
+        }
     }
 
 }

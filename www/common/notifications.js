@@ -10,12 +10,20 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-util.js',
     '/common/common-constants.js',
+    '/components/marked/marked.min.js',
     '/customize/messages.js',
     '/customize/pages.js',
+    '/common/common-icons.js',
     'tui-date-picker'
-], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages, DatePicker) {
+], function($, h, Hash, UI, UIElements, Util, Constants, Marked, Messages, Pages, Icons, DatePicker) {
 
     var handlers = {};
+
+    var renderer = new Marked.Renderer();
+    Marked.setOptions({
+        renderer: renderer,
+        sanitize: true
+    });
 
     var defaultDismiss = function(common, data) {
         return function(e) {
@@ -458,7 +466,9 @@ define([
         content.getFormatText = function () {
             var msg = Pages.setHTML(h('span'), Messages.settings_safeLinkDefault);
             var i = msg.querySelector('i');
-            if (i) { i.classList = 'fa fa-shhare-alt'; }
+            if (i) { i.remove(); }
+            const icon = Icons.get('share');
+            msg.appendChild(icon);
             return msg.innerHTML;
         };
 
@@ -528,12 +538,33 @@ define([
         var toShow = text[myLang];
         // Otherwise, fallback to the default language if it exists
         if (!toShow && defaultL) { toShow = text[defaultL]; }
+        toShow ||= text['default'];
         // No translation available, dismiss
         if (!toShow) { return defaultDismiss(common, data)(); }
 
         var slice = toShow.length > 200;
         var unsafe = toShow;
-        toShow = Util.fixHTML(toShow);
+
+        if (content.markdown === true) {
+            toShow = Marked.parse(toShow);
+            slice = false;
+            content.handler = function () {
+                var content = h('div', [
+                    h('h4', Messages.broadcast_newCustom),
+                    UI.setHTML(h('div.cp-admin-message'), toShow)
+                ]);
+                $(content).find('a').click(e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const href = e.target.href || '';
+                    if (!/^(http|\/)/.test(href)) { return; }
+                    common.openURL(e.target.href);
+                });
+                UI.alert(content);
+            };
+        } else {
+            toShow = Util.fixHTML(toShow);
+        }
 
         content.getFormatText = function () {
             if (slice) {
@@ -550,7 +581,9 @@ define([
                 UI.alert(content);
             };
         }
-        if (!content.archived) {
+        if (content.dismiss) {
+            content.dismissHandler = content.dismiss;
+        } else if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
         }
     };

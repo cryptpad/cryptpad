@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 So you want to write a realtime collaborative application?
 
-This guide will focus on applications which require **multiple clients** to **collaboratively construct a single authoratative document**.
+This guide will focus on applications which require **multiple clients** to **collaboratively construct a single authoritative document**.
 
 [XWiki-Labs](https://labs.xwiki.com/) has published an open source suite (called [CryptPad](https://github.com/cryptpad/cryptpad)) of collaborative editors  which employ end to end encryption.
 This guide will refer to the techniques used in the prototypes developed therein.
@@ -43,7 +43,7 @@ For the purposes of the document, it doesn't matter which becomes which, it must
 The research team at XWiki Labs created and continues to maintain a Javascript library called [Chainpad](https://github.com/xwiki-contrib/chainpad "Realtime Collaborative Editor Algorithm based on Nakamoto Blockchains") which simplifies this process, and provides a few guarantees about how differences will be resolved.
 
 The algorithm is based on Nakamoto Blockchains, a construct popularized by Bitcoin, and now a growing number of other cryptocurrencies.
-The core datatype is considered a [CRDT](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type "Conflict-free Replicated Data Type).
+The core datatype is considered a "Conflict-free Replicated Data Type" ([CRDT](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type)).
 CRDTs are also also employed by the popular source control managements software [Git](https://en.wikipedia.org/wiki/Git_%28software%29).
 
 Each patch references the [SHA-256 Hash](https://en.wikipedia.org/wiki/Secure_Hash_Algorithm "Secure Hashing Algorithms") of the previous state of the document.
@@ -69,7 +69,7 @@ This means that using chainpad, clients can collaborate in realtime while using 
 
 ## Datastore
 
-While it's possible for messages to propogate using a [gossip protocol](https://en.wikipedia.org/wiki/Gossip_protocol) and therefore not rely on havinga centralized service for storing messages, it's possible for the members of a gossip network to [Netsplit](https://en.wikipedia.org/wiki/Netsplit).
+While it's possible for messages to propagate using a [gossip protocol](https://en.wikipedia.org/wiki/Gossip_protocol) and therefore not rely on having a centralized service for storing messages, it's possible for the members of a gossip network to [Netsplit](https://en.wikipedia.org/wiki/Netsplit).
 Chainpad currently has no mechanism for resolving such an event.
 
 If a member of a session disconnects (as defined by not responding to a ping with a pong in a specified timeframe) any revisions that they make to their version of a document will be ignored.
@@ -82,7 +82,7 @@ Chainpad can handle out of order messages, but it performs best when its message
 By architecting your system such that all clients send to a server which then relays to other clients, you guarantee that a particular chain of patches is consistent between the participants of your session.
 
 CryptPad is capable of using a variety of data stores.
-Which data store your instance employs can be [easily configured](https://github.com/cryptpad/cryptpad/blob/master/config.example.js).
+Which data store your instance uses can be [easily configured](https://github.com/cryptpad/cryptpad/blob/master/config.example.js).
 
 You simply need to write an adaptor which conforms to a simple API.
 The documentation for writing such an adaptor, and the complete list of implemented adaptors, is available [here](https://github.com/cryptpad/cryptpad/tree/master/storage).
@@ -128,12 +128,12 @@ If an interface is interactive, which they typically are, then the user will lik
 If the interface is a plain text editor, maintaining the location of the cursor while updating the contents of the editor is not especially difficult.
 The process involves checking where the user's selection is located (possibly a start and end), determining whether the changes to the document occurred before or after those points, and updating the selection boundaries if necessary.
 
-If the interface is a WYSIWYG editor, maintaining the location of the cursor is more difficult, as the number of characters changed in the authoratative document does not correspond directly to the number of characters which the user perceives.
+If the interface is a WYSIWYG editor, maintaining the location of the cursor is more difficult, as the number of characters changed in the authoritative document does not correspond directly to the number of characters which the user perceives.
 It is the application developers' responsibility to infer from the new content where the cursor should be, and to render the modified content in such a way that it does not disrupt user experience.
 In the process of developing its [Realtime CKEditor](https://cryptpad.fr) XWiki Labs discovered that many of the [existing Javascript libraries](https://github.com/Matt-Esch/virtual-dom) for updating a **DOM** are very destructive, and replace elements completely once a difference is detected within the tree (when scanning left to right).
 
 After testing several options, we ended up using a patched version of [**DiffDOM**](https://github.com/fiduswriter/diffDOM).
-Its diffing algorithm is _mostly correct_, but it lacks a move operation, namely, it determine that when the text of a paragraph gets bolded, that the textNode within the P should be moved into a STRONG element, with that STRONG element placed within the P.
+Its diffing algorithm is _mostly correct_, but it lacks a move operation, namely, it determines that when the text of a paragraph gets bolded, that the textNode within the P should be moved into a STRONG element, with that STRONG element placed within the P.
 As such, there are difficulties with applying styles to large portions of the document while someone is editing within that section.
 
 On the whole, however, contentEditable documents avoid many of the problems that a text editor faces with its rendering cycle.
@@ -213,7 +213,7 @@ The encryption scheme employed by CryptPad is a [symmetric encryption](https://e
 Encryption is complex, and poorly understood by the majority of those who use it on a daily basis.
 Pre-shared-keys are among the weakest possible cryptographic tools available today, however, few if any other encryption schemes scale to any number of users.
 
-For our purposes, we would like our application to offerthe benefits of encryption without being any more difficult to use.
+For our purposes, we would like our application to offer the benefits of encryption without being any more difficult to use.
 Since the method of collaborating on any web resource typically involves sharing the URL, we use the hash of the URl to share the pre-shared-key.
 Anything in a URL which follows a `#` is not sent to the server, meaning that our web app will store your users' messages without ever knowing their content.
 

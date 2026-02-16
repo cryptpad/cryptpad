@@ -15,9 +15,9 @@ define([
     '/common/common-ui-elements.js',
     '/common/notifications.js',
     '/common/common-util.js',
+    '/common/common-icons.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/notifications/app-notifications.less',
 ], function (
     $,
@@ -32,6 +32,7 @@ define([
     UIElements,
     Notifications,
     Util,
+    Icons
     )
 {
     var APP = {};
@@ -78,7 +79,7 @@ define([
                 h("h5.cp-app-notifications-panel-title",
                     (Messages.notificationsPage || "Notifications") + " - " + categoryName),
                 h("div.cp-app-notifications-panel-titlebar-buttons", [
-                    dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { tabindex: 0, title: Messages.notifications_dismissAll || "Dismiss All", 'aria-label': Messages.notifications_dismissAll || "Dismiss All", role: 'button' }, h("span.fa.fa-trash")),
+                    dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { tabindex: 0, title: Messages.notifications_dismissAll || "Dismiss All", 'aria-label': Messages.notifications_dismissAll || "Dismiss All", role: 'button' }, Icons.get('trash-full')),
                 ]),
             ]),
             notifsList = h("div.cp-app-notifications-panel-list", {'role': 'list', 'aria-label': (Messages.notificationsPage || "Notifications") + " " + categoryName }, [
@@ -218,10 +219,10 @@ define([
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category', 'tabindex': 0, 'role': 'menuitem'}).appendTo($categories);
-            if (key === 'all') { $category.append($('<span>', {'class': 'fa fa-bars', 'aria-hidden': 'true'})); }
-            if (key === 'friends') { $category.append($('<span>', {'class': 'fa fa-user', 'aria-hidden': 'true'})); }
-            if (key === 'pads') { $category.append($('<span>', {'class': 'cptools cptools-richtext', 'aria-hidden': 'true'})); }
-            if (key === 'archived') { $category.append($('<span>', {'class': 'fa fa-archive', 'aria-hidden': 'true'})); }
+            if (key === 'all') { $category.append($(Icons.get('all'))); }
+            if (key === 'friends') { $category.append($(Icons.get('contacts-book'))); }
+            if (key === 'pads') { $category.append($(Icons.get('file-pad'))); }
+            if (key === 'archived') { $category.append($(Icons.get('history'))); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
@@ -292,7 +293,6 @@ define([
         }
 
         createLeftside();
-
         UI.removeLoadingScreen();
 
     });

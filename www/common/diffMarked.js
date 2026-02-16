@@ -214,7 +214,6 @@ define([
             r = r.replace(/<div class="cp-md-toc"><\/div>/g, getTOC());
         }
         toc = [];
-
         return r;
     };
 
@@ -276,16 +275,16 @@ define([
         var isCheckbox = true;
         if (isCheckedTaskItem) {
             text = text.replace(checkedTaskItemPtn,
-                '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square-check" aria-hidden="true"></i>') + '\n';
         } else if (isUncheckedTaskItem) {
             text = text.replace(uncheckedTaskItemPtn,
-                '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square" aria-hidden="true"></i>') + '\n';
         } else if (hasBogusCheckedInput) {
             text = text.replace(bogusCheckPtn,
-                '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square-check" aria-hidden="true"></i>') + '\n';
         } else if (hasBogusUncheckedInput) {
             text = text.replace(bogusUncheckPtn,
-                '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
+                '<i data-lucide="square" aria-hidden="true"></i>') + '\n';
         } else {
             isCheckbox = false;
         }
@@ -448,11 +447,17 @@ define([
         if (restrictedTags.indexOf(root.nodeName.toUpperCase()) === -1) { return true; }
         return root.getAttribute && /^(blob\:|\/lib\/pdfjs)/.test(root.getAttribute('src'));
     };
+    // Remove any iframe with srcdoc attribute
+    var checkSrcDoc = function (root) {
+        if (restrictedTags.indexOf(root.nodeName.toUpperCase()) === -1) { return true; }
+        return !(root.getAttribute && root.getAttribute('srcdoc'));
+    };
 
     var removeForbiddenTags = function (root) {
         if (!root) { return; }
         if (forbiddenTags.indexOf(root.nodeName.toUpperCase()) !== -1) { removeNode(root); }
-        if (!checkSrc(root)) { removeNode(root); }
+        if (!checkSrc(root)) { removeNode(root); }
+        if (!checkSrcDoc(root)) { removeNode(root); }
         slice(root.children).forEach(removeForbiddenTags);
     };
 

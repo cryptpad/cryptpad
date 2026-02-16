@@ -9,7 +9,8 @@ define([
     '/common/dom-ready.js',
     '/common/common-hash.js',
     '/common/sframe-common-outer.js',
-], function (nThen, ApiConfig, DomReady, Hash, SFCommonO) {
+    '/common/outer/local-store.js'
+], function (nThen, ApiConfig, DomReady, Hash, SFCommonO, LocalStore) {
 
     var href, hash;
     // Loaded in load #2
@@ -34,7 +35,7 @@ define([
             }
             if (parsed && parsed.auditorKey) {
                 meta.form_auditorKey = parsed.auditorKey;
-                meta.form_auditorHash = hash;
+                meta.form_auditorHash = hash.charAt(0) === '#' ? hash.slice(1) : hash;
             }
 
             var formData = Utils.Hash.getFormData(Utils.secret);
@@ -68,7 +69,7 @@ define([
             addData: addData,
             addRpc: addRpc,
             //cache: true,
-            noDrive: parsed?.hashData?.mode !== "view",
+            noDrive: (parsed?.hashData?.mode !== "view" || !LocalStore.isLoggedIn()),
             hash: hash,
             href: href,
             useCreationScreen: true,

@@ -188,6 +188,9 @@ define([
         var onInsertImage = function (data, cb) {
             chan.send('ON_INSERT_IMAGE', data, cb);
         };
+        var onError = function (err) {
+            chan.send('DOCUMENT_ERROR', err);
+        };
         var onReady = function () {
             chan.send('DOCUMENT_READY', {});
         };
@@ -207,9 +210,27 @@ define([
             chan.send('ON_DOWNLOADAS', blob);
         };
 
+        let manualSave;
+        chan.on('MANUAL_SAVE', function () {
+            if (typeof(manualSave) !== "function") {
+                console.error('UNSUPPORTED COMMAND', 'save');
+                return;
+            }
+            manualSave();
+        });
+        let setSave = f => {
+            manualSave = f;
+        };
+
 
         let getInstanceURL = function () {
             return Config.httpUnsafeOrigin;
+        };
+        let getBlobClient = (cb) => {
+            chan.send('GET_BLOB', obj => {
+                if (obj?.error) { console.error(obj?.error); }
+                cb(obj?.blob);
+            });
         };
         let getBlobServer = function (documentURL, cb) {
             let xhr = new XMLHttpRequest();
@@ -224,11 +245,11 @@ define([
                     // myBlob is now the blob that the object URL pointed to.
                     cb(null, blob);
                 } else {
-                    cb(this.status);
+                    getBlobClient(cb);
                 }
             };
-            xhr.onerror = function (e) {
-                cb(e.message);
+            xhr.onerror = function () {
+                getBlobClient(cb);
             };
             xhr.send();
         };
@@ -298,9 +319,11 @@ define([
                         _: data._config
                     },
                     utils: {
+                        onError,
                         onReady: onReady,
                         onDownloadAs,
                         setDownloadAs,
+                        setSave,
                         save: save,
                         reload: reload,
                         onHasUnsavedChanges: onHasUnsavedChanges,

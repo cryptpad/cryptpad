@@ -74,9 +74,9 @@ define([
 
                 Cryptpad.getPadAttribute('rtChannel', function (err, res) {
                     // If already stored, don't pin it again
+                    channels.rtChannel = data.channel;
                     if (res && res === data.channel) { return; }
                     Cryptpad.pinPads([data.channel], function () {
-                        channels.rtChannel = data.channel;
                         Cryptpad.setPadAttribute('rtChannel', data.channel, function () {});
                     });
                 });
@@ -125,8 +125,8 @@ define([
                     });
                     toPin = Utils.Util.deduplicateString(toPin);
                     toUnpin = Utils.Util.deduplicateString(toUnpin);
-                    Cryptpad.pinPads(toPin, function () {});
-                    Cryptpad.unpinPads(toUnpin, function () {});
+                    if (toPin.length) { Cryptpad.pinPads(toPin, function () {}); }
+                    if (toUnpin.length) { Cryptpad.unpinPads(toUnpin, function () {}); }
                     if (!toPin.length && !toUnpin.length) { return; }
                     Cryptpad.setPadAttribute('ooImages', list, function (err) {
                         if (err) { console.error(err); }

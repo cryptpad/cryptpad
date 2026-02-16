@@ -43,6 +43,9 @@
             input {
                 flex: 1;
                 min-width: 0 !important;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                }
             }
             button {
                 // no radius in input + button combo
@@ -100,6 +103,11 @@
                 color: @cp_token-fg;
                 &:hover {
                     color: contrast(@cp_token-fg, darken(@cp_token-fg, 10%), lighten(@cp_token-fg, 10%));
+                }
+                svg {
+                    width: @variables_icon_width;
+                    height: @variables_icon_height;
+                    margin: 0;
                 }
             }
         }
@@ -169,9 +177,6 @@
                 margin-right: @tokens_margin;
             }
             .tools_unselectable();
-            i {
-                margin-right: 5px;
-            }
         }
         .cp-tags-list {
             em {
@@ -181,6 +186,7 @@
             span {
                 cursor: pointer;
                 font-size: 14px;
+                margin-bottom: 0.3rem;
                 .tools_unselectable();
                 &.active {
                     background-color: @cp_kanban-fg;

@@ -12,7 +12,6 @@ define([
     '/customize/messages.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/worker/app-worker.less',
 ], function (
     $,

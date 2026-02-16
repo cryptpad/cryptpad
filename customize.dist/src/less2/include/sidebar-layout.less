@@ -60,9 +60,9 @@
                     display: flex;
                     max-width: 100%;
                     align-items: center;
-                    .fa, .cptools {
-                        margin-right: 0;
-                        flex: 0;
+                    svg {
+                        min-width: @variables_icon_width;
+                        min-height: @variables_icon_height;
                     }
                     span.cp-sidebarlayout-category-name {
                         padding-left: 5px;
@@ -121,6 +121,11 @@
                         display: flex;
                         flex-flow: column;
                         align-items: baseline;
+                        input, textarea {
+                            &:focus-visible {
+                                outline: @variables_focus_style;
+                            }
+                        }
                     }
                     .cp-usergrid-container {
                         margin-bottom: 0px !important;
@@ -219,6 +224,9 @@
                             border-right: 0px;
                             border-top-right-radius: 0px;
                             border-bottom-right-radius: 0px;
+                            &:focus-visible {
+                                outline: @variables_focus_style;
+                            }
                         }
                         input:invalid {
                             border-color: red;
@@ -257,9 +265,6 @@
                 }
                 label.noTitle {
                     display: inline-flex;
-                    .fa {
-                        margin-left: 10px;
-                    }
                 }
                 margin-bottom: 20px;
             }
@@ -301,7 +306,7 @@
                 margin: 10px 0;
             }
             button.btn {
-                margin: 0 @sidebar_base-margin 0 0;
+                //margin: 0 @sidebar_base-margin 0 0;
                 &:last-child {
                     margin-right: 0;
                 }

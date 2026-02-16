@@ -24,7 +24,6 @@ define([
 
     '/components/file-saver/FileSaver.min.js',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function (
     $,
     Hyperjson,
@@ -665,6 +664,11 @@ define([
                             integrationSave(function (obj) {
                                 if (obj && obj.error) { console.error(obj.error); }
                                 cb();
+                            });
+                        });
+                        integrationChannel.on('EV_INTEGRATION_MANUAL_SAVE', function () {
+                            integrationSave(function () {
+                                console.log('Integration manual save');
                             });
                         });
                     }

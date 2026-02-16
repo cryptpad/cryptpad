@@ -49,6 +49,10 @@
                 &:hover {
                     color: lighten(@cp_upload-fg, 10%);
                 }
+                svg {
+                    margin: 0;
+                }
+
             }
         }
         #cp-fileupload-table {
@@ -66,9 +70,8 @@
                 white-space: nowrap;
                 max-width: 40vw;
                 margin: 0px @upload_pad_v;
-                .fa {
+                svg {
                     margin-top: 4px;
-                    margin-right: 5px;
                 }
                 .cp-fileupload-table-name {
                     overflow: hidden;
@@ -112,9 +115,9 @@
                 &:not(.success):not(.cancelled):hover {
                     background-color: rgba(0,0,0,0.1);
                 }
-                .fa {
+                svg {
                     padding: @upload_pad_h @upload_pad_v;
-                    &.fa-times {
+                    .lucide-x {
                         cursor: pointer;
                     }
                 }

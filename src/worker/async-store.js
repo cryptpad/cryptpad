@@ -4,7 +4,7 @@
 
 const factory = (Sortify, UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
-                Realtime, Messaging, Pinpad, Rpc, Cache,
+                Realtime, Messaging, Pinpad, Rpc, Cryptget, Cache,
                 SF, AccountTS, DriveTS, PadTS, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
@@ -393,7 +393,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            s.rpc.uploadStatus(data.size, function (err, res) {
+            s.rpc.uploadStatus({
+                id: data.id,
+                size: data.size
+            }, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);
             });
@@ -403,7 +406,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            s.rpc.uploadCancel(data.size, function (err, res) {
+            s.rpc.uploadCancel({
+                id: data.id,
+                size: data.size
+            }, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);
             });
@@ -413,7 +419,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            s.rpc.send.unauthenticated('UPLOAD', data.chunk, function (e, msg) {
+            s.rpc.send.unauthenticated('UPLOAD', {
+                chunk: data.chunk,
+                id: data.id
+            }, function (e, msg) {
                 cb({
                     error: e,
                     msg: msg
@@ -484,7 +493,8 @@ const factory = (Sortify, UserObject, ProxyManager,
 
         Store.isNewChannel = function (clientId, data, cb) {
             if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
-            var channelId = data.channel || Hash.hrefToHexChannelId(data.href, data.password);
+            let channelId = typeof(data) === "string" ? data :
+                (data.channel || Hash.hrefToHexChannelId(data.href, data.password));
             store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
                 if (response && response.length && typeof(response[0]) === 'object') {
@@ -2221,6 +2231,72 @@ const factory = (Sortify, UserObject, ProxyManager,
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        Store.fixMissingRtChannel = (cb) => {
+            const all = {};
+            const addMissing = (missing) => {
+                missing.forEach(obj => {
+                    Object.keys(obj).forEach(chan => {
+                        let proxy = obj[chan];
+                        let href = proxy.roHref || proxy.href;
+                        all[chan] ||= {
+                            href,
+                            password: proxy.password,
+                            list: []
+                        };
+                        all[chan].list.push(proxy);
+                    });
+                });
+            };
+
+            try {
+                const mine = store.manager.getMissingRtChannel();
+                addMissing(mine);
+            } catch (e) {
+                Feedback.send('MISSING_RT_CHANNEL_ERROR', true);
+                return setTimeout(cb);
+            }
+            const teamsId = store.modules?.team?.getTeams() || [];
+            teamsId.forEach(id => {
+                const team = store.modules.team.getTeam(id);
+                try {
+                const teamMissing = team.manager.getMissingRtChannel();
+                    addMissing(teamMissing);
+                } catch (e) {
+                    Feedback.send('MISSING_RT_CHANNEL_ERROR', true);
+                    return setTimeout(cb);
+                }
+            });
+
+            if (Object.keys(all).length) {
+                Feedback.send('MISSING_RT_CHANNEL', true);
+            }
+
+            let n = nThen;
+            const opts = {
+                network: store.network
+            };
+            Object.keys(all).forEach(chan => {
+                n = n(waitFor => {
+                    const data = all[chan];
+                    const href = data.href;
+                    opts.password = data.password;
+                    const parsed = Hash.parsePadUrl(href);
+                    Cryptget.get(parsed.hash, waitFor((err, content) => {
+                        if (err) { return; }
+                        const p = Util.tryParse(content);
+                        const rtChannel = p?.content?.channel;
+                        if (!rtChannel) { return; }
+                        data.list.forEach(proxy => {
+                            proxy.rtChannel = rtChannel;
+                        });
+                    }), opts);
+                }).nThen;
+            });
+            n(() => {
+                setTimeout(cb);
+            });
+        };
+
         Store.refreshDriveUI = function () {
             getAllStores().forEach(function (_s) {
                 var send = _s.id ? _s.sendEvent : sendDriveEvent;
@@ -2374,6 +2450,8 @@ const factory = (Sortify, UserObject, ProxyManager,
                     // Make teams non-blocking
                     if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 });
+            }).nThen(function (waitFor) {
+                Store.fixMissingRtChannel(waitFor());
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
@@ -2711,7 +2789,7 @@ const factory = (Sortify, UserObject, ProxyManager,
         const start = (clientId, data, cb) => {
             // Don't create a drive if the user only wants to
             // open an existing pad
-            const noDrive = data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash);
+            let noDrive = data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash);
             if (noDrive) {
                 if (data.neverDrive) { store.neverCache = true; }
                 return void onNoDrive(clientId, obj => {
@@ -2973,6 +3051,7 @@ module.exports = factory(
     require('./components/messaging'),
     require('../common/pinpad'),
     require('../common/rpc'),
+    require('../common/cryptget'),
     require('../common/cache-store'),
     require('./components/sharedfolder'),
     require('./components/account'), // .ts

@@ -429,5 +429,8 @@
     "upgradeAccount": "სატარიფო გეგმის აწევა",
     "templateSaved": "შაბლონი შენახულია!",
     "uploadButton": "ფაილების ატვირთვა",
-    "uploadFolderButton": "ატვირთვის საქაღალდე"
+    "uploadFolderButton": "ატვირთვის საქაღალდე",
+    "badges_admin": "ადმინისტრატორი",
+    "badges_premium": "გამომწერი",
+    "profile_badges": "სამკერდე ნიშანი"
 }

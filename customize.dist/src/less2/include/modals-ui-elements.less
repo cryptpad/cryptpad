@@ -129,16 +129,16 @@
 
     // Access modal
     button.cp-access-add {
-        i {
+        svg {
             margin-right: 0px !important;
         }
-        i.fa-arrow-left {
+        svg[data-lucide='arrow-left'] {
             display: inline;
             @media (max-width: @browser_media-medium-screen) {
                 display: none;
             }
         }
-        i.fa-arrow-up {
+        svg[data-lucide='arrow-up'] {
             display: none;
             @media (max-width: @browser_media-medium-screen) {
                 display: inline;
@@ -160,6 +160,14 @@
 
     .cp-access-margin-right {
         margin-right: 5px !important;
+    }
+    .cp-share-columns {
+        .cp-checkmark {
+            svg.lucide {
+                margin-left: 0;
+                margin-right: 0.2rem;
+            }
+        }
     }
 
     // teams invite modal
@@ -184,9 +192,6 @@
     }
     .cp-teams-invite-spinner {
         font-size: 1.2em;
-        .fa {
-            margin-right: 10px;;
-        }
     }
     .cp-teams-help {
         margin-left: 10px;
@@ -209,6 +214,14 @@
         .cp-snapshot-spinner {
             min-height: 90px;
             text-align: center;
+            .cp-spinner {
+                svg {
+                    width: 4rem;
+                    height: 4rem;
+                    vertical-align: middle;
+                    animation: spin 10s linear infinite;
+                }
+            }
         }
         .cp-snapshot-element {
             display: flex;
@@ -216,7 +229,7 @@
             padding: 5px 0;
             outline: none;
             border-radius: @variables_radius;
-            & > i {
+            & > svg {
                 margin-left: @snapshot_spacing;
                 text-align: center;
             }
@@ -310,17 +323,13 @@
                         color: @cp_markdown-block-fg;
                     }
                 }
-                .cp-spinner {
+                .cp-spinner-main {
                     border-color: @cryptpad_color_brand;
                     border-top-color: transparent;
                 }
             }
             .cp-mediatag-control {
                 align-self: center;
-                .fa {
-                    margin: 10px;
-                    cursor: pointer;
-                }
             }
             .cp-mediatag-outer {
                 display: flex;
@@ -353,6 +362,13 @@
         &.cp-input-invalid {
             border: 2px solid @cryptpad_color_red;
             color: @cp_form-invalid;
+        }
+    }
+
+    .alertify .dialog .msg div.cp-admin-message {
+        color: @cryptpad_text_col;
+        a {
+            color: @cryptpad_color_link;
         }
     }
 

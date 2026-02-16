@@ -18,7 +18,6 @@ define([
     '/components/file-saver/FileSaver.min.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/file/app-file.less',
 
 ], function (
@@ -87,7 +86,6 @@ define([
                 var $mt = $dlview.find('media-tag');
                 $mt.attr('src', src);
                 $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
-                $mt.css('transform', 'scale(2)');
 
                 var rightsideDisplayed = false;
                 var metadataReceived = false;

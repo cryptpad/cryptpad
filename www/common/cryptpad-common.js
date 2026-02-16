@@ -17,7 +17,7 @@ define([
     '/common/events-channel.js',
     '/common/outer/login-block.js',
     '/common/common-credential.js',
-    '/customize/login.js',
+    '/common/common-login.js',
     '/common/store-interface.js',
     '/common/pad-types.js',
 
@@ -431,6 +431,14 @@ define([
             cb(obj);
         });
     };
+    common.getAccountObject = function (teamId, cb) {
+        postMessage("GET", {
+            teamId: teamId,
+            key: []
+        }, function (obj) {
+            cb(obj);
+        });
+    };
     common.getSharedFolder = function (data, cb) {
         postMessage("GET_SHARED_FOLDER", data, function (obj) {
             cb(obj);
@@ -623,22 +631,22 @@ define([
         });
     };
 
-    common.uploadStatus = function (teamId, size, cb) {
-        postMessage("UPLOAD_STATUS", {teamId: teamId, size: size}, function (obj) {
+    common.uploadStatus = function (teamId, id, size, cb) {
+        postMessage("UPLOAD_STATUS", {teamId, id, size}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
     };
 
-    common.uploadCancel = function (teamId, size, cb) {
-        postMessage("UPLOAD_CANCEL", {teamId: teamId, size: size}, function (obj) {
+    common.uploadCancel = function (teamId, id, size, cb) {
+        postMessage("UPLOAD_CANCEL", {teamId, id, size}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
     };
 
-    common.uploadChunk = function (teamId, data, cb) {
-        postMessage("UPLOAD_CHUNK", {teamId: teamId, chunk: data}, function (obj) {
+    common.uploadChunk = function (teamId, id, data, cb) {
+        postMessage("UPLOAD_CHUNK", {teamId, id, chunk: data}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
@@ -907,6 +915,7 @@ define([
                     href: href,
                     title: data.title,
                     owners: optsPut.owners,
+                    attributes: common?.otherPadAttrs || {},
                     path: ['template']
                 }, function (obj) {
                     if (obj && obj.error) { return void cb(obj.error); }
@@ -1162,7 +1171,7 @@ define([
 
         // Make sure we also store additionnal data to pin all the channels
         // (OO and forms)
-        data.attributes = {};
+        data.attributes ||= {};
         Object.keys(common?.otherPadAttrs || {}).forEach(k => {
             data.attributes[k] = common.otherPadAttrs[k];
         });
@@ -1189,7 +1198,7 @@ define([
             return;
         }
 
-        let attributes = {};
+        let attributes = data.attributes || {};
         nThen(function (waitFor) {
             if (parsed.hashData.type !== 'pad') { return; }
             // Set the correct owner and expiration time if we can find them

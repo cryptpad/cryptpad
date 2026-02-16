@@ -67,12 +67,19 @@
         outline: none;
         font: @colortheme_app-font;
 
+        .lucide {
+            width: @variables_icon_width;
+            height: @variables_icon_height;
+            margin-right: @variables_icon_margin;
+        }
         .cp-checkmark {
             color: @cryptpad_text_col;
-        }
-
-        .cp-admin-message {
-            color: @cryptpad_text_col;
+            height: 1.5rem;
+            svg {
+                margin-left: @variables_icon_margin;
+                min-height: @variables_icon_height;
+                min-width: @variables_icon_width;
+            }
         }
 
         .cp-inline-alert-text {
@@ -91,6 +98,8 @@
 
         h1, h2, h3 {
             margin-top: 0;
+            display: flex;
+            align-items: center;
         }
 
         &.hide {
@@ -198,10 +207,18 @@
                         text-decoration: none;
                     }
                 }
-                .cp-usergrid-user, textarea, a, .fa-times {
+                .cp-usergrid-user, textarea, a {
                     outline: none;
                     &:focus-visible {
                         outline: @variables_focus_style;
+                    }
+                }
+                .cp-usergrid-user {
+                    span {
+                        &:focus-visible {
+                            outline: @variables_focus_style;
+                            border-radius: @variables_radius;
+                        }
                     }
                 }
             }
@@ -221,6 +238,8 @@
                     box-sizing: content-box;
                     .alertify-tabs-title {
                         .tools_unselectable();
+                        display: inline-flex;
+                        align-items: center;
                         font-size: 20px;
                         height: 40px;
                         line-height: 40px;
@@ -290,9 +309,16 @@
                 button {
                     margin: 0 !important;
                 }
+                svg {
+                   margin: 0;
+                }
+                .cp-password-reveal {
+                    margin-left: 0.5rem;
+                    margin-right: 0.5rem;
+                }
             }
 
-            .fa-question-circle { // help links to Docs
+            .lucide-circle-question-mark { // help links to Docs
                 color: @cp_alertify-fg;
                 &:hover {
                     text-decoration: none;
@@ -322,6 +348,11 @@
                 margin: 6px 8px;
                 min-height: 36px;
                 min-width: 88px;
+            }
+            .cp-spinner {
+                svg {
+                    animation: spin 10s linear infinite;
+                }
             }
 
             nav {
@@ -489,7 +520,6 @@
                     margin-bottom: @alertify_padding-base;
                 }
                 button {
-                    width: 50px;
                     margin: 0;
                     min-width: 0;
                     font-size: 18px !important;
