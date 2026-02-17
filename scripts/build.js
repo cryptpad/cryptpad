@@ -156,13 +156,24 @@ var appIndexesToBuild = [
 ];
 
 var baseAppPath = './www/';
-const ogData = `
+const metaData = `
     <meta property="og:url" content="{{url}}">
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{title}}">
     <meta property="og:description" content="{{description}}">
     <meta property="og:image" content="{{image}}">
-    <meta property="twitter:card" content="summary_large_image">`;
+    <meta property="twitter:card" content="summary_large_image">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Cryptpad">
+    <meta name="apple-mobile-web-app-title" content="Cryptpad">
+    <meta name="theme-color" content="#006ccc">
+    <meta name="msapplication-navbutton-color" content="#006ccc">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="msapplication-starturl" content="/">
+    <link rel="manifest" href="/customize/application.webmanifest" crossorigin="use-credentials">
+    <link rel="icon" type="image/png" sizes="512x512" href="/customize/main-favicon.png">
+    <link rel="apple-touch-icon" type="image/png" sizes="512x512" href="/customize/main-favicon.png">`;
 
 
 var versionString = String(+new Date());
@@ -217,7 +228,7 @@ appIndexesToBuild.forEach(function (app) {
     var patt = /<\/title>/;
     var type = types[app];
     var built = processPage(src.replace(patt, (current) => {
-        return current + swap(ogData, {
+        return current + swap(metaData, {
             url: new URL(`/${app}/`, config.httpUnsafeOrigin).href,
             title: type && `Encrypted ${type}` || 'CryptPad',
             image: appImagePath(app),
@@ -286,7 +297,7 @@ try {
     var patt = /<\/title>/;
     var href = new URL(obj.url, config.httpUnsafeOrigin).href;
     var built = processPage(src.replace(patt, (current) => {
-        return current + swap(ogData, {
+        return current + swap(metaData, {
             url: href,
             title: obj.title || "CryptPad",
             image: new URL(imagePath + 'og-default.png', config.httpUnsafeOrigin).href,
