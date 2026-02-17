@@ -8,11 +8,13 @@ define([
     '/common/common-util.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
+    '/common/visible.js',
+    '/common/notify.js',
     '/common/inner/badges.js',
     '/common/hyperscript.js',
     '/common/diffMarked.js',
     '/common/common-icons.js',
-], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd, Icons) {
+], function ($, Messages, Util, UI, UIElements, Visible, Notification, Badges, h, DiffMd, Icons) {
     'use strict';
 
     var debug = console.log;
@@ -416,7 +418,7 @@ define([
                                 messageSent[id] = true;
                             }
                         }
-                    })
+                    });
 
                     input.value = '';
                     sending = false;
@@ -690,6 +692,11 @@ define([
                 });
             }
             notifyToolbar();
+
+            if (!Visible.currently()) {
+                common.notify();
+                Notification.create();
+            }
 
             channel.messages.push(message);
 
