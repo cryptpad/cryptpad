@@ -190,7 +190,7 @@ define([
                 noDevice: 1,
                 filesupport: 0,
 
-                ui: 'sketch',
+                ui: framework.isIntegrated() ? 'kennedy' : 'sketch',
 
                 modified: 'unsavedChanges',
                 proto: 'json',
@@ -211,7 +211,6 @@ define([
                 }
             }
         }, false);
-
 
         var mkModeButton = function (framework) {
             var modes = ['kennedy', 'sketch']
@@ -241,10 +240,7 @@ define([
             framework._.toolbar.$bottomL.append($drawer);
             $drawer.addClass('cp-toolbar-appmenu');
         };
-        if (!framework.isIntegrated()) {
-            mkModeButton(framework);
-        }
-        
+        mkModeButton(framework);        
     };
 
 
