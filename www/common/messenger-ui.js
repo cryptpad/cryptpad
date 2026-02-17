@@ -396,6 +396,28 @@ define([
                         // failed to send
                         return void console.error('failed to send', e);
                     }
+
+                    //Send mailbox message if:
+                    //- recipient is a contacts
+                    //- recipient is offline
+                    //- no previous messages to recipient sent while current tab is open
+                    var messageSent = {};
+                    execCommand('GET_STATUS', id, function (e, online) {
+                        if (online) {
+                            delete messageSent[id];
+                        } else {
+                            if (contactsData[id] && !messageSent[id]) {
+                                common.mailbox.sendTo("SEND_CHAT_MESSAGE", {
+                                    name: chan.name,
+                                }, {
+                                    channel: contactsData[chan.curvePublic].notifications,
+                                    curvePublic: chan.curvePublic
+                                });
+                                messageSent[id] = true;
+                            }
+                        }
+                    })
+
                     input.value = '';
                     sending = false;
                     debug('sent successfully');
@@ -564,6 +586,7 @@ define([
             var status = h('span.cp-app-contacts-status', {
                 title: Messages.contacts_online
             });
+
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', [room.isFriendChat? UI.getDisplayName(room.name): room.name]),
                 h('span.cp-app-contacts-icons', [
@@ -665,16 +688,6 @@ define([
                     msg: message.text,
                     force: toolbar && toolbar.team && !toolbar['chat'].hasClass('cp-leftside-active')
                 });
-
-                if (common.getMetadataMgr().getUserData().curvePublic === message.author
-                && contactsData[channel.curvePublic]) {
-                    common.mailbox.sendTo("SEND_CHAT_MESSAGE", {
-                        name: name, 
-                    }, {
-                        channel: contactsData[channel.curvePublic].notifications, 
-                        curvePublic: channel.curvePublic
-                    });
-                }
             }
             notifyToolbar();
 

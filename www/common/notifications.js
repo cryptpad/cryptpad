@@ -10,11 +10,12 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-util.js',
     '/common/common-constants.js',
+    '/common/visible.js',
     '/customize/messages.js',
     '/customize/pages.js',
     '/common/common-icons.js',
     'tui-date-picker'
-], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages, Icons, DatePicker) {
+], function($, h, Hash, UI, UIElements, Util, Constants, Visible, Messages, Pages, Icons, DatePicker) {
 
     var handlers = {};
 
