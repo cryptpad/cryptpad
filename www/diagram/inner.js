@@ -11,6 +11,7 @@ define([
     '/components/x2js/x2js.js',
     '/diagram/util.js',
     '/common/common-ui-elements.js',
+
     '/components/tweetnacl/nacl-fast.min.js',
     'less!/diagram/app-diagram.less',
     'css!/diagram/drawio.css',
@@ -170,6 +171,20 @@ define([
         // starting the CryptPad framework
         framework.start();
 
+        var checkTheme = function (fileChannel) {
+            var themes = localStorage.original.getItem('drawio-theme') || [];
+            return JSON.parse(themes).some(theme => theme[fileChannel]);
+        };
+
+        var defaultTheme;
+        if (framework.isIntegrated()) {
+            defaultTheme = 'kennedy';
+        } else if (checkTheme(privateData.channel)) {
+            defaultTheme = localStorage.original.getItem('drawio-theme')[privateData.channel];
+        } else {
+            defaultTheme = 'sketch';
+        }
+
         parameters = new URLSearchParams({
                 test: 1,
                 stealth: 1,
@@ -190,7 +205,7 @@ define([
                 noDevice: 1,
                 filesupport: 0,
 
-                ui: framework.isIntegrated() ? 'kennedy' : 'sketch',
+                ui: defaultTheme,
 
                 modified: 'unsavedChanges',
                 proto: 'json',
@@ -212,8 +227,14 @@ define([
             }
         }, false);
 
+        var addTheme = function (theme) {
+            var existingThemes = JSON.parse(localStorage.original.getItem('drawio-theme')) || [];
+            existingThemes.push(theme);
+            localStorage.original.setItem('drawio-theme', JSON.stringify(existingThemes));
+        };
+
         var mkModeButton = function (framework) {
-            var modes = ['kennedy', 'sketch']
+            var modes = ['kennedy', 'sketch'];
             var types = [];
             modes.forEach(function(mode){
                 types.push({
@@ -226,12 +247,14 @@ define([
                         parameters.set('ui', mode);
                         drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
                         + parameters;
+                        addTheme({[privateData.channel]: mode});
+
                     },
                 });
-            })
+            });
                         
             const $drawer = UIElements.createDropdown({
-                text: 'Modes', //XXXX
+                text: Messages.diagram_modes, // XXX
                 options: types,
                 common: framework._.sfCommon,
                 iconCls: 'color-palette'
@@ -240,7 +263,7 @@ define([
             framework._.toolbar.$bottomL.append($drawer);
             $drawer.addClass('cp-toolbar-appmenu');
         };
-        mkModeButton(framework);        
+        mkModeButton(framework);
     };
 
 

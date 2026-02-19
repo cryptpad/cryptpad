@@ -134,6 +134,7 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.diagram_modes = "Modes"; // XXX
     return Messages;
 
 });
