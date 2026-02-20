@@ -38,6 +38,7 @@ define([
         var currentVersion;
         var forward;
         var revertCheckpoint;
+        var previousRevertCheckpoint;
 
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
@@ -107,14 +108,20 @@ define([
                     messages = (data.messages || []).slice(1);
                 }
 
+                if (revertCheckpoint && !forward) {
+                    previousRevertCheckpoint = revertCheckpoint;
+                }
+
                 if (messages[0] && isEmptyPatch(JSON.parse(messages[0].msg))) {
-                    revertCheckpoint = true;
+                    revertCheckpoint = false;
                     messages.splice(0, 1);
                 } else if (messages[1] && isEmptyPatch(JSON.parse(messages[1].msg))) {
-                    revertCheckpoint = true;
-                    messages.splice(1, 1);
-                } else {
                     revertCheckpoint = false;
+                    messages.splice(1, 1);
+                } else if (id === 0) {
+                    revertCheckpoint = false;
+                } else {
+                    revertCheckpoint = true;
                 }
 
                 if (config.debug) { console.log(data.messages); }
@@ -260,7 +267,6 @@ define([
 
             var patchWidth;
             var patchDiv;
-            var firstCp = (id === 0) ? true : false;
             for (var i = 0; i < msgsRev.length; i++) {
                 var msg = msgs[i];
                 if (initial || id === -1) {
@@ -292,8 +298,8 @@ define([
             });
             if (initial) {
                 snapshotsEl.push(finalpatchDiv);
-            } else  {
-                firstCp ? snapshotsEl.splice(msgs?.length, 0, finalpatchDiv) : snapshotsEl.splice(msgs?.length-1, 0, finalpatchDiv);
+            } else if (previousRevertCheckpoint) {
+                snapshotsEl.splice(msgs.length, 0, finalpatchDiv);
             }
 
             if (!msgsRev.length && !Object.keys(hashes).length || initial && !msgs?.length) {
@@ -406,7 +412,7 @@ define([
                         return;
                     }
                     //Is the checkpoint the result of restoring history? If yes, we need to load an extra patch
-                    if (revertCheckpoint ) { 
+                    if (!revertCheckpoint) { 
                         msgIndex = -msgs?.length;
                         config.onPatchBack(hashes[id], [msgs[0]]);
                         position = 1;
@@ -474,9 +480,10 @@ define([
                     patch = msgs[msgs?.length-1];
 
                     //Is the checkpoint the result of restoring history? If yes, we need to load an extra patch
-                    if (isRevert) {
+                    if (!isRevert) {
                         config.onPatchBack(cp, q); 
                         msgIndex--;
+                        position = msgs?.length-1;
                     } else {
                         restore = true;
                         if (!$(`[data="${id},${position}"]`).length) {
