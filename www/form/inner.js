@@ -4707,6 +4707,24 @@ define([
             return;
         }
 
+        // Function to renumber visible questions sequentially
+        var updateQuestionNumbers = function () {
+            var visibleNumber = 1;
+            $container.find('.cp-form-block').each(function () {
+                var $block = $(this);
+                var $questionNumber = $block.find('.cp-form-block-question-number');
+                
+                // Skip static blocks (they don't have question numbers) or blocks without question numbers
+                if (!$questionNumber.length) { return; }
+                
+                // Check if the block is visible
+                if ($block.is(':visible')) {
+                    $questionNumber.text(visibleNumber + '.');
+                    visibleNumber++;
+                }
+            });
+        };
+
         // In view mode, hide sections when conditions aren't met
         evOnChange.reg(function (reset, save, condition) {
             if (!reset && !condition) { return; }
@@ -4721,6 +4739,9 @@ define([
                     $container.find('.cp-form-block[data-id="'+_uid+'"]').toggle(show);
                 });
             });
+            
+            // Update question numbers to maintain sequential display
+            updateQuestionNumbers();
         });
 
         // If the form is already submitted, show an info message
@@ -4774,6 +4795,9 @@ define([
         if (!answers) {
             $container.find('.cp-reset-button').attr('disabled', 'disabled');
         }
+        
+        // Initial call to ensure sequential numbering after conditional blocks are processed
+        updateQuestionNumbers();
     };
 
     var getTempFields = function () {
