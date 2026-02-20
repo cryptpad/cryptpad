@@ -61,6 +61,8 @@ CKEDITOR.editorConfig = function( config ) {
         [32, 'clickFocusedButton']
     ];
 
+    config.contentsCss = '/customize/ckeditor-contents.css?' + window.CKEDITOR.CRYPTPAD_URLARGS;
+
     //skin: 'moono-cryptpad,/pad/themes/moono-cryptpad/'
     //skin: 'flat,/pad/themes/flat/'
     //config.skin= 'moono-lisa,/pad/themes/moono-lisa/'
