@@ -5942,4 +5942,27 @@ define([
         contentContainer: '#cp-app-form-editor',
         skipLink: '#cp-app-form-editor'
     }, andThen);
+
+
+return {
+
+    getWeekDays: getWeekDays, 
+    arrayMax: arrayMax,
+    getOptionValue: getOptionValue,
+    extractValues: extractValues,
+    getSortedKeys: getSortedKeys,
+    getDay: getDay,
+    getDayArray: getDayArray,
+    parseAnswers: parseAnswers,
+    getAnswersLength: getAnswersLength,
+    findItem: findItem,
+    getSections: getSections,
+    getFullOrder: getFullOrder,
+    getBlockAnswers: getBlockAnswers,
+    removeQuestion: removeQuestion,
+    checkCondition: checkCondition,
+    getSectionFromQ: getSectionFromQ, 
+    
+    
+    };
 });
