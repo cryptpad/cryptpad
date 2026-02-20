@@ -208,16 +208,11 @@ define([
                 value: answers
             }, function (obj) {
                 if (obj && obj.error) {
-                    if (obj.error === "ENODRIVE") {
+                    if (obj.error === "ENODRIVE" && !data.forgetAnonymous) {
                         var all = Util.tryParse(localStorage.CP_formAnswers || "{}");
                         all[data.channel] = answers;
                         localStorage.CP_formAnswers = JSON.stringify(all);
-/*
 
-                        var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
-                        if (answered.indexOf(data.channel) === -1) { answered.push(data.channel); }
-                        localStorage.CP_formAnswered = JSON.stringify(answered);
-*/
                         return void cb();
                     }
                     console.error(obj.error);
@@ -955,13 +950,15 @@ define([
             delete meta.cursor;
 
             if (meta.type === "form") {
-                // Keep anonymous, makeAnonymous and submit message values from templates
+                // Keep values related to submission settings from templates
                 var anonymous = parsed.answers.anonymous || false;
                 var makeAnonymous = parsed.answers.makeAnonymous || false;
                 var msg = parsed.answers.msg || undefined;
+                var forgetAnonymous = parsed.answers.forgetAnonymous || false;
                 delete parsed.answers;
                 parsed.answers = {
                     anonymous: anonymous,
+                    forgetAnonymous: forgetAnonymous,
                     makeAnonymous: makeAnonymous,
                     msg: msg
                 };
