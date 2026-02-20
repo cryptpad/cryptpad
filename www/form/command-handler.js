@@ -352,6 +352,7 @@ define([
                         channel: box.channel,
                         hash: hash,
                         curvePrivate: ephemeral_private,
+                        forgetAnonymous: Boolean(data.forgetAnonymous),
                         anonymous: Boolean(data.anonymous)
                     }, function () {
                         var res = data.results;
