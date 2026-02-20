@@ -989,6 +989,7 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
             }
         });
         APP.support = Support.create(common, true);
+        APP.support.setAnonymous(true);
 
         let active = privateData.category || 'active';
         let linkedTicket;
