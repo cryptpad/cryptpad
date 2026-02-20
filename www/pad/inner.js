@@ -1408,6 +1408,7 @@ define([
                 Ckeditor.plugins.addExternal('blockbase64', '/pad/', 'disable-base64.js');
                 Ckeditor.plugins.addExternal('comments', '/pad/', 'comment.js');
                 Ckeditor.plugins.addExternal('wordcount', '/pad/wordcount/', 'plugin.js');
+                Ckeditor.plugins.addExternal('autocorrect', '/pad/autocorrect/', 'plugin.js');
 
 /*  CKEditor4 is, by default, incompatible with strong CSP settings due to the
     way it loads a variety of resources and event handlers by injecting HTML
