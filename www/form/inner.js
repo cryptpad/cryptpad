@@ -3275,6 +3275,11 @@ define([
         var sframeChan = framework._.sfCommon.getSframeChannel();
         var $container = $('.cp-forms-results-participant');
         var l = getAnswersLength(answers);
+
+        // Keep the answer count in sync for participants to check maxResponses
+        content.answers.answersCount = l;
+        framework.localChange();
+
         var $res = $(h('button.btn.btn-default.cp-toolbar-form-button', [
             Icons.get('form-responses'),
             h('span.cp-button-name', Messages._getKey('form_results', [l])),
@@ -3284,6 +3289,15 @@ define([
                 var answers = obj && obj.results;
                 var l = getAnswersLength(answers);
                 $res.find('span.cp-button-name').text(Messages._getKey('form_results', [l]));
+                // Update the stored count for participants
+                if (content.answers.answersCount !== l) {
+                    content.answers.answersCount = l;
+                    framework.localChange();
+                    // Refresh the editor's preview text (e.g. "form is open/closed")
+                    if (typeof(APP.refreshEndDate) === "function") {
+                        APP.refreshEndDate();
+                    }
+                }
             });
         }, 30000);
         $res.click(function () {
@@ -3373,7 +3387,7 @@ define([
         }
 
         var newAnswer;
-        if (content.answers.multiple) {
+        if (content.answers.multiple && !APP.isClosed) {
             newAnswer = h('button.btn.btn-primary', [
                 Icons.get('add'),
                 h('span', Messages.form_answer_new)
@@ -3704,6 +3718,49 @@ define([
             var uid = APP.editingUid;
             if (uid) { results._uid = uid; }
             var sframeChan = framework._.sfCommon.getSframeChannel();
+
+            // Pre-submit check: if maxResponses is set, always fetch the
+            // current answer count from the channel before allowing submission.
+            // The outer frame can decrypt answers via Utils.secret regardless
+            // of whether results are public or private.
+            var maxR = content.answers.maxResponses;
+            if (maxR) {
+                var closeAndWarn = function () {
+                    APP.isClosed = true;
+                    UI.warn(Messages.form_maxResponsesReached);
+                    $send.hide();
+                    $reset.hide();
+                    $radio.hide();
+                    if (Array.isArray(APP.formBlocks)) {
+                        APP.formBlocks.forEach(function (b) {
+                            if (b.setEditable) { b.setEditable(false); }
+                        });
+                    }
+                    if (typeof(APP.refreshMaxResponsesBanner) === "function") {
+                        APP.refreshMaxResponsesBanner();
+                    }
+                };
+                sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                    if (err || (obj && obj.error)) {
+                        // If we can't fetch answers (e.g. EFORBIDDEN for
+                        // participants), fall back to the stored count
+                        var count = content.answers.answersCount || 0;
+                        if (count >= maxR) {
+                            return void closeAndWarn();
+                        }
+                        return void doSubmit();
+                    }
+                    var fetchedAnswers = obj && obj.results;
+                    var count = getAnswersLength(fetchedAnswers || {});
+                    if (count >= maxR) {
+                        return void closeAndWarn();
+                    }
+                    doSubmit();
+                });
+                return;
+            }
+            doSubmit();
+            function doSubmit() {
             sframeChan.query('Q_FORM_SUBMIT', {
                 mailbox: content.answers,
                 results: results,
@@ -3715,9 +3772,34 @@ define([
                     if (data.error === "EANSWERED") {
                         return void UI.warn(Messages.form_answered);
                     }
+                    if (data.error === "EMAXREACHED") {
+                        APP.isClosed = true;
+                        UI.warn(Messages.form_maxResponsesReached);
+                        $send.hide();
+                        $reset.hide();
+                        $radio.hide();
+                        if (Array.isArray(APP.formBlocks)) {
+                            APP.formBlocks.forEach(function (b) {
+                                if (b.setEditable) { b.setEditable(false); }
+                            });
+                        }
+                        return;
+                    }
                     console.error(err || data.error);
                     return void UI.warn(Messages.error);
                 }
+                // If this was a NEW answer (not an edit), increment the answer count
+                // so that other participants see the updated count immediately
+                if (!uid) {
+                    var curCount = content.answers.answersCount || 0;
+                    content.answers.answersCount = curCount + 1;
+                    framework.localChange();
+                    // Re-check maxResponses banner immediately after submit
+                    if (typeof(APP.refreshMaxResponsesBanner) === "function") {
+                        APP.refreshMaxResponsesBanner();
+                    }
+                }
+
                 delete APP.editingUid;
                 delete APP.editingTime;
                 if (results._userdata && loggedIn) {
@@ -3745,6 +3827,7 @@ define([
                     if (err || !obj || !obj.state) { return console.error('ENOTIFY'); }
                 });
             });
+            } 
         });
 
         if (APP.hasAnswered && content.answers.cantEdit || APP.isClosed) {
@@ -5102,13 +5185,85 @@ define([
             };
             refreshEditable();
 
+            // Maximum number of responses
+            var maxResponsesContainer = h('div.cp-form-maxresponses-container');
+            var maxResponsesStr = h('div');
+            var $maxResponses = $(maxResponsesContainer);
+            var $maxResponsesStr = $(maxResponsesStr);
+            var refreshMaxResponses = function () {
+                $maxResponses.empty();
+                var maxVal = content.answers.maxResponses || 0;
+
+                var updateStr = function (val) {
+                    if (val) {
+                        $maxResponsesStr.empty().append([
+                            h('span.cp-form-setting-title', Messages.form_maxResponses_setting),
+                            h('br'),
+                            h('span', Messages._getKey('form_maxResponsesStr', [val]))
+                        ]);
+                    } else {
+                        $maxResponsesStr.empty();
+                    }
+                };
+                updateStr(maxVal);
+
+                var maxInput = h('input', {
+                    type: 'number',
+                    min: 1,
+                    value: maxVal || '',
+                    placeholder: Messages.form_maxResponses_placeholder,
+                    style: 'max-width: 120px;'
+                });
+                var $maxInput = $(maxInput);
+
+                var save = h('button.btn.btn-primary', Messages.settings_save);
+                var resetBtn = h('button.btn.btn-danger-alt', {
+                    title: Messages.form_maxResponses_remove
+                }, [
+                    Icons.get('close', {'class': 'nomargin'})
+                ]);
+
+                $(save).click(function () {
+                    var val = parseInt($maxInput.val()) || 0;
+                    if (val < 1) {
+                        UI.warn(Messages.error);
+                        return;
+                    }
+                    content.answers.maxResponses = val;
+                    updateStr(val);
+                    if (APP.refreshEndDate) { APP.refreshEndDate(); }
+                    framework.localChange();
+                    framework._.cpNfInner.chainpad.onSettle(function () {
+                        UI.log(Messages.saved);
+                    });
+                });
+
+                $(resetBtn).click(function () {
+                    delete content.answers.maxResponses;
+                    $maxInput.val('');
+                    updateStr(0);
+                    if (APP.refreshEndDate) { APP.refreshEndDate(); }
+                    framework.localChange();
+                    framework._.cpNfInner.chainpad.onSettle(function () {
+                        UI.log(Messages.saved);
+                    });
+                });
+
+                var inputRow = h('div.cp-form-input-block', {
+                    style: 'align-items: center; gap: 5px;'
+                }, [maxInput, save, maxVal ? resetBtn : undefined]);
+                $maxResponses.append(h('div.cp-form-status.cp-form-setting-title', Messages.form_maxResponses_setting));
+                $maxResponses.append(h('div.cp-form-actions', inputRow));
+            };
+            refreshMaxResponses();
+
             // End date / Closed state
             var endDateContainer = h('div.cp-form-status-container');
             var endDateStr = h('div.cp-form-status');
             var $endDate = $(endDateContainer);
             var $endDateStr = $(endDateStr);
         
-            var refreshEndDate = function () {
+            var refreshEndDate = APP.refreshEndDate = function () {
                 $endDate.empty();
 
                 var endDate = content.answers.endDate;
@@ -5122,6 +5277,13 @@ define([
                 } else if (endDate > now) {
                     text = Messages._getKey('form_willClose', [date]);
                     buttonTxt = Messages.form_removeEnd;
+                }
+
+                // If maxResponses limit is reached, show closed status
+                var maxR = content.answers.maxResponses;
+                var ansCount = content.answers.answersCount || 0;
+                if (maxR && ansCount >= maxR) {
+                    text = Messages.form_maxResponsesReached;
                 }
 
                 $endDateStr.text(text);
@@ -5287,6 +5449,7 @@ define([
             evOnChange.reg(refreshNotif);
             evOnChange.reg(refreshEditable);
             evOnChange.reg(refreshEndDate);
+            evOnChange.reg(refreshMaxResponses);
             evOnChange.reg(refreshColorTheme);
 
 
@@ -5306,6 +5469,7 @@ define([
                 resultsType,
                 privacyContainer,
                 editableContainer,
+                maxResponsesContainer,
             ]);
             var modalBtn = h('button.btn.btn-secondary', [
                 Icons.get('settings'),
@@ -5324,7 +5488,8 @@ define([
                 notifStr,
                 resultsStr,
                 privacyStr,
-                editableStr
+                editableStr,
+                maxResponsesStr
             ]);
 
             var toggleOffclass = 'ontouchstart' in window ? 'cp-toggle-active' : undefined;
@@ -5489,6 +5654,7 @@ define([
         };
 
         var endDateEl = h('div.alert.alert-warning.cp-burn-after-reading');
+        var maxResponsesEl = h('div.alert.alert-warning.cp-burn-after-reading');
         var endDate;
         var endDateTo;
 
@@ -5532,6 +5698,67 @@ define([
                     $('.cp-form-send-container').find('.cp-open').hide();
                 }, diff);
             }
+        };
+
+        var maxResponsesTo;
+        var refreshMaxResponsesBanner = APP.refreshMaxResponsesBanner = function () {
+            if (APP.isEditor) { return; }
+            var maxResponses = content.answers.maxResponses;
+            if (!maxResponses) {
+                // No limit set: make sure we remove any previous banner
+                $(maxResponsesEl).remove();
+                clearInterval(maxResponsesTo);
+                return;
+            }
+
+            var closeForm = function () {
+                APP.isClosed = true;
+                if ($('.cp-help-container').length) {
+                    $(maxResponsesEl).text(Messages.form_maxResponsesReached);
+                    $('.cp-help-container').before(maxResponsesEl);
+                }
+                $('.cp-form-send-container').find('.cp-open').hide();
+                if (Array.isArray(APP.formBlocks)) {
+                    APP.formBlocks.forEach(function (b) {
+                        if (b.setEditable) { b.setEditable(false); }
+                    });
+                }
+                clearInterval(maxResponsesTo);
+            };
+
+            var reopenIfAllowed = function () {
+                $(maxResponsesEl).remove();
+                var endDate = content.answers.endDate; // check date to open the form
+                if (!(endDate && endDate < (+new Date()))) {
+                    APP.isClosed = false;
+                }
+            };
+
+            // Always try to fetch fresh answers from the channel.
+            var sframeChan = framework._.sfCommon.getSframeChannel();
+            var checkCount = function () {
+                sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                    if (err || (obj && obj.error)) {
+                        var count = content.answers.answersCount || 0;
+                        if (count >= maxResponses) {
+                            closeForm();
+                        } else {
+                            reopenIfAllowed();
+                        }
+                        return;
+                    }
+                    var answers = obj && obj.results;
+                    var count = getAnswersLength(answers || {});
+                    if (count >= maxResponses) {
+                        closeForm();
+                    } else {
+                        reopenIfAllowed();
+                    }
+                });
+            };
+            checkCount();
+            clearInterval(maxResponsesTo);
+            maxResponsesTo = setInterval(checkCount, 30000);
         };
 
         var showAnonBlockedAlert = function () {
@@ -5628,6 +5855,7 @@ define([
             }
 
             refreshEndDateBanner();
+            refreshMaxResponsesBanner();
 
             var loggedIn = framework._.sfCommon.isLoggedIn();
             if (!loggedIn && !content.answers.anonymous) {
@@ -5915,6 +6143,7 @@ define([
             content = newContent;
             evOnChange.fire();
             refreshEndDateBanner();
+            refreshMaxResponsesBanner();
 
             redrawRemote(framework, content);
         });
