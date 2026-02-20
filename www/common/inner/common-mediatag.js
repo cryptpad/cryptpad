@@ -15,7 +15,6 @@ define([
     '/customize/application_config.js',
     '/common/common-icons.js',
 
-    '/components/croppie/croppie.min.js',
     '/components/file-saver/FileSaver.min.js',
     'css!/components/croppie/croppie.css',
 ], function ($, ApiConfig, Util, Hash, UI, h, MediaTag, Badges,
@@ -239,38 +238,40 @@ define([
     };
     var transformAvatar = function (file, cb) {
         if (file.type === 'image/gif') { return void cb(file); }
-        var $croppie = $('<div>', {
-            'class': 'cp-app-profile-resizer'
-        });
+        require(['/components/croppie/croppie.min.js'], function () {
+            var $croppie = $('<div>', {
+                'class': 'cp-app-profile-resizer'
+            });
 
-        if (typeof ($croppie.croppie) !== "function") {
-            return void cb(file);
-        }
+            if (typeof ($croppie.croppie) !== "function") {
+                return void cb(file);
+            }
 
-        var todo = function () {
-            UI.confirm($croppie[0], function (yes) {
-                if (!yes) { return; }
-                $croppie.croppie('result', {
-                    type: 'blob',
-                    size: {width: 300, height: 300}
-                }).then(function(blob) {
-                    blob.lastModifiedDate = new Date();
-                    blob.name = 'avatar';
-                    cb(blob);
+            var todo = function () {
+                UI.confirm($croppie[0], function (yes) {
+                    if (!yes) { return; }
+                    $croppie.croppie('result', {
+                        type: 'blob',
+                        size: {width: 300, height: 300}
+                    }).then(function(blob) {
+                        blob.lastModifiedDate = new Date();
+                        blob.name = 'avatar';
+                        cb(blob);
+                    });
                 });
-            });
-        };
+            };
 
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            $croppie.croppie({
-                url: e.target.result,
-                viewport: { width: 100, height: 100 },
-                boundary: { width: 400, height: 300 },
-            });
-            todo();
-        };
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $croppie.croppie({
+                    url: e.target.result,
+                    viewport: { width: 100, height: 100 },
+                    boundary: { width: 400, height: 300 },
+                });
+                todo();
+            };
         reader.readAsDataURL(file);
+        });
     };
     MT.addAvatar = function (common, cb) {
         var AVATAR_SIZE_LIMIT = 0.5;
