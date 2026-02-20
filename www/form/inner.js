@@ -4946,7 +4946,7 @@ define([
 
 
             // Mute form responses
-            var notifContainer = h('div.cp-form-anon-container');
+            var notifContainer = h('div.cp-form-mute-container');
             var notifStr = h('div');
             var $notif = $(notifContainer);
             var $notifStr = $(notifStr);
@@ -4976,7 +4976,7 @@ define([
                         else { $notifStr.text(''); }
                     });
                 });
-                $anon.append(h('div.cp-form-actions', radioContainer));
+                $notif.append(h('div.cp-form-actions', radioContainer));
             };
             refreshNotif();
 
