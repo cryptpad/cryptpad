@@ -556,6 +556,7 @@ define([
             var el = $el[0];
             if (!el) { return; }
             var code = el.getAttribute("mathjax-source");
+            if (!Mathjax.version) setTimeout(() => { this.render($el), 1000 });
             var svg = Mathjax.tex2svg(code, {display: true});
             if (!svg) { return; }
             svg.innerHTML = svg.innerHTML.replace(/xlink:href/g, "href");
