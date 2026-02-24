@@ -173,7 +173,7 @@ define([
 
         var checkTheme = function (fileChannel) {
             var themes = localStorage.original.getItem('drawio-theme') || [];
-            return JSON.parse(themes).some(theme => theme[fileChannel]);
+            if (themes.length) { return JSON.parse(themes).some(theme => theme[fileChannel]) };
         };
 
         var defaultTheme;
@@ -227,9 +227,13 @@ define([
             }
         }, false);
 
-        var addTheme = function (theme) {
+        var addTheme = function (fileChannel, theme) {
             var existingThemes = JSON.parse(localStorage.original.getItem('drawio-theme')) || [];
-            existingThemes.push(theme);
+            if (checkTheme(fileChannel)) {
+                existingThemes[fileChannel] = theme;
+            } else {
+                existingThemes.push({[fileChannel]: theme});
+            }
             localStorage.original.setItem('drawio-theme', JSON.stringify(existingThemes));
         };
 
@@ -241,14 +245,14 @@ define([
                     tag: 'a',
                     attributes: {
                         'data-value': mode,
+                        'aria-label': Messages._getKey('diagram_modesOptionLabel', [mode]),
                     },
                     content: mode,
                     action: function () {
                         parameters.set('ui', mode);
                         drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
                         + parameters;
-                        addTheme({[privateData.channel]: mode});
-
+                        addTheme(privateData.channel, mode);
                     },
                 });
             });
@@ -264,6 +268,7 @@ define([
             $drawer.addClass('cp-toolbar-appmenu');
         };
         mkModeButton(framework);
+        console.log("filechannel", privateData.channel)
     };
 
 
