@@ -514,7 +514,7 @@ define([
         setTimeout(() => {
             displayCheckpointTimeline(true);
             showVersion(true);
-        }, "1000");
+        }, "2500");
 
         // Create the history toolbar
         var display = function () {
