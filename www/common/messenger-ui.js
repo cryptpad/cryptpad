@@ -184,7 +184,8 @@ define([
                 });
 
                 var time = h('div.cp-app-contacts-time', hour);
-                $d.append(time);
+                var row = h('div.cp-app-contacts-message-row', [d, time]);
+                return row;
             } catch (e) {
                 console.error(md);
                 console.error(e);

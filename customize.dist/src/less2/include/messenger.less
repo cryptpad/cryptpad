@@ -266,9 +266,9 @@
                 height: 100%;
                 line-height: 30px;
                 padding: 10px;
+                border-radius: @variables_radius;
                 &:hover {
-                    background-color: @msg-bg-color-darker;
-                    background-color: var(--msg-color-darker);
+                    background-color: rgba(0, 0, 0, 0.2);
                 }
             }
 
@@ -326,50 +326,51 @@
                 overflow-x: auto;
                 .cp-app-contacts-message {
                     display: flex;
-                    flex-wrap: wrap;
-                    & > div {
-                        padding: 0 10px;
-                    }
-                    .cp-app-contacts-content {
-                        overflow: hidden;
-                        word-wrap: break-word;
-                        &> * {
-                            margin: 0;
-                        }
-                        flex: 1;
-                        min-width: 70%;
-                        position: relative;
-                    }
-                    .cp-app-contacts-date {
-                        display: none;
-                        font-style: italic;
-                    }
+                    flex-direction: column;
                     .cp-app-contacts-sender {
                         margin-top: 10px;
                         font-weight: bold;
                         background-color: rgba(0,0,0,0.1);
                         display: flex;
                         justify-content: space-between;
-                        border-radius: @variables_radius_L;
-                        width: 100%;
+                        border-radius: @variables_radius;
+                        padding: 0 10px;
+                    }
+                    .cp-app-contacts-message-row {
+                        display: flex;
+                        align-items: flex-start;
+                    }
+                    .cp-app-contacts-content {
+                        overflow: hidden;
+                        word-wrap: break-word;
+                        padding: 0 10px;
+                        &> * {
+                            margin: 0;
+                        }
+                        flex: 1;
+                        min-width: 0;
+                    }
+                    .cp-app-contacts-date {
+                        display: none;
+                        font-style: italic;
                     }
                     .cp-app-contacts-time {
-                        display: none;
+                        display: flex;
                         font-size: 0.8em;
-                        align-items: center;
+                        align-items: flex-start;
+                        justify-content: flex-end;
                         color: @msg-color;
                         font-weight: bold;
-                        position: absolute;
-                        right: 0;
-                        top: 0;
-                        bottom: 0;
-                        background: rgba(0,0,0,0.1);
-                        border-radius: @variables_radius_L;
-                        padding: 0 10px;
+                        padding: 0 5px;
+                        opacity: 0.4;
+                        transition: opacity 0.2s ease;
+                        flex-shrink: 0;
+                        text-align: right;
+                        white-space: nowrap;
                     }
                     &:hover {
                         .cp-app-contacts-time {
-                            display: flex;
+                            opacity: 1;
                         }
                     }
                 }
