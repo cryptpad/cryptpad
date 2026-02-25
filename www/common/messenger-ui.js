@@ -544,38 +544,101 @@ define([
                 curve = __channel.curvePublic;
             }
 
-            var unmute = h('span', Icons.get('notification'), {
-                class: 'cp-app-contacts-remove cp-unmute-icon',
-                title: Messages.contacts_unmute || 'unmute',
-                style: (curve && mutedUsers[curve]) ? undefined : 'display: none;'
+            var isMuted = curve && mutedUsers[curve];
+
+            var friendData = room.isFriendChat ? userlist[0] : {};
+
+            var dropdownOptions = [];
+
+            var removeOption = {
+                tag: 'a',
+                content: [Icons.get('unfriend'), h('span', Messages.contacts_remove)],
+                action: function () {
+                    var channel = state.channels[id];
+                    if (!channel.isFriendChat) { return; }
+                    var curvePublic = channel.curvePublic;
+                    var friend = contactsData[curvePublic] || friendData;
+                    var name = Util.fixHTML(UI.getDisplayName(friend.name || friend.displayName));
+                    var content = h('div', [
+                        UI.setHTML(h('p'), Messages._getKey('contacts_confirmRemove', [ name ])),
+                    ]);
+                    UI.confirm(content, function (yes) {
+                        if (!yes) { return; }
+                        removeFriend(curvePublic);
+                    });
+                    return true;
+                }
+            };
+
+            var rebuildDropdown = function (muted) {
+                if (!$dropdown || !$dropdown.setOptions) { return; }
+                var opts = [];
+                if (room.isFriendChat) {
+                    opts.push(muted ? unmuteOption : muteOption);
+                    opts.push(removeOption);
+                }
+                $dropdown.setOptions(opts);
+                $dropdown.find('.cp-dropdown-content').hide();
+            };
+
+            var muteOption = {
+                tag: 'a',
+                content: [Icons.get('mute'), h('span', Messages.contacts_mute || 'Mute')],
+                action: function () {
+                    var channel = state.channels[id];
+                    if (!channel.isFriendChat) { return true; }
+                    var curvePublic = channel.curvePublic;
+                    var friend = contactsData[curvePublic] || friendData;
+                    muteUser(friend);
+                    rebuildDropdown(true);
+                    return true;
+                }
+            };
+            var unmuteOption = {
+                tag: 'a',
+                content: [Icons.get('notification'), h('span', Messages.contacts_unmute || 'Unmute')],
+                action: function () {
+                    var channel = state.channels[id];
+                    if (!channel.isFriendChat) { return true; }
+                    var curvePublic = channel.curvePublic;
+                    unmuteUser(curvePublic);
+                    rebuildDropdown(false);
+                    return true;
+                }
+            };
+
+            if (room.isFriendChat) {
+                dropdownOptions.push(isMuted ? unmuteOption : muteOption);
+                dropdownOptions.push(removeOption);
+            }
+
+            var $dropdown = UIElements.createDropdown({
+                iconCls: 'ellipsis-vertical',
+                options: dropdownOptions,
+                buttonCls: 'cp-app-contacts-dropdown-btn',
             });
-            var mute = h('span', Icons.get('mute'), {
-                class: 'cp-app-contacts-remove cp-mute-icon',
-                title: Messages.contacts_mute || 'mute',
-                style: (curve && mutedUsers[curve]) ? 'display: none;' : undefined
+            $dropdown.addClass('cp-app-contacts-icons');
+            $dropdown.on('click dblclick', function (e) {
+                e.stopPropagation();
             });
-            var remove = h('span', Icons.get('unfriend', {
-                class: 'cp-app-contacts-remove',
-                title: Messages.contacts_remove
-            }));
-            var leaveRoom = h('span', Icons.get('logout', {
-                class: 'cp-app-contacts-remove',
-                title: Messages.contacts_leaveRoom
-            }));
+
+            var $dropdownMenu = $dropdown.find('.cp-dropdown-content');
+            $dropdownMenu.css('position', 'fixed');
+            $dropdown.find('button').on('click', function () {
+                var rect = this.getBoundingClientRect();
+                $dropdownMenu.css({
+                    top: rect.bottom + 'px',
+                    left: rect.left + 'px',
+                });
+            });
+
             var status = h('span.cp-app-contacts-status', {
                 title: Messages.contacts_online
             });
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', [room.isFriendChat? UI.getDisplayName(room.name): room.name]),
-                h('span.cp-app-contacts-icons', [
-                    room.isFriendChat ? mute : undefined,
-                    room.isFriendChat ? unmute : undefined,
-                    room.isFriendChat ? remove :
-                        (room.isPadChat || room.isTeamChat) ? undefined : leaveRoom,
-                ])
+                $dropdown[0],
             ]);
-
-            var friendData = room.isFriendChat ? userlist[0] : {};
 
             var $room = $(roomEl).on('click keypress', function (event) {
                 if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
@@ -583,46 +646,6 @@ define([
                 }
             }).dblclick(function () {
                 if (friendData.profile) { window.open(origin + '/profile/#' + friendData.profile); }
-            });
-
-            $(unmute).on('click dblclick', function (e) {
-                e.stopPropagation();
-                var channel = state.channels[id];
-                if (!channel.isFriendChat) { return; }
-                var curvePublic = channel.curvePublic;
-                $(mute).show();
-                $(unmute).hide();
-                unmuteUser(curvePublic);
-            });
-
-            $(mute).on('click dblclick', function (e) {
-                e.stopPropagation();
-                var channel = state.channels[id];
-                if (!channel.isFriendChat) { return; }
-                var curvePublic = channel.curvePublic;
-                var friend = contactsData[curvePublic] || friendData;
-                $(mute).hide();
-                $(unmute).show();
-                muteUser(friend);
-            });
-
-            $(remove).click(function (e) {
-                e.stopPropagation();
-                var channel = state.channels[id];
-                if (!channel.isFriendChat) { return; }
-                var curvePublic = channel.curvePublic;
-                var friend = contactsData[curvePublic] || friendData;
-                var name = Util.fixHTML(UI.getDisplayName(friend.name || friend.displayName));
-                var content = h('div', [
-                    UI.setHTML(h('p'), Messages._getKey('contacts_confirmRemove', [ name ])),
-                ]);
-                UI.confirm(content, function (yes) {
-                    if (!yes) { return; }
-                    removeFriend(curvePublic);
-                    // TODO remove friend from userlist ui
-                    // FIXME seems to trigger EJOINED from netflux-websocket (from server);
-                    // (tried to join a channel in which you were already present)
-                });
             });
 
             const $avatar = $(h('div.cp-avatar')).appendTo($room);

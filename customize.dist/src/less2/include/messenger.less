@@ -89,7 +89,6 @@
         background-color: var(--msg-bg-color);
         color: @msg-color;
         color: var(--msg-color);
-        overflow-y: auto;
         display: flex;
         flex-flow: column;
         .cp-app-contacts-friend {
@@ -112,12 +111,30 @@
                     overflow: hidden;
                 }
                 .cp-app-contacts-icons {
-                    text-align: right;
-                    & > span:hover {
-                        color: @msg-color-hover;
+                    align-self: flex-end;
+                    .cp-app-contacts-dropdown-btn {
+                        background: none;
+                        border: none;
+                        color: inherit;
+                        cursor: pointer;
+                        padding: 0 4px;
+                        border-radius: @variables_radius;
+                        &:hover {
+                            background-color: rgba(0, 0, 0, 0.2);
+                        }
+                        svg {
+                            margin: 0;
+                        }
                     }
-                    svg {
-                        margin-right: 0.1rem;
+                    .cp-dropdown-content {
+                        a {
+                            display: flex;
+                            align-items: center;
+                            gap: 5px;
+                        }
+                        svg {
+                            margin: 0;
+                        }
                     }
                 }
             }
