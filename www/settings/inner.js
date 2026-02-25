@@ -2072,7 +2072,7 @@ define([
                 'data-category': key
             }, [
                 icon,
-                name,
+                h('span.cp-sidebarlayout-category-name', name),
             ])).appendTo($categories);
 
 
