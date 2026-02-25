@@ -11,7 +11,6 @@ define([
     '/components/x2js/x2js.js',
     '/diagram/util.js',
     '/common/common-ui-elements.js',
-
     '/components/tweetnacl/nacl-fast.min.js',
     'less!/diagram/app-diagram.less',
     'css!/diagram/drawio.css',
@@ -153,7 +152,31 @@ define([
             }, true
         );
 
-        var parameters;
+        var parameters = new URLSearchParams({
+            test: 1,
+            stealth: 1,
+            embed: 1,
+            drafts: 0,
+            p: 'cryptpad',
+            integrated: framework.isIntegrated() ? 'true' : 'false',
+
+            chrome: framework.isReadOnly() ? 0 : 1,
+            dark: window.CryptPad_theme === "dark" ? 1 : 0,
+
+            // Hide save and exit buttons
+            noSaveBtn: 1,
+            saveAndExit: 0,
+            noExitBtn: 1,
+            browser: 0,
+
+            noDevice: 1,
+            filesupport: 0,
+
+            modified: 'unsavedChanges',
+            proto: 'json',
+
+            lang: Messages._languageUsed
+        });
 
         framework.onEditableChange(function () {
             var readOnly = framework.isReadOnly() || framework.isLocked();
@@ -188,33 +211,7 @@ define([
                 defaultTheme = 'sketch';
             }
 
-            parameters = new URLSearchParams({
-                    test: 1,
-                    stealth: 1,
-                    embed: 1,
-                    drafts: 0,
-                    p: 'cryptpad',
-                    integrated: framework.isIntegrated() ? 'true' : 'false',
-
-                    chrome: framework.isReadOnly() ? 0 : 1,
-                    dark: window.CryptPad_theme === "dark" ? 1 : 0,
-
-                    // Hide save and exit buttons
-                    noSaveBtn: 1,
-                    saveAndExit: 0,
-                    noExitBtn: 1,
-                    browser: 0,
-
-                    noDevice: 1,
-                    filesupport: 0,
-
-                    ui: defaultTheme,
-
-                    modified: 'unsavedChanges',
-                    proto: 'json',
-
-                    lang: Messages._languageUsed
-                });
+            parameters.set('ui', defaultTheme);
 
             drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
                 + parameters;
@@ -275,8 +272,6 @@ define([
             $drawer.addClass('cp-toolbar-appmenu');
         };
         mkModeButton(framework);
-
-        
     };
 
 
