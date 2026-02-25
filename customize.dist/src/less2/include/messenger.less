@@ -109,6 +109,7 @@
                 min-width: 0;
                 .cp-app-contacts-name {
                     white-space: nowrap;
+                    overflow: hidden;
                 }
                 .cp-app-contacts-icons {
                     text-align: right;
@@ -349,6 +350,7 @@
                         background-color: rgba(0,0,0,0.1);
                         display: flex;
                         justify-content: space-between;
+                        border-radius: @variables_radius_L;
                         width: 100%;
                     }
                     .cp-app-contacts-time {
@@ -361,9 +363,8 @@
                         right: 0;
                         top: 0;
                         bottom: 0;
-                        background: rgba(0,0,0,0.3);
-                        border-top-left-radius: 50%;
-                        border-bottom-left-radius: 50%;
+                        background: rgba(0,0,0,0.1);
+                        border-radius: @variables_radius_L;
                         padding: 0 10px;
                     }
                     &:hover {
@@ -409,6 +410,7 @@
                 color: @cp_messenger-fg;
                 background-color: @msg-bg-color-darker;
                 background-color: var(--msg-bg-color-darker);
+                border-radius: @variables_radius;
                 &:hover {
                     background-color: @msg-bg-color-dark;
                     background-color: var(--msg-bg-color-dark);
