@@ -245,7 +245,7 @@ define([
                 showCategories(categories[key]);
             });
 
-            $category.append(Messages['notifications_cat_'+key] || key);
+            $category.append(h('span.cp-sidebarlayout-category-name', Messages['notifications_cat_'+key] || key));
         });
         showCategories(categories[active]);
     };

@@ -378,7 +378,7 @@ define([
                     'data-category': key
                 }, [
                     icon,
-                    category.name || Messages[`${app}_cat_${key}`] || key,
+                    h('span.cp-sidebarlayout-category-name', category.name || Messages[`${app}_cat_${key}`] || key),
                 ]);
                 var $item = $(item).appendTo(container);
                 Util.onClickEnter($item, function () {
