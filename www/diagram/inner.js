@@ -173,51 +173,57 @@ define([
 
         var checkTheme = function (fileChannel) {
             var themes = localStorage.original.getItem('drawio-theme') || [];
-            if (themes.length) { return JSON.parse(themes).some(theme => theme[fileChannel]) };
+            if (themes.length) { return JSON.parse(themes).some(theme => theme[fileChannel]); };
         };
 
-        var defaultTheme;
-        if (framework.isIntegrated()) {
-            defaultTheme = 'kennedy';
-        } else if (checkTheme(privateData.channel)) {
-            defaultTheme = localStorage.original.getItem('drawio-theme')[privateData.channel];
-        } else {
-            defaultTheme = 'sketch';
-        }
+        var loadDiagram = function () {
+            privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
 
-        parameters = new URLSearchParams({
-                test: 1,
-                stealth: 1,
-                embed: 1,
-                drafts: 0,
-                p: 'cryptpad',
-                integrated: framework.isIntegrated() ? 'true' : 'false',
+            var defaultTheme;
+            if (framework.isIntegrated()) {
+                defaultTheme = 'kennedy';
+            } else if (checkTheme(privateData.channel)) {
+                defaultTheme = localStorage.original.getItem('drawio-theme')[privateData.channel];
+            } else {
+                defaultTheme = 'sketch';
+            }
 
-                chrome: framework.isReadOnly() ? 0 : 1,
-                dark: window.CryptPad_theme === "dark" ? 1 : 0,
+            parameters = new URLSearchParams({
+                    test: 1,
+                    stealth: 1,
+                    embed: 1,
+                    drafts: 0,
+                    p: 'cryptpad',
+                    integrated: framework.isIntegrated() ? 'true' : 'false',
 
-                // Hide save and exit buttons
-                noSaveBtn: 1,
-                saveAndExit: 0,
-                noExitBtn: 1,
-                browser: 0,
+                    chrome: framework.isReadOnly() ? 0 : 1,
+                    dark: window.CryptPad_theme === "dark" ? 1 : 0,
 
-                noDevice: 1,
-                filesupport: 0,
+                    // Hide save and exit buttons
+                    noSaveBtn: 1,
+                    saveAndExit: 0,
+                    noExitBtn: 1,
+                    browser: 0,
 
-                ui: defaultTheme,
+                    noDevice: 1,
+                    filesupport: 0,
 
-                modified: 'unsavedChanges',
-                proto: 'json',
+                    ui: defaultTheme,
 
-                lang: Messages._languageUsed
-            });
+                    modified: 'unsavedChanges',
+                    proto: 'json',
 
-        drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
-            + parameters;
+                    lang: Messages._languageUsed
+                });
+
+            drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
+                + parameters;
+        };
 
         window.addEventListener("message", (event) => {
-            if (event.source === drawioFrame.contentWindow) {
+            if (event.data?.q === 'EV_METADATA_UPDATE') {
+                loadDiagram();
+            } else if (event.source === drawioFrame.contentWindow) {
                 var data = JSON.parse(event.data);
                 var eventType = data.event;
                 var handler = drawioHandlers[eventType];
@@ -252,6 +258,7 @@ define([
                         parameters.set('ui', mode);
                         drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
                         + parameters;
+                        privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
                         addTheme(privateData.channel, mode);
                     },
                 });
@@ -268,7 +275,8 @@ define([
             $drawer.addClass('cp-toolbar-appmenu');
         };
         mkModeButton(framework);
-        console.log("filechannel", privateData.channel)
+
+        
     };
 
 
