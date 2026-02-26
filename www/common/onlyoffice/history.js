@@ -168,7 +168,10 @@ define([
             });
         };
 
-        loadMoreOOHistory();
+        loadMoreOOHistory().then(() => {
+            displayCheckpointTimeline(true);
+            showVersion(true);
+        })
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
@@ -511,10 +514,6 @@ define([
             
         };
 
-        setTimeout(() => {
-            displayCheckpointTimeline(true);
-            showVersion(true);
-        }, "2500");
 
         // Create the history toolbar
         var display = function () {
