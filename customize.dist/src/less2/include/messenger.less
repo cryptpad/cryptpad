@@ -7,6 +7,7 @@
 @import (reference) './avatar.less';
 @import (reference) './badges.less';
 @import (reference) "./colortheme-all.less";
+@import (reference) "./browser.less";
 
 .messenger_vars (
     @bg-color: @cp_messenger-bg,
@@ -280,8 +281,6 @@
 
             .hover () {
                 cursor: pointer;
-                height: 100%;
-                line-height: 30px;
                 padding: 10px;
                 border-radius: @variables_radius;
                 &:hover {
@@ -337,7 +336,7 @@
             display: flex;
             flex-flow: column;
             .cp-app-contacts-messages {
-                padding: 0 20px;
+                padding: 0 10px;
                 margin: 10px 0;
                 flex: 1;
                 overflow-x: auto;
@@ -441,6 +440,40 @@
                     margin: 0;
                 }
             }
+        }
+    }
+
+    .cp-app-contacts-back {
+        display: none;
+        cursor: pointer;
+        padding: 10px;
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: @variables_radius;
+        }
+    }
+
+    @media (max-width: @browser_media-medium-screen) {
+        #cp-app-contacts-container {
+            #cp-app-contacts-friendlist {
+                width: 100%;
+                flex: 1;
+            }
+            #cp-app-contacts-messaging {
+                display: none;
+            }
+            &.cp-app-contacts-chat-open {
+                #cp-app-contacts-friendlist {
+                    display: none;
+                }
+                #cp-app-contacts-messaging {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+        }
+        .cp-app-contacts-back {
+            display: flex;
         }
     }
 }

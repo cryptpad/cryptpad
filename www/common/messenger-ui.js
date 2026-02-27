@@ -330,13 +330,22 @@ define([
             var avatar = h('div.cp-avatar');
             var avatarDiv = h('div.cp-avatar-container', avatar);
 
+            var backButton = h('span.cp-app-contacts-back', {
+                title: Messages.back || 'Back',
+            }, Icons.get('arrow-left'));
+            $(backButton).click(function () {
+                $container.removeClass('cp-app-contacts-chat-open');
+            });
+
             var headerContent = [
+                backButton,
                 avatarDiv,
                 moreHistory,
                 data.isFriendChat ? removeHistory : undefined
             ];
             if (isApp) {
                 headerContent = [
+                    backButton,
                     h('div.cp-app-contacts-header-title', Messages.contacts_padTitle),
                     moreHistory
                 ];
@@ -492,6 +501,7 @@ define([
 
             setActive(chanId);
             unnotify(chanId);
+            $container.addClass('cp-app-contacts-chat-open');
             var $chat = getChat(chanId);
             hideInfo();
             $messages.find('div.cp-app-contacts-chat[data-key]').hide();
@@ -626,9 +636,16 @@ define([
             $dropdownMenu.css('position', 'fixed');
             $dropdown.find('button').on('click', function () {
                 var rect = this.getBoundingClientRect();
+                var menuWidth = $dropdownMenu.outerWidth() || 150;
+                var viewportWidth = window.innerWidth;
+                var left = rect.left;
+                if (left + menuWidth > viewportWidth) {
+                    left = rect.right - menuWidth;
+                }
+                if (left < 0) { left = 0; }
                 $dropdownMenu.css({
                     top: rect.bottom + 'px',
-                    left: rect.left + 'px',
+                    left: left + 'px',
                 });
             });
 
