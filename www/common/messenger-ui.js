@@ -331,7 +331,7 @@ define([
             var avatarDiv = h('div.cp-avatar-container', avatar);
 
             var backButton = h('span.cp-app-contacts-back', {
-                title: Messages.back || 'Back',
+                title: Messages.form_backButton,
             }, Icons.get('arrow-left'));
             $(backButton).click(function () {
                 $container.removeClass('cp-app-contacts-chat-open');
