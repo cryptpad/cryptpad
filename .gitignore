@@ -101,6 +101,9 @@ tags
 # ---> VisualStudioCode
 .vscode/*
 
+# ---> Intellij
+.idea/*
+
 # Local History for Visual Studio Code
 .history/
 

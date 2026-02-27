@@ -74,9 +74,9 @@ define([
 
                 Cryptpad.getPadAttribute('rtChannel', function (err, res) {
                     // If already stored, don't pin it again
+                    channels.rtChannel = data.channel;
                     if (res && res === data.channel) { return; }
                     Cryptpad.pinPads([data.channel], function () {
-                        channels.rtChannel = data.channel;
                         Cryptpad.setPadAttribute('rtChannel', data.channel, function () {});
                     });
                 });

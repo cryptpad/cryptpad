@@ -33,7 +33,7 @@ define([
 
     module.uploadFile = function (common, data, cb) {
         var sframeChan = common.getSframeChannel();
-        sframeChan.query('Q_UPLOAD_FILE', data, cb);
+        sframeChan.query('Q_UPLOAD_FILE', data, cb, {raw: true});
     };
 
     module.create = function (common, config) {
@@ -220,14 +220,13 @@ define([
 
             file.noStore = config.noStore;
             try {
-                Util.u8ToBase64(u8, b64 => {
-                    file.blob = b64;
-                    file.teamId = teamId;
-                    common.uploadFile(file, function () {
-                        console.log('Upload started...');
-                    });
+                file.blob = u8;
+                file.teamId = teamId;
+                common.uploadFile(file, function () {
+                    console.log('Upload started...');
                 });
             } catch (e) {
+                console.error(e);
                 UI.alert(Messages.upload_serverError);
             }
         };

@@ -18,6 +18,25 @@ define([
              Messages, nThen, Icons) {
     var Access = {};
 
+    const getOtherChans = (priv, opts) => {
+        // "attributes" contains the additional channels that the other user
+        // has to store (rtChannel, answersChannels, lastVersion, lastCpHash)
+        // - opts.attributes when access modal is created from the drive
+        // - liveAttr when access modal is created from the document
+        let liveAttr = Util.clone(priv.propChannels || {});
+        delete liveAttr.channel;
+        let attributes = opts.attributes || liveAttr;
+
+        // "otherChan" contains the list of channels that should also receive
+        // the ownership changes
+        let otherChan = [];
+        if (attributes?.answersChannel) { otherChan.push(attributes.answersChannel); }
+        if (attributes?.rtChannel) { otherChan.push(attributes.rtChannel); }
+        if (!otherChan.length) { otherChan = undefined; }
+
+        return { otherChan, attributes };
+    };
+
     var getOwnersTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
@@ -37,13 +56,10 @@ define([
         var teamOwner = data.teamId;
         var title = opts.title;
 
-        var p = priv.propChannels;
-        var otherChan;
-        if (p && p.answersChannel) {
-            otherChan = [p.answersChannel];
-        }
-
         opts = opts || {};
+
+        const { attributes, otherChan } = getOtherChans(priv, opts);
+
         var redrawAll = function () {};
 
         var addBtn = h('button.btn.btn-primary.cp-access-add', [Icons.get('arrow-left'), Icons.get('arrow-up')]);
@@ -337,6 +353,7 @@ define([
                                                                           : Messages.error;
                             return void UI.warn(text);
                         }
+                        data.attributes = attributes;
                         sframeChan.query('Q_ACCEPT_OWNERSHIP', data, function (err, res) {
                             if (err || (res && res.error)) {
                                 return void console.error(err || res.error);
@@ -354,6 +371,7 @@ define([
                     if (!friend) { return; }
                     common.mailbox.sendTo("ADD_OWNER", {
                         channel: data.channel || priv.channel,
+                        attributes,
                         channels: otherChan,
                         href: href,
                         calendar: opts.calendar,
@@ -440,11 +458,7 @@ define([
         var allowed = data.allowed || [];
         var teamOwner = data.teamId;
 
-        var p = priv.propChannels;
-        var otherChan;
-        if (p && p.answersChannel) {
-            otherChan = [p.answersChannel];
-        }
+        const { otherChan } = getOtherChans(priv, opts);
 
         var redrawAll = function () {};
 
@@ -854,6 +868,8 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
 
+        const { otherChan } = getOtherChans(priv, opts);
+
         var $div = $(h('div.cp-share-columns'));
 
         if (priv.offline) {
@@ -1069,13 +1085,15 @@ define([
                         if (err || (obj && obj.error)) { UI.warn(Messages.error); }
                     });
 
-                    // If this is a form wiht a answer channel, delete it too
-                    var p = priv.propChannels;
-                    if (p && p.answersChannel) {
-                        sframeChan.query('Q_DELETE_OWNED', {
-                            teamId: typeof(owned) !== "boolean" ? owned : undefined,
-                            channel: p.answersChannel
-                        }, function () {});
+                    // If this is a form with an answer channel or an office
+                    // doc with an rt channel, delete it too
+                    if (otherChan) {
+                        otherChan.forEach(chan => {
+                            sframeChan.query('Q_DELETE_OWNED', {
+                                teamId: typeof(owned) !== "boolean" ? owned : undefined,
+                                channel: chan
+                            }, function () {});
+                        });
                     }
                 });
                 if (!opts.noEditPassword) { $d.append(h('br')); }

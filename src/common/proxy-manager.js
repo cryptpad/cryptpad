@@ -430,7 +430,9 @@ const factory = (UserObject, Util, Hash,
         paths.forEach(function (path, idx) {
             var el = userObject.find(path);
             var files = [];
-            var key = path[path.length - 1];
+            // For trash paths, the name is at index 1, not the last element
+            var isTrashPath = userObject.isPathIn && userObject.isPathIn(path, [userObject.TRASH]);
+            var key = isTrashPath && path.length >= 2 ? path[1] : path[path.length - 1];
 
             // Get the files ID from the current path (file or folder)
             if (userObject.isFile(el)) {
@@ -510,12 +512,17 @@ const factory = (UserObject, Util, Hash,
 
         if (!newResolved.userObject.isFolder(newResolved.path)) { return void cb(); }
 
+        var moveError = null;
         nThen(function (waitFor) {
             if (resolved.main.length) {
                 // Move from the main drive
                 if (!newResolved.id) {
                     // Move from the main drive to the main drive
-                    Env.user.userObject.move(resolved.main, newResolved.path, waitFor());
+                    Env.user.userObject.move(resolved.main, newResolved.path, waitFor(function (err) {
+                        if (err && !moveError) {
+                            moveError = err;
+                        }
+                    }));
                 } else {
                     // Move from the main drive to a shared folder
 
@@ -523,12 +530,18 @@ const factory = (UserObject, Util, Hash,
                     var toCopy = _getCopyFromPaths(Env, resolved.main, Env.user.userObject);
                     var newUserObject = newResolved.userObject;
                     toCopy.forEach(function (obj) {
-                        newUserObject.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
+                        try {
+                            newUserObject.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
+                        } catch (err) {
+                            if (!moveError) {
+                                moveError = err;
+                            }
+                        }
                     });
 
                     if (copy) { return; }
 
-                    if (resolved.main.length) {
+                    if (resolved.main.length && !moveError) {
                         // Remove the elements from the old location (without unpinning)
                         Env.user.userObject.delete(resolved.main, waitFor()); // FIXME waitFor() is called synchronously
                     }
@@ -542,7 +555,11 @@ const factory = (UserObject, Util, Hash,
                     var paths = resolved.folders[fId];
                     if (newResolved.id === fId) {
                         // Move to the same shared folder
-                        newResolved.userObject.move(paths, newResolved.path, waitFor());
+                        newResolved.userObject.move(paths, newResolved.path, waitFor(function (err) {
+                            if (err && !moveError) {
+                                moveError = err;
+                            }
+                        }));
                     } else {
                         // Move to a different shared folder or to main drive
                         var uoFrom = Env.folders[fId].userObject;
@@ -551,17 +568,28 @@ const factory = (UserObject, Util, Hash,
                         // Copy the elements to the new location
                         var toCopy = _getCopyFromPaths(Env, paths, uoFrom);
                         toCopy.forEach(function (obj) {
-                            uoTo.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
+                            try {
+                                uoTo.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
+                            } catch (err) {
+                                if (!moveError) {
+                                    moveError = err;
+                                }
+                            }
                         });
 
                         if (copy) { return; }
 
                         // Remove the elements from the old location (without unpinning)
-                        uoFrom.delete(paths, waitFor()); // FIXME waitFor() is called synchronously
+                        if (!moveError) {
+                            uoFrom.delete(paths, waitFor()); // FIXME waitFor() is called synchronously
+                        }
                     }
                 });
             }
         }).nThen(function () {
+            if (moveError) {
+                return void cb(moveError);
+            }
             cb();
         });
     };
@@ -1407,6 +1435,17 @@ const factory = (UserObject, Util, Hash,
         });
     };
 
+    const getMissingRtChannel = (Env) => {
+        const userObjects = _getUserObjects(Env);
+        const all = [];
+        userObjects.forEach(function (uo) {
+            const missing = uo.getMissingRtChannel();
+            if (!missing) { return; }
+            all.push(missing);
+        });
+        return all;
+    };
+
     var create = function (proxy, data, uoConfig) {
         var Env = {
             pinPads: data.pin,
@@ -1473,7 +1512,9 @@ const factory = (UserObject, Util, Hash,
             findFile: callWithEnv(findFile),
             getEditHash: callWithEnv(getEditHash),
             user: Env.user,
-            folders: Env.folders
+            folders: Env.folders,
+            // Fix rtChannel
+            getMissingRtChannel: callWithEnv(getMissingRtChannel)
         };
     };
 
@@ -1490,7 +1531,12 @@ const factory = (UserObject, Util, Hash,
                 path: path,
                 newName: newName
             }
-        }, cb);
+        }, function (err, responseData) {
+            if (err || responseData?.error) {
+                return void cb(err || responseData);
+            }
+            cb();
+        });
     };
     var moveInner = function (Env, paths, newPath, cb, copy) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
@@ -1500,7 +1546,12 @@ const factory = (UserObject, Util, Hash,
                 newPath: newPath,
                 copy: copy
             }
-        }, cb);
+        }, function (err, responseData) {
+            if (err || responseData?.error) {
+                return void cb(err || responseData);
+            }
+            cb();
+        });
     };
     var emptyTrashInner = function (Env, deleteOwned, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {

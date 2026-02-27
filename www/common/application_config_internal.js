@@ -233,6 +233,11 @@ const factory = () => {
     // NOTE: this is only enforced client-side and will not prevent malicious clients from storing data
     AppConfig.disableAnonymousPadCreation = false;
 
+    // If your application is meant to be used exclusively with the
+    // integration API, you can disable the direct access to the app by
+    // setting integrationOnly to true
+    AppConfig.integrationOnly = false;
+
     // Hide the usage bar in settings and drive
     //AppConfig.hideUsageBar = true;
 

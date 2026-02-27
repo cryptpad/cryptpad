@@ -5,6 +5,106 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 
+# ❄️ Winter release (2026.2.0)
+
+## Goals
+
+This release upgrades our office applications with OnlyOffice 9 as well as the same history browsing feature as our other applications (history was limited until now). We also include a redesigned folder tree in the drive, and many other improvements and fixes as detailed below.
+
+## Features
+
+- Upgrade Office applications to OnlyOffice v9.2.0.119
+- OnlyOffice history browsing [#2134](https://github.com/cryptpad/cryptpad/pull/2134)
+- Update drive tree UI [#2102](https://github.com/cryptpad/cryptpad/pull/2102)
+
+## Improvements
+
+- Integration API improvements [#2139](https://github.com/cryptpad/cryptpad/pull/2139)
+- Integration API: Allow client download [#2114](https://github.com/cryptpad/cryptpad/pull/2114)
+- Let the user close the old password error modal, without having to refresh the login page [#2125](https://github.com/cryptpad/cryptpad/pull/2125)
+- Add support for required poll questions in forms [#2092](https://github.com/cryptpad/cryptpad/pull/2092)
+- Improve support & moderation UI [#2082](https://github.com/cryptpad/cryptpad/pull/2082)
+- Enable Dutch language [#2148](https://github.com/cryptpad/cryptpad/pull/2148)
+
+## Fixes
+
+- Account, Profile and Contacts
+  - Fix incorrect error message for invalid credentials [#2163](https://github.com/cryptpad/cryptpad/pull/2163) 
+  - Delete 2FA data when archiving account [#2177](https://github.com/cryptpad/cryptpad/pull/2177) 
+  - Fix padding for profile action buttons [#2081](https://github.com/cryptpad/cryptpad/pull/2081)
+  - Fix contact page name overflow [#2084](https://github.com/cryptpad/cryptpad/pull/2084) 
+  - Fix: Profile description editor now shows saved value without requiring focus [#2100](https://github.com/cryptpad/cryptpad/pull/2100) 
+- Drives
+  - Fix rtChannel not always stored and pinned [#2168](https://github.com/cryptpad/cryptpad/pull/2168) 
+  - Preserve drive list sorting order across reloads [#2115](https://github.com/cryptpad/cryptpad/pull/2115)
+  - Fix: Removed avatars are no longer shown in team roster [#2087](https://github.com/cryptpad/cryptpad/pull/2087) 
+  - Fix text overflow issues on Ctrl+E (New document) modal [#2117](https://github.com/cryptpad/cryptpad/pull/2117) 
+  - Fix: Context menu new document options now respect selected type [#2124](https://github.com/cryptpad/cryptpad/pull/2124)
+- Apps
+  - Hide History button if history disabled [#2104](https://github.com/cryptpad/cryptpad/pull/2104)
+  - Disable dragging when selecting text inside title and items for Kanban cards [#2088](https://github.com/cryptpad/cryptpad/pull/2088) 
+  - Add missing margin to elements in Form [#2083](https://github.com/cryptpad/cryptpad/pull/2083) 
+  - CKEditor undo stack cleared on refresh  [#2121](https://github.com/cryptpad/cryptpad/pull/2121)
+  - change code-pad to code [#2160](https://github.com/cryptpad/cryptpad/pull/2160) @achf01
+- Office apps
+  - Do not delete last checkpoint on 5xx error [#2166](https://github.com/cryptpad/cryptpad/pull/2166)
+  - OnlyOffice tab notifications [#2110](https://github.com/cryptpad/cryptpad/pull/2110) 
+  - install-onlyoffice.sh: fix --check for new install_version function [#2097](https://github.com/cryptpad/cryptpad/pull/2097) @martinetd
+- Typos
+  - Fix some typos [#2126](https://github.com/cryptpad/cryptpad/pull/2126) @josep11
+  - doc: typo [#2116](https://github.com/cryptpad/cryptpad/pull/2116) @thiswillbeyourgithub
+  - Fix translation key errors  in admin panel and installation page [#2138](https://github.com/cryptpad/cryptpad/pull/2138) 
+- Other
+  - File upload base64 caused by base64 conversion [#2181](https://github.com/cryptpad/cryptpad/pull/2181)
+  - Calendar export fixes [#2151](https://github.com/cryptpad/cryptpad/pull/2151)
+  - Fix UI overflow when loading a PDF file [#2118](https://github.com/cryptpad/cryptpad/pull/2118)
+  - Icon fixes [#2096](https://github.com/cryptpad/cryptpad/pull/2096) 
+  - moderator setting on by default [#2144](https://github.com/cryptpad/cryptpad/pull/2144) 
+
+
+## Dependencies
+
+- Minor upgrades
+  - body-parser from ^1.20.2 to ^1.20.4
+  - express from ~4.21.2 to ~4.22.1
+  - jsonwebtoken from ^9.0.0 to ^9.0.3
+
+
+## Deployment and Development
+
+- Do not deploy Draw.io's JAR files [#2120](https://github.com/cryptpad/cryptpad/pull/2120)
+- Switch to docker alpine image [#2119](https://github.com/cryptpad/cryptpad/pull/2119)
+- Update triggers for end-to-end test suite [#2060](https://github.com/cryptpad/cryptpad/pull/2060)
+- add Intellij directory to ignored git files [#2122](https://github.com/cryptpad/cryptpad/pull/2122) @josep11
+
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2025.9.0` please read the upgrade notes of all versions between yours and `2026.2.0` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch --depth 1 origin tag 2026.2.0
+git checkout 2026.2.0
+npm ci
+npm run install:components
+./install-onlyoffice.sh
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+## Contributors
+
+Community: @achf01 @martinetd @josep11 @thiswillbeyourgithub
+
+CryptPad team: @AAAMON @Chouhartem @dariiing @davidbenque @DianaXWiki @mathilde-cryptpad @wginolas @yflory @zuzanna-maria
+
+
 # 🍁 Autumn release (2025.9.0)
 
 ## Goals

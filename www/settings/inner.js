@@ -2031,6 +2031,9 @@ define([
         cat.forEach(function(c) {
             APP.$rightside.find('.' + c).show();
         });
+        if (APP.editor) {
+            APP.editor.refresh();
+        }
     };
 
     var SIDEBAR_ICONS = {

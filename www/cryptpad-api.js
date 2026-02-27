@@ -126,6 +126,7 @@
 
                 var start = function () {
                     //config.document.key = key;
+                    const autosave = typeof(config.autosave) === "number" ? config.autosave : 10;
                     chan.send('START', {
                         key: key,
                         application: config.documentType,
@@ -134,7 +135,7 @@
                         documentKey: docID,
                         document: blob,
                         ext: config.document.fileType,
-                        autosave: config.events.onSave && (config.autosave || 10),
+                        autosave: config.events.onSave && autosave,
                         readOnly: config.mode === 'view',
                         editorConfig: config.editorConfig || {},
                         _config: serializedConfig()
@@ -216,6 +217,12 @@
                     });
                 });
 
+                chan.on('DOCUMENT_ERROR', function (err) {
+                    if (config.events.onError) {
+                        config.events.onError(err);
+                    }
+                });
+
                 chan.on('ON_DOWNLOADAS', blob => {
                     let url = URL.createObjectURL(blob);
                     if (!config.events.onDownloadAs) { return; }
@@ -231,6 +238,11 @@
                     blob = data;
                     if (!config.events.onSave) { return void cb(); }
                     config.events.onSave(data, cb);
+                });
+                chan.on('GET_BLOB', (data, cb) => {
+                    getBlob((err, blob) => {
+                        cb({error: err, blob});
+                    });
                 });
                 chan.on('RELOAD', function () {
                     config.document.blob = blob;
@@ -377,6 +389,15 @@
                 }
 
                 chan.send('DOWNLOAD_AS', arg);
+            };
+            ret.save = () => {
+                if (!chan) {
+                    return void onDocumentReady.push(() => {
+                        ret.save();
+                    });
+                }
+
+                chan.send('MANUAL_SAVE');
             };
 
             return ret;

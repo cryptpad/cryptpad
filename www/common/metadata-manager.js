@@ -85,19 +85,19 @@ define(['json.sortify'], function (Sortify) {
             dirty = false;
             if (lazy || lazyUserStr !== Sortify(meta.user)) {
                 metadataLazyObj = JSON.parse(JSON.stringify(metadataObj));
-                lazyChangeHandlers.forEach(function (f) { f(); });
+                lazyChangeHandlers.slice().forEach(function (f) { f(); });
             } else {
                 metadataLazyObj.users = JSON.parse(JSON.stringify(mdo));
             }
 
             if (metadataObj.title !== rememberedTitle) {
                 rememberedTitle = metadataObj.title;
-                titleChangeHandlers.forEach(function (f) {
+                titleChangeHandlers.slice().forEach(function (f) {
                     f(metadataObj.title, metadataObj.defaultTitle);
                 });
             }
 
-            changeHandlers.forEach(function (f) { f(); });
+            changeHandlers.slice().forEach(function (f) { f(); });
         };
         var change = function (lazy) {
             dirty = true;
@@ -136,7 +136,7 @@ define(['json.sortify'], function (Sortify) {
             members.push(ev);
             if (!meta.user) { return; }
             change(false);
-            syncHandlers.forEach(function (f) { f(); });
+            syncHandlers.slice().forEach(function (f) { f(); });
         });
         sframeChan.on('EV_RT_LEAVE', function (ev) {
             var idx = members.indexOf(ev);

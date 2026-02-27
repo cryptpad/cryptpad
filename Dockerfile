@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Multistage build to reduce image size and increase security
-FROM node:lts-slim AS build
+FROM node:lts-alpine AS build
 
 # Create folder for CryptPad
 RUN mkdir /cryptpad
@@ -20,19 +20,14 @@ RUN npm install --production \
     && npm run install:components
 
 # Create actual CryptPad image
-FROM node:lts-slim
-ENV DEBIAN_FRONTEND=noninteractive
+FROM node:lts-alpine
 
 # Create user and group for CryptPad so it does not run as root
-RUN groupadd cryptpad -g 4001
-RUN useradd cryptpad -u 4001 -g 4001 -d /cryptpad
+RUN addgroup -S cryptpad -g 4001 && adduser -S cryptpad -G cryptpad --uid 4001 -h /cryptpad
 
 # Install curl for healthcheck
 # Install git, rdfind and unzip for install-onlyoffice.sh
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    curl ca-certificates git rdfind unzip && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache ca-certificates git rdfind unzip bash curl
 
 # Copy cryptpad with installed modules
 COPY --from=build --chown=cryptpad /cryptpad /cryptpad

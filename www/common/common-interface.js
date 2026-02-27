@@ -282,7 +282,7 @@ define([
         ]);
     };
 
-    UI.tokenField = function (target, autocomplete) {
+    UI.tokenField = function (target, autocomplete, close = null) {
         var t = {
             element: target || h('input'),
         };
@@ -350,6 +350,9 @@ define([
                 });
                 $form.append($input);
                 $form.append($button);
+                if (close) {
+                    $form.append(close);
+                }
                 if (isEdit) { $button.find('span').text(Messages.tag_edit); }
                 else { $button.find('span').text(Messages.add); }
                 $container.append($form);

@@ -9,7 +9,8 @@ define([
     '/common/dom-ready.js',
     '/common/common-hash.js',
     '/common/sframe-common-outer.js',
-], function (nThen, ApiConfig, DomReady, Hash, SFCommonO) {
+    '/common/outer/local-store.js'
+], function (nThen, ApiConfig, DomReady, Hash, SFCommonO, LocalStore) {
 
     var href, hash;
     // Loaded in load #2
@@ -68,7 +69,7 @@ define([
             addData: addData,
             addRpc: addRpc,
             //cache: true,
-            noDrive: parsed?.hashData?.mode !== "view",
+            noDrive: (parsed?.hashData?.mode !== "view" || !LocalStore.isLoggedIn()),
             hash: hash,
             href: href,
             useCreationScreen: true,

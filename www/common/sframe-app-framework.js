@@ -662,6 +662,11 @@ define([
                                 cb();
                             });
                         });
+                        integrationChannel.on('EV_INTEGRATION_MANUAL_SAVE', function () {
+                            integrationSave(function () {
+                                console.log('Integration manual save');
+                            });
+                        });
                     }
                 }
 

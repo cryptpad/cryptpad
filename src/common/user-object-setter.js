@@ -34,6 +34,8 @@ const factory = (Util, Hash, Realtime) => {
 
         var debug = exp.debug;
 
+        let missingRtChannel = {};
+
         exp._setReadOnly = function (state) {
             readOnly = state;
             if (!readOnly) { exp.fixFiles(); }
@@ -314,6 +316,14 @@ const factory = (Util, Hash, Realtime) => {
             // Copy file or folder
             var newParent = exp.find(path);
             var tempName = exp.isFile(element) ? Hash.createChannelId() : key;
+            if (exp.isFolder(element) && tempName !== Messages.fm_newFolder &&
+                typeof(newParent[tempName]) !== "undefined") {
+                throw {
+                    error: 'E_DUPLICATE_FOLDER_NAME',
+                    folderName: tempName,
+                    message: Messages.fo_unavailableName
+                };
+            }
             var newName = exp.getAvailableName(newParent, tempName);
             if (Array.isArray(newParent)) {
                 newParent.push(element);
@@ -375,8 +385,11 @@ const factory = (Util, Hash, Realtime) => {
                               elementPath[1] : elementPath.pop();
 
             if (typeof(newParent[newName]) !== "undefined") {
-                exp.log(Messages.fo_unavailableName);
-                return;
+                return {
+                    error: 'E_DUPLICATE_FOLDER_NAME',
+                    folderName: newName,
+                    message: Messages.fo_unavailableName
+                };
             }
             newParent[newName] = element;
             return true;
@@ -872,6 +885,10 @@ const factory = (Util, Hash, Realtime) => {
                         // toClean.push(id);
                     }
 
+                    if (['sheet', 'doc', 'presentation'].includes(parsed.type) && !el.rtChannel) {
+                        missingRtChannel[el.channel] = el;
+                    }
+
                     if ((loggedIn || config.testMode) && rootFiles.indexOf(id) === -1) {
                         debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", id, el);
                         var newName = Hash.createChannelId();
@@ -978,6 +995,14 @@ const factory = (Util, Hash, Realtime) => {
                 return;
             }
             debug("File system was clean.", ms);
+        };
+
+        exp.getMissingRtChannel = () => {
+            const channels = missingRtChannel;
+            missingRtChannel = {};
+            if (readOnly) { return; }
+            if (!Object.keys(channels).length) { return; }
+            return channels;
         };
 
         return exp;
