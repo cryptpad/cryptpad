@@ -575,6 +575,9 @@ define([
                     UI.confirm(content, function (yes) {
                         if (!yes) { return; }
                         removeFriend(curvePublic);
+                        // TODO remove friend from userlist ui
+                        // FIXME seems to trigger EJOINED from netflux-websocket (from server);
+                        // (tried to join a channel in which you were already present)
                     });
                     return true;
                 }
