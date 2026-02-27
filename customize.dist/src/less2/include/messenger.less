@@ -124,6 +124,10 @@
                         &:hover {
                             background-color: rgba(0, 0, 0, 0.2);
                         }
+                        &:focus-visible {
+                            outline: @variables_focus_style;
+                            border-radius: @variables_radius;
+                        }
                         svg {
                             margin: 0;
                         }
@@ -136,6 +140,10 @@
                         }
                         svg {
                             margin: 0;
+                        }
+                        li:focus-visible {
+                            outline: @variables_focus_style;
+                            border-radius: @variables_radius;
                         }
                     }
                 }
@@ -151,6 +159,10 @@
                     color: var(--msg-bg-color-darker);
                     border-color: var(--msg-bg-color-darker);
                 }
+            }
+            &:focus-visible {
+                outline: @variables_focus_style;
+                border-radius: @variables_radius;
             }
             &.cp-app-contacts-notify {
                 animation: notif 2s ease-in-out infinite;
@@ -303,6 +315,11 @@
             }
             .cp-app-contacts-remove-history {
                 .hover;
+                margin-right: 3px;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
             }
             .cp-avatar-container {
                 display: flex;
@@ -316,6 +333,10 @@
                 .hover;
                 &.cp-app-contacts-faded {
                     color: @cryptpad_text_col;
+                }
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
                 }
             }
 
@@ -345,9 +366,13 @@
             flex-flow: column;
             .cp-app-contacts-messages {
                 padding: 0 10px;
-                margin: 10px 0;
+                margin: 10px 2px;
                 flex: 1;
                 overflow-x: auto;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
                 .cp-app-contacts-message {
                     display: flex;
                     flex-direction: column;
@@ -358,7 +383,7 @@
                         display: flex;
                         justify-content: space-between;
                         border-radius: @variables_radius;
-                        padding: 0 10px;
+                        padding: 0 5px;
                     }
                     .cp-app-contacts-message-row {
                         display: flex;
@@ -385,7 +410,7 @@
                         justify-content: flex-end;
                         color: @msg-color;
                         font-weight: bold;
-                        padding: 0 5px;
+                        padding-right: 5px;
                         opacity: 0.4;
                         transition: opacity 0.2s ease;
                         flex-shrink: 0;
@@ -410,7 +435,7 @@
             justify-content: center;
             padding: 0 5%;
             textarea {
-                margin: 5px 0;
+                margin: 5px 2px 5px 0;
                 padding: 5px 10px;
                 border: none;
                 height: 54px; // 2 lines (22px height) + 2 margins (5px)

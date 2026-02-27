@@ -76,11 +76,11 @@ define([
                 h('div.cp-app-contacts-category-content')
             ]),
             h('div.cp-app-contacts-friends.cp-app-contacts-category', [
+                h('div.cp-app-contacts-category-content.cp-contacts-friends'),
                 h('button.btn.btn-default.cp-app-contacts-muted-button', {tabindex:0},[
                     Icons.get('mute'),
                     Messages.contacts_manageMuted
-                ]), 
-                h('div.cp-app-contacts-category-content.cp-contacts-friends')
+                ])
             ]),
             h('div.cp-app-contacts-rooms.cp-app-contacts-category', [
                 h('div.cp-app-contacts-category-content'),
@@ -245,6 +245,8 @@ define([
         markup.chatbox = function (id, data, curvePublic) {
             var moreHistory = h('span', {
                 class: 'cp-app-contacts-more-history',
+                tabindex: '0',
+                role: 'button'
             });
             moreHistory.append(Icons.get('history', {title: Messages.contacts_fetchHistory}));
 
@@ -252,7 +254,12 @@ define([
             var displayName = UI.getDisplayName(chan.name || chan.displayName);
 
             var fetching = false;
-            var $moreHistory = $(moreHistory).click(function () {
+            var $moreHistory = $(moreHistory).on('keydown', function (e) {
+                if (e.which === 13 || e.which === 32) {
+                    e.preventDefault();
+                    $(this).click();
+                }
+            }).click(function () {
                 if (fetching) { return; }
 
                 // get oldest known message...
@@ -309,11 +316,18 @@ define([
             });
 
             var removeHistory = h('span', {
-                'class': 'cp-app-contacts-remove-history'
+                'class': 'cp-app-contacts-remove-history',
+                'tabindex': '0',
+                'role': 'button'
             });
             removeHistory.append(Icons.get('remove-history', {title: Messages.contacts_removeHistoryTitle}));
 
-            $(removeHistory).click(function () {
+            $(removeHistory).on('keydown', function (e) {
+                if (e.which === 13 || e.which === 32) {
+                    e.preventDefault();
+                    $(this).click();
+                }
+            }).click(function () {
                 UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
                     if (!yes) { return; }
 
