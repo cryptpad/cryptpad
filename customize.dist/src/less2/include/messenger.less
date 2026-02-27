@@ -293,6 +293,13 @@
             .cp-app-contacts-right-col {
                  flex: 1 1 auto;
                  text-align: center;
+                 min-width: 0;
+                 overflow: hidden;
+                .cp-app-contacts-name {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
             }
             .cp-app-contacts-remove-history {
                 .hover;
