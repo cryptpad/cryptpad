@@ -400,7 +400,7 @@ define([
                     }
 
                     //Send mailbox message if:
-                    //- recipient is a contacts
+                    //- recipient is a contact
                     //- recipient is offline
                     //- no previous messages to recipient sent while current tab is open
                     var messageSent = {};
@@ -408,9 +408,9 @@ define([
                         if (online) {
                             delete messageSent[id];
                         } else {
-                            if (contactsData[id] && !messageSent[id]) {
+                            if (friend && !messageSent[id]) {
                                 common.mailbox.sendTo("SEND_CHAT_MESSAGE", {
-                                    name: chan.name,
+                                    name: userInfo.displayName,
                                 }, {
                                     channel: contactsData[chan.curvePublic].notifications,
                                     curvePublic: chan.curvePublic
@@ -1102,10 +1102,11 @@ define([
             });
         };
         //});
-
+        var userInfo;
         execCommand('GET_MY_INFO', null, function (e, info) {
             if (e) { return; }
             contactsData[info.curvePublic] = info;
+            userInfo = info;
         });
 
 
