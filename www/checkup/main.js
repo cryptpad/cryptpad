@@ -1252,7 +1252,6 @@ define([
 
     // check if they provide legal data
     assert(function (cb, msg) {
-        // eslint-disable-next-line no-constant-condition
         if (true) { return void cb(true); } // FIXME stubbed while we determine whether this is necessary
         if (ApiConfig.restrictRegistration) { return void cb(true); }
 
