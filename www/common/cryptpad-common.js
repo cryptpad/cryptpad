@@ -2507,12 +2507,33 @@ define([
         };
     };
 
+    common.checkCustomBroadcastScalable = () => {
+        require(['/common/notify.js'], (Notify) => {
+            const custom = AppConfig.customBroadcast;
+            const viewedStr = localStorage.customBroadcastScalable;
+            const viewed = viewedStr === "1";
+            if (viewed) { return; }
+            if (Array.isArray(custom)) {
+                custom.forEach(obj => {
+                    if (obj.id !== "scalable2026") { return; }
+                    if (!obj.filter()) { return; }
+                    localStorage.customBroadcastScalable = "1";
+                    const lang = localStorage.CRYPTPAD_LANG;
+                    const msg = obj.msg[lang] || obj.msg.default;
+                    Notify.system('CryptPad.fr', msg)
+                });
+            }
+        });
+    };
+
     common.ready = (function () {
         var env = {};
         var initialized = false;
 
     return function (f, rdyCfg) {
         rdyCfg = rdyCfg || {};
+
+common.checkCustomBroadcastScalable();
 
         if (rdyCfg.currentPad) {
             currentPad = common.currentPad = rdyCfg.currentPad;
