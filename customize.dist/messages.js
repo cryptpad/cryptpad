@@ -134,6 +134,7 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.contacts_historyCleared = "The chat history has been deleted for both parties"; // XXX
     return Messages;
 
 });
