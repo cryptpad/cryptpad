@@ -3271,6 +3271,10 @@ define([
             }
 
             if (toolbar && typeof toolbar.failed === "function") { toolbar.failed(true); }
+            sframeChan.event('EV_SHARE_OPEN', {hidden: true});
+            UI.errorLoadingScreen(msg, false, false);
+            (cb || function () {})();
+            return;
         } else if (err.type === 'HASH_NOT_FOUND' && priv.isHistoryVersion) {
             msg = Messages.oo_deletedVersion;
             if (toolbar && typeof toolbar.failed === "function") { toolbar.failed(true); }
