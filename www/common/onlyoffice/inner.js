@@ -2746,11 +2746,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var importFile = function(content) {
-
             if (checkChannelUsers()) {
                 return;
             }
-
             if (!content) {
                 UI.removeModals();
                 return void UI.alert(Messages.oo_invalidFormat);
