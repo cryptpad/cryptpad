@@ -28,7 +28,7 @@ define([
         "grid": "layout-grid",
         "list": "list",
         "document-owner": "id-card-lanyard",
-        "burn-drive": "ban",
+        "burn-drive": "eraser",
         // Teams
         "teams": "users-round",
         "promote": "chevrons-up",
