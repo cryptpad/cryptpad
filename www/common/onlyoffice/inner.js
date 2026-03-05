@@ -2733,15 +2733,24 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             });
         };
 
-        var importFile = function(content) {
-            // Abort if there is another real user in the channel (history keeper excluded)
+        // Abort if there is another real user in the channel (history keeper excluded)
+        var checkChannelUsers = function () {
             var m = metadataMgr.getChannelMembers().slice().filter(function (nId) {
                 return nId.length === 32;
             });
             if (m.length > 1) {
                 UI.removeModals();
-                return void UI.alert(Messages.oo_cantUpload);
+                UI.alert(Messages.oo_cantUpload);
+                return true;
             }
+        };
+
+        var importFile = function(content) {
+
+            if (checkChannelUsers()) {
+                return;
+            }
+
             if (!content) {
                 UI.removeModals();
                 return void UI.alert(Messages.oo_invalidFormat);
@@ -2782,6 +2791,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             if (!supportsXLSX()) {
                 return void UI.alert(Messages.oo_invalidFormat);
             }
+            if (checkChannelUsers()) {
+                return;
+            }
+
             var div = h('div.cp-oo-x2tXls', [
                 Icons.get('loading'),
                 h('span', Messages.oo_importInProgress)
