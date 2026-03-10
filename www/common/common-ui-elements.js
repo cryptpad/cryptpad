@@ -1611,6 +1611,7 @@ define([
                     }
                 });
             }
+
             // Everything is added as an "li" tag
             // Links and items with action are focusable
             // Add correct "role" attribute

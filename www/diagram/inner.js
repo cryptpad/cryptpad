@@ -282,8 +282,6 @@ define([
         mkModeButton(framework);
     };
 
-
-
     $('#cp-app-diagram-editor').hide();
     // Framework initialization
     Framework.create({
