@@ -135,7 +135,8 @@ define(req, function(AppConfig, Default, Language) {
     };
 
     Messages.contacts_historyCleared = "The chat history has been deleted for both parties"; // XXX
-    return Messages;
+    Messages.contacts_confirmRemoveHistory = "Are you sure you want to delete chat history? Messages will be removed for everyone and cannot be restored."
+    return Messages; // XXX existing key
 
 });
 }());
