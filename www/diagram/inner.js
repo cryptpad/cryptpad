@@ -194,23 +194,27 @@ define([
         // starting the CryptPad framework
         framework.start();
 
+        var themes = JSON.parse(localStorage.original.getItem('drawio-theme')) || [];
+
         var checkTheme = function (fileChannel) {
-            var themes = localStorage.original.getItem('drawio-theme') || [];
-            if (themes.length) { return JSON.parse(themes).some(theme => theme[fileChannel]); };
+            if (themes.length) { return themes.find(obj => obj.hasOwnProperty(fileChannel)); };
         };
 
-        var loadDiagram = function () {
+        var checkDefaultTheme = function () {
             privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
-
             var defaultTheme;
             if (framework.isIntegrated()) {
                 defaultTheme = 'kennedy';
             } else if (checkTheme(privateData.channel)) {
-                defaultTheme = localStorage.original.getItem('drawio-theme')[privateData.channel];
+                defaultTheme = themes.find(item => item[privateData.channel])?.[privateData.channel];
             } else {
                 defaultTheme = 'sketch';
             }
+            return defaultTheme;
+        };
 
+        var loadDiagram = function () {
+            var defaultTheme = checkDefaultTheme();
             parameters.set('ui', defaultTheme);
 
             drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
@@ -230,25 +234,27 @@ define([
             }
         }, false);
 
-        var addTheme = function (fileChannel, theme) {
-            var existingThemes = JSON.parse(localStorage.original.getItem('drawio-theme')) || [];
+        var setTheme = function (fileChannel, theme) {
             if (checkTheme(fileChannel)) {
-                existingThemes[fileChannel] = theme;
+                var currentTheme = themes.find(obj => obj.hasOwnProperty(fileChannel));
+                currentTheme[fileChannel] = theme;
             } else {
-                existingThemes.push({[fileChannel]: theme});
+                themes.push({[fileChannel]: theme});
             }
-            localStorage.original.setItem('drawio-theme', JSON.stringify(existingThemes));
+            localStorage.original.setItem('drawio-theme', JSON.stringify(themes));
         };
 
         var mkModeButton = function (framework) {
             var modes = ['kennedy', 'sketch'];
             var types = [];
+            
             modes.forEach(function(mode){
                 types.push({
                     tag: 'a',
                     attributes: {
                         'data-value': mode,
                         'aria-label': Messages._getKey('diagram_modesOptionLabel', [mode]),
+                        'data-app': 'diagram'
                     },
                     content: mode,
                     action: function () {
@@ -256,16 +262,18 @@ define([
                         drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
                         + parameters;
                         privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
-                        addTheme(privateData.channel, mode);
+                        setTheme(privateData.channel, mode);
                     },
                 });
             });
                         
-            const $drawer = UIElements.createDropdown({
-                text: Messages.diagram_modes, // XXX
+            var $drawer = UIElements.createDropdown({
+                text: Messages.diagram_modes,
                 options: types,
                 common: framework._.sfCommon,
-                iconCls: 'color-palette'
+                isSelect: true,
+                iconCls: 'color-palette',
+                initialValue: parameters.get('ui') || checkDefaultTheme(),
             });
             framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
             framework._.toolbar.$bottomL.append($drawer);

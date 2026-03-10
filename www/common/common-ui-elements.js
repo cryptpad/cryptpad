@@ -1611,7 +1611,6 @@ define([
                     }
                 });
             }
-
             // Everything is added as an "li" tag
             // Links and items with action are focusable
             // Add correct "role" attribute
@@ -1642,7 +1641,14 @@ define([
                     if ($(e.target).attr('href') === '#') {
                         e.preventDefault();
                     }
-                    if (config.isSelect) { return; }
+                    if (config.isSelect && config.attributes["data-app"] !== 'diagram') { return; }
+                    if ($el.length !== 1) { return; }
+                    if (config.attributes["data-app"] === 'diagram') {
+                        $('.cp-dropdown-content').find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
+                        $el.addClass('cp-dropdown-element-active');
+                        $el.closest('li').focus();
+                    }
+                    
                     e.stopPropagation();
                     if (typeof(config.action) === "function") {
                         var close = config.action(e);
@@ -1829,7 +1835,7 @@ define([
             }
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             setTimeout(() => {
-                if (config.isSelect && value) {
+                if (config.isSelect && value || config.attributes && config.attributes["data-app"] === 'diagram' && value) {
                     // We use JSON.stringify here to escape quotes
                     if (typeof(value) === "object") { value = JSON.stringify(value); }
                     var $val = $innerblock.find('[data-value='+JSON.stringify(value)+']');
