@@ -246,7 +246,9 @@ define([
 
             $chat.find('.cp-app-contacts-history-cleared').remove();
 
-            var closeButton = h('button.cp-help-close', [Icons.get('close')]);
+            var closeButton = h('button.cp-help-close',
+                { 'aria-label': Messages.history_close },
+                [Icons.get('close')]);
             var container = h('div.cp-help-container.cp-app-contacts-history-cleared', [
                 Icons.get('help'),
                 h('span.cp-help-text', Messages.contacts_historyCleared),
@@ -282,7 +284,8 @@ define([
             var moreHistory = h('span', {
                 class: 'cp-app-contacts-more-history',
                 tabindex: '0',
-                role: 'button'
+                role: 'button',
+                'aria-label': Messages.contacts_fetchHistory
             });
             moreHistory.append(Icons.get('history', {title: Messages.contacts_fetchHistory}));
 
@@ -354,7 +357,8 @@ define([
             var removeHistory = h('span', {
                 'class': 'cp-app-contacts-remove-history',
                 'tabindex': '0',
-                'role': 'button'
+                'role': 'button',
+                'aria-label': Messages.contacts_removeHistoryTitle
             });
             removeHistory.append(Icons.get('remove-history', {title: Messages.contacts_removeHistoryTitle}));
 
