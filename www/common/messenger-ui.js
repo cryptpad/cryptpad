@@ -687,7 +687,7 @@ define([
             }
 
             var $dropdown = UIElements.createDropdown({
-                iconCls: 'ellipsis-vertical',
+                iconCls: 'settings',
                 options: dropdownOptions,
                 buttonCls: 'cp-app-contacts-dropdown-btn',
             });
