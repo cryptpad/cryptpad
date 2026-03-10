@@ -152,6 +152,25 @@ define([
             }, true
         );
 
+        var themes = JSON.parse(localStorage.original.getItem('drawio-theme')) || [];
+
+        var checkTheme = function (fileChannel) {
+            if (themes.length) { return themes.find(obj => obj.hasOwnProperty(fileChannel)); };
+        };
+
+        var checkDefaultTheme = function () {
+            privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+            var defaultTheme;
+            if (framework.isIntegrated()) {
+                defaultTheme = 'kennedy';
+            } else if (checkTheme(privateData.channel)) {
+                defaultTheme = themes.find(item => item[privateData.channel])?.[privateData.channel];
+            } else {
+                defaultTheme = 'sketch';
+            }
+            return defaultTheme;
+        };
+
         var parameters = new URLSearchParams({
             test: 1,
             stealth: 1,
@@ -168,6 +187,7 @@ define([
             saveAndExit: 0,
             noExitBtn: 1,
             browser: 0,
+            ui: checkDefaultTheme(),
 
             noDevice: 1,
             filesupport: 0,
@@ -194,29 +214,9 @@ define([
         // starting the CryptPad framework
         framework.start();
 
-        var themes = JSON.parse(localStorage.original.getItem('drawio-theme')) || [];
-
-        var checkTheme = function (fileChannel) {
-            if (themes.length) { return themes.find(obj => obj.hasOwnProperty(fileChannel)); };
-        };
-
-        var checkDefaultTheme = function () {
-            privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
-            var defaultTheme;
-            if (framework.isIntegrated()) {
-                defaultTheme = 'kennedy';
-            } else if (checkTheme(privateData.channel)) {
-                defaultTheme = themes.find(item => item[privateData.channel])?.[privateData.channel];
-            } else {
-                defaultTheme = 'sketch';
-            }
-            return defaultTheme;
-        };
-
         var loadDiagram = function () {
             var defaultTheme = checkDefaultTheme();
             parameters.set('ui', defaultTheme);
-
             drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
                 + parameters;
         };
