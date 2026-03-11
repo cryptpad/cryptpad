@@ -213,31 +213,36 @@ const factory = (Sortify, UserObject, ProxyManager,
             });
         };
 
-        var getUserChannelList = function () {
-            var userChannel = `${store.driveChannel}#drive`;
+        var getUserChannelList = function (compareHash) {
+            // If compareHash is true, we're going to compare our local
+            // hash with the server one. We must remove the "#drive" tag
+            // and the block (which isn't a channel)
+
+            var userChannel = compareHash ? store.driveChannel
+                                          : `${store.driveChannel}#drive`;
             if (!userChannel) { return null; }
 
             // Get the list of pads' channel ID in your drive
             // This list is filtered so that it doesn't include pad owned by other users
             // It now includes channels from shared folders
-            var list = store.manager.getChannelsList('pin');
+            var list = store.manager.getChannelsList('pin'); // "list" is a Set
 
             // Get the avatar & profile
             var profile = store.proxy.profile;
             if (profile) {
                 var profileChan = profile.edit ? Hash.hrefToHexChannelId('/profile/#' + profile.edit, null) : null;
-                if (profileChan) { list.push(profileChan); }
+                if (profileChan) { list.add(profileChan); }
                 var avatarChan = profile.avatar ? Hash.hrefToHexChannelId(profile.avatar, null) : null;
-                if (avatarChan) { list.push(avatarChan); }
+                if (avatarChan) { list.add(avatarChan); }
             }
 
             if (store.proxy.todo) {
-                list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
+                list.add(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
             }
 
             if (store.proxy.friends) {
                 var fList = Messaging.getFriendChannelsList(store.proxy);
-                list = list.concat(fList);
+                fList.forEach(id => list.add(id));
             }
 
             if (store.proxy.mailboxes) {
@@ -245,34 +250,23 @@ const factory = (Sortify, UserObject, ProxyManager,
                     if (m === "broadcast" && !store.isAdmin) { return; }
                     return store.proxy.mailboxes[m].channel;
                 }).filter(Boolean);
-                list = list.concat(mList);
+                mList.forEach(id => list.add(id));
             }
 
             if (store.proxy.calendars) {
                 var cList = Object.keys(store.proxy.calendars).map(function (c) {
                     return store.proxy.calendars[c].channel;
                 });
-                list = list.concat(cList);
+                cList.forEach(id => list.add(id));
             }
 
-            list.push(userChannel);
+            list.add(userChannel);
 
-            if (store.data && store.data.blockId) {
-                list.push(`${store.data.blockId}#block`);
+            if (store.data && store.data.blockId && !compareHash) {
+                list.add(`${store.data.blockId}#block`);
             }
 
-            list.sort();
-
-            return list;
-        };
-
-        var getExpirableChannelList = function () {
-            return store.manager.getChannelsList('expirable');
-        };
-
-        var getCanonicalChannelList = function (expirable) {
-            var list = expirable ? getExpirableChannelList() : getUserChannelList();
-            return Util.deduplicateString(list).sort();
+            return Array.from(list).sort();
         };
 
         //////////////////////////////////////////////////////////////////
@@ -352,7 +346,7 @@ const factory = (Sortify, UserObject, ProxyManager,
         var arePinsSynced = function (cb) {
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
-            var list = getCanonicalChannelList(false);
+            var list = getUserChannelList(true);
             var local = Hash.hashChannelList(list);
             store.rpc.getServerHash(function (e, hash) {
                 if (e) { return void cb(e); }
@@ -363,7 +357,7 @@ const factory = (Sortify, UserObject, ProxyManager,
         var resetPins = function (cb) {
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
-            var list = getCanonicalChannelList(false);
+            var list = getUserChannelList();
             store.rpc.reset(list, function (e) {
                 if (e) { return void cb(e); }
                 cb(null);
@@ -524,7 +518,7 @@ const factory = (Sortify, UserObject, ProxyManager,
 
         Store.getDeletedPads = function (clientId, data, cb) {
             if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
-            var list = (data && data.list) || getCanonicalChannelList(true);
+            var list = data?.list;
             if (!Array.isArray(list)) {
                 return void cb({error: 'INVALID_FILE_LIST'});
             }
@@ -705,8 +699,8 @@ const factory = (Sortify, UserObject, ProxyManager,
         };
 
         var getOwnedPads = function (account) {
-            var list = [];
             if (account) {
+                var list = [];
                 if (store.proxy.todo) {
                     // No password for todo
                     list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
@@ -718,29 +712,17 @@ const factory = (Sortify, UserObject, ProxyManager,
                 if (store.proxy.mailboxes) {
                     Object.keys(store.proxy.mailboxes || {}).forEach(function (id) {
                         if (id === 'supportadmin') { return; }
+                        if (id === 'supportteam') { return; }
                         var m = store.proxy.mailboxes[id];
                         list.push(m.channel);
                     });
                 }
-            } else {
-                list = store.manager.getChannelsList('owned');
-                /*
-                if (store.proxy.teams) {
-                    Object.keys(store.proxy.teams || {}).forEach(function (id) {
-                        var t = store.proxy.teams[id];
-                        if (t.owner) {
-                            list.push(t.channel);
-                            list.push(t.keys.roster.channel);
-                            list.push(t.keys.chat.channel);
-                        }
-                    });
-                }
-                */
+                return list.filter(function (channel) {
+                    if (typeof(channel) !== 'string') { return; }
+                    return [32, 48].indexOf(channel.length) !== -1;
+                });
             }
-            return list.filter(function (channel) {
-                if (typeof(channel) !== 'string') { return; }
-                return [32, 48].indexOf(channel.length) !== -1;
-            });
+            return Array.from(store.manager.getChannelsList('owned'));
         };
         var removeOwnedPads = function (account, waitFor) {
             // Delete owned pads
@@ -928,7 +910,7 @@ const factory = (Sortify, UserObject, ProxyManager,
         // Reset the drive part of the userObject (from settings)
         Store.resetDrive = function (clientId, data, cb) {
             nThen(function (waitFor) {
-                removeOwnedPads(waitFor);
+                removeOwnedPads(false, waitFor);
             }).nThen(function () {
                 store.proxy.drive = store.userObject.getStructure();
                 sendDriveEvent('DRIVE_CHANGE', {
