@@ -102,7 +102,7 @@ const factory = (UserObject, Util, Hash,
             // Folder is being deleted by its owner, don't deprecate it
             return;
         }
-        if (Env.user.userObject.readOnly) {
+        if (Env.user.userObject.readOnly || !reason) {
             // In a read-only team, we can't deprecate a shared folder
             // Use a empty object with a deprecated flag...
             var lm = { proxy: { deprecated: true } };
