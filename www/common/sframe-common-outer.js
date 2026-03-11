@@ -1960,51 +1960,65 @@ define([
             // It seems we have performance issues when we open and close a lot of channels over
             // the same network, maybe a memory leak. To fix this, we kill and create a new
             // network every 30 cryptget calls (1 call = 1 channel)
-            var cgNetwork;
-            var whenCGReady = function (cb) {
-                if (cgNetwork && cgNetwork !== true) { console.log(cgNetwork); return void cb(); }
-                setTimeout(function () {
-                    whenCGReady(cb);
-                }, 500);
-            };
-            var i = 0;
+            const cgNetworkStatus = {};
+            let cgNetworkId = 0;
+            let cgNetworkIndex = 0;
+            let cgNetwork;
+
             sframeChan.on('Q_CRYPTGET', function (data, cb) {
                 var keys;
-                var todo = function () {
-                    data.opts.network = cgNetwork;
+                var todo = function (network) {
+                    data.opts.network = network;
                     data.opts.accessKeys = keys;
-                    Cryptget.get(data.hash, function (err, val) {
-                        cb({
-                            error: err,
-                            data: val
+
+                    // Use promises to know when all the cryptget are done
+                    // so that we can disconnect the network
+                    cgNetworkStatus[cgNetworkId] ||= [];
+                    cgNetworkStatus.push(new Promise((res) => {
+                        Cryptget.get(data.hash, function (err, val) {
+                            res(network);
+                            cb({
+                                error: err,
+                                data: val
+                            });
+                        }, data.opts, function (progress) {
+                            sframeChan.event("EV_CRYPTGET_PROGRESS", {
+                                hash: data.hash,
+                                progress: progress,
+                            });
                         });
-                    }, data.opts, function (progress) {
-                        sframeChan.event("EV_CRYPTGET_PROGRESS", {
-                            hash: data.hash,
-                            progress: progress,
-                        });
-                    });
+                    }));
                 };
-                //return void todo();
-                if (i > 30) {
-                    i = 0;
+
+                // Every 30 cryptget, make a new network
+                if (cgNetworkIndex > 30) {
+                    cgNetworkIndex = 0;
+                    // Make sure all previous command are done and disconnect
+                    const prom = cpNetworkStatus[cgNetworkId] || [];
+                    Promise.all(prom).then((nw) => {
+                        let network = nw[0];
+                        if (typeof(network?.disconnect) === "function") {
+                            network.disconnect();
+                        }
+                    });
                     cgNetwork = undefined;
+                    cgNetworkId ++;
                 }
-                i++;
+                cgNetworkIndex++;
 
                 Cryptpad.getAccessKeys(function (_keys) {
                     keys = _keys;
                     if (!cgNetwork) {
-                        cgNetwork = true;
-                        return void Cryptpad.makeNetwork(function (err, nw) {
-                            console.log(nw);
-                            cgNetwork = nw;
-                            todo();
+                        cgNetwork = new Promise((res) => {
+                            Cryptpad.makeNetwork(function (err, nw) {
+                                res(nw);
+                                //cgNetwork = nw;
+                                todo(nw);
+                            });
                         });
-                    } else if (cgNetwork === true) {
-                        return void whenCGReady(todo);
+                        return;
                     }
-                    todo();
+                    cgNetwork.then(todo);
                 });
             });
             sframeChan.on('EV_CRYPTGET_DISCONNECT', function () {
