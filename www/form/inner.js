@@ -25,6 +25,7 @@ define([
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
     '/common/text-cursor.js',
+    '/common/visible.js',
     'cm/lib/codemirror',
     '/components/chainpad/chainpad.dist.js',
     'tui-date-picker',
@@ -73,6 +74,7 @@ define([
     DiffMd,
     SFCodeMirror,
     TextCursor,
+    Visible,
     CMeditor,
     ChainPad,
     DatePicker,
@@ -3280,6 +3282,8 @@ define([
             h('span.cp-button-name', Messages._getKey('form_results', [l])),
         ]));
         var it = setInterval(function () {
+            let visible = Visible.currently();
+            if (!visible) { return; }
             sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
                 var answers = obj && obj.results;
                 var l = getAnswersLength(answers);

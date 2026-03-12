@@ -5,7 +5,7 @@
 const factory = (Sortify, UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
                 Realtime, Messaging, Pinpad, Rpc, Cryptget, Cache,
-                SF, AccountTS, DriveTS, PadTS, Cursor,
+                SF, AccountTS, DriveTS, PadTS, Form, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
                 Calendar, BadgeTS, Block, NetConfig,
@@ -68,6 +68,9 @@ const factory = (Sortify, UserObject, ProxyManager,
             Store, store, postMessage, broadcast
         });
         Store.drive = Drive.initAPI({
+            Store, store, postMessage, broadcast
+        });
+        Store.form = Form.init({
             Store, store, postMessage, broadcast
         });
 
@@ -3039,6 +3042,7 @@ module.exports = factory(
     require('./components/account'), // .ts
     require('./components/drive'), // .ts
     require('./components/pad'), // .ts
+    require('./components/form'),
     require('./modules/cursor'),
     require('./modules/support'),
     require('./modules/integration'),
