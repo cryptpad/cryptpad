@@ -243,6 +243,7 @@ define([
         var clearChannel = function (id) {
             $(getChat(id)).find('.cp-app-contacts-messages').html('');
         };
+        var userInfo;
         markup.chatbox = function (id, data, curvePublic) {
             var moreHistory = h('span', {
                 class: 'cp-app-contacts-more-history',
@@ -588,7 +589,6 @@ define([
             var status = h('span.cp-app-contacts-status', {
                 title: Messages.contacts_online
             });
-
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', [room.isFriendChat? UI.getDisplayName(room.name): room.name]),
                 h('span.cp-app-contacts-icons', [
@@ -1102,7 +1102,6 @@ define([
             });
         };
         //});
-        var userInfo;
         execCommand('GET_MY_INFO', null, function (e, info) {
             if (e) { return; }
             contactsData[info.curvePublic] = info;
