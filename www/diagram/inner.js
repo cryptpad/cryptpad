@@ -178,7 +178,7 @@ define([
                 p: 'cryptpad',
                 integrated: framework.isIntegrated() ? 'true' : 'false',
 
-                chrome: framework.isReadOnly() ? 0 : 1,
+                chrome: 0,
                 dark: window.CryptPad_theme === "dark" ? 1 : 0,
 
                 // Hide save and exit buttons
