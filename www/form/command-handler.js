@@ -140,18 +140,8 @@ define([
             var cb = Utils.Util.once(_cb);
             var myKeys = {};
             var myFormKeys;
-            var accessKeys;
-            var CPNetflux, Pinpad;
-            var network;
             var noDriveAnswered = false;
             nThen(function (w) {
-                require([
-                    'chainpad-netflux',
-                    '/common/pinpad.js',
-                ], w(function (_CPNetflux, _Pinpad) {
-                    CPNetflux = _CPNetflux;
-                    Pinpad = _Pinpad;
-                }));
                 var personalDrive = !Cryptpad.initialTeam || Cryptpad.initialTeam === -1;
                 Cryptpad.getAccessKeys(w(function (_keys) {
                     if (!Array.isArray(_keys)) { return; }

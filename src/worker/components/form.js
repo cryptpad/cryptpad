@@ -103,7 +103,7 @@ const factory = (Util, Nacl, CPNetflux, Crypto) => {
         const { store, Store } = config;
 
         const ctx = { store, Store };
-        const form = {}
+        const form = {};
 
         form.getResponses = (cId, data, cb) => {
             return getResponses(ctx, data, cb);
