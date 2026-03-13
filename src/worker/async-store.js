@@ -662,11 +662,27 @@ const factory = (Sortify, UserObject, ProxyManager,
             };
         };
 
+        const getRtChannelFromPad = (data, cb) => {
+            const opts = {
+                network: store.network
+            };
+            const href = data.href;
+            opts.password = data.password;
+            const parsed = Hash.parsePadUrl(href);
+            Cryptget.get(parsed.hash, (err, content) => {
+                if (err) { return void cb(err); }
+                const p = Util.tryParse(content);
+                const rtChannel = p?.content?.channel;
+                if (!rtChannel) { return void cb('NO_CHAN'); }
+                cb(void 0, rtChannel);
+            }, opts);
+        };
+
         Store.addPad = function (clientId, data, cb) {
             if (!data.href && !data.roHref) { return void cb({error:'NO_HREF'}); }
             var secret;
+            var parsed = Hash.parsePadUrl(data.href || data.roHref);
             if (!data.roHref) {
-                var parsed = Hash.parsePadUrl(data.href);
                 if (parsed.hashData.type === "pad") {
                     secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
                     data.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
@@ -687,18 +703,35 @@ const factory = (Sortify, UserObject, ProxyManager,
             var s = getStore(data.teamId);
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
 
-            s.manager.addPad(data.path, pad, function (e) {
-                if (e) { return void cb({error: e}); }
-                // Send a CHANGE events to all the teams because we may have just
-                // added a pad to a shared folder stored in multiple teams
-                getAllStores().forEach(function (_s) {
-                    var send = _s.id ? _s.sendEvent : sendDriveEvent;
-                    send('DRIVE_CHANGE', {
-                        path: ['drive', UserObject.FILES_DATA]
-                    }, clientId);
+            const add = Util.once(() => {
+                s.manager.addPad(data.path, pad, function (e) {
+                    if (e) { return void cb({error: e}); }
+                    // Send a CHANGE events to all the teams because we may have just
+                    // added a pad to a shared folder stored in multiple teams
+                    getAllStores().forEach(function (_s) {
+                        var send = _s.id ? _s.sendEvent : sendDriveEvent;
+                        send('DRIVE_CHANGE', {
+                            path: ['drive', UserObject.FILES_DATA]
+                        }, clientId);
+                    });
+                    onSync(data.teamId, cb);
                 });
-                onSync(data.teamId, cb);
             });
+
+            if (['doc', 'sheet', 'presentation'].includes(parsed.type)) {
+                if (!pad.rtChannel) {
+                    return getRtChannelFromPad(pad, (err, rtChannel) => {
+                        if (!err) {
+                            const key = 'ADDPAD_NO_RT_CHANNEL' ;
+                            const team = data.teamId ? 'TEAM' : 'OWN';
+                            Feedback.send(`${key}:${team}`, true);
+                            pad.rtChannel = rtChannel;
+                        }
+                        add();
+                    });
+                }
+            }
+            add();
         };
 
         var getOwnedPads = function (account) {
@@ -2257,24 +2290,15 @@ const factory = (Sortify, UserObject, ProxyManager,
             }
 
             let n = nThen;
-            const opts = {
-                network: store.network
-            };
             Object.keys(all).forEach(chan => {
                 n = n(waitFor => {
                     const data = all[chan];
-                    const href = data.href;
-                    opts.password = data.password;
-                    const parsed = Hash.parsePadUrl(href);
-                    Cryptget.get(parsed.hash, waitFor((err, content) => {
+                    getRtChannelFromPad(data, waitFor((err, rtChannel) => {
                         if (err) { return; }
-                        const p = Util.tryParse(content);
-                        const rtChannel = p?.content?.channel;
-                        if (!rtChannel) { return; }
                         data.list.forEach(proxy => {
                             proxy.rtChannel = rtChannel;
                         });
-                    }), opts);
+                    }));
                 }).nThen;
             });
             n(() => {
