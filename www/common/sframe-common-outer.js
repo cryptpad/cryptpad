@@ -126,7 +126,7 @@ define([
         var parsedUnsafeLink;
         var Handler;
 
-        var currentPad = window.CryptPad_location = {
+        var currentPad = {
             app: '',
             href: cfg.href || window.location.href,
             hash: cfg.hash || window.location.hash
@@ -401,6 +401,17 @@ define([
             burnAfterReading = parsed && parsed.hashData && parsed.hashData.ownerKey;
 
             currentPad.app = parsed.type;
+
+            // Allow "debug" to show drive content if no hash is provided
+            if (parsed.type === "debug" && !currentPad.hash) {
+                currentPad.app = "debug";
+                const fsHash = localStorage.FS_hash;
+                currentPad.hash = Cryptpad.userHash || fsHash;
+                currentPad.href = '/debug/#'+currentPad.hash;
+                window.location.hash = currentPad.hash;
+                parsed = Utils.Hash.parsePadUrl(currentPad.href);
+            }
+
             if (cfg.getSecrets) {
                 var w = waitFor();
                 // No password for drive, profile and todo
