@@ -102,7 +102,7 @@ const factory = (UserObject, Util, Hash,
             // Folder is being deleted by its owner, don't deprecate it
             return;
         }
-        if (Env.user.userObject.readOnly) {
+        if (Env.user.userObject.readOnly || !reason) {
             // In a read-only team, we can't deprecate a shared folder
             // Use a empty object with a deprecated flag...
             var lm = { proxy: { deprecated: true } };
@@ -143,10 +143,10 @@ const factory = (UserObject, Util, Hash,
     var _ownedByMe = function (Env, owners) {
         return Array.isArray(owners) && owners.indexOf(Env.edPublic) !== -1;
     };
-    var _ownedByOther = function (Env, owners) {
-        return Array.isArray(owners) && owners.length &&
-                (!Env.edPublic || owners.indexOf(Env.edPublic) === -1);
-    };
+    // var _ownedByOther = function (Env, owners) {
+    //     return Array.isArray(owners) && owners.length &&
+    //             (!Env.edPublic || owners.indexOf(Env.edPublic) === -1);
+    // };
 
     var _getUserObjects = function (Env) {
         var userObjects = [Env.user.userObject];
@@ -1307,37 +1307,30 @@ const factory = (UserObject, Util, Hash,
     */
 
     var excludeInvalidIdentifiers = function (result) {
-        return result.filter(function (channel) {
+        const filter = (channel) => {
             if (typeof(channel) !== 'string') { return; }
             return [32, 48].indexOf(channel.length) !== -1;
-        });
+        };
+
+        let newSet = new Set();
+        for (var channel of result) {
+            if(filter(channel)) { newSet.add(channel); }
+        }
+        return newSet;
     };
 
     // Get the list of channels filtered by a type (expirable channels, owned channels, pin list)
     var getChannelsList = function (Env, type) {
-        var result = [];
+        //var result = [];
+        let result = new Set();
         var addChannel = function (userObject) {
-            if (type === 'expirable') {
-                return function (fileId) {
-                    var data = userObject.getFileData(fileId);
-                    if (!data) { return; }
-                    // Don't push duplicates
-                    if (result.indexOf(data.channel) !== -1) { return; }
-                    // Return pads owned by someone else or expired by time
-                    if (_ownedByOther(Env, data.owners) || (data.expire && data.expire < (+new Date()))) {
-                        result.push(data.channel);
-                    }
-                };
-            }
             if (type === 'owned') {
                 return function (fileId) {
                     var data = userObject.getFileData(fileId);
                     if (!data) { return; }
-                    // Don't push duplicates
-                    if (result.indexOf(data.channel) !== -1) { return; }
                     // Return owned pads
                     if (_ownedByMe(Env, data.owners)) {
-                        result.push(data.channel);
+                        result.add(data.channel);
                     }
                 };
             }
@@ -1345,37 +1338,31 @@ const factory = (UserObject, Util, Hash,
                 return function (fileId) {
                     var data = userObject.getFileData(fileId);
                     if (!data) { return; }
-                    // Don't pin pads owned by someone else
-                    //if (_ownedByOther(Env, data.owners)) { return; }
                     // Pin onlyoffice checkpoints
                     if (data.lastVersion) {
                         var otherChan = Hash.hrefToHexChannelId(data.lastVersion);
-                        if (result.indexOf(otherChan) === -1) {
-                            result.push(otherChan);
-                        }
+                        result.add(otherChan);
                     }
                     // Pin form answers channels
-                    if (data.answersChannel && result.indexOf(data.answersChannel) === -1) {
-                        result.push(data.answersChannel);
+                    if (data.answersChannel) {
+                        result.add(data.answersChannel);
                     }
                     // Pin onlyoffice realtime patches
-                    if (data.rtChannel && result.indexOf(data.rtChannel) === -1) {
-                        result.push(data.rtChannel);
+                    if (data.rtChannel) {
+                        result.add(data.rtChannel);
                     }
                     // Pin onlyoffice images
                     if (data.ooImages && Array.isArray(data.ooImages)) {
-                        Array.prototype.push.apply(result, data.ooImages);
+                        data.ooImages.forEach(id => result.add(id));
                     }
                     // Pin the pad
-                    if (result.indexOf(data.channel) === -1) {
-                        result.push(data.channel);
-                    }
+                    result.add(data.channel);
                 };
             }
         };
 
-        if (type === 'owned' && !Env.edPublic) { return excludeInvalidIdentifiers(result); }
-        if (type === 'pin' && !Env.edPublic) { return excludeInvalidIdentifiers(result); }
+        if (type === 'owned' && !Env.edPublic) { return result; }
+        if (type === 'pin' && !Env.edPublic) { return result; }
 
         // Get the list of user objects
         var userObjects = _getUserObjects(Env);
@@ -1393,7 +1380,7 @@ const factory = (UserObject, Util, Hash,
             }).map(function (fId) {
                 return Env.user.proxy[UserObject.SHARED_FOLDERS][fId].channel;
             });
-            Array.prototype.push.apply(result, sfOwned);
+            sfOwned.forEach(id => result.add(id));
         }
         if (type === "pin") {
             var sfChannels = Object.keys(Env.folders).map(function (fId) {
@@ -1403,7 +1390,7 @@ const factory = (UserObject, Util, Hash,
                     console.error(err);
                 }
             }).filter(Boolean);
-            Array.prototype.push.apply(result, sfChannels);
+            sfChannels.forEach(id => result.add(id));
         }
 
         return excludeInvalidIdentifiers(result);
