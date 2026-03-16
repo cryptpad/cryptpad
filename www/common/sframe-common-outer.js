@@ -2005,7 +2005,7 @@ define([
                 if (cgNetworkIndex > 30) {
                     cgNetworkIndex = 0;
                     // Make sure all previous command are done and disconnect
-                    const prom = cpNetworkStatus[cgNetworkId] || [];
+                    const prom = cgNetworkStatus[cgNetworkId] || [];
                     Promise.all(prom).then((nw) => {
                         let network = nw[0];
                         if (typeof(network?.disconnect) === "function") {
