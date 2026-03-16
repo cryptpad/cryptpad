@@ -506,7 +506,8 @@ define([
         };
         content.handler = function () {
             let id =  Util.hexToBase64(msg.channel).slice(0,10);
-            let url = msg.isAdmin ? '/support/#tickets' : `/moderation/#open-${id}`;
+            let type = msg.isClose ? 'closed' : 'open';
+            let url = msg.isAdmin ? '/support/#tickets' : `/moderation/#${type}-${id}`;
             common.openURL(url);
             defaultDismiss(common, data)();
         };

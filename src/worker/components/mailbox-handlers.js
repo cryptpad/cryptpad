@@ -870,6 +870,7 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
         // Admin to user
         if (content.isAdmin) {
             support.addUserTicket(content, cb);
+            return;
         }
 
         // User to admin

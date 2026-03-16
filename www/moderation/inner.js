@@ -175,6 +175,7 @@ define([
                 };
                 const onReply = function (ticket, channel, data, form) {
                     var formData = APP.support.getFormData(form);
+                    console.error(data);
                     APP.module.execCommand('REPLY_TICKET_ADMIN', {
                         channel: channel,
                         curvePublic: data.authorKey,

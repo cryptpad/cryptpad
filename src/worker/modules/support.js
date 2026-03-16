@@ -182,7 +182,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                 curvePublic: supportKey // Old tickets still use previous keys
             };
             ctx.Store.onSync(null, waitFor());
-        }).nThen(() => {
+        }).nThen((waitFor) => {
             var notifChannel = isAdmin ? data.notifications
                                     : Hash.getChannelIdFromKey(supportKey);
             // First message to deal with the new ticket (store it in the list)
@@ -199,12 +199,18 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
             }, {
                 channel: notifChannel,
                 curvePublic: theirPublic
-            }, (obj) => {
+            }, waitFor((obj) => {
                 console.error(obj);
                 // Don't store the ticket in case of error
-                if (obj && obj.error) { delete ctx.supportData[channel]; }
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    delete ctx.supportData[channel];
+                }
                 cb(obj);
-            });
+            }));
+        }).nThen(() => {
+            var notifChannel = isAdmin ? data.notifications
+                                    : Hash.getChannelIdFromKey(supportKey);
             // Second message is only a notification to warn the user/admins
             mailbox.sendTo('NOTIF_TICKET', {
                 title: title,
@@ -854,17 +860,21 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
 
     // Mailbox events
 
+    const onTicketAdded = {};
     var addAdminTicket = function (ctx, data, cb) {
         // Wait for the chainpad to be ready before adding the data
         if (!ctx.adminRdyEvt) { return void cb(true); }
 
         ctx.adminRdyEvt.reg(() => {
             let supportKey;
+            onTicketAdded[data.channel] = Util.mkEvent(true);
             nThen((waitFor) => {
                 // Send ticket to the admins and call back
                 getKeys(ctx, true, data, waitFor((err, obj) => {
                     if (err) {
                         waitFor.abort();
+                        onTicketAdded[data.channel].fire(err);
+                        delete onTicketAdded[data.channel];
                         return void cb(true);
                     }
                     supportKey = obj.supportKey;
@@ -876,7 +886,10 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                     var doc = ctx.adminDoc.proxy;
                     if (doc.tickets.active[data.channel] || doc.tickets.closed[data.channel]
                         || doc.tickets.pending[data.channel]) {
-                        return void cb(true); }
+                        onTicketAdded[data.channel].fire();
+                        delete onTicketAdded[data.channel];
+                        return void cb(true);
+                    }
                     doc.tickets.active[data.channel] = {
                         title: data.title,
                         premium: data.premium,
@@ -888,6 +901,8 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                     Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
                         // Call back only when synced. That way we can handle the mailbox message
                         // later in case of network issues.
+                        onTicketAdded[data.channel].fire();
+                        delete onTicketAdded[data.channel];
                         cb(true);
                     });
                     notifyClient(ctx, true, 'NEW_TICKET', data.channel);
@@ -923,10 +938,18 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
     var checkAdminTicket = function (ctx, data, cb) {
         if (!ctx.adminRdyEvt) { return void cb(true); }
 
+        // Tickets may take up to 2s to be added to chainpad
+        // (random timeout to avoid duplicate add)
         ctx.adminRdyEvt.reg(() => {
             let doc = ctx.adminDoc.proxy;
             let exists = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
-            cb(exists);
+            if (exists) { return cb(exists); }
+            if (onTicketAdded[data.channel]) {
+                onTicketAdded[data.channel].reg((err) => {
+                    if (err) { return cb(false); }
+                    cb(true);
+                });
+            }
         });
     };
 
