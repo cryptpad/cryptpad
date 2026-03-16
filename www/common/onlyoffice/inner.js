@@ -2053,10 +2053,9 @@ define([
                     var l = w.Common.util.LanguageInfo.getLocalLanguageCode(lang);
                     getEditor().asc_setDefaultLanguage(l);
                 }
-
-                if (integrationChannel) {
-                    integrationChannel.event('EV_INTEGRATION_READY');
-                }
+            }
+            if (integrationChannel) {
+                integrationChannel.event('EV_INTEGRATION_READY');
             }
             delete APP.startNew;
 
