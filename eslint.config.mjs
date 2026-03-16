@@ -16,7 +16,7 @@ const rules = {
     "no-prototype-builtins": ["error"],
     "no-use-before-define": ["error"],
     "no-prototype-builtins": ["off"], // FIXME
-    //"no-undef": ["error"],
+    "no-undef": ["error"],
     "no-unused-vars": [
         "error",
         {

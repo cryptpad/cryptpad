@@ -145,7 +145,6 @@ define([
                 var personalDrive = !Cryptpad.initialTeam || Cryptpad.initialTeam === -1;
                 Cryptpad.getAccessKeys(w(function (_keys) {
                     if (!Array.isArray(_keys)) { return; }
-                    accessKeys = _keys;
                     _keys.some(function (_k) {
                         if ((personalDrive && !_k.id) || Cryptpad.initialTeam === Number(_k.id)) {
                             myKeys = _k;
