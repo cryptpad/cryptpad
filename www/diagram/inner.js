@@ -254,32 +254,38 @@ define([
                     attributes: {
                         'data-value': mode,
                         'aria-label': Messages._getKey('diagram_modesOptionLabel', [mode]),
-                        'data-app': 'diagram'
                     },
                     content: mode,
                     action: function () {
+                        var $self = $('a[data-value="' + mode + '"]');
                         parameters.set('ui', mode);
                         drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
                         + parameters;
                         privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
                         setTheme(privateData.channel, mode);
+                        $('.cp-dropdown-content').find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
+                        $self.addClass('cp-dropdown-element-active');
+                        $self.closest('li').focus();
                     },
                 });
             });
-                        
+            var initialMode = parameters.get('ui') || checkDefaultTheme();
             var $drawer = UIElements.createDropdown({
                 text: Messages.diagram_modes,
                 options: types,
                 common: framework._.sfCommon,
-                isSelect: true,
                 iconCls: 'color-palette',
-                initialValue: parameters.get('ui') || checkDefaultTheme(),
+                initialValue: initialMode
             });
             framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
             framework._.toolbar.$bottomL.append($drawer);
             $drawer.addClass('cp-toolbar-appmenu');
+            $drawer.on('click', function () {
+                $('a[data-value="' + initialMode + '"]').addClass('cp-dropdown-element-active');
+            });
         };
         mkModeButton(framework);
+        
     };
 
     $('#cp-app-diagram-editor').hide();
