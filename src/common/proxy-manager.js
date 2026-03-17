@@ -1434,7 +1434,6 @@ const factory = (UserObject, Util, Hash,
             const missing = uo.getMissingRtChannel();
             if (!missing) { return; }
             if (uo.readOnly) { missing._readOnly = true; }
-            missing._sf = uo.id || false;
             all.push(missing);
         });
         return all;

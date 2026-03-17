@@ -667,15 +667,32 @@ const factory = (Sortify, UserObject, ProxyManager,
                 network: store.network
             };
             const href = data.href;
-            opts.password = data.password;
+
+            let pws = Array.isArray(data.password) ? data.password
+                                                   : [data.password];
+            pws = pws.filter(Boolean);
+            let i = 0;
+            let l = pws.length;
+
             const parsed = Hash.parsePadUrl(href);
-            Cryptget.get(parsed.hash, (err, content) => {
-                if (err) { return void cb(err); }
-                const p = Util.tryParse(content);
-                const rtChannel = p?.content?.channel;
-                if (!rtChannel) { return void cb('NO_CHAN'); }
-                cb(void 0, rtChannel);
-            }, opts);
+            const check = password => {
+                opts.password = password;
+                Cryptget.get(parsed.hash, (err, content) => {
+                    if (err) {
+                        if (i >= l) {
+                            return void cb(err);
+                        }
+                        return check(pws[i++]);
+                    }
+                    const p = Util.tryParse(content);
+                    const rtChannel = p?.content?.channel;
+                    if (!rtChannel) { return void cb('NO_CHAN'); }
+                    cb(void 0, rtChannel);
+                }, opts);
+            };
+
+            check(pws[i++]);
+
         };
 
         Store.addPad = function (clientId, data, cb) {
@@ -2254,36 +2271,34 @@ const factory = (Sortify, UserObject, ProxyManager,
 
         Store.fixMissingRtChannel = (cb) => {
             const all = {};
-            const addMissing = (missing, isTeam) => {
-                const team = isTeam ? 'TEAM' : 'OWN';
+            const addMissing = (missing) => {
                 missing.forEach(obj => {
                     const readOnly = !!obj._readOnly;
-                    const sf = obj._sf ? 'SF' : 'MAIN';
                     delete obj._readOnly;
-                    delete obj._sf;
                     Object.keys(obj).forEach(chan => {
                         if (readOnly) {
-                            Feedback.send(`MISSING_RT_CHANNEL_READONLY_${sf}:${chan}`, true);
+                            Feedback.send(`MISSING_RT_CHANNEL_READONLY:${chan}`, true);
                             return;
                         }
                         let proxy = obj[chan];
                         let href = proxy.roHref || proxy.href;
-                        all[chan] ||= {
+                        const data = all[chan] ||= {
                             href,
-                            password: proxy.password,
+                            password: [],
                             list: []
                         };
-                        all[chan].list.push(proxy);
-                        Feedback.send(`MISSING_RT_CHANNEL_${team}_${sf}:${chan}`, true);
+                        if (proxy.password && !data.password.includes(proxy.password)) {
+                            data.password.push(proxy.password);
+                        }
+                        data.list.push(proxy);
                     });
                 });
             };
 
             try {
                 const mine = store.manager.getMissingRtChannel();
-                addMissing(mine, false);
+                addMissing(mine);
             } catch (e) {
-                Feedback.send('MISSING_RT_CHANNEL_ERROR', true);
                 return setTimeout(cb);
             }
             const teamsId = store.modules?.team?.getTeams() || [];
@@ -2291,23 +2306,24 @@ const factory = (Sortify, UserObject, ProxyManager,
                 const team = store.modules.team.getTeam(id);
                 try {
                 const teamMissing = team.manager.getMissingRtChannel();
-                    addMissing(teamMissing, true);
+                    addMissing(teamMissing);
                 } catch (e) {
-                    Feedback.send('MISSING_RT_CHANNEL_ERROR', true);
                     return setTimeout(cb);
                 }
             });
-
-            if (Object.keys(all).length) {
-                Feedback.send('MISSING_RT_CHANNEL', true);
-            }
 
             let n = nThen;
             Object.keys(all).forEach(chan => {
                 n = n(waitFor => {
                     const data = all[chan];
                     getRtChannelFromPad(data, waitFor((err, rtChannel) => {
-                        if (err) { return; }
+                        if (err) {
+                            const type = err === "NO_CHAN" ? "CORRUPTED"
+                                                        : "PWERROR";
+                            Feedback.send(`MISSING_RT_CHANNEL_ERROR_${type}:${chan}`, true);
+                            return;
+                        }
+                        Feedback.send(`MISSING_RT_CHANNEL_FIXED:${chan}`, true);
                         data.list.forEach(proxy => {
                             proxy.rtChannel = rtChannel;
                         });
