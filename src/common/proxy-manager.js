@@ -1433,6 +1433,8 @@ const factory = (UserObject, Util, Hash,
         userObjects.forEach(function (uo) {
             const missing = uo.getMissingRtChannel();
             if (!missing) { return; }
+            if (uo.readOnly) { missing._readOnly = true; }
+            missing._sf = uo.id || false;
             all.push(missing);
         });
         return all;
@@ -1493,6 +1495,7 @@ const factory = (UserObject, Util, Hash,
             getTagsList: callWithEnv(getTagsList),
             getSecureFilesList: callWithEnv(getSecureFilesList),
             getSharedFolderData: callWithEnv(getSharedFolderData),
+            isInSharedFolder: callWithEnv(_isInSharedFolder),
             // Store
             getChannelsList: callWithEnv(getChannelsList),
             addPad: callWithEnv(addPad),

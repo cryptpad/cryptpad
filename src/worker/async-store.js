@@ -721,11 +721,14 @@ const factory = (Sortify, UserObject, ProxyManager,
             if (['doc', 'sheet', 'presentation'].includes(parsed.type)) {
                 if (!pad.rtChannel) {
                     return getRtChannelFromPad(pad, (err, rtChannel) => {
+                        const sf = s.manager.isInSharedFolder(data.path) ? 'SF' : 'MAIN';
+                        const key = 'ADDPAD_NO_RT_CHANNEL' ;
+                        const team = data.teamId ? 'TEAM' : 'OWN';
                         if (!err) {
-                            const key = 'ADDPAD_NO_RT_CHANNEL' ;
-                            const team = data.teamId ? 'TEAM' : 'OWN';
-                            Feedback.send(`${key}:${team}`, true);
+                            Feedback.send(`${key}_${sf}:${team}`, true);
                             pad.rtChannel = rtChannel;
+                        } else {
+                            Feedback.send(`${key}_${sf}_ERROR:${team}`, true);
                         }
                         add();
                     });
@@ -2251,9 +2254,18 @@ const factory = (Sortify, UserObject, ProxyManager,
 
         Store.fixMissingRtChannel = (cb) => {
             const all = {};
-            const addMissing = (missing) => {
+            const addMissing = (missing, isTeam) => {
+                const team = isTeam ? 'TEAM' : 'OWN';
                 missing.forEach(obj => {
+                    const readOnly = !!obj._readOnly;
+                    const sf = obj._sf ? 'SF' : 'MAIN';
+                    delete obj._readOnly;
+                    delete obj._sf;
                     Object.keys(obj).forEach(chan => {
+                        if (readOnly) {
+                            Feedback.send(`MISSING_RT_CHANNEL_READONLY_${sf}:${chan}`, true);
+                            return;
+                        }
                         let proxy = obj[chan];
                         let href = proxy.roHref || proxy.href;
                         all[chan] ||= {
@@ -2262,13 +2274,14 @@ const factory = (Sortify, UserObject, ProxyManager,
                             list: []
                         };
                         all[chan].list.push(proxy);
+                        Feedback.send(`MISSING_RT_CHANNEL_${team}_${sf}:${chan}`, true);
                     });
                 });
             };
 
             try {
                 const mine = store.manager.getMissingRtChannel();
-                addMissing(mine);
+                addMissing(mine, false);
             } catch (e) {
                 Feedback.send('MISSING_RT_CHANNEL_ERROR', true);
                 return setTimeout(cb);
@@ -2278,7 +2291,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                 const team = store.modules.team.getTeam(id);
                 try {
                 const teamMissing = team.manager.getMissingRtChannel();
-                    addMissing(teamMissing);
+                    addMissing(teamMissing, true);
                 } catch (e) {
                     Feedback.send('MISSING_RT_CHANNEL_ERROR', true);
                     return setTimeout(cb);
