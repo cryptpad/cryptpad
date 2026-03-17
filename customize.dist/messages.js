@@ -134,6 +134,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    /// XXX
+    Messages.crowdfunding_subscribe = "Subscribe";
     return Messages;
 
 });

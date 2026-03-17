@@ -151,9 +151,9 @@ define([
         sessionStorage.clear();
         try {
             Object.keys(localStorage || {}).forEach(function (k) {
-                // Remvoe everything in localStorage except CACHE and FS_hash
-                if (/^CRYPTPAD_CACHE/.test(k) || /^LESS_CACHE/.test(k) || k === Constants.fileHashKey || /^CRYPTPAD_STORE|colortheme/.test(k)) { return; }
-                delete localStorage[k];
+                // Remove everything in localStorage except CACHE and FS_hash
+                if (/^CRYPTPAD_CACHE/.test(k) || /^LESS_CACHE/.test(k) || k === Constants.fileHashKey || /^CRYPTPAD_STORE|colortheme/.test(k) || /^cp_crowdfunding_/.test(k)) { return; }
+                localStorage.removeItem(k);
             });
         } catch (e) { console.error(e); }
         LocalStore.clearThumbnail();
