@@ -738,14 +738,12 @@ const factory = (Sortify, UserObject, ProxyManager,
             if (['doc', 'sheet', 'presentation'].includes(parsed.type)) {
                 if (!pad.rtChannel) {
                     return getRtChannelFromPad(pad, (err, rtChannel) => {
-                        const sf = s.manager.isInSharedFolder(data.path) ? 'SF' : 'MAIN';
                         const key = 'ADDPAD_NO_RT_CHANNEL' ;
-                        const team = data.teamId ? 'TEAM' : 'OWN';
                         if (!err) {
-                            Feedback.send(`${key}_${sf}:${team}`, true);
+                            Feedback.send(key, true);
                             pad.rtChannel = rtChannel;
                         } else {
-                            Feedback.send(`${key}_${sf}_ERROR:${team}`, true);
+                            Feedback.send(`${key}_ERROR`, true);
                         }
                         add();
                     });
@@ -2276,10 +2274,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                     const readOnly = !!obj._readOnly;
                     delete obj._readOnly;
                     Object.keys(obj).forEach(chan => {
-                        if (readOnly) {
-                            Feedback.send(`MISSING_RT_CHANNEL_READONLY:${chan}`, true);
-                            return;
-                        }
+                        if (readOnly) { return; }
                         let proxy = obj[chan];
                         let href = proxy.roHref || proxy.href;
                         const data = all[chan] ||= {
@@ -2318,12 +2313,14 @@ const factory = (Sortify, UserObject, ProxyManager,
                     const data = all[chan];
                     getRtChannelFromPad(data, waitFor((err, rtChannel) => {
                         if (err) {
-                            const type = err === "NO_CHAN" ? "CORRUPTED"
-                                                        : "PWERROR";
-                            Feedback.send(`MISSING_RT_CHANNEL_ERROR_${type}:${chan}`, true);
+                            // TODO: add a flag to the proxy to avoid checking
+                            // this document again (at least until the proxy.password
+                            // has changed)
+                            // Bonus: we can also tell the user that some documents
+                            // are unavailable
                             return;
                         }
-                        Feedback.send(`MISSING_RT_CHANNEL_FIXED:${chan}`, true);
+                        Feedback.send(`MISSING_RT_CHANNEL_FIXED`, true);
                         data.list.forEach(proxy => {
                             proxy.rtChannel = rtChannel;
                         });
