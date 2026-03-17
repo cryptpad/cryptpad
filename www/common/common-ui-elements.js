@@ -1642,7 +1642,7 @@ define([
                     if ($(e.target).attr('href') === '#') {
                         e.preventDefault();
                     }
-                    if (config.isSelect) { return; } 
+                    if (config.isSelect) { return; }
                     e.stopPropagation();
                     if (typeof(config.action) === "function") {
                         var close = config.action(e);
