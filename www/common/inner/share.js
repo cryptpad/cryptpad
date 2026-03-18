@@ -265,40 +265,28 @@ define([
         });
         return teams;
     };
-    var makeBurnAfterReadingUrl = function (common, href, channel, cb) {
-        var keyPair = Hash.generateSignPair();
-        var parsed = Hash.parsePadUrl(href);
-        var newHref = parsed.getUrl({
+    const makeBurnAfterReadingUrl = (common, href, channel, opts, cb) => {
+        const keyPair = Hash.generateSignPair();
+        const parsed = Hash.parsePadUrl(href);
+        const newHref = parsed.getUrl({
             ownerKey: keyPair.safeSignKey
         });
-        var sframeChan = common.getSframeChannel();
-        var rtChannel;
-        nThen(function (waitFor) {
-            if (parsed.type !== "sheet") { return; }
-            common.getPadAttribute('rtChannel', waitFor(function (err, chan) {
-                rtChannel = chan;
-            }));
-        }).nThen(function (waitFor) {
+        const sframeChan = common.getSframeChannel();
+        const priv = common.getMetadataMgr().getPrivateData();
+        const { otherChan } = Modal.getOtherChans(priv, opts);
+        nThen((waitFor) => {
             sframeChan.query('Q_SET_PAD_METADATA', {
                 channel: channel,
+                channels: otherChan,
                 command: 'ADD_OWNERS',
                 value: [keyPair.validateKey]
-            }, waitFor(function (err) {
+            }, waitFor((err) => {
                 if (err) {
                     waitFor.abort();
                     UI.warn(Messages.error);
                 }
             }));
-            if (rtChannel) {
-                sframeChan.query('Q_SET_PAD_METADATA', {
-                    channel: rtChannel,
-                    command: 'ADD_OWNERS',
-                    value: [keyPair.validateKey]
-                }, waitFor(function (err) {
-                    if (err) { console.error(err); }
-                }));
-            }
-        }).nThen(function () {
+        }).nThen(() => {
             cb(newHref);
         });
     };
@@ -477,7 +465,7 @@ define([
                 name:  Messages.share_bar,
                 onClick: function () {
                     var barHref = origin + pathname + '#' + (hashes.viewHash || hashes.editHash);
-                    makeBurnAfterReadingUrl(common, barHref, opts.channel, function (url) {
+                    makeBurnAfterReadingUrl(common, barHref, opts.channel, opts, function (url) {
                         opts.burnAfterReadingUrl = url;
                         opts.$rights.find('input[type="radio"]').trigger('change');
                     });
@@ -685,7 +673,7 @@ define([
             if (burnAfterReading && !opts.burnAfterReadingUrl) {
                 if (cb) { // Called from the contacts tab, "share" button
                     var barHref = origin + pathname + '#' + (hashes.viewHash || hashes.editHash);
-                    return makeBurnAfterReadingUrl(common, barHref, channel, function (url) {
+                    return makeBurnAfterReadingUrl(common, barHref, channel, opts, function (url) {
                         cb(url);
                     });
                 }

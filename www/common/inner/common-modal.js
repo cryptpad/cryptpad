@@ -33,6 +33,24 @@ define([
             if (redraw) { Env.evRedrawAll.fire(redraw); }
         }));
     };
+    Modal.getOtherChans = (priv, opts) => {
+        // "attributes" contains the additional channels that the other user
+        // has to store (rtChannel, answersChannels, lastVersion, lastCpHash)
+        // - opts.attributes when access modal is created from the drive
+        // - liveAttr when access modal is created from the document
+        let liveAttr = Util.clone(priv.propChannels || {});
+        delete liveAttr.channel;
+        let attributes = opts.attributes || liveAttr;
+
+        // "otherChan" contains the list of channels that should also receive
+        // the ownership changes
+        let otherChan = [];
+        if (attributes?.answersChannel) { otherChan.push(attributes.answersChannel); }
+        if (attributes?.rtChannel) { otherChan.push(attributes.rtChannel); }
+        if (!otherChan.length) { otherChan = undefined; }
+
+        return { otherChan, attributes };
+    };
     Modal.getPadData = function (Env, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
