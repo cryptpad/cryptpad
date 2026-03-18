@@ -1971,7 +1971,7 @@ define([
             // It seems we have performance issues when we open and close a lot of channels over
             // the same network, maybe a memory leak. To fix this, we kill and create a new
             // network every 30 cryptget calls (1 call = 1 channel)
-            const cgNetworkStatus = {};
+            let cgNetworkStatus = {};
             let cgNetworkId = 0;
             let cgNetworkIndex = 0;
             let cgNetwork;
@@ -1985,7 +1985,7 @@ define([
                     // Use promises to know when all the cryptget are done
                     // so that we can disconnect the network
                     cgNetworkStatus[cgNetworkId] ||= [];
-                    cgNetworkStatus.push(new Promise((res) => {
+                    cgNetworkStatus[cgNetworkId].push(new Promise((res) => {
                         Cryptget.get(data.hash, function (err, val) {
                             res(network);
                             cb({
@@ -2033,9 +2033,17 @@ define([
                 });
             });
             sframeChan.on('EV_CRYPTGET_DISCONNECT', function () {
-                if (!cgNetwork) { return; }
-                cgNetwork.disconnect();
+                const prom = cgNetworkStatus[cgNetworkId] || [];
+                Promise.all(prom).then((nw) => {
+                    let network = nw[0];
+                    if (typeof(network?.disconnect) === "function") {
+                        network.disconnect();
+                    }
+                });
                 cgNetwork = undefined;
+                cgNetworkId = 0;
+                cgNetworkIndex = 0;
+                cgNetworkStatus = {};
             });
 
             if (cfg.addRpc) {

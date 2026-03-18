@@ -136,7 +136,6 @@ define([
             });
         });
         sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {
-            var formHref = data.href;
             var cb = Utils.Util.once(_cb);
             var myKeys = {};
             var myFormKeys;
@@ -167,19 +166,19 @@ define([
                 if (myFormKeys.formSeed) {
                     myFormKeys = Cryptpad.getAnonymousKeys(myFormKeys.formSeed, data.channel, Utils);
                 }
-                var keys;
-                var privateKey, publicKey;
-                var formData;
+
+                let secret, parsed;
                 if (data.drive) {
-                    var secret = Utils.Hash.getSecrets('form', formHref, data.password);
-                    keys = secret && secret.keys;
-                    formData = Utils.Hash.getFormData(secret);
+                    parsed = Utils.Hash.parseTypeHash('form', data.href);
+                    secret = Utils.Hash.getSecrets('form', data.href, data.password);
                 } else {
-                    formData = Utils.Hash.getFormData(Utils.secret);
-                    keys = Utils.secret && Utils.secret.keys;
+                    secret = Utils.secret;
                 }
-                privateKey = formData?.form_private;
-                publicKey = formData?.form_public;
+                let keys = (secret && secret.keys) || {};
+                let formData = Utils.Hash.getFormData(secret);
+                const privateKey = parsed.auditorKey || formData?.form_private;
+                const publicKey = formData?.form_public;
+
                 var curvePrivate = privateKey || data.privateKey;
                 if (!curvePrivate) { return void cb({error: 'EFORBIDDEN'}); }
                 var cryptoKeys = {
