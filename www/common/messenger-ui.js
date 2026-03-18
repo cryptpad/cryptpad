@@ -64,7 +64,6 @@ define([
                 h('h2', Messages.contacts_info1),
                 h('ul', [
                     h('li', Messages.contacts_info2),
-                    h('li', Messages.contacts_info3),
                     h('li', Messages.contacts_info4),
                 ])
             ])
