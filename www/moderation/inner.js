@@ -175,7 +175,6 @@ define([
                 };
                 const onReply = function (ticket, channel, data, form) {
                     var formData = APP.support.getFormData(form);
-                    console.error(data);
                     APP.module.execCommand('REPLY_TICKET_ADMIN', {
                         channel: channel,
                         curvePublic: data.authorKey,
@@ -243,8 +242,17 @@ define([
 
                 // Show tickets, reload the previously open ones and cal back
                 // once everything is loaded
+
                 let n = nThen;
-                Object.keys(tickets).sort(sortTicket(tickets)).forEach(function (channel) {
+                let sorted = Object.keys(tickets).sort(sortTicket(tickets));
+                let remaining = [];
+                const limit = 20;
+                if (type === 'closed') {
+                    remaining = sorted.slice(limit);
+                    sorted = sorted.slice(0, limit);
+                }
+
+                const addTicket = function (channel) {
                     // Update allTags
                     var d = tickets[channel];
                     (d.tags || []).forEach(tag => {
@@ -270,7 +278,28 @@ define([
                             ticket.open(true, waitFor());
                         }).nThen;
                     }
-                });
+                };
+
+                sorted.forEach(addTicket);
+
+                if (type === 'closed' && remaining.length) {
+                    const b = h('button.btn.btn-secondary', [
+                        Icons.get('export'),
+                        Messages.loadAll
+                    ]);
+                    const div = h('div.cp-support-list-ticket', [
+                        h('span', Messages._getKey('support_moreTickets', [
+                            remaining.length
+                        ])),
+                        h('span', b)
+                    ]);
+                    $(b).click(() => {
+                        remaining.forEach(addTicket);
+                        $(div).remove();
+                    });
+                    $(col2).append(div);
+                }
+
                 // Wait for all open tickets to be loaded before calling back
                 // otherwise we may have a wrong scroll position
                 n(() => {
@@ -311,7 +340,9 @@ define([
             }).nThen(waitFor => {
                 APP.allTags = [];
                 refresh($(activeContainer), 'active', waitFor());
+            }).nThen(waitFor => {
                 refresh($(pendingContainer), 'pending', waitFor());
+            }).nThen(waitFor => {
                 refresh($(closedContainer), 'closed', waitFor());
             }).nThen(() => {
                 onFilter();

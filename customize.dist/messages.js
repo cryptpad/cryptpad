@@ -134,6 +134,10 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    // XXX
+    Messages.support_moreTickets = "{0} more tickets";
+    Messages.loadAll = "Load all";
+
     return Messages;
 
 });
