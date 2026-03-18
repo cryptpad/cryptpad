@@ -100,9 +100,15 @@
             margin-bottom: 0;
             cursor: pointer;
             position: relative;
-            height: @room-height;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            .cp-avatar {
+                flex-shrink: 0;
+                margin-right: 5px;
+            }
             .cp-app-contacts-right-col {
-                margin-left: 5px;
+                margin-left: 0;
                 display: flex;
                 flex-flow: column;
                 flex: 1;
@@ -112,38 +118,51 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
-                .cp-app-contacts-icons {
-                    align-self: flex-end;
-                    .cp-app-contacts-dropdown-btn {
-                        background: none;
-                        border: none;
-                        color: inherit;
-                        cursor: pointer;
-                        padding: 0 4px;
-                        border-radius: @variables_radius;
-                        &:hover {
-                            background-color: rgba(0, 0, 0, 0.2);
-                        }
-                        &:focus-visible {
-                            outline: @variables_focus_style;
-                            border-radius: @variables_radius;
-                        }
-                        svg {
-                            margin: 0;
-                        }
+                .cp-app-contacts-bottom-row {
+                    display: flex;
+                    align-items: center;
+                    flex-shrink: 0;
+                    .cp-app-contacts-mute-indicator {
+                        font-size: 0.75em;
+                        display: flex;
+                        align-items: center;
                     }
-                    .cp-dropdown-content {
-                        a {
+                    .cp-app-contacts-icons {
+                        margin-left: auto;
+                        .cp-app-contacts-dropdown-btn {
                             display: flex;
                             align-items: center;
-                            gap: 5px;
-                        }
-                        svg {
-                            margin: 0;
-                        }
-                        li:focus-visible {
-                            outline: @variables_focus_style;
+                            background: none;
+                            border: none;
+                            color: inherit;
+                            cursor: pointer;
+                            padding: 2px;
                             border-radius: @variables_radius;
+                            flex-shrink: 0;
+                            &:hover {
+                                background-color: rgba(0, 0, 0, 0.2);
+                            }
+                            &:focus-visible {
+                                outline: @variables_focus_style;
+                                border-radius: @variables_radius;
+                            }
+                            svg {
+                                margin: 0;
+                            }
+                        }
+                        .cp-dropdown-content {
+                            a {
+                                display: flex;
+                                align-items: center;
+                                gap: 5px;
+                            }
+                            svg {
+                                margin: 0;
+                            }
+                            li:focus-visible {
+                                outline: @variables_focus_style;
+                                border-radius: @variables_radius;
+                            }
                         }
                     }
                 }

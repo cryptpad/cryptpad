@@ -716,9 +716,17 @@ define([
             var status = h('span.cp-app-contacts-status', {
                 title: Messages.contacts_online
             });
+            var mute = h('span.cp-app-contacts-mute-indicator', {
+                title: Messages.contacts_mute,
+                style: isMuted ? '' : 'display: none;'
+            }, Icons.get('mute'));
+            var bottomRow = h('span.cp-app-contacts-bottom-row', [
+                mute,
+                $dropdown[0],
+            ]);
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', [room.isFriendChat? UI.getDisplayName(room.name): room.name]),
-                $dropdown[0],
+                bottomRow,
             ]);
 
             var $room = $(roomEl).on('click keypress', function (event) {
@@ -1004,6 +1012,8 @@ define([
                     .find('.cp-mute-icon').show();
                 $('.cp-app-contacts-friend[data-user]')
                     .find('.cp-unmute-icon').hide();
+                $('.cp-app-contacts-friend[data-user]')
+                    .find('.cp-app-contacts-mute-indicator').hide();
                 if (!muted || Object.keys(muted).length === 0) {
                     $button.hide();
                     return;
@@ -1014,6 +1024,8 @@ define([
                         .find('.cp-mute-icon').hide();
                     $('.cp-app-contacts-friend[data-user="'+curve+'"]')
                         .find('.cp-unmute-icon').show();
+                    $('.cp-app-contacts-friend[data-user="'+curve+'"]')
+                        .find('.cp-app-contacts-mute-indicator').show();
                     var data = muted[curve];
                     var avatar = h('span.cp-avatar');
                     var button = h('button.btn', {
@@ -1033,6 +1045,8 @@ define([
                                 .find('.cp-unmute-icon').hide();
                             $('.cp-app-contacts-friend[data-user="'+curve+'"]')
                                 .find('.cp-mute-icon').show();
+                            $('.cp-app-contacts-friend[data-user="'+curve+'"]')
+                                .find('.cp-app-contacts-mute-indicator').hide();
                             if ($('.cp-contacts-muted-table').find('.cp-contacts-muted-user').length === 0) {
                                 UI.findOKButton().click();
                             }
