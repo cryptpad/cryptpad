@@ -86,7 +86,7 @@ define([
             http.open('HEAD', url);
             http.onreadystatechange = function() {
                 if (this.readyState === this.DONE) {
-                    console.error(this.status);
+                    console.error(oldKey, this.status);
                     if (this.status === 200) {
                         return cb({state: true});
                     }
@@ -100,31 +100,78 @@ define([
         };
         let sanitizeKey = key => {
             try {
-                Util.decodeBase64(key);
+                Util.decodeBase64(key.replace(/-/g, '/'));
                 return key;
             } catch (e) {
                 return Util.encodeBase64(Util.decodeUTF8(key)).replaceAll('=', '');
             }
         };
+        const getViewKey = key => {
+            const secret = Hash.getSecrets('integration', key);
+            return Hash.getViewHashFromKeys(secret);
+        };
         chan.on('GET_SESSION', function (data, cb) {
-            if (data.keepOld) { // they provide their own key, we must turn it into a hash
-                var key = sanitizeKey(data.key) + "000000000000000000000000000000000";
-                console.warn('KEY', key);
-                return void cb({
-                    key: `/2/integration/edit/${key.slice(0,24)}/`
-                });
-            }
             var getHash = function () {
                 //isNew = true;
                 return Hash.createRandomHash('integration');
             };
+            if (data.view) { // Only existing session
+                let hash = data.keepOld
+                            ? `/2/integration/view/${data.key}/`
+                            : data.key;
+                let key = data.key ? hash : getHash();
+                return checkSession(key, function (obj) {
+                    if (!obj || obj.error) { return cb(obj); }
+                    if (!obj.state) {
+                        console.error('View session unavailable');
+                    }
+                    if (!obj.state && !data.key) {
+                        // Send error to make sure we won't trigger
+                        // events.onNewKey and have the outside
+                        // platform save fake keys
+                        return void cb({
+                            error: 'ENOENT',
+                            key,
+                            viewKey: key
+                        });
+                    }
+                    if (!obj.state) {
+                        // Key provided but invalid: abort
+                        return void cb({
+                            error: 'ENOENT',
+                            key,
+                        });
+                    }
+                    cb({
+                        key: key,
+                        viewKey: getViewKey(key)
+                    });
+                });
+            }
+            if (data.keepOld) { // they provide their own key, we must turn it into a hash
+                var key = sanitizeKey(data.key) + "000000000000000000000000000000000";
+                console.warn('KEY', key);
+                let hash = `/2/integration/edit/${key.slice(0,24)}/`;
+                return void cb({
+                    key: hash,
+                    viewKey: getViewKey(hash)
+                });
+            }
             var oldKey = data.key;
-            if (!oldKey) { return void cb({ key: getHash() }); }
+            if (!oldKey) {
+                const key = getHash();
+                return void cb({
+                    key: key,
+                    viewKey: getViewKey(key)
+                });
+            }
 
             checkSession(oldKey, function (obj) {
                 if (!obj || obj.error) { return cb(obj); }
+                const key = obj.state ? oldKey : getHash();
                 cb({
-                    key: obj.state ? oldKey : getHash()
+                    key: key,
+                    viewKey: getViewKey(key)
                 });
             });
         });
@@ -134,6 +181,9 @@ define([
         };
         var onHasUnsavedChanges = function (unsavedChanges, cb) {
             chan.send('HAS_UNSAVED_CHANGES', unsavedChanges, cb);
+        };
+        var onUserlistChange = list => {
+            chan.send('USERLIST_CHANGE', list);
         };
         var onInsertImage = function (data, cb) {
             chan.send('ON_INSERT_IMAGE', data, cb);
@@ -277,6 +327,7 @@ define([
                         save: save,
                         reload: reload,
                         onHasUnsavedChanges: onHasUnsavedChanges,
+                        onUserlistChange,
                         onInsertImage: onInsertImage
                     }
                 };
