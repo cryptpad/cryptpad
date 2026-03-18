@@ -149,13 +149,14 @@ define([
             var channels = Object.keys(state.channels).sort(function (a, b) {
                 var m1 = state.channels[a].messages.slice(-1)[0];
                 var m2 = state.channels[b].messages.slice(-1)[0];
-                if (!m2) { return !m1 ? 0 : 1; }
-                if (!m1) { return -1; }
-                return m1.time - m2.time;
+                if (!m2) { return !m1 ? 0 : -1; }
+                if (!m1) { return 1; }
+                return m2.time - m1.time;
             });
 
-            channels.forEach(function (c, i) {
-                $userlist.find(dataQuery(c)).css('order', i);
+            channels.forEach(function (c) {
+                var $el = $userlist.find(dataQuery(c));
+                $el.appendTo($el.parent());
             });
 
             // Make sure the width is correct even if there is a scrollbar
