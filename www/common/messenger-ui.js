@@ -644,11 +644,23 @@ define([
                 }
             };
 
+            var viewProfileOption = {
+                tag: 'a',
+                content: [Icons.get('user-profile'), h('span', Messages.userlist_visitProfile)],
+                action: function () {
+                    if (friendData.profile) { window.open(origin + '/profile/#' + friendData.profile); }
+                    return true;
+                }
+            };
+
             var rebuildDropdown = function (muted) {
                 if (!$dropdown || !$dropdown.setOptions) { return; }
                 var opts = [];
                 if (room.isFriendChat) {
                     opts.push(muted ? unmuteOption : muteOption);
+                    if (friendData.profile) {
+                        opts.push(viewProfileOption);
+                    }
                     opts.push(removeOption);
                 }
                 $dropdown.setOptions(opts);
@@ -683,6 +695,9 @@ define([
 
             if (room.isFriendChat) {
                 dropdownOptions.push(isMuted ? unmuteOption : muteOption);
+                if (friendData.profile) {
+                    dropdownOptions.push(viewProfileOption);
+                }
                 dropdownOptions.push(removeOption);
             }
 
@@ -733,8 +748,6 @@ define([
                 if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
                     display(id);
                 }
-            }).dblclick(function () {
-                if (friendData.profile) { window.open(origin + '/profile/#' + friendData.profile); }
             });
 
             const $avatar = $(h('div.cp-avatar')).appendTo($room);
