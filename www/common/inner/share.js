@@ -265,36 +265,28 @@ define([
         });
         return teams;
     };
-    var makeBurnAfterReadingUrl = function (common, href, channel, opts, cb) {
-        var keyPair = Hash.generateSignPair();
-        var parsed = Hash.parsePadUrl(href);
-        var newHref = parsed.getUrl({
+    const makeBurnAfterReadingUrl = (common, href, channel, opts, cb) => {
+        const keyPair = Hash.generateSignPair();
+        const parsed = Hash.parsePadUrl(href);
+        const newHref = parsed.getUrl({
             ownerKey: keyPair.safeSignKey
         });
-        var sframeChan = common.getSframeChannel();
+        const sframeChan = common.getSframeChannel();
         const priv = common.getMetadataMgr().getPrivateData();
         const { otherChan } = Modal.getOtherChans(priv, opts);
-        nThen(function (waitFor) {
+        nThen((waitFor) => {
             sframeChan.query('Q_SET_PAD_METADATA', {
                 channel: channel,
+                channels: otherChan,
                 command: 'ADD_OWNERS',
                 value: [keyPair.validateKey]
-            }, waitFor(function (err) {
+            }, waitFor((err) => {
                 if (err) {
                     waitFor.abort();
                     UI.warn(Messages.error);
                 }
             }));
-            otherChan?.forEach((chan) => {
-                sframeChan.query('Q_SET_PAD_METADATA', {
-                    channel: chan,
-                    command: 'ADD_OWNERS',
-                    value: [keyPair.validateKey]
-                }, waitFor(function (err) {
-                    if (err) { console.error(err); }
-                }));
-            });
-        }).nThen(function () {
+        }).nThen(() => {
             cb(newHref);
         });
     };
