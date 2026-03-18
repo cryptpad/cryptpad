@@ -176,7 +176,7 @@ define([
                 }
                 let keys = (secret && secret.keys) || {};
                 let formData = Utils.Hash.getFormData(secret);
-                const privateKey = parsed.auditorKey || formData?.form_private;
+                const privateKey = parsed?.auditorKey || formData?.form_private;
                 const publicKey = formData?.form_public;
 
                 var curvePrivate = privateKey || data.privateKey;
