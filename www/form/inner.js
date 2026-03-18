@@ -3985,7 +3985,8 @@ define([
             var add = h('div', [Icons.get('add')]);
             if (!full) {
                 add = h('button.btn.cp-form-creator-inline-add', {
-                    title: Messages.tag_add
+                    title: Messages.tag_add,
+                    'aria-label': Messages.tag_add
                 }, [
                     Icons.get('add', {class: 'add-open'}),
                     Icons.get('close', {class: 'add-close'}),
@@ -5333,8 +5334,8 @@ define([
 
             var toggleOffclass = 'ontouchstart' in window ? 'cp-toggle-active' : undefined;
             var toggleOnclass = 'ontouchstart' in window ? undefined : 'cp-toggle-active';
-            var toggleDragOff = h(`button#cp-toggle-drag-off.cp-form-view-drag.${toggleOffclass}`, {'title': Messages.toggleArrows, 'tabindex': 0}, Icons.get('select'));
-            var toggleDragOn = h(`button#cp-toggle-drag-on.cp-form-view-drag.${toggleOnclass}`, {'title': Messages.toggleDrag, 'tabindex': 0}, Icons.get('touch-mode'));
+            var toggleDragOff = h(`button#cp-toggle-drag-off.cp-form-view-drag.${toggleOffclass}`, {'title': Messages.toggleArrows, 'tabindex': 0, 'aria-label': Messages.toggleArrows}, Icons.get('select'));
+            var toggleDragOn = h(`button#cp-toggle-drag-on.cp-form-view-drag.${toggleOnclass}`, {'title': Messages.toggleDrag, 'tabindex': 0, 'aria-label': Messages.toggleDrag}, Icons.get('touch-mode'));
             const updateDrag = state => {
                 return function () {
                     var $container = $('.cp-form-creator-content');
