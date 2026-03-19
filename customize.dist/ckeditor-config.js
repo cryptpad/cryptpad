@@ -13,7 +13,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.removeButtons= 'Source,Maximize';
     // magicline plugin inserts html crap into the document which is not part of the
     // document itself and causes problems when it's sent across the wire and reflected back
-    var isMobile = /Android|iPad|iPhone|iPod/i.test(navigator.userAgent);
+    var isMobile = window.matchMedia ? window.matchMedia('(pointer: coarse)').matches : navigator.maxTouchPoints > 0;
     config.removePlugins= 'resize,elementspath,liststyle' + (isMobile ? ',contextmenu,tabletools,tableselection' : '');
     config.resize_enabled= false; //bottom-bar
     config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify,mediatag,print,blockbase64,mathjax,wordcount,comments';
