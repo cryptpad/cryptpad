@@ -17,6 +17,7 @@ define([
     '/api/config',
     '/customize/application_config.js',
     '/customize/messages.js',
+    '/support/ui.js',
     '/components/chainpad/chainpad.dist.js',
     '/file/file-crypto.js',
     '/common/onlyoffice/history.js',
@@ -47,6 +48,7 @@ define([
     ApiConfig,
     AppConfig,
     Messages,
+    Support,
     ChainPad,
     FileCrypto,
     History,
@@ -873,18 +875,77 @@ define([
             });
         };
 
+        const sendDebugSupportTicket = (message) => {
+            const title = "[Automatic] Office document locked";
+
+            APP.supportModule.execCommand('MAKE_TICKET', {
+                channel: Hash.createChannelId(),
+                title,
+                ticket: APP.support.getDebuggingData({
+                    title,
+                    message
+                })
+            }, () => {});
+        };
         const onRtChannelError = (err) => {
+            const wasReadOnly = readOnly;
             readOnly = true;
             offline = true;
+
+            const message = JSON.stringify({
+                error: err?.error,
+                reason: err?.reason,
+                channel: privateData.channel,
+                rtChannel: content.channel
+            }, 0, 2);
+
+            let txt = Messages.oo_rtChannelMissing;
+            let value;
+            let f = UI.confirm;
+            let cb = (yes) => {
+                if (!yes) { return; }
+
+                // Set flag if support has already been contacted
+                content.missingRtChannel = +new Date();
+                readOnly = wasReadOnly;
+                APP.onLocal();
+                readOnly = true;
+
+                sendDebugSupportTicket(message);
+            };
+
+            let btnText = content.missingRtChannel ? Messages.sent : Messages.support_formButton;
+            let opts = {
+                ok: [
+                    Icons.get('send'),
+                    h('span', btnText)
+                ],
+                cancel: Messages.filePicker_close
+            };
+
+            if (content.missingRtChannel) {
+                value = h('strong', Messages._getKey('oo_rtChannelMissingDate', [
+                    new Date(content.missingRtChannel).toLocaleDateString()
+                ]));
+                setTimeout(() => {
+                    const $b = UI.findOKButton();
+                    $b.attr('disabled', 'disabled');
+                });
+            }
+
+            if (!ApiConfig.supportMailboxKey) {
+                txt = Messages.oo_rtChannelMissingNoSupport;
+                value = UI.getPreCopy(message);
+                f = UI.alert;
+                opts = undefined;
+                cb = undefined;
+            }
+
             let div = h('div', [
-                h('p', Messages.oo_rtChannelMissing),
-                h('code', {style: 'white-space:pre-wrap;'}, JSON.stringify({
-                    error: err?.error,
-                    reason: err?.reason,
-                    channel: content.channel
-                }, 0, 2))
+                h('p', txt),
+                value
             ]);
-            UI.alert(div);
+            f(div, cb, opts);
         };
 
         var openRtChannel = function (cb) {
@@ -2049,6 +2110,8 @@ define([
                 //getEditor().setViewModeDisconnect(); // can't be used anymore, display an OO error popup
             } else {
                 setEditable(true);
+                delete content.missingRtChannel;
+                APP.onLocal();
                 deleteOfflineLocks();
                 handleNewLocks({}, content.locks);
                 if (APP.unsavedChanges) {
@@ -4039,6 +4102,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 //noTemplates: true
             });
         }).nThen(function (/*waitFor*/) {
+            APP.supportModule = common.makeUniversal('support');
+            APP.support = Support.create(common, false);
             andThen(common);
         });
     };

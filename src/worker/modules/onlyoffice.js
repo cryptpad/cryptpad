@@ -147,7 +147,6 @@ const factory = (Feedback) => {
             // Keep only metadata messages for the current channel
             if (parsed.channel && parsed.channel !== channel) { return; }
 
-
             // Ignore the metadata message
             if (parsed.validateKey && parsed.channel) {
                 if (!chan.validateKey) {
@@ -165,15 +164,13 @@ const factory = (Feedback) => {
                     // If rtChannel deleted with placeholder, abort and make
                     // document read-only
                     chan.wc?.leave();
-                    Feedback.send('RTCHANNEL_DELETED');
+                    Feedback.send('RTCHANNEL_DELETED', true);
                     return ctx.emit('ERROR', { error: 'EDELETED', reason: parsed.message }, chan.clients);
                 }
                 if (parsed.error === "EUNKNOWN") {
-                    // If rtChannel deleted with placeholder, abort and make
-                    // document read-only
                     chan.wc?.leave();
-                    Feedback.send('RTCHANNEL_EUNKNOWN');
-                    return ctx.emit('ERROR', { error: 'EUNKOWN' }, chan.clients);
+                    Feedback.send('RTCHANNEL_EUNKNOWN', true);
+                    return ctx.emit('ERROR', { error: 'EUNKNOWN' }, chan.clients);
                 }
                 ctx.emit('READY', chan.clients, chan.clients);
                 return;

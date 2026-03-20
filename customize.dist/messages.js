@@ -134,7 +134,10 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    Messages.oo_rtChannelMissing = 'An error occured while loading your document, blocking access to the latest changes. To preserve data integrity, the document is in read-only mode. Please contact support and send the following content to fix your document:';
+    // XXX
+    Messages.oo_rtChannelMissing = 'An error occured while loading your document. It is now read-only to prevent data being corrupted or lost. Please create a support ticket with the following information and a support agent will assist you.';
+    Messages.oo_rtChannelMissingNoSupport = 'An error occured while loading your document. It is now read-only to prevent data being corrupted or lost. Please send the following information to your instance administrator.';
+    Messages.oo_rtChannelMissingDate = "Message sent on {0}";
 
     return Messages;
 
