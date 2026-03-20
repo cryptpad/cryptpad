@@ -134,8 +134,12 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    Messages.diagram_modes = "Themes"; // XXX
     Messages.diagram_modesOptionLabel = "Change theme to {0}, will refresh app"; // XXX
+    Messages.diagram_sketchTheme = "sketch"
+    Messages.diagram_simpleTheme = "simple"
+    Messages.diagram_classicTheme = "classic"
+
+
     return Messages;
 
 });

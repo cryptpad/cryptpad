@@ -245,7 +245,7 @@ define([
         };
 
         var mkModeButton = function (framework) {
-            var modes = ['kennedy', 'sketch'];
+            var modes = [Messages.diagram_sketchTheme, Messages.diagram_simpleTheme, Messages.diagram_classicTheme];
             var types = [];
             
             modes.forEach(function(mode){
@@ -266,22 +266,22 @@ define([
                         $('.cp-dropdown-content').find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
                         $self.addClass('cp-dropdown-element-active');
                         $self.closest('li').focus();
+                        $('.cp-dropdown-content').hide();
                     },
                 });
             });
-            var initialMode = parameters.get('ui') || checkDefaultTheme();
             var $drawer = UIElements.createDropdown({
-                text: Messages.diagram_modes,
+                text: Messages.themeButton,
                 options: types,
                 common: framework._.sfCommon,
                 iconCls: 'color-palette',
-                initialValue: initialMode
+                initialValue: parameters.get('ui') || checkDefaultTheme()
             });
             framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
             framework._.toolbar.$bottomL.append($drawer);
             $drawer.addClass('cp-toolbar-appmenu');
             $drawer.on('click', function () {
-                $('a[data-value="' + initialMode + '"]').addClass('cp-dropdown-element-active');
+                $('a[data-value="' + parameters.get('ui') || checkDefaultTheme() + '"]').addClass('cp-dropdown-element-active');
             });
         };
         mkModeButton(framework);
