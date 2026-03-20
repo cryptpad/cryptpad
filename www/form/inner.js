@@ -2819,19 +2819,18 @@ define([
         return new Date(d.getFullYear(), d.getMonth(), d.getDate());
     };
 
-    var ONE_DAY = 1000 *  60 * 60 * 24;
-
     var getDayArray = function (a, b) {
-        // coerce inputs to numbers
-        var r_a = +getDay(new Date(a));
-        var r_b = +getDay(new Date(b));
-        var A = [ r_a ];
-        var next = r_a + ONE_DAY;
-        while (next <= r_b) {
-            A.push(next);
-            next += ONE_DAY;
+        var start = getDay(new Date(a));
+        var end = getDay(new Date(b));
+        var days = [];
+        var current = new Date(start);
+
+        while (+current <= +end) {
+            days.push(+current);
+            current.setDate(current.getDate() + 1);
         }
-        return A;
+
+        return days;
     };
 
     Messages.form_timelineLabel = "{0} ({1})"; // TODO investigate whether this needs translation
