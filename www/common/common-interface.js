@@ -23,6 +23,7 @@ define([
     '/common/hyperscript.js',
     '/customize/loading.js',
     '/common/common-icons.js',
+    '/common/clipboard.js',
     //'/common/test.js',
 
     '/lib/jquery-ui/jquery-ui.min.js', // autocomplete widget
@@ -30,7 +31,7 @@ define([
     'css!/lib/tippy/tippy.css',
     'css!/lib/jquery-ui/jquery-ui.min.css'
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
-            Alertify, Tippy, h, Loading, Icons /*, Test */) {
+            Alertify, Tippy, h, Loading, Icons, Clipboard /*, Test */) {
     var UI = {};
 
     /*
@@ -1623,6 +1624,22 @@ define([
             hide: hide,
             remove: remove
         };
+    };
+
+    UI.getPreCopy = (content) => {
+        let copy = h('div.cp-pre-copy-button', [
+            Icons.get('copy')
+        ]);
+        Util.onClickEnter($(copy), () => {
+            Clipboard.copy(content, (err) => {
+                if (err) { return UI.warn(Messages.error); }
+                UI.log(Messages.genericCopySuccess);
+            });
+        });
+        return h('div.cp-pre-copy-container', [
+            copy,
+            h('pre.cp-pre-copy', content)
+        ]);
     };
 
 /*  QR code generation is synchronous once the library is loaded

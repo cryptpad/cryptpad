@@ -138,6 +138,10 @@ define(req, function(AppConfig, Default, Language) {
     Messages.support_moreTickets = "{0} more tickets";
     Messages.loadAll = "Load all";
 
+    Messages.oo_rtChannelMissing = 'An error occured while loading your document. It is now read-only to prevent data being corrupted or lost. Please create a support ticket with the following information and a support agent will assist you.';
+    Messages.oo_rtChannelMissingNoSupport = 'An error occured while loading your document. It is now read-only to prevent data being corrupted or lost. Please send the following information to your instance administrator.';
+    Messages.oo_rtChannelMissingDate = "Message sent on {0}";
+
     return Messages;
 
 });
