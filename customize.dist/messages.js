@@ -134,6 +134,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.oo_rtChannelMissing = 'An error occured while loading your document, blocking access to the latest changes. To preserve data integrity, the document is in read-only mode. Please contact support and send the following content to fix your document:';
+
     return Messages;
 
 });

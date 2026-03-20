@@ -873,6 +873,20 @@ define([
             });
         };
 
+        const onRtChannelError = (err) => {
+            readOnly = true;
+            offline = true;
+            let div = h('div', [
+                h('p', Messages.oo_rtChannelMissing),
+                h('code', {style: 'white-space:pre-wrap;'}, JSON.stringify({
+                    error: err?.error,
+                    reason: err?.reason,
+                    channel: content.channel
+                }, 0, 2))
+            ]);
+            UI.alert(div);
+        };
+
         var openRtChannel = function (cb) {
             if (rtChannel.ready) { return void cb(); }
             var chan = content.channel || Hash.createChannelId();
@@ -892,6 +906,10 @@ define([
             });
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
+                    case 'ERROR':
+                        onRtChannelError(obj.data);
+                        cb();
+                        break;
                     case 'READY':
                         checkClients(obj.data);
                         cb();
