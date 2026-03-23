@@ -1042,10 +1042,7 @@ define([
                 var CROWDFUNDING_ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
                 sframeChan.on('Q_CROWDFUNDING_SHOULD_SHOW', function (data, cb) {
-                    Cryptpad.getPinnedUsage({}, function (e, used) {
-                        if (e || typeof used !== 'number' || (used / (1024 * 1024)) < CROWDFUNDING_MIN_QUOTA_MB) {
-                            return cb({ show: false });
-                        }
+                    var check = function () {
                         var actionCount = Number(crowdfundingGet('visitCount')) || 0;
                         var lastShownAtCount = Number(crowdfundingGet('lastShownAtCount')) || 0;
                         var lastShownAtTime = Number(crowdfundingGet('lastShownAtTime')) || 0;
@@ -1056,6 +1053,13 @@ define([
                             show: actionCount >= nextThreshold && enoughTimePassed,
                             actionCount: actionCount
                         });
+                    };
+                    if (CROWDFUNDING_MIN_QUOTA_MB <= 0) { return check(); }
+                    Cryptpad.getPinnedUsage({}, function (e, used) {
+                        if (e || typeof used !== 'number' || (used / (1024 * 1024)) < CROWDFUNDING_MIN_QUOTA_MB) {
+                            return cb({ show: false });
+                        }
+                        check();
                     });
                 });
                 sframeChan.on('Q_RECORD_CROWDFUNDING_SHOWN', function (data, cb) {
