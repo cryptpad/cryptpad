@@ -3411,7 +3411,7 @@ define([
                     }
                 }
             ];
-            if (Config.accounts_api) {
+            if (Config.accounts_api && priv.accountName) {
                 buttons.push({
                     name: Messages.crowdfunding_subscribe,
                     className: 'primary',
