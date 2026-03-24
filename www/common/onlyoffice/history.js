@@ -75,7 +75,7 @@ define([
             }
             if (typeof(position) === "undefined" || position === -1) {
                 position = ooMessages[id]?.length || 0;
-            } else if (msgs?.length === position && 
+            } else if (msgs?.length === position &&
             id !== parseInt(Object.keys(hashes)[Object.keys(hashes).length-1]) &&
             !initial && !revert && $(`[data^="${id+1},"][data*=","]`).length > 1) {
                     version = id+1;
@@ -136,7 +136,7 @@ define([
         // We want to load a checkpoint (or initial state)
         var loadMoreOOHistory = function () {
             return new Promise((resolve, reject) => {
-                if (!Array.isArray(sortedCp)) { 
+                if (!Array.isArray(sortedCp)) {
                     console.error("Wrong type");
                     return reject();
                 }
@@ -150,7 +150,7 @@ define([
                 // and we go back in time to an older hash
 
                 // We need to get all the patches between the current cp hash and the next cp hash
-                
+
                 var nextId = hashes[id+1] ? hashes[id+1] : undefined;
                 // Current cp or initial hash (invalid hash ==> initial hash)
                 var fromHash = cp?.hash || 'NONE';
@@ -167,11 +167,6 @@ define([
                 });
             });
         };
-
-        loadMoreOOHistory().then(() => {
-            displayCheckpointTimeline(true);
-            showVersion(true);
-        })
 
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
@@ -231,15 +226,15 @@ define([
             } else if ($(`[data="${id},${position}"]`).length) {
                 currentPatch = $(`[data="${id},${position}"]`);
                 currentVersion = getVersion(position, initial, true);
-            } else if (msgs?.length === position && 
+            } else if (msgs?.length === position &&
             id !== parseInt(Object.keys(hashes)[Object.keys(hashes).length-1]) ) {
                 currentPatch = $(`[data="${id+1},0"]`);
                 currentVersion = getVersion(position, initial);
-            } 
+            }
 
-            if (initial || position === msgs?.length && (id === -1 || 
-            id === Object.keys(hashes)[Object.keys(hashes).length-1])) { 
-                currentVersion = Messages.oo_version_latest; 
+            if (initial || position === msgs?.length && (id === -1 ||
+            id === Object.keys(hashes)[Object.keys(hashes).length-1])) {
+                currentVersion = Messages.oo_version_latest;
             }
 
             var patchTime = patch ? new Date(patch.time).toLocaleString() : '';
@@ -251,10 +246,10 @@ define([
             loadingFalse();
         };
 
-        var displayCheckpointTimeline = function(initial) {          
+        var displayCheckpointTimeline = function(initial) {
             var bar = $hist.find('.cp-history-timeline-container');
             $(bar).addClass('cp-history-timeline-bar').addClass('cp-oohistory-bar-el');
-            
+
             msgs = ooMessages[id];
             if (initial) {
                 var snapshotsEl = [];
@@ -277,11 +272,11 @@ define([
                 } else {
                     patchWidth = (1/(msgs?.length+Array.from($hist.find('.cp-history-snapshots')[0].childNodes).length))*100;
                 }
-                
+
                 patchDiv = h('div.cp-history-patch', {
                     style: 'width:'+patchWidth+'%;',
                     title: new Date(msgsRev[i].time).toLocaleString(),
-                    data: [id, msgsRev.indexOf(msg)] 
+                    data: [id, msgsRev.indexOf(msg)]
                 });
                 if (initial) {
                     snapshotsEl.push(patchDiv);
@@ -297,7 +292,7 @@ define([
             var finalpatchDiv = h('div.cp-history-patch', {
                 style: 'width:'+patchWidth+'%; height: 100%; position: relative',
                 title: new Date().toLocaleString(),
-                data: [id, msgs?.length] 
+                data: [id, msgs?.length]
             });
             if (initial) {
                 snapshotsEl.push(finalpatchDiv);
@@ -311,7 +306,7 @@ define([
                 $(finalpatchDiv).css('width', `${($(snapshotsEl[snapshotsEl.indexOf(finalpatchDiv)+1])?.width()/ $(snapshotsEl[snapshotsEl.indexOf(finalpatchDiv)+1])?.parent().width())*100}%`);
                 patchWidth = ($(snapshotsEl[snapshotsEl.indexOf(finalpatchDiv)+1])?.width()/ $(snapshotsEl[snapshotsEl.indexOf(finalpatchDiv)+1])?.parent().width())*100;
             }
-                
+
             var pos = Icons.get('chevron-down', {'class': 'cp-history-timeline-pos-oo'});
 
             var patches = h('div.cp-history-snapshots.cp-history-snapshots-oo', [
@@ -332,7 +327,7 @@ define([
                 Array.from($hist.find('.cp-history-snapshots')[0].childNodes).forEach(function(patch) {
                     $(patch).css('width', `${finalPatchWidth}%`);
                 });
-            } 
+            }
             if (initial) {
                 $('.cp-history-patch').last().addClass('cp-history-oo-timeline-pos').append(pos);
             }
@@ -389,6 +384,11 @@ define([
             });
         };
 
+        loadMoreOOHistory().then(() => {
+            displayCheckpointTimeline(true);
+            showVersion(true);
+        });
+
         var restore;
 
         var next = async function () {
@@ -415,7 +415,7 @@ define([
                         return;
                     }
                     //Is the checkpoint the result of restoring history? If yes, we need to load an extra patch
-                    if (!revertCheckpoint) { 
+                    if (!revertCheckpoint) {
                         msgIndex = -msgs?.length;
                         config.onPatchBack(hashes[id], [msgs[0]]);
                         position = 1;
@@ -456,12 +456,12 @@ define([
             let cp = hasHashes ? hashes[id] : {};
             let loadPrevCp = (!msgs?.length) ||
                     (msgs?.length + 1 === Math.abs(msgIndex) && id !== 0) ||
-                    (msgs?.length - Math.abs(msgIndex) === -2); 
+                    (msgs?.length - Math.abs(msgIndex) === -2);
             var isRevert = revertCheckpoint;
 
             //Check if the end of the checkpoint has been reached and the previous one should be loaded
             if (hasHashes && loadPrevCp) {
-                id--; 
+                id--;
                 msgIndex = -1;
                 return loadMoreOOHistory().then(() => {
                     msgs = ooMessages[id];
@@ -484,7 +484,7 @@ define([
 
                     //Is the checkpoint the result of restoring history? If yes, we need to load an extra patch
                     if (!isRevert) {
-                        config.onPatchBack(cp, q); 
+                        config.onPatchBack(cp, q);
                         msgIndex--;
                         position = msgs?.length-1;
                     } else {
@@ -506,12 +506,12 @@ define([
                 });
             }
             var q = msgs.slice(0, msgIndex);
-            config.onPatchBack(cp, q);   
+            config.onPatchBack(cp, q);
             patch = msgs[msgs?.length + msgIndex];
-            msgIndex--; 
-            position = msgs.indexOf(patch);            
+            msgIndex--;
+            position = msgs.indexOf(patch);
             showVersion(false);
-            
+
         };
 
 
@@ -637,7 +637,7 @@ define([
                         loadingFalse();
                         return;
                     });
-                } 
+                }
                 else {
                     var cp = hashes[id];
                     msgs = ooMessages[id];
@@ -648,14 +648,14 @@ define([
                 position = msgs?.length;
                 showVersion(false);
             });
-            
+
             // Go to previous checkpoint
             $fastPrev.click(function () {
                 if (loading) { return; }
                 loading = true;
                 if (!ooMessages[id].length || ooMessages[id].length+1 === Math.abs(msgIndex)) {
                     id--;
-                } 
+                }
                 var cp = hashes[id];
                 config.loadHistoryCp(cp);
                 loadMoreOOHistory().then(() => {
@@ -670,7 +670,7 @@ define([
                     showVersion(false);
                     updateButtons(true);
                 });
-                
+
                 loadingFalse();
             });
             onKeyDown = function (e) {
@@ -718,7 +718,7 @@ define([
                             $input.val('');
                             UI.log(Messages.saved);
                         }, {
-                            hash: getVersion(position),                            
+                            hash: getVersion(position),
                             time: currentTime || patch && patch.time || 0
                         });
                     },
