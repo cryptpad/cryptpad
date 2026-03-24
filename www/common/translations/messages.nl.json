@@ -1863,5 +1863,7 @@
     "admin_activePadsHint": "Aantal unieke documenten dat momenteel wordt bekeken of bewerkt",
     "form_poll_required_hint": "Deze vraag vereist een antwoord. Kies tenminste één optie.",
     "fo_trash_move_error": "De inhoud van gedeelde mappen kan niet naar de prullenbak worden verplaatst. Gebruik in plaats daarvan \"Verwijderen\".",
-    "fo_sharedFolder_move_error": "Gedeelde mappen kunnen niet naar andere gedeelde mappen worden verplaatst."
+    "fo_sharedFolder_move_error": "Gedeelde mappen kunnen niet naar andere gedeelde mappen worden verplaatst.",
+    "loadAll": "Laad alle tickets",
+    "support_moreTickets": "{0} tickets beschikbaar"
 }
