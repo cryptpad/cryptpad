@@ -1271,35 +1271,42 @@ define([
 
             var href = isRo ? data.roHref : (data.href || data.roHref);
 
-            // if (!data.href
-            //     //  && manager.isInSharedFolder($element.data('path'))
-            //     ) {
-            //     Object.keys(files.filesData).forEach(function (file) {
-            //         if (files.filesData[file].channel === data.channel && files.filesData[file].href 
-            //             &&  files.filesData[file].href.includes('edit') && data.owners.includes(edPublic)
-            //         ) {
-            //             href = files.filesData[file].href;
-            //             console.log("parsed", href, Hash.parsePadUrl(href).hash)
+            if (!data.href
+                //  && manager.isInSharedFolder($element.data('path'))
+                ) {
+                Object.keys(files.filesData).forEach(function (file) {
+                    if (files.filesData[file].channel === data.channel && files.filesData[file].href 
+                        &&  files.filesData[file].href.includes('edit') && data.owners.includes(edPublic)
+                    ) {
+                        href = files.filesData[file].href;
+                        console.log("parsed", href, Hash.parsePadUrl(href))
+                                    // common.openURL(Hash.getNewPadURL(hiddenHref, obj));
 
-            //                 // data.href = href; 
+                            // data.href = href; 
 
-            //         }
-            //     })
-            // }
+                    }
+                })
+            }
             var parsed = Hash.parsePadUrl(href);
                         console.log("data!2", data, parsed)
 
             if (parsed.hashData && parsed.hashData.type === 'file' && !app
                     && (defaultInApp.indexOf(data.fileType) === -1 || app === false)) {
+                                                console.log("data!2 0", data, parsed)
+
                 return void previewMediaTag(data);
             }
 
             var obj = { t: APP.team };
+                        console.log("data!2 3", data, parsed)
 
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
             if (useUnsafe === true || APP.newSharedFolder) {
+                                        console.log("data!2 4", data, parsed)
+
                 return void common.openURL(Hash.getNewPadURL(href, obj));
+                
             }
 
             // Get hidden hash
@@ -1309,7 +1316,9 @@ define([
             var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
             var hiddenHref = Hash.hashToHref(hash, parsed.type);
             common.openURL(Hash.getNewPadURL(hiddenHref, obj));
-                        console.log("data!3", hash, hiddenHref, obj, priv, Hash.getNewPadURL(hiddenHref, obj))
+                                    console.log("data!2 5", data, parsed)
+
+                        // console.log("data!3", hash, hiddenHref, obj, priv, Hash.getNewPadURL(hiddenHref, obj))
 
         };
         var openIn = function (type, path, team, fData) {
@@ -2287,19 +2296,19 @@ define([
             var href = data.href || data.roHref;
             if (!data) { return void logError("No data for the file", element); }
 
-            // if (!data.href && manager.isInSharedFolder($element.data('path'))) {
-            //     Object.keys(files.filesData).forEach(function (file) {
-            //         if (files.filesData[file].channel === data.channel && files.filesData[file].href 
-            //             &&  files.filesData[file].href.includes('edit') && data.owners.includes(edPublic)
-            //         ) {
-            //             href = files.filesData[file].href;
-            //             console.log("parsed", href, Hash.parsePadUrl(href).hash)
+            if (!data.href && manager.isInSharedFolder($element.data('path'))) {
+                Object.keys(files.filesData).forEach(function (file) {
+                    if (files.filesData[file].channel === data.channel && files.filesData[file].href 
+                        &&  files.filesData[file].href.includes('edit') && data.owners.includes(edPublic)
+                    ) {
+                        href = files.filesData[file].href;
+                        console.log("parsed", files.filesData[file].href, files.filesData[file].href.includes('edit'), href, Hash.parsePadUrl(href).hash)
 
-            //                 data.href = href; 
+                            // data.href = href; 
 
-            //         }
-            //     })
-            // }
+                    }
+                })
+            }
             var hrefData = Hash.parsePadUrl(href);
                         console.log("data add", data)
 
