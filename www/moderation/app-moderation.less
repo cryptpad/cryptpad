@@ -54,6 +54,9 @@
         .cp-support-column {
             min-width: 700px;
             flex: 1 0 50%;
+            &:not(:has(.cp-support-list-ticket)) {
+                display: none;
+            }
             h1 {
                 display: flex;
                 align-items: center;

@@ -148,15 +148,19 @@ define([
                     h('span', Messages.support_pending),
                     h('span.cp-support-count'),
                 ]));
+                var col6 = h('div.cp-support-column', h('h1', [
+                    h('span', '[Automatic]'), // XXX
+                    h('span.cp-support-count'),
+                ]));
                 if (type === 'closed') {
                     // Only one column
-                    col1 = col2 = col3 = col4;
+                    col1 = col2 = col3 = col6 = col4;
                 }
                 if (type === 'pending') {
                     // Only one column
-                    col1 = col2 = col3 = col5;
+                    col1 = col2 = col3 = col6 = col5;
                 }
-                $container.append([col1, col2, col3]);
+                $container.append([col1, col2, col3, col6]);
 
                 const onShow = function (ticket, channel, data, done) {
                     onShowTicket(ticket, channel, data, (success) => {
@@ -270,8 +274,12 @@ define([
                     var container;
                     if (d.lastAdmin) { container = col3; }
                     else if (d.premium) { container = col1; }
+                    if (/\[Automatic\]/.test(d.title)) { container = col6; }
                     else { container = col2; }
                     $(container).append(ticket);
+
+                    const nb = $(container).find('.cp-support-list-ticket').length;
+                    $(container).find('.cp-support-count').text(nb);
 
                     if (open.includes(channel)) {
                         n = n(waitFor => {
