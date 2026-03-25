@@ -274,7 +274,7 @@ define([
                     var container;
                     if (d.lastAdmin) { container = col3; }
                     else if (d.premium) { container = col1; }
-                    if (/\[Automatic\]/.test(d.title)) { container = col6; }
+                    else if (/\[Automatic\]/.test(d.title)) { container = col6; }
                     else { container = col2; }
                     $(container).append(ticket);
 
