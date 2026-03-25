@@ -666,7 +666,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             const opts = {
                 network: store.network
             };
-            const href = data.href;
+            const href = data.href || data.roHref;
 
             let pws = Array.isArray(data.password) ? data.password
                                                    : [data.password];
@@ -2267,6 +2267,28 @@ const factory = (Sortify, UserObject, ProxyManager,
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        Store.fixMissingRtChannelInterval = (list, cb) => {
+            // "list" is an array containing bugged data for each user object
+            // of this proxy-manager
+
+            let n = nThen;
+            list.forEach(obj => {
+                Object.keys(obj).forEach(chan => {
+                    n = n(waitFor => {
+                        const proxy = obj[chan];
+                        const data = Util.clone(proxy);
+                        getRtChannelFromPad(data, waitFor((err, rtChannel) => {
+                            if (err) { return; }
+                            Feedback.send(`FIX_RT_CHANNEL_INTERVAL`, true);
+                            proxy.rtChannel = rtChannel;
+                        }));
+                    }).nThen;
+                });
+            });
+            n(() => {
+                setTimeout(cb);
+            });
+        };
         Store.fixMissingRtChannel = (cb) => {
             const all = {};
             const addMissing = (missing) => {

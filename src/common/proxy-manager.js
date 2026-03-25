@@ -1438,6 +1438,17 @@ const factory = (UserObject, Util, Hash,
         });
         return all;
     };
+    const findMissingRtChannel = (Env) => {
+        const userObjects = _getUserObjects(Env);
+        const all = [];
+        userObjects.forEach(function (uo) {
+            if (uo.readOnly) { return; }
+            const missing = uo.findMissingRtChannel();
+            if (!missing) { return; }
+            all.push(missing);
+        });
+        return all;
+    };
 
     var create = function (proxy, data, uoConfig) {
         var Env = {
@@ -1477,6 +1488,19 @@ const factory = (UserObject, Util, Hash,
             delete Env.pinPads;
             delete Env.unpinPads;
         };
+
+        let rtChannelTo;
+        const setRtChannelTo = () => {
+            clearTimeout(rtChannelTo);
+            rtChannelTo = setTimeout(() => {
+                if (Env.store.offline) { return; }
+                const list = findMissingRtChannel();
+                Env.Store.fixMissingRtChannelInterval(list, () => {
+                    setRtChannelTo();
+                });
+            }, 120000);
+        };
+        setRtChannelTo();
 
         return {
             // Manager
