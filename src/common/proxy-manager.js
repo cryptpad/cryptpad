@@ -1493,8 +1493,8 @@ const factory = (UserObject, Util, Hash,
         const setRtChannelTo = () => {
             clearTimeout(rtChannelTo);
             rtChannelTo = setTimeout(() => {
-                if (Env.store.offline) { return; }
-                const list = findMissingRtChannel();
+                if (Env.store.offline) { return void setRtChannelTo(); }
+                const list = findMissingRtChannel(Env);
                 Env.Store.fixMissingRtChannelInterval(list, () => {
                     setRtChannelTo();
                 });
