@@ -67,6 +67,8 @@ const factory = (Feedback, Hash, Util,
             var migrateLanguage = function () {
                 if (!localStorage.CRYPTPAD_LANG) { return; }
                 var l = localStorage.CRYPTPAD_LANG;
+                var langAliases = { 'zh': 'zh_Hans' };
+                if (langAliases[l]) { l = langAliases[l]; }
                 userObject.settings.language = l;
             };
             if (version < 3) {

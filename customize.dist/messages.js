@@ -29,22 +29,66 @@ var map = {
     'sv': 'Svenska',
     //'te': 'తెలుగు',
     'uk': 'Українська',
-    'zh': '中文(簡體)',
+    'zh_Hans': '中文(簡體)',
+    'zh_Hant': '中文(正體)',
 };
 
 var Messages = {};
 var LS_LANG = "CRYPTPAD_LANG";
 var getStoredLanguage = function () { return localStorage && localStorage.getItem(LS_LANG); };
 var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage || ''; };
+// Normalize browser/localStorage language labels to CryptPad internal keys.
+// We keep this centralized to avoid scattered `if (l === 'zh') ...` logic.
+var langAliases = {
+    'zh': 'zh_Hans',
+    'zh-cn': 'zh_Hans',
+    'zh-sg': 'zh_Hans',
+    'zh-hans': 'zh_Hans',
+    'zh_hans': 'zh_Hans',
+
+    'zh-tw': 'zh_Hant',
+    'zh-hk': 'zh_Hant',
+    'zh-mo': 'zh_Hant',
+    'zh-hant': 'zh_Hant',
+    'zh_hant': 'zh_Hant'
+};
+var normalizeLanguage = function (l) {
+    if (!l) { return l; }
+    // If it already matches a supported internal key, return as-is.
+    if (map[l]) { return l; }
+    var lLower = String(l).toLowerCase();
+    return langAliases[lLower] || l;
+};
 var getLanguage = Messages._getLanguage = function () {
-    if (window.cryptpadLanguage) { return window.cryptpadLanguage; }
+    if (window.cryptpadLanguage) {
+        var original = window.cryptpadLanguage;
+        var normalized = normalizeLanguage(original);
+        // Migrate legacy localStorage language key.
+        if (original === 'zh' && normalized === 'zh_Hans') {
+            try { localStorage.setItem(LS_LANG, 'zh_Hans'); } catch (e) { console.log(e); }
+        }
+        window.cryptpadLanguage = normalized;
+        return normalized;
+    }
     var l = getBrowserLanguage();
     try {
         l = getStoredLanguage() || getBrowserLanguage();
     } catch (e) { console.log(e); }
-    return map[l] ? l :
-            (map[l.split('-')[0]] ? l.split('-')[0] :
-                (map[l.split('_')[0]] ? l.split('_')[0] : 'en'));
+
+    var originalLang = l;
+    l = normalizeLanguage(l);
+    // Migrate legacy localStorage language key.
+    if (originalLang === 'zh' && l === 'zh_Hans') {
+        try { localStorage.setItem(LS_LANG, 'zh_Hans'); } catch (e) { console.log(e); }
+    }
+
+    if (map[l]) { return l; }
+
+    var dash = (l || '').split('-')[0];
+    var under = (l || '').split('_')[0];
+    if (map[dash]) { return dash; }
+    if (map[under]) { return under; }
+    return 'en';
 };
 var language = getLanguage();
 window.cryptpadLanguage = language;
@@ -59,6 +103,8 @@ var reqPaths = {
 Object.keys(map).forEach(function (k) {
     reqPaths["/common/translations/messages."+k+".js"] = "json!/common/translations/messages."+k+".json";
 });
+// Legacy locale key for Simplified Chinese (before zh_Hans)
+reqPaths["/common/translations/messages.zh.js"] = "json!/common/translations/messages.zh_Hans.json";
 require.config({
     map: {
         "*": reqPaths
