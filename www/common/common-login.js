@@ -262,7 +262,11 @@ define([
             if (!isRegister && !isProxyEmpty(rt.proxy)) {
                 var l = Util.find(rt.proxy, ['settings', 'general', 'language']);
                 var LS_LANG = "CRYPTPAD_LANG";
-                if (l) { localStorage.setItem(LS_LANG, l); }
+                if (l) {
+                    var langAliases = { 'zh': 'zh_Hans' };
+                    if (langAliases[l]) { l = langAliases[l]; }
+                    localStorage.setItem(LS_LANG, l);
+                }
 
                 return void LocalStore.login(undefined, res.blockHash, res.uname, function () {
                     cb(void 0, res, RT);
