@@ -46,6 +46,14 @@
                 .cp-sidebarlayout-category {
                     display: flex;
                     align-items: center;
+                    white-space: nowrap;
+                    svg {
+                        flex: 0 0 auto;
+                    }
+                    .cp-sidebarlayout-category-name {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
                     .leftside-menu-category_main();
                     box-shadow: @cryptpad_ui_shadow;
                     &:focus-visible {

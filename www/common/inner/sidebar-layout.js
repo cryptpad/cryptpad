@@ -370,15 +370,17 @@ define([
             Object.keys(categories).forEach(function (key, i) {
                 if (!active && !i) { active = key; }
                 var category = categories[key];
+                var name = category.name || Messages[`${app}_cat_${key}`] || key;
                 var icon;
                 if (category.icon) { icon = Icons.get(category.icon); }
                 var item = h('li.cp-sidebarlayout-category', {
                     'role': 'menuitem',
                     'tabindex': 0,
-                    'data-category': key
+                    'data-category': key,
+                    'aria-label': name
                 }, [
                     icon,
-                    category.name || Messages[`${app}_cat_${key}`] || key,
+                    h('span.cp-sidebarlayout-category-name', name),
                 ]);
                 var $item = $(item).appendTo(container);
                 Util.onClickEnter($item, function () {

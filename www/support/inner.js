@@ -296,7 +296,7 @@ define([
     };
 
     var createLeftside = function () {
-        var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
+        var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories', 'role': 'menu'})
                             .appendTo(APP.$leftside);
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
@@ -304,10 +304,13 @@ define([
         if (!categories[active]) { active = 'tickets'; }
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
+            var name = Messages['support_cat_'+key] || key;
             var $category = $('<div>', {
                 'class': 'cp-sidebarlayout-category',
                 'data-category': key,
-                'tabindex': 0
+                'tabindex': 0,
+                'role': 'menuitem',
+                'aria-label': name
             }).appendTo($categories);
             var iconClass = icons[key];
             if (iconClass) {
@@ -329,7 +332,7 @@ define([
                 showCategories(categories[key]);
             });
 
-            $category.append(Messages['support_cat_'+key] || key);
+            $category.append(h('span.cp-sidebarlayout-category-name', name));
         });
         showCategories(categories[active]);
     };
