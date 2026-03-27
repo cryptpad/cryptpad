@@ -266,6 +266,7 @@ const factory = (Feedback) => {
                 wc.bcast(msg);
             });
             wc.leave();
+            cb();
         };
 
         ctx.store.anon_rpc.send("IS_NEW_CHANNEL", channel, function (e, response) {
