@@ -134,6 +134,9 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    // Change to existing key
+    Messages.support_formHint = "Use this form to securely contact the administrators about issues and questions. If you are experiencing issues with a specific file, please include its document identifier (right click > Properties) as well as a share link (Share > Link) in your ticket. <br>Please note that some issues/questions may already be addressed in the <a>CryptPad User Guide</a>. Please do not create a new ticket if you already have an open ticket about the same issue. Instead, reply to your original message with any additional information." // XXX
+
     return Messages;
 
 });
