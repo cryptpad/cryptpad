@@ -168,9 +168,10 @@ const factory = (Feedback) => {
                     return ctx.emit('ERROR', { error: 'EDELETED', reason: parsed.message }, chan.clients);
                 }
                 if (parsed.error === "EUNKNOWN") {
-                    chan.wc?.leave();
-                    Feedback.send('RTCHANNEL_EUNKNOWN', true);
-                    return ctx.emit('ERROR', { error: 'EUNKNOWN' }, chan.clients);
+                    let hk = network.historyKeeper;
+                    let msg = ['GET_HISTORY', chan?.wc.id, { txid }];
+                    network.sendto(hk, JSON.stringify(msg));
+                    return;
                 }
                 ctx.emit('READY', chan.clients, chan.clients);
                 return;
