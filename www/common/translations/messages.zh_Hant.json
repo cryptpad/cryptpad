@@ -1863,5 +1863,10 @@
     "loading_encrypted": "端對端加密中",
     "form_poll_required_hint": "此投票問題為必填。",
     "fo_trash_move_error": "無法將項目移出垃圾桶，請先還原或永久刪除。",
-    "fo_sharedFolder_move_error": "無法將共享資料夾移動到此位置。"
+    "fo_sharedFolder_move_error": "無法將共享資料夾移動到此位置。",
+    "support_moreTickets": "尚有 {0} 張支援票",
+    "loadAll": "載入全部支援票",
+    "oo_rtChannelMissing": "載入文件時發生錯誤。為避免資料毀損或遺失，文件已鎖定為唯讀。請使用下方按鈕，將相關資訊傳送給支援團隊。",
+    "oo_rtChannelMissingDate": "訊息於 {0} 送出",
+    "oo_rtChannelMissingNoSupport": "載入文件時發生錯誤。為避免資料毀損或遺失，文件已鎖定為唯讀。請將下列資訊提供給您的站台管理員。"
 }
