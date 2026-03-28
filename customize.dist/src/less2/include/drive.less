@@ -232,6 +232,7 @@
         font-size: 30px;
         margin: 15px;
         height: 2.5rem;
+        position: relative;
         input {
             background: transparent;
             color: @cp_drive-fg;
@@ -261,6 +262,13 @@
         .cp-app-drive-tree-search-icon, .cp-app-drive-search-cancel {
             color: @cp_drive-fg;
         }
+        .cp-app-drive-search-timing {
+            font-size: 0.5em;
+            position: absolute;
+            right: 60px;
+            top: 100%;
+            padding-top: 0.25rem;
+        }
     }
     .cp-app-drive-search-spinner {
         display: inline-flex;
@@ -270,7 +278,8 @@
         svg {
             height: 2rem;
             width: 2rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
+            margin-left: -1rem;
         }
         .cp-spinner svg {
             animation: spin 10s linear infinite;
@@ -296,7 +305,8 @@
         }
         .cp-app-drive-search-spinner svg {
             width: 1.5rem;
-            margin-bottom: 1rem;          
+            margin-bottom: 0.3rem;
+            margin-left: -0.75rem;
         }
         .cp-app-drive-search-noresult {
             font-size: 22px;
@@ -1122,4 +1132,3 @@
     }
 
 }
-

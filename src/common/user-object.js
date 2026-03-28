@@ -782,6 +782,109 @@ const factory = (Util, Hash,
 
             return ret;
         };
+        exp.searchAsync = function (value, cb, opts) {
+            cb = Util.once(cb || function () {});
+            if (typeof(value) !== "string") { return void cb([]); }
+            value = value.trim();
+            var res = [];
+            var allFilesList = files[FILES_DATA];
+            var allSFList = files[SHARED_FOLDERS];
+            var lValue = value.toLowerCase();
+            var tags;
+            if (/^#/.test(lValue)) {
+                tags = [lValue.slice(1).trim()];
+            }
+
+            var containsSearchedTag = function (T) {
+                if (!tags) { return false; }
+                if (!T.length) { return false; }
+                T = T.map(function (t) { return t.toLowerCase(); });
+                return tags.some(function (tag) {
+                    return T.some(function (t) {
+                        return t === tag;
+                    });
+                });
+            };
+
+            var ids = getFiles([FILES_DATA, SHARED_FOLDERS]);
+            var index = 0;
+            var batchSize = opts && opts.batchSize ? opts.batchSize : 250;
+
+            var processFilesBatch = function () {
+                console.log("SEARCH: " + new Date().toISOString() + " searchAsync files batch start");
+                var end = Math.min(index + batchSize, ids.length);
+                for (; index < end; index++) {
+                    var id = ids[index];
+                    var data = allFilesList[id] || allSFList[id];
+                    if (!data) { continue; }
+                    if (Array.isArray(data.tags) && containsSearchedTag(data.tags)) {
+                        res.push(id);
+                        continue;
+                    }
+                    var title = data.title || data.lastTitle;
+                    if ((title && title.toLowerCase().indexOf(lValue) !== -1) ||
+                        (data.filename && data.filename.toLowerCase().indexOf(lValue) !== -1)) {
+                        res.push(id);
+                    }
+                }
+                if (index < ids.length) {
+                    return void setTimeout(processFilesBatch, 0);
+                }
+                var href = Hash.getRelativeHref(value);
+                if (href) {
+                    var hrefId = getIdFromHref(href);
+                    if (hrefId) { res.push(hrefId); }
+                }
+                res = Util.deduplicateString(res);
+
+                var ret = [];
+                res.forEach(function (l) {
+                    ret.push({
+                        id: l,
+                        paths: findFile(l),
+                        data: exp.getFileData(l)
+                    });
+                });
+
+                var resFolders = [];
+                var stack = [{ folder: files[ROOT], path: [ROOT] }];
+                var folderBatchSize = opts && opts.folderBatchSize ? opts.folderBatchSize : 50;
+                var processFoldersBatch = function () {
+                    console.log("SEARCH: " + new Date().toISOString() + " searchAsync folders batch start");
+                    var processed = 0;
+                    while (stack.length && processed < folderBatchSize) {
+                        var current = stack.pop();
+                        var folder = current.folder;
+                        var path = current.path;
+                        for (var key in folder) {
+                            if (isFolder(folder[key]) && !isSharedFolder(folder[key])) {
+                                if (key.toLowerCase().indexOf(lValue) !== -1) {
+                                    resFolders.push({
+                                        id: null,
+                                        paths: [path.concat(key)],
+                                        data: {
+                                            title: key
+                                        }
+                                    });
+                                }
+                                stack.push({ folder: folder[key], path: path.concat(key) });
+                            }
+                        }
+                        processed++;
+                    }
+                    if (stack.length) {
+                        return void setTimeout(processFoldersBatch, 0);
+                    }
+                    resFolders = resFolders.sort(function (a, b) {
+                        return a.data.title.toLowerCase() > b.data.title.toLowerCase();
+                    });
+                    ret = resFolders.concat(ret);
+                    cb(ret);
+                };
+                processFoldersBatch();
+            };
+            processFilesBatch();
+        };
         exp.getRecentPads = function () {
             var allFiles = files[FILES_DATA];
             var sorted = Object.keys(allFiles).filter(function (a) { return allFiles[a]; })
