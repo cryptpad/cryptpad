@@ -5,6 +5,53 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 
+# ❄️🩹 Winter fix release (2026.2.1)
+
+This release contains important fixes for office documents, security, and other areas.
+
+- Drive
+  - Fix Shared Folder added to own drive instead of team drive [#2207](https://github.com/cryptpad/cryptpad/pull/2207)
+- Office documents
+  - Missing rtChannel in office documents [#2251](https://github.com/cryptpad/cryptpad/pull/2251)
+  - fix(pinning): check if rtChannel is missing when storing a pad [#2240](https://github.com/cryptpad/cryptpad/pull/2240)
+  - Upgrade OnlyOffice to v9.2.0.119+5 [#2197](https://github.com/cryptpad/cryptpad/pull/2197)
+  - OnlyOffice history fixes [#2196](https://github.com/cryptpad/cryptpad/pull/2196)
+- Deployment
+  - Add rate limiting to the nginx advanced configuration example [#2239](https://github.com/cryptpad/cryptpad/pull/2239)
+  - fix(websocket): Fix potential websocket connection leak with CryptGet [#2236](https://github.com/cryptpad/cryptpad/pull/2236)
+  - fix(websocket): fix multiple websocket connections persisting on forms [#2235](https://github.com/cryptpad/cryptpad/pull/2235)
+  - fix(pinning): fix multiple identical RESET commands stored in pin log [#2234](https://github.com/cryptpad/cryptpad/pull/2234)
+- Help Desk
+  - Fix moderator privacy by default [#2184](https://github.com/cryptpad/cryptpad/pull/2184) @achf01
+  - perf(support): don't render all closed tickets [#2247](https://github.com/cryptpad/cryptpad/pull/2247)
+- Misc.
+  - Translations update [#2249](https://github.com/cryptpad/cryptpad/pull/2249) 
+  - BurnAfterRead links don’t always delete the correct channels [#2246](https://github.com/cryptpad/cryptpad/pull/2246)
+  - Fix resize/crop not always available when uploading new avatar [#2202](https://github.com/cryptpad/cryptpad/pull/2202)
+  - Integration API: implement userlist event and view mode [#2199](https://github.com/cryptpad/cryptpad/pull/2199)
+
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2026.2.0` please read the upgrade notes of all versions between yours and `2026.2.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch --depth 1 origin tag 2026.2.1
+git checkout 2026.2.1
+npm ci
+npm run install:components
+./install-onlyoffice.sh
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+
 # ❄️ Winter release (2026.2.0)
 
 ## Goals

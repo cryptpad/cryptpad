@@ -531,7 +531,9 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                     entry.time = last.time;
                     entry.premium = premium;
                     if (last.sender) {
-                        entry.lastAdmin = !last.sender.blockLocation;
+                        const ed = last.sender.edPublic;
+                        entry.lastAdmin = ed ? ctx.moderatorKeys.includes(ed)
+                                             : !last.sender.blockLocation;
                     }
                     if (last.close) {
                         doc.tickets.closed[data.channel] = entry;
