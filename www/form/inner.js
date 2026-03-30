@@ -4201,6 +4201,7 @@ define([
                     }
                     if (saving && !e) { return; } // Prevent spam Enter
                     block.q = v.trim();
+                    $inputQ.attr('aria-label', block.q);
                     framework.localChange();
                     saving = true;
                     framework._.cpNfInner.chainpad.onSettle(function () {
@@ -4212,6 +4213,7 @@ define([
                 };
                 var onCancelQ = function () {
                     $inputQ.val(block.q || Messages.form_default);
+                    $inputQ.attr('aria-label', block.q || Messages.form_default);
                     cancel = true;
                     $inputQ.blur();
                     $(q).removeClass('editing');
@@ -4224,6 +4226,8 @@ define([
                     $(q).addClass('editing');
                 });
                 $inputQ.blur(onSaveQ);
+                $inputQ.attr('aria-label', block.q || Messages.form_default);
+
                 q = h('div.cp-form-input-block', [inputQ]);
 
                 // Delete question
