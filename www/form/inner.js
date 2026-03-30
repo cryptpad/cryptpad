@@ -2532,7 +2532,7 @@ define([
                     $(div).data('val', data);
                     return div;
                 });
-                var tag = h('div.cp-form-type-sort-container', { 'role': 'listbox' },[
+                var tag = h('div.cp-form-type-sort-container', { 'role': 'listbox', 'aria-label': Messages._getKey('form_sort_hint', [els.length]) },[
                     h('div.cp-form-sort-hint', Messages._getKey('form_sort_hint', [els.length])),
                     els
                 ]);
