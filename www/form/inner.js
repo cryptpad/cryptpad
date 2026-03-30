@@ -1699,10 +1699,13 @@ define([
                 var tag = h('input', {
                     type: opts.type,
                     step: "any",
-                    placeholder: Messages['form_input_ph_'+opts.type] || ''
+                    'aria-label': Messages['form_input_ph_'+opts.type],
+                    placeholder: Messages['form_input_ph_'+opts.type]
                 });
                 var $tag = $(tag);
                 $tag.on('change keypress keydown', Util.throttle(function () {
+                    let currentVal = $tag.val().trim();
+                    $tag.attr('aria-label', currentVal || Messages['form_input_ph_'+opts.type] || '');
                     evOnChange.fire();
                 }, 500));
                 var cursorGetter;
