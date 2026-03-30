@@ -1777,6 +1777,7 @@ define([
                         $text.val($text.val().slice(0, opts.maxLength));
                         l = $text.val().length;
                     }
+                    $text.attr('aria-label', $text.val() || Messages.form_input_ph_text);
                     $(charCount).text(Messages._getKey('form_maxLength', [
                         $text.val().length,
                         opts.maxLength
