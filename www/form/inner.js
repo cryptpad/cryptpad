@@ -4085,7 +4085,7 @@ define([
                     });
                     requiredContent.push(infoIcon);
                 }
-                requiredTag = h('span.cp-form-required-tag', requiredContent);
+                requiredTag = h('span.cp-form-required-tag', { 'id': 'cp-required-' + (n-1) }, requiredContent);
             }
 
             var dragHandle;
@@ -4427,11 +4427,16 @@ define([
 
             var editableCls = editable ? ".editable" : "";
             var draggable = APP.drag ? '' : '.nodrag';
-            elements.push(h('fieldset.cp-form-block'+editableCls+draggable, {
+            var ariaLabelledby = 'cp-question-' + (n-1);
+            if (requiredTag) {
+                ariaLabelledby += ' cp-required-' + (n-1);
+            }
+            var attributes = {
                 'data-id':uid,
                 'data-type':type,
-                'aria-labelledby': 'cp-question-' + (n-1)
-            }, [
+                'aria-labelledby': ariaLabelledby
+            };
+            elements.push(h('fieldset.cp-form-block'+editableCls+draggable, attributes, [
                 h('header', [
                     APP.isEditor ? dragHandle : undefined,
                     shiftButtons,
