@@ -3938,6 +3938,7 @@ define([
 
                 var btn = h('button.btn.btn-secondary', {
                     title: full ? '' : Messages['form_type_'+type],
+                    'aria-label': full ? '' : Messages['form_type_'+type],
                     'data-type': type
                 }, [
                     (TYPES[type] || STATIC_TYPES[type]).icon.cloneNode(),
