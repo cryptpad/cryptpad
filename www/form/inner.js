@@ -136,7 +136,8 @@ define([
                 type:"number",
                 value: opts.maxLength,
                 min: 100,
-                max: 5000
+                max: 5000,
+                'aria-label': Messages.form_editMaxLength
             });
             maxLength = h('div.cp-form-edit-max-options', [
                 h('span', Messages.form_editMaxLength),
@@ -244,7 +245,8 @@ define([
                 type:"number",
                 value: v.max,
                 min: 1,
-                max: v.values.length
+                max: v.values.length,
+                'aria-label': Messages.form_editMax
             });
             maxOptions = h('div.cp-form-edit-max-options', [
                 h('span', Messages.form_editMax),
