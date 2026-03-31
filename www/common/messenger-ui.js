@@ -434,6 +434,7 @@ define([
             });
             var sendButton = h('button.btn.btn-primary', {
                 title: Messages.contacts_send,
+                'aria-label': Messages.contacts_send
             }, Icons.get('send'));
 
             var rightCol = h('span.cp-app-contacts-right-col', [
@@ -728,6 +729,7 @@ define([
                 iconCls: 'settings',
                 options: dropdownOptions,
                 buttonCls: 'cp-app-contacts-dropdown-btn',
+                buttonTitle: Messages.settingsButton
             });
             $dropdown.addClass('cp-app-contacts-icons');
             $dropdown.on('click dblclick', function (e) {
