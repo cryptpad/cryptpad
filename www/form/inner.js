@@ -291,7 +291,7 @@ define([
         var $add, $addItem;
         var addMultiple;
         var getOption = function (val, placeholder, isItem, uid) {
-            var input = h('input', {value:val});
+            var input = h('input', {value:val, 'aria-label': val});
             var $input = $(input);
             if (placeholder) {
                 input.placeholder = val;
@@ -332,7 +332,7 @@ define([
                 setCursor();
             }
 
-            var del = h('button.btn.btn-danger-outline', Icons.get('close'));
+            var del = h('button.btn.btn-danger-outline',{ 'aria-label': Messages.poll_remove }, Icons.get('close'));
             var formHandle;
             if (v.type !== 'time') {
                 formHandle = h('span.cp-form-handle', [
@@ -390,6 +390,7 @@ define([
             }
 
             $(input).on('input', function () {
+                $input.attr('aria-label', $(input).val());
                 evOnSave.fire();
             });
 
