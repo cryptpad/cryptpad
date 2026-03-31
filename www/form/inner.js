@@ -5166,13 +5166,18 @@ define([
                         return;
                     }
                     // Otherwise add it
-                    var datePicker = h('input');
+                    var datePicker = h('input', {'aria-label': Messages.form_date_time});
                     var picker = Flatpickr(datePicker, {
                         disableMobile: true,
                         enableTime: true,
                         time_24hr: is24h,
                         dateFormat: dateFormat,
-                        minDate: new Date()
+                        minDate: new Date(),
+                        onChange: function(date) {
+                            if (date) {
+                                $(datePicker).attr('aria-label', date);
+                            }
+                        }
                     });
                     var save = h('button.btn.btn-primary', Messages.settings_save);
                     $(save).click(function () {
@@ -5186,7 +5191,7 @@ define([
                             refreshEndDate();
                         });
                     });
-                    var cancel = h('button.btn.btn-danger',Icons.get('close', {'class': 'nomargin'}));
+                    var cancel = h('button.btn.btn-danger',{'aria-label': Messages.poll_remove}, Icons.get('close', {'class': 'nomargin'}));
                     $(cancel).click(function () {
                         refreshEndDate();
                     });
