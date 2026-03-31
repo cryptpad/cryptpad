@@ -527,6 +527,29 @@ define([
             $messages.find('.cp-app-contacts-info').show();
         };
 
+        var updateInfoMessage = function () {
+            var chats = Object.keys(state.channels).length;
+            var $info = $messages.find('.cp-app-contacts-info');
+            if (chats === 0) {
+                $info.html([
+                    h('h2', Messages.contacts_noFriends),
+                    h('ul', [
+                        h('li', Messages.share_noContactsNotLoggedIn),
+                    ])
+                ]);
+                $container.addClass('cp-app-contacts-no-chats');
+            } else {
+                $info.html([
+                    h('h2', Messages.contacts_info1),
+                    h('ul', [
+                        h('li', Messages.contacts_info2),
+                        h('li', Messages.contacts_info4),
+                    ])
+                ]);
+                $container.removeClass('cp-app-contacts-no-chats');
+            }
+        };
+
         var updateStatus = function (id) {
             if (!state.channels[id]) { return; }
             var $status = find.inList(id).find('.cp-app-contacts-status');
@@ -965,6 +988,7 @@ define([
                 if (err) { return void console.error(err); }
                 debug('rooms: ' + JSON.stringify(rooms));
                 rooms.forEach(initializeRoom);
+                updateInfoMessage();
             });
         };
 
@@ -978,6 +1002,7 @@ define([
             if (channel && channel.curvePublic === curvePublic) {
                 showInfo();
             }
+            updateInfoMessage();
             if (!removedByMe) {
                 // TODO UI.alert if this is triggered by the other guy
             }
@@ -1093,6 +1118,7 @@ define([
 
                 debug('rooms: ' + JSON.stringify(rooms));
                 rooms.forEach(initializeRoom);
+                updateInfoMessage();
             });
 
             updateMutedList();

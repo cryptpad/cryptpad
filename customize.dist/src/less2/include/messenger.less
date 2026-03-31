@@ -286,6 +286,16 @@
         }
     }
 
+    &.cp-app-contacts-no-chats {
+        #cp-app-contacts-friendlist {
+            display: none;
+        }
+        #cp-app-contacts-messaging {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
     #cp-app-contacts-messaging {
         flex: 1;
         height: 100%;
@@ -526,6 +536,15 @@
                 display: none;
             }
             &.cp-app-contacts-chat-open {
+                #cp-app-contacts-friendlist {
+                    display: none;
+                }
+                #cp-app-contacts-messaging {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+            &.cp-app-contacts-no-chats {
                 #cp-app-contacts-friendlist {
                     display: none;
                 }
