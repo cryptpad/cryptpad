@@ -139,6 +139,8 @@ define(req, function(AppConfig, Default, Language) {
     // text & number were missing from the existing list
     // "form_input_ph_email": "email@example.com",
     // "form_input_ph_url": "https://example.com",
+
+    Messages.form_date_time = "Select date and time";
     return Messages;
 
 });

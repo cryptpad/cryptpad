@@ -2114,13 +2114,18 @@ define([
             get: function (opts, a, n, evOnChange) {
                 opts = Util.clone(TYPES.date.defaultOpts);
 
-                var tag = h('input');
+                var tag = h('input', {'aria-label': Messages.form_date_time});
 
                 var picker = Flatpickr(tag, {
                     disableMobile: true,
                     enableTime: true,
                     time_24hr: is24h,
                     dateFormat: dateFormat,
+                    onChange: function(date) {
+                        if (date) {
+                            $(tag).attr('aria-label', date);
+                        }
+                    }
                 });
 
                 var $tag = $(tag);
