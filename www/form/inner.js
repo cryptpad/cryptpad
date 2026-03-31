@@ -1330,7 +1330,8 @@ define([
                         options: qOptions, // Entries displayed in the menu
                         isSelect: true,
                         caretDown: true,
-                        buttonCls: 'btn btn-secondary'
+                        buttonCls: 'btn btn-secondary',
+                        buttonTitle: Messages.form_condition_q
                     };
                     qSelect = UIElements.createDropdown(qConfig);
                     qSelect[0].dropdown = qSelect;
@@ -1362,7 +1363,10 @@ define([
                     $(iSelect).attr('data-drop', 'i').hide();
                     iSelect.onChange.reg(function () { onChange(); });
 
-                    var remove = h('button.btn.btn-danger-alt.cp-condition-remove', [
+                    var remove = h('button.btn.btn-danger-alt.cp-condition-remove',{
+                            'title': Messages.poll_remove,
+                            'aria-label': Messages.poll_remove
+                    }, [
                         Icons.get('close', {'class': 'nomargin'})
                     ]);
                     $(remove).on('click', function () {
