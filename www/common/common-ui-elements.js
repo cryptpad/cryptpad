@@ -3406,6 +3406,7 @@ define([
                 {
                     name: Messages.crowdfunding_popup_no,
                     className: 'cancel',
+                    iconClass: 'snooze',
                     onClick: function () {
                         Feedback.send('CROWDFUNDING_NO');
                     }
@@ -3413,7 +3414,7 @@ define([
             ];
             if (Config.accounts_api && priv.accountName) {
                 buttons.push({
-                    name: Messages.crowdfunding_subscribe,
+                    name: Messages.features_f_subscribe,
                     className: 'primary',
                     iconClass: 'subscribe',
                     onClick: function () {

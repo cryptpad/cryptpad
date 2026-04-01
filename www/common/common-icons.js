@@ -251,8 +251,8 @@ define([
         // Other
         "maintenance": "construction",
         "release-notes": "notepad-text",
-        "subscribe": "heart-handshake",
         "donate": "hand-heart",
+        "snooze": "timer",
     };
 
     Icons.add = (newIcons) => {

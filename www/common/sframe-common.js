@@ -1063,11 +1063,8 @@ define([
                 document.title = title;
             });
 
-            funcs.isPadStored(function (err, val) {
-                if (err || !val) { return; }
-                ctx.sframeChan.query('Q_INCREMENT_CROWDFUNDING_ACTION', null, function () {
-                    UIElements.displayCrowdfunding(funcs);
-                });
+            ctx.sframeChan.query('Q_INCREMENT_CROWDFUNDING_ACTION', null, function () {
+                UIElements.displayCrowdfunding(funcs);
             });
 
             ctx.sframeChan.ready();
