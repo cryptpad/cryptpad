@@ -53,6 +53,7 @@ define([
             $container: $(toolbarElement),
             pageTitle: Messages.contacts_title,
             metadataMgr: common.getMetadataMgr(),
+            skipLink: '#cp-app-contacts-container'
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();

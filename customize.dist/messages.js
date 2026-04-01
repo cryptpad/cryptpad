@@ -134,7 +134,11 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    return Messages;
+    Messages.contacts_noFriends = "No chats yet";
+    Messages.contacts_noFriendsInfo = "Add friends or join teams to begin chatting";
+    Messages.contacts_historyCleared = "The chat history has been deleted for both parties"; // XXX
+    Messages.contacts_confirmRemoveHistory = "Are you sure you want to delete chat history? Messages will be removed for everyone and cannot be restored."
+    return Messages; // XXX existing key
 
 });
 }());
