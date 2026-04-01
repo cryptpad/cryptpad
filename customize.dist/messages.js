@@ -134,6 +134,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.support_moderatorNotification = "{0} has added you to the support team as a moderator" // XXX
+
     return Messages;
 
 });
