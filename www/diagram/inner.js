@@ -152,7 +152,51 @@ define([
             }, true
         );
 
-        var parameters;
+        var themes = JSON.parse(localStorage.original.getItem('drawio-theme')) || [];
+
+        var checkTheme = function (fileChannel) {
+            if (themes.length) { return themes.find(obj => obj.hasOwnProperty(fileChannel)); };
+        };
+
+        var checkDefaultTheme = function () {
+            privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+            var defaultTheme;
+            if (framework.isIntegrated()) {
+                defaultTheme = 'kennedy';
+            } else if (checkTheme(privateData.channel)) {
+                defaultTheme = themes.find(item => item[privateData.channel])?.[privateData.channel];
+            } else {
+                defaultTheme = 'sketch';
+            }
+            return defaultTheme;
+        };
+
+        var parameters = new URLSearchParams({
+            test: 1,
+            stealth: 1,
+            embed: 1,
+            drafts: 0,
+            p: 'cryptpad',
+            integrated: framework.isIntegrated() ? 'true' : 'false',
+
+            chrome: framework.isReadOnly() ? 0 : 1,
+            dark: window.CryptPad_theme === "dark" ? 1 : 0,
+
+            // Hide save and exit buttons
+            noSaveBtn: 1,
+            saveAndExit: 0,
+            noExitBtn: 1,
+            browser: 0,
+            ui: checkDefaultTheme(),
+
+            noDevice: 1,
+            filesupport: 0,
+
+            modified: 'unsavedChanges',
+            proto: 'json',
+
+            lang: Messages._languageUsed
+        });
 
         framework.onEditableChange(function () {
             var readOnly = framework.isReadOnly() || framework.isLocked();
@@ -170,37 +214,17 @@ define([
         // starting the CryptPad framework
         framework.start();
 
-        parameters = new URLSearchParams({
-                test: 1,
-                stealth: 1,
-                embed: 1,
-                drafts: 0,
-                p: 'cryptpad',
-                integrated: framework.isIntegrated() ? 'true' : 'false',
-
-                chrome: framework.isReadOnly() ? 0 : 1,
-                dark: window.CryptPad_theme === "dark" ? 1 : 0,
-
-                // Hide save and exit buttons
-                noSaveBtn: 1,
-                saveAndExit: 0,
-                noExitBtn: 1,
-                browser: 0,
-
-                noDevice: 1,
-                filesupport: 0,
-
-                modified: 'unsavedChanges',
-                proto: 'json',
-
-                lang: Messages._languageUsed
-            });
-
-        drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
-            + parameters;
+        var loadDiagram = function () {
+            var defaultTheme = checkDefaultTheme();
+            parameters.set('ui', defaultTheme);
+            drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
+                + parameters;
+        };
 
         window.addEventListener("message", (event) => {
-            if (event.source === drawioFrame.contentWindow) {
+            if (event.data?.q === 'EV_METADATA_UPDATE') {
+                loadDiagram();
+            } else if (event.source === drawioFrame.contentWindow) {
                 var data = JSON.parse(event.data);
                 var eventType = data.event;
                 var handler = drawioHandlers[eventType];
@@ -209,6 +233,59 @@ define([
                 }
             }
         }, false);
+
+        var setTheme = function (fileChannel, theme) {
+            if (checkTheme(fileChannel)) {
+                var currentTheme = themes.find(obj => obj.hasOwnProperty(fileChannel));
+                currentTheme[fileChannel] = theme;
+            } else {
+                themes.push({[fileChannel]: theme});
+            }
+            localStorage.original.setItem('drawio-theme', JSON.stringify(themes));
+        };
+
+        var mkModeButton = function (framework) {
+            var modes = [Messages.diagram_sketchTheme, Messages.diagram_simpleTheme, Messages.diagram_classicTheme];
+            var types = [];
+            
+            modes.forEach(function(mode){
+                types.push({
+                    tag: 'a',
+                    attributes: {
+                        'data-value': mode,
+                        'aria-label': Messages._getKey('diagram_modesOptionLabel', [mode]),
+                    },
+                    content: mode,
+                    action: function () {
+                        var $self = $('a[data-value="' + mode + '"]');
+                        parameters.set('ui', mode);
+                        drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
+                        + parameters;
+                        privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+                        setTheme(privateData.channel, mode);
+                        $('.cp-dropdown-content').find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
+                        $self.addClass('cp-dropdown-element-active');
+                        $self.closest('li').focus();
+                        $('.cp-dropdown-content').hide();
+                    },
+                });
+            });
+            var $drawer = UIElements.createDropdown({
+                text: Messages.themeButton,
+                options: types,
+                common: framework._.sfCommon,
+                iconCls: 'color-palette',
+                initialValue: parameters.get('ui') || checkDefaultTheme()
+            });
+            framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
+            framework._.toolbar.$bottomL.append($drawer);
+            $drawer.addClass('cp-toolbar-appmenu');
+            $drawer.on('click', function () {
+                $('a[data-value="' + parameters.get('ui') || checkDefaultTheme() + '"]').addClass('cp-dropdown-element-active');
+            });
+        };
+        mkModeButton(framework);
+        
     };
 
     $('#cp-app-diagram-editor').hide();
