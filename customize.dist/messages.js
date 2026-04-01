@@ -134,6 +134,13 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.form_input_ph_text = "Your answer here"; // XXX used in form input placeholders, should be generic enough to be used in all contexts
+    Messages.form_input_ph_number = "Enter a number"; // XXX same as above but for number inputs
+    // text & number were missing from the existing list
+    // "form_input_ph_email": "email@example.com",
+    // "form_input_ph_url": "https://example.com",
+
+    Messages.form_date_time = "Select date and time";
     return Messages;
 
 });
