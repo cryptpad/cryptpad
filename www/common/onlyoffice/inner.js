@@ -3460,6 +3460,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var $forgetButton = common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 setEditable(false);
+                toolbar.forgotten();
             });
             var $forget = UIElements.getEntryFromButton($forgetButton);
             toolbar.$drawer.append($forget);
