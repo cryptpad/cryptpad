@@ -4,6 +4,34 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# ❄️🩹🩹 Winter fix release 2 (2026.2.2)
+
+## Goals
+
+This small release contains one fix for history in office apps and corrects a version number mistake we made in the previous fix release. We also include updated translations.
+
+## Fixes
+
+- fix(office): load full history on EUNKNOWN error [b44f09a](https://github.com/cryptpad/cryptpad/commit/b44f09a83aae7a638103060e4fe43579209373f2)
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2026.2.1` please read the upgrade notes of all versions between yours and `2026.2.2` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch --depth 1 origin tag 2026.2.2
+git checkout 2026.2.2
+npm ci
+npm run install:components
+```
+
+1. Restart your server
+2. Review your instance's checkup page to ensure that you are passing all tests
 
 # ❄️🩹 Winter fix release (2026.2.1)
 
