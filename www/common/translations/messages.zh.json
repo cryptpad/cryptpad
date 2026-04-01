@@ -1865,5 +1865,8 @@
     "fo_trash_move_error": "共享文件夹内容无法移至回收站，请改用“移除”。",
     "fo_sharedFolder_move_error": "共享文件夹无法移至其他共享文件夹内。",
     "support_moreTickets": "{0} 张工单可用",
-    "loadAll": "加载所有工单"
+    "loadAll": "加载所有工单",
+    "oo_rtChannelMissing": "加载文档时出错。为防止数据损坏或丢失，文档现已设为只读。请使用下方按钮将相关信息发送给支持团队。",
+    "oo_rtChannelMissingDate": "消息已于 {0} 发送",
+    "oo_rtChannelMissingNoSupport": "加载文档时出错。为防止数据损坏或丢失，文档现已设为只读。请将以下信息发送给您的实例管理员。"
 }

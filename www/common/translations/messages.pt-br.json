@@ -1676,5 +1676,22 @@
     "duplicate": "Duplicado",
     "calendar_rec_change": "Mover um evento repetido para diferentes calendários. Você pode só pode aplicar essa alteração para esse evento ou para todos os eventos.",
     "ssoauth_form_hint_register": "Adicione uma senha para o CryptPad para aumentar a segurança ou deixe em branco e continue. Se uma senha não for adicionada, as chaves que protegem a sua conta ficaram disponíveis para os administradores da instância.",
-    "kanban_showTags": "Veja todas as tags"
+    "kanban_showTags": "Veja todas as tags",
+    "kanban_hideTags": "Ver menos etiquetas",
+    "admin_forcemfaTitle": "Autenticação em dois fatores mandatória",
+    "admin_forcemfaHint": "Todos os usuários nesta instância serão requeridos a configurar a autenticação em duas etapas para entrar em suas contas. Usuários existentes não conseguirão utilizar suas contas sem configurar uma aplicação TOTP.",
+    "loading_mfa_required": "A autenticação em duas etapas é requerida nesta instância. Por favor atualize sua conta utilizando um aplicativo e o formulário abaixo.",
+    "admin_cat_users": "Diretório do Usuário",
+    "admin_registrationSsoTitle": "Fechar registros SSO",
+    "admin_invitationTitle": "Links de convite",
+    "admin_invitationCreate": "Criar link de convite",
+    "admin_invitationHint": "Cada link de convite cria uma conta, mesmo se o registro estiver fechado. Nome de usuário e e-mail são utilizados apenas para identificação. CryptPad não enviará o link de convite (ou qualquer outra coisa), por favor copie o link e envie utilizando uma canal seguro de sua preferência.",
+    "admin_invitationLink": "Link de convite",
+    "admin_invitationCopy": "Copiar link",
+    "admin_invitationAlias": "Nome de usuário",
+    "admin_invitationEmail": "E-mail de usuário",
+    "admin_invitationDeleteConfirm": "Tem certeza de que deseja apagar esse convite?",
+    "admin_usersTitle": "Diretório do usuário",
+    "admin_usersHint": "Lista de contas conhecidas nesta instância. Selecione abaixo para adicionar contas automaticamente, ou insira as informações manualmente utilizando o formulário.",
+    "admin_usersAdd": "Adicionar um usuário conhecido"
 }
