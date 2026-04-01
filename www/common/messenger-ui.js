@@ -543,12 +543,12 @@ define([
                 curve = __channel.curvePublic;
             }
 
-            var unmute = h('span', Icons.get('notification'), {
+            var unmute = h('span', Icons.get('mute'), {
                 class: 'cp-app-contacts-remove cp-unmute-icon',
                 title: Messages.contacts_unmute || 'unmute',
                 style: (curve && mutedUsers[curve]) ? undefined : 'display: none;'
             });
-            var mute = h('span', Icons.get('mute'), {
+            var mute = h('span', Icons.get('notification'), {
                 class: 'cp-app-contacts-remove cp-mute-icon',
                 title: Messages.contacts_mute || 'mute',
                 style: (curve && mutedUsers[curve]) ? 'display: none;' : undefined
