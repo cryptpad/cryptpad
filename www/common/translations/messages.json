@@ -233,7 +233,7 @@
     "contacts_info3": "Double-click their icon to view their profile",
     "contacts_info4": "Either participant can clear permanently a chat history",
     "contacts_removeHistoryTitle": "Clean the chat history",
-    "contacts_confirmRemoveHistory": "Are you sure you want to permanently remove your chat history? Data cannot be restored",
+    "contacts_confirmRemoveHistory": "Are you sure you want to permanently remove the chat history? This will clear all messages for both participants. Data cannot be restored.",
     "contacts_removeHistoryServerError": "There was an error while removing your chat history. Try again later",
     "contacts_fetchHistory": "Retrieve older history",
     "contacts_rooms": "Rooms",
