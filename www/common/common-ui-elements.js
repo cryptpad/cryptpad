@@ -944,6 +944,7 @@ define([
                             return void UI.warn(Messages.autostore_error);
                         }
                         $(document).trigger('cpPadStored');
+                        common.getSframeChannel().query('Q_INCREMENT_CROWDFUNDING_ACTION', null, function () {});
                         UI.log(Messages.autostore_saved);
                     });
                 });
@@ -3390,54 +3391,83 @@ define([
         var priv = common.getMetadataMgr().getPrivateData();
         if (priv.app === 'form' && !priv.canEdit && !priv.form_auditorKey) { return; }
 
-        var todo = function () {
+        var todo = function (actionCount) {
             crowdfundingState = true;
-            // Display the popup
-            var text = Messages.crowdfunding_popup_text;
-            var yes = h('button.cp-corner-primary', [
-                Icons.get('external-link'),
-                'OpenCollective'
-            ]);
-            var no = h('button.cp-corner-cancel', Messages.crowdfunding_popup_no);
-            var actions = h('div', [no, yes]);
-
+            common.getSframeChannel().query('Q_RECORD_CROWDFUNDING_SHOWN', { count: actionCount }, function () {});
             var dontShowAgain = function () {
                 common.setAttribute(['general', 'crowdfunding'], false);
                 Feedback.send('CROWDFUNDING_NEVER');
             };
 
-            var modal = UI.cornerPopup(text, actions, '', {
-                big: true,
-                alt: true,
-                dontShowAgain: dontShowAgain
+            var msgEl = h('div.msg');
+            UI.setHTML(msgEl, Messages.crowdfunding_popup_text);
+            var content = h('div', [msgEl]);
+            var buttons = [
+                {
+                    name: Messages.crowdfunding_popup_no,
+                    className: 'cancel',
+                    iconClass: 'snooze',
+                    onClick: function () {
+                        Feedback.send('CROWDFUNDING_NO');
+                    }
+                }
+            ];
+            if (Config.accounts_api && priv.accountName) {
+                buttons.push({
+                    name: Messages.features_f_subscribe,
+                    className: 'primary',
+                    iconClass: 'subscribe',
+                    onClick: function () {
+                        common.openURL('/accounts/');
+                        Feedback.send('CROWDFUNDING_SUBSCRIBE');
+                    }
+                });
+            }
+            if (!Config.removeDonateButton) {
+                buttons.push({
+                    name: 'OpenCollective',
+                    className: 'primary',
+                    iconClass: 'donate',
+                    onClick: function () {
+                        common.openURL(priv.accounts.donateURL);
+                        Feedback.send('CROWDFUNDING_YES');
+                    }
+                });
+            }
+            buttons.push({
+                name: Messages.dontShowAgain,
+                className: 'cancel left',
+                iconClass: 'close',
+                onClick: function () {
+                    dontShowAgain();
+                }
             });
-
-            $(yes).click(function () {
-                modal.delete();
-                common.openURL(priv.accounts.donateURL);
-                Feedback.send('CROWDFUNDING_YES');
+            var modal = UI.dialog.customModal(content, {
+                scrollable: true,
+                rawContent: true,
+                buttons: buttons
             });
-            $(no).click(function () {
-                modal.delete();
-                Feedback.send('CROWDFUNDING_NO');
-            });
+            UI.openCustomModal(modal, { wide: true });
         };
 
         if (force) {
             crowdfundingState = true;
-            return void todo();
+            return void todo(0);
         }
 
         if (AppConfig.disableCrowdfundingMessages) { return; }
         if (priv.plan) { return; }
+        if (Config.removeDonateButton && !Config.accounts_api) { return; }
 
         crowdfundingState = true;
         common.getAttribute(['general', 'crowdfunding'], function (err, val) {
-            if (err || val === false) { return; }
-            common.getSframeChannel().query('Q_GET_PINNED_USAGE', null, function (err, obj) {
-                var quotaMb = obj.quota / (1024 * 1024);
-                if (quotaMb < 10) { return; }
-                todo();
+            if (err || val === false) { crowdfundingState = false; return; }
+            common.getSframeChannel().query('Q_CROWDFUNDING_SHOULD_SHOW', null, function (err, result) {
+                if (err || !result || !result.show) {
+                    crowdfundingState = false;
+                    return;
+                }
+                todo(result.actionCount);
             });
         });
     };
@@ -3507,6 +3537,7 @@ define([
                     return void UI.warn(Messages.autostore_error);
                 }
                 $(document).trigger('cpPadStored');
+                common.getSframeChannel().query('Q_INCREMENT_CROWDFUNDING_ACTION', null, function () {});
                 delete autoStoreModal[priv.channel];
                 modal.delete();
                 UI.log(Messages.autostore_saved);

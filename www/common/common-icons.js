@@ -250,7 +250,9 @@ define([
         "badge-error": "circle-alert",
         // Other
         "maintenance": "construction",
-        "release-notes": "notepad-text"
+        "release-notes": "notepad-text",
+        "donate": "hand-heart",
+        "snooze": "timer",
     };
 
     Icons.add = (newIcons) => {
