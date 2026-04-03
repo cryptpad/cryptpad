@@ -1158,6 +1158,27 @@
             word-break: break-word;
         }
     }
+    .cp-form-other-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.313rem 0;
+        .cp-checkmark, .cp-radio {
+            flex-shrink: 0;
+        }
+        .cp-form-other-input {
+            width: 150px;
+            max-width: 40%;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.85em;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
+    }
     .cp-form-multiradio-container {
         overflow: auto;
     }
