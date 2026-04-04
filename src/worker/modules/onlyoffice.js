@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-const factory = () => {
+const factory = (Feedback) => {
     var OO = {};
 
     var getHistory = function (ctx, client, cb) {
@@ -112,7 +112,7 @@ const factory = () => {
                 txid: txid,
                 lastKnownHash: chan.lastKnownHash || chan.lastCpHash,
                 metadata: {
-                    forcePlaceholder: true,
+                    //forcePlaceholder: true,
                     validateKey: obj.validateKey,
                     owners: obj.owners,
                     expire: obj.expire
@@ -146,6 +146,7 @@ const factory = () => {
 
             // Keep only metadata messages for the current channel
             if (parsed.channel && parsed.channel !== channel) { return; }
+
             // Ignore the metadata message
             if (parsed.validateKey && parsed.channel) {
                 if (!chan.validateKey) {
@@ -159,6 +160,19 @@ const factory = () => {
                 return;
             }
             if (parsed.error && parsed.channel) {
+                if (parsed.error === "EDELETED" && parsed.message) {
+                    // If rtChannel deleted with placeholder, abort and make
+                    // document read-only
+                    chan.wc?.leave();
+                    Feedback.send('RTCHANNEL_DELETED', true);
+                    return ctx.emit('ERROR', { error: 'EDELETED', reason: parsed.message }, chan.clients);
+                }
+                if (parsed.error === "EUNKNOWN") {
+                    let hk = network.historyKeeper;
+                    let msg = ['GET_HISTORY', chan?.wc.id, { txid }];
+                    network.sendto(hk, JSON.stringify(msg));
+                    return;
+                }
                 ctx.emit('READY', chan.clients, chan.clients);
                 return;
             }
@@ -353,4 +367,6 @@ const factory = () => {
     return OO;
 };
 
-module.exports = factory();
+module.exports = factory(
+    require('../../common/common-feedback')
+);

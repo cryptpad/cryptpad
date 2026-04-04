@@ -904,7 +904,10 @@ define([
         ];
         if (data.inviteChannel) {
             if (data.hash) {
-                var copy = Icons.get('copy');
+                var copy = h('span', Icons.get('copy'), {
+                    title: Messages.team_inviteLinkCopy,
+                    'tabindex': 0
+                });
                 $(copy).click(function () {
                     var privateData = common.getMetadataMgr().getPrivateData();
                     var origin = privateData.origin;

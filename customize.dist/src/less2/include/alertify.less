@@ -116,6 +116,31 @@
             box-sizing: border-box;
         }
 
+        .cp-pre-copy-container {
+            position: relative;
+            padding: 10px 5px;
+            color: @cryptpad_text_col;
+            background: @cp_loading-msg-bg;
+            border-radius: @variables_radius;
+            .cp-pre-copy-button {
+                cursor: pointer;
+                position: absolute;
+                right: 5px;
+                top: 5px;
+                svg {
+                    height: 1.5rem;
+                    width: 1.5rem;
+                }
+                &:hover, &:not(:disabled):active, &:focus {
+                    color: @cp_loading-color;
+                }
+            }
+            pre.cp-pre-copy {
+                color: @cryptpad_text_col;
+                margin: 0;
+            }
+        }
+
         .dialog {
             padding: 12px;
 /*

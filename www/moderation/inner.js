@@ -148,15 +148,19 @@ define([
                     h('span', Messages.support_pending),
                     h('span.cp-support-count'),
                 ]));
+                var col6 = h('div.cp-support-column', h('h1', [
+                    h('span', '[Automatic]'), // XXX
+                    h('span.cp-support-count'),
+                ]));
                 if (type === 'closed') {
                     // Only one column
-                    col1 = col2 = col3 = col4;
+                    col1 = col2 = col3 = col6 = col4;
                 }
                 if (type === 'pending') {
                     // Only one column
-                    col1 = col2 = col3 = col5;
+                    col1 = col2 = col3 = col6 = col5;
                 }
-                $container.append([col1, col2, col3]);
+                $container.append([col1, col2, col3, col6]);
 
                 const onShow = function (ticket, channel, data, done) {
                     onShowTicket(ticket, channel, data, (success) => {
@@ -242,8 +246,17 @@ define([
 
                 // Show tickets, reload the previously open ones and cal back
                 // once everything is loaded
+
                 let n = nThen;
-                Object.keys(tickets).sort(sortTicket(tickets)).forEach(function (channel) {
+                let sorted = Object.keys(tickets).sort(sortTicket(tickets));
+                let remaining = [];
+                const limit = 20;
+                if (type === 'closed') {
+                    remaining = sorted.slice(limit);
+                    sorted = sorted.slice(0, limit);
+                }
+
+                const addTicket = function (channel) {
                     // Update allTags
                     var d = tickets[channel];
                     (d.tags || []).forEach(tag => {
@@ -261,15 +274,40 @@ define([
                     var container;
                     if (d.lastAdmin) { container = col3; }
                     else if (d.premium) { container = col1; }
+                    else if (/\[Automatic\]/.test(d.title)) { container = col6; }
                     else { container = col2; }
                     $(container).append(ticket);
+
+                    const nb = $(container).find('.cp-support-list-ticket').length;
+                    $(container).find('.cp-support-count').text(nb);
 
                     if (open.includes(channel)) {
                         n = n(waitFor => {
                             ticket.open(true, waitFor());
                         }).nThen;
                     }
-                });
+                };
+
+                sorted.forEach(addTicket);
+
+                if (type === 'closed' && remaining.length) {
+                    const b = h('button.btn.btn-secondary', [
+                        Icons.get('export'),
+                        Messages.loadAll
+                    ]);
+                    const div = h('div.cp-support-list-ticket', [
+                        h('span', Messages._getKey('support_moreTickets', [
+                            remaining.length
+                        ])),
+                        h('span', b)
+                    ]);
+                    $(b).click(() => {
+                        remaining.forEach(addTicket);
+                        $(div).remove();
+                    });
+                    $(col2).append(div);
+                }
+
                 // Wait for all open tickets to be loaded before calling back
                 // otherwise we may have a wrong scroll position
                 n(() => {
@@ -310,7 +348,9 @@ define([
             }).nThen(waitFor => {
                 APP.allTags = [];
                 refresh($(activeContainer), 'active', waitFor());
+            }).nThen(waitFor => {
                 refresh($(pendingContainer), 'pending', waitFor());
+            }).nThen(waitFor => {
                 refresh($(closedContainer), 'closed', waitFor());
             }).nThen(() => {
                 onFilter();
@@ -989,6 +1029,7 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
             }
         });
         APP.support = Support.create(common, true);
+        APP.support.setAnonymous(true);
 
         let active = privateData.category || 'active';
         let linkedTicket;

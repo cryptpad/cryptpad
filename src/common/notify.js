@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-/* eslint compat/compat: "off" */
-
 (() => {
 const factory = (ApiConfig = {}) => {
     let window = globalThis;

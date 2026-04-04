@@ -123,41 +123,41 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         }
     };
 
-    var getTeamChannelList = function (ctx, id) {
+    var getTeamChannelList = function (ctx, compareHash, id) {
         // Get the list of pads' channel ID in your drive
         // This list is filtered so that it doesn't include pad owned by other users
         // It now includes channels from shared folders
         var store = ctx.teams[id];
         if (!store) { return null; }
-        var list = store.manager.getChannelsList('pin');
+        var list = store.manager.getChannelsList('pin'); // list is a Set
 
         var team = ctx.store.proxy.teams[id];
-        list.push(`${team.channel}#drive`);
+        const teamChan = compareHash ? team.channel : `${team.channel}#drive`;
+        list.add(teamChan);
         var chatChannel = Util.find(team, ['keys', 'chat', 'channel']);
         var membersChannel = Util.find(team, ['keys', 'roster', 'channel']);
         var mailboxChannel = Util.find(team, ['keys', 'mailbox', 'channel']);
-        if (chatChannel) { list.push(chatChannel); }
-        if (membersChannel) { list.push(membersChannel); }
-        if (mailboxChannel) { list.push(mailboxChannel); }
+        if (chatChannel) { list.add(chatChannel); }
+        if (membersChannel) { list.add(membersChannel); }
+        if (mailboxChannel) { list.add(mailboxChannel); }
 
         if (store.proxy.calendars) {
             var cList = Object.keys(store.proxy.calendars).map(function (c) {
                 return store.proxy.calendars[c].channel;
             });
-            list = list.concat(cList);
+            cList.forEach(id => list.add(id));
         }
 
         var state = store.roster.getState();
         if (state.members) {
             Object.keys(state.members).forEach(function (curve) {
                 var m = state.members[curve];
-                if (m.inviteChannel && m.pending) { list.push(m.inviteChannel); }
-                if (m.previewChannel && m.pending) { list.push(m.previewChannel); }
+                if (m.inviteChannel && m.pending) { list.add(m.inviteChannel); }
+                if (m.previewChannel && m.pending) { list.add(m.previewChannel); }
             });
         }
 
-        list.sort();
-        return list;
+        return Array.from(list).sort();
     };
 
     var handleSharedFolder = function (ctx, id, sfId, rt) {
@@ -365,14 +365,15 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
             });
         }).nThen(function () {
             if (!team.rpc) { return; }
-            var list = getTeamChannelList(ctx, id);
+            var list = getTeamChannelList(ctx, true, id);
             var local = Hash.hashChannelList(list);
             // Check pin list
             team.rpc.getServerHash(function (e, hash) {
                 if (e) { return void console.warn(e); }
                 if (hash !== local) {
                     // Reset pin list
-                    team.rpc.reset(list, function (e/*, hash*/) {
+                    var list2 = getTeamChannelList(ctx, false, id);
+                    team.rpc.reset(list2, function (e/*, hash*/) {
                         if (e) { console.warn(e); }
                     });
                 }
@@ -853,7 +854,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
             // For each pad, check on the server if there are other owners.
             // If yes, then remove yourself as an owner
             // If no, delete the pad
-            var ownedPads = team.manager.getChannelsList('owned');
+            var ownedPads = Array.from(team.manager.getChannelsList('owned'));
             var sem = Util.Saferphore.create(10);
             ownedPads.forEach(function (c) {
                 var w = waitFor();

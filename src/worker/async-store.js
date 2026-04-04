@@ -5,7 +5,7 @@
 const factory = (Sortify, UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
                 Realtime, Messaging, Pinpad, Rpc, Cryptget, Cache,
-                SF, AccountTS, DriveTS, PadTS, Cursor,
+                SF, AccountTS, DriveTS, PadTS, Form, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
                 Calendar, BadgeTS, Block, NetConfig,
@@ -68,6 +68,9 @@ const factory = (Sortify, UserObject, ProxyManager,
             Store, store, postMessage, broadcast
         });
         Store.drive = Drive.initAPI({
+            Store, store, postMessage, broadcast
+        });
+        Store.form = Form.init({
             Store, store, postMessage, broadcast
         });
 
@@ -213,31 +216,36 @@ const factory = (Sortify, UserObject, ProxyManager,
             });
         };
 
-        var getUserChannelList = function () {
-            var userChannel = `${store.driveChannel}#drive`;
+        var getUserChannelList = function (compareHash) {
+            // If compareHash is true, we're going to compare our local
+            // hash with the server one. We must remove the "#drive" tag
+            // and the block (which isn't a channel)
+
+            var userChannel = compareHash ? store.driveChannel
+                                          : `${store.driveChannel}#drive`;
             if (!userChannel) { return null; }
 
             // Get the list of pads' channel ID in your drive
             // This list is filtered so that it doesn't include pad owned by other users
             // It now includes channels from shared folders
-            var list = store.manager.getChannelsList('pin');
+            var list = store.manager.getChannelsList('pin'); // "list" is a Set
 
             // Get the avatar & profile
             var profile = store.proxy.profile;
             if (profile) {
                 var profileChan = profile.edit ? Hash.hrefToHexChannelId('/profile/#' + profile.edit, null) : null;
-                if (profileChan) { list.push(profileChan); }
+                if (profileChan) { list.add(profileChan); }
                 var avatarChan = profile.avatar ? Hash.hrefToHexChannelId(profile.avatar, null) : null;
-                if (avatarChan) { list.push(avatarChan); }
+                if (avatarChan) { list.add(avatarChan); }
             }
 
             if (store.proxy.todo) {
-                list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
+                list.add(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
             }
 
             if (store.proxy.friends) {
                 var fList = Messaging.getFriendChannelsList(store.proxy);
-                list = list.concat(fList);
+                fList.forEach(id => list.add(id));
             }
 
             if (store.proxy.mailboxes) {
@@ -245,34 +253,23 @@ const factory = (Sortify, UserObject, ProxyManager,
                     if (m === "broadcast" && !store.isAdmin) { return; }
                     return store.proxy.mailboxes[m].channel;
                 }).filter(Boolean);
-                list = list.concat(mList);
+                mList.forEach(id => list.add(id));
             }
 
             if (store.proxy.calendars) {
                 var cList = Object.keys(store.proxy.calendars).map(function (c) {
                     return store.proxy.calendars[c].channel;
                 });
-                list = list.concat(cList);
+                cList.forEach(id => list.add(id));
             }
 
-            list.push(userChannel);
+            list.add(userChannel);
 
-            if (store.data && store.data.blockId) {
-                list.push(`${store.data.blockId}#block`);
+            if (store.data && store.data.blockId && !compareHash) {
+                list.add(`${store.data.blockId}#block`);
             }
 
-            list.sort();
-
-            return list;
-        };
-
-        var getExpirableChannelList = function () {
-            return store.manager.getChannelsList('expirable');
-        };
-
-        var getCanonicalChannelList = function (expirable) {
-            var list = expirable ? getExpirableChannelList() : getUserChannelList();
-            return Util.deduplicateString(list).sort();
+            return Array.from(list).sort();
         };
 
         //////////////////////////////////////////////////////////////////
@@ -352,7 +349,7 @@ const factory = (Sortify, UserObject, ProxyManager,
         var arePinsSynced = function (cb) {
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
-            var list = getCanonicalChannelList(false);
+            var list = getUserChannelList(true);
             var local = Hash.hashChannelList(list);
             store.rpc.getServerHash(function (e, hash) {
                 if (e) { return void cb(e); }
@@ -363,7 +360,7 @@ const factory = (Sortify, UserObject, ProxyManager,
         var resetPins = function (cb) {
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
-            var list = getCanonicalChannelList(false);
+            var list = getUserChannelList();
             store.rpc.reset(list, function (e) {
                 if (e) { return void cb(e); }
                 cb(null);
@@ -524,7 +521,7 @@ const factory = (Sortify, UserObject, ProxyManager,
 
         Store.getDeletedPads = function (clientId, data, cb) {
             if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
-            var list = (data && data.list) || getCanonicalChannelList(true);
+            var list = data?.list;
             if (!Array.isArray(list)) {
                 return void cb({error: 'INVALID_FILE_LIST'});
             }
@@ -665,11 +662,44 @@ const factory = (Sortify, UserObject, ProxyManager,
             };
         };
 
+        const getRtChannelFromPad = (data, cb) => {
+            const opts = {
+                network: store.network
+            };
+            const href = data.href || data.roHref;
+
+            let pws = Array.isArray(data.password) ? data.password
+                                                   : [data.password];
+            pws = pws.filter(Boolean);
+            let i = 0;
+            let l = pws.length;
+
+            const parsed = Hash.parsePadUrl(href);
+            const check = password => {
+                opts.password = password;
+                Cryptget.get(parsed.hash, (err, content) => {
+                    if (err) {
+                        if (i >= l) {
+                            return void cb(err);
+                        }
+                        return check(pws[i++]);
+                    }
+                    const p = Util.tryParse(content);
+                    const rtChannel = p?.content?.channel;
+                    if (!rtChannel) { return void cb('NO_CHAN'); }
+                    cb(void 0, rtChannel);
+                }, opts);
+            };
+
+            check(pws[i++]);
+
+        };
+
         Store.addPad = function (clientId, data, cb) {
             if (!data.href && !data.roHref) { return void cb({error:'NO_HREF'}); }
             var secret;
+            var parsed = Hash.parsePadUrl(data.href || data.roHref);
             if (!data.roHref) {
-                var parsed = Hash.parsePadUrl(data.href);
                 if (parsed.hashData.type === "pad") {
                     secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
                     data.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
@@ -690,23 +720,41 @@ const factory = (Sortify, UserObject, ProxyManager,
             var s = getStore(data.teamId);
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
 
-            s.manager.addPad(data.path, pad, function (e) {
-                if (e) { return void cb({error: e}); }
-                // Send a CHANGE events to all the teams because we may have just
-                // added a pad to a shared folder stored in multiple teams
-                getAllStores().forEach(function (_s) {
-                    var send = _s.id ? _s.sendEvent : sendDriveEvent;
-                    send('DRIVE_CHANGE', {
-                        path: ['drive', UserObject.FILES_DATA]
-                    }, clientId);
+            const add = Util.once(() => {
+                s.manager.addPad(data.path, pad, function (e) {
+                    if (e) { return void cb({error: e}); }
+                    // Send a CHANGE events to all the teams because we may have just
+                    // added a pad to a shared folder stored in multiple teams
+                    getAllStores().forEach(function (_s) {
+                        var send = _s.id ? _s.sendEvent : sendDriveEvent;
+                        send('DRIVE_CHANGE', {
+                            path: ['drive', UserObject.FILES_DATA]
+                        }, clientId);
+                    });
+                    onSync(data.teamId, cb);
                 });
-                onSync(data.teamId, cb);
             });
+
+            if (['doc', 'sheet', 'presentation'].includes(parsed.type)) {
+                if (!pad.rtChannel) {
+                    return getRtChannelFromPad(pad, (err, rtChannel) => {
+                        const key = 'ADDPAD_NO_RT_CHANNEL' ;
+                        if (!err) {
+                            Feedback.send(key, true);
+                            pad.rtChannel = rtChannel;
+                        } else {
+                            Feedback.send(`${key}_ERROR`, true);
+                        }
+                        add();
+                    });
+                }
+            }
+            add();
         };
 
         var getOwnedPads = function (account) {
-            var list = [];
             if (account) {
+                var list = [];
                 if (store.proxy.todo) {
                     // No password for todo
                     list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
@@ -718,29 +766,17 @@ const factory = (Sortify, UserObject, ProxyManager,
                 if (store.proxy.mailboxes) {
                     Object.keys(store.proxy.mailboxes || {}).forEach(function (id) {
                         if (id === 'supportadmin') { return; }
+                        if (id === 'supportteam') { return; }
                         var m = store.proxy.mailboxes[id];
                         list.push(m.channel);
                     });
                 }
-            } else {
-                list = store.manager.getChannelsList('owned');
-                /*
-                if (store.proxy.teams) {
-                    Object.keys(store.proxy.teams || {}).forEach(function (id) {
-                        var t = store.proxy.teams[id];
-                        if (t.owner) {
-                            list.push(t.channel);
-                            list.push(t.keys.roster.channel);
-                            list.push(t.keys.chat.channel);
-                        }
-                    });
-                }
-                */
+                return list.filter(function (channel) {
+                    if (typeof(channel) !== 'string') { return; }
+                    return [32, 48].indexOf(channel.length) !== -1;
+                });
             }
-            return list.filter(function (channel) {
-                if (typeof(channel) !== 'string') { return; }
-                return [32, 48].indexOf(channel.length) !== -1;
-            });
+            return Array.from(store.manager.getChannelsList('owned'));
         };
         var removeOwnedPads = function (account, waitFor) {
             // Delete owned pads
@@ -928,7 +964,7 @@ const factory = (Sortify, UserObject, ProxyManager,
         // Reset the drive part of the userObject (from settings)
         Store.resetDrive = function (clientId, data, cb) {
             nThen(function (waitFor) {
-                removeOwnedPads(waitFor);
+                removeOwnedPads(false, waitFor);
             }).nThen(function () {
                 store.proxy.drive = store.userObject.getStructure();
                 sendDriveEvent('DRIVE_CHANGE', {
@@ -2231,19 +2267,47 @@ const factory = (Sortify, UserObject, ProxyManager,
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        Store.fixMissingRtChannelInterval = (list, cb) => {
+            // "list" is an array containing bugged data for each user object
+            // of this proxy-manager
+
+            let n = nThen;
+            list.forEach(obj => {
+                Object.keys(obj).forEach(chan => {
+                    n = n(waitFor => {
+                        const proxy = obj[chan];
+                        const data = Util.clone(proxy);
+                        getRtChannelFromPad(data, waitFor((err, rtChannel) => {
+                            if (err) { return; }
+                            Feedback.send(`FIX_RT_CHANNEL_INTERVAL`, true);
+                            proxy.rtChannel = rtChannel;
+                        }));
+                    }).nThen;
+                });
+            });
+            n(() => {
+                setTimeout(cb);
+            });
+        };
         Store.fixMissingRtChannel = (cb) => {
             const all = {};
             const addMissing = (missing) => {
                 missing.forEach(obj => {
+                    const readOnly = !!obj._readOnly;
+                    delete obj._readOnly;
                     Object.keys(obj).forEach(chan => {
+                        if (readOnly) { return; }
                         let proxy = obj[chan];
                         let href = proxy.roHref || proxy.href;
-                        all[chan] ||= {
+                        const data = all[chan] ||= {
                             href,
-                            password: proxy.password,
+                            password: [],
                             list: []
                         };
-                        all[chan].list.push(proxy);
+                        if (proxy.password && !data.password.includes(proxy.password)) {
+                            data.password.push(proxy.password);
+                        }
+                        data.list.push(proxy);
                     });
                 });
             };
@@ -2252,7 +2316,6 @@ const factory = (Sortify, UserObject, ProxyManager,
                 const mine = store.manager.getMissingRtChannel();
                 addMissing(mine);
             } catch (e) {
-                Feedback.send('MISSING_RT_CHANNEL_ERROR', true);
                 return setTimeout(cb);
             }
             const teamsId = store.modules?.team?.getTeams() || [];
@@ -2262,34 +2325,28 @@ const factory = (Sortify, UserObject, ProxyManager,
                 const teamMissing = team.manager.getMissingRtChannel();
                     addMissing(teamMissing);
                 } catch (e) {
-                    Feedback.send('MISSING_RT_CHANNEL_ERROR', true);
                     return setTimeout(cb);
                 }
             });
 
-            if (Object.keys(all).length) {
-                Feedback.send('MISSING_RT_CHANNEL', true);
-            }
-
             let n = nThen;
-            const opts = {
-                network: store.network
-            };
             Object.keys(all).forEach(chan => {
                 n = n(waitFor => {
                     const data = all[chan];
-                    const href = data.href;
-                    opts.password = data.password;
-                    const parsed = Hash.parsePadUrl(href);
-                    Cryptget.get(parsed.hash, waitFor((err, content) => {
-                        if (err) { return; }
-                        const p = Util.tryParse(content);
-                        const rtChannel = p?.content?.channel;
-                        if (!rtChannel) { return; }
+                    getRtChannelFromPad(data, waitFor((err, rtChannel) => {
+                        if (err) {
+                            // TODO: add a flag to the proxy to avoid checking
+                            // this document again (at least until the proxy.password
+                            // has changed)
+                            // Bonus: we can also tell the user that some documents
+                            // are unavailable
+                            return;
+                        }
+                        Feedback.send(`MISSING_RT_CHANNEL_FIXED`, true);
                         data.list.forEach(proxy => {
                             proxy.rtChannel = rtChannel;
                         });
-                    }), opts);
+                    }));
                 }).nThen;
             });
             n(() => {
@@ -3057,6 +3114,7 @@ module.exports = factory(
     require('./components/account'), // .ts
     require('./components/drive'), // .ts
     require('./components/pad'), // .ts
+    require('./components/form'),
     require('./modules/cursor'),
     require('./modules/support'),
     require('./modules/integration'),

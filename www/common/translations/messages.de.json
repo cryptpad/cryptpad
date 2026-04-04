@@ -1863,5 +1863,10 @@
     "admin_creation_note": "Erstelle auf dieser Seite deinen ersten Administrator-Account. Administratoren verwalten die Einstellungen der Instanz einschließlich der Speicherplatzkontingente und haben Zugriff auf die Moderationswerkzeuge.",
     "fo_sharedFolder_move_error": "Geteilte Ordner können nicht in andere geteilte Ordner verschoben werden.",
     "fo_trash_move_error": "Der Inhalt von geteilten Ordnern kann nicht in den Papierkorb verschoben werden. Verwende stattdessen \"Entfernen\".",
-    "form_poll_required_hint": "Die Beantwortung dieser Umfrage ist erforderlich, du musst mit mindestens einer Option interagieren."
+    "form_poll_required_hint": "Die Beantwortung dieser Umfrage ist erforderlich, du musst mit mindestens einer Option interagieren.",
+    "loadAll": "Alle Tickets laden",
+    "support_moreTickets": "{0} Tickets verfügbar",
+    "oo_rtChannelMissingNoSupport": "Beim Laden deines Dokuments ist ein Fehler aufgetreten. Es ist nun schreibgeschützt, um Beschädigung oder Verlust der Daten zu vermeiden. Bitte sende die folgenden Informationen an den Administrator deiner Instanz.",
+    "oo_rtChannelMissing": "Beim Laden deines Dokuments ist ein Fehler aufgetreten. Es ist nun schreibgeschützt, um Beschädigung oder Verlust der Daten zu vermeiden. Bitte verwende die folgende Schaltfläche, um die entsprechenden Informationen an das Support-Team zu senden.",
+    "oo_rtChannelMissingDate": "Nachricht gesendet am {0}"
 }

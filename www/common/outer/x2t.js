@@ -122,7 +122,7 @@ define([
 
         // Sanitize file names
         var illegalRe = /[\/\?<>\\:\*\|"]/g;
-        var controlRe = /[\x00-\x1f\x80-\x9f]/g; // eslint-disable-line no-control-regex
+        var controlRe = /[\x00-\x1f\x80-\x9f]/g;
         var reservedRe = /^\.+$/;
         var safeRe = /[&'%!"{}[\]]/g;
         var sanitize = function (input) {

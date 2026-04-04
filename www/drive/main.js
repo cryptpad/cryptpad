@@ -26,10 +26,14 @@ define([
 
             // SF and logged in: add shared folder
             if (Utils.LocalStore.isLoggedIn()) {
-                Cryptpad.addSharedFolder(null, secret, function (id) {
+                Cryptpad.addSharedFolder(Cryptpad.initialTeam, secret, function (id) {
                     if (id && typeof(id) === "object" && id.error) {
                         sframeChan.event("EV_RESTRICTED_ERROR");
                         return;
+                    }
+
+                    if (Cryptpad.initialTeam && Cryptpad.initialTeam !== -1) {
+                        window.location.href = '/teams/';
                     }
 
                     window.CryptPad_newSharedFolder = id;

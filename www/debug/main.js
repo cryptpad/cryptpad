@@ -37,21 +37,15 @@ define([
         SFCommonO.initIframe(waitFor);
     }).nThen(function (/*waitFor*/) {
         var isDrive = false;
-        var isMyDrive = false;
         if (!window.location.hash) {
             isDrive = true;
-            isMyDrive = true;
         } else {
             var p = Hash.parsePadUrl('/debug/'+window.location.hash);
             if (p && p.hashData && p.hashData.app === 'drive') {
                 isDrive = true;
             }
         }
-        var addData = function (meta, Cryptpad) {
-            if (isMyDrive) { window.location.hash = Cryptpad.userHash; }
-            window.CryptPad_location.app = "debug";
-            window.CryptPad_location.hash = Cryptpad.userHash;
-            window.CryptPad_location.href = '/debug/#'+Cryptpad.userHash;
+        var addData = function (meta) {
             meta.debugDrive = isDrive;
         };
         SFCommonO.start({

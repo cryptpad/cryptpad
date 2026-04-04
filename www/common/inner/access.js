@@ -18,25 +18,6 @@ define([
              Messages, nThen, Icons) {
     var Access = {};
 
-    const getOtherChans = (priv, opts) => {
-        // "attributes" contains the additional channels that the other user
-        // has to store (rtChannel, answersChannels, lastVersion, lastCpHash)
-        // - opts.attributes when access modal is created from the drive
-        // - liveAttr when access modal is created from the document
-        let liveAttr = Util.clone(priv.propChannels || {});
-        delete liveAttr.channel;
-        let attributes = opts.attributes || liveAttr;
-
-        // "otherChan" contains the list of channels that should also receive
-        // the ownership changes
-        let otherChan = [];
-        if (attributes?.answersChannel) { otherChan.push(attributes.answersChannel); }
-        if (attributes?.rtChannel) { otherChan.push(attributes.rtChannel); }
-        if (!otherChan.length) { otherChan = undefined; }
-
-        return { otherChan, attributes };
-    };
-
     var getOwnersTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
@@ -58,7 +39,7 @@ define([
 
         opts = opts || {};
 
-        const { attributes, otherChan } = getOtherChans(priv, opts);
+        const { attributes, otherChan } = Modal.getOtherChans(priv, opts);
 
         var redrawAll = function () {};
 
@@ -458,7 +439,7 @@ define([
         var allowed = data.allowed || [];
         var teamOwner = data.teamId;
 
-        const { otherChan } = getOtherChans(priv, opts);
+        const { otherChan } = Modal.getOtherChans(priv, opts);
 
         var redrawAll = function () {};
 
@@ -868,7 +849,7 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
 
-        const { otherChan } = getOtherChans(priv, opts);
+        const { otherChan } = Modal.getOtherChans(priv, opts);
 
         var $div = $(h('div.cp-share-columns'));
 

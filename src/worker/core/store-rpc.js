@@ -85,6 +85,8 @@ const factory = AStore => {
             CHANGE_PAD_PASSWORD_PIN: Store.changePadPasswordPin,
             GET_SNAPSHOT: Store.getSnapshot,
             DELETE_MAILBOX_MESSAGE: Store.deleteMailboxMessage,
+            // Form
+            FORM_GET_RESPONSES: Store.form?.getResponses,
             // Drive
             DRIVE_USEROBJECT: Store.userObjectCommand,
             GET_DRIVE: Store.drive.get,

@@ -90,6 +90,7 @@
             setTimeout(function () {
                 var docID = config.document.key;
                 var key = config.document.key;
+                const isView = config.mode === 'view';
                 var blob;
 
                 var getBlob = function (cb) {
@@ -136,7 +137,7 @@
                         document: blob,
                         ext: config.document.fileType,
                         autosave: config.events.onSave && autosave,
-                        readOnly: config.mode === 'view',
+                        readOnly: isView,
                         editorConfig: config.editorConfig || {},
                         _config: serializedConfig()
                     }, function (obj) {
@@ -172,14 +173,19 @@
                 var getSession = function (cb) {
                     chan.send('GET_SESSION', {
                         key: key,
+                        view: isView,
                         keepOld: !config.events.onNewKey
                     }, function (obj) {
+                        if (isView && obj.error === 'ENOENT') {
+                            key = obj.key;
+                            return void cb();
+                        }
+
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
 
                         // OnlyOffice
                         if (!config.events.onNewKey) {
                             key = obj.key;
-                            console.error(key, obj);
                             return void cb();
                         }
 
@@ -189,7 +195,8 @@
                             // time and in this case, only the first user will be able to generate a key.
                             return config.events.onNewKey({
                                 old: key,
-                                new: obj.key
+                                new: obj.key,
+                                view: obj.viewKey,
                             }, function (_key) {
                                 // Delay reloading tabs with deprecated key
                                 var to = _key !== obj.key ? 1000 : 0;
@@ -256,6 +263,11 @@
                         config.events.onHasUnsavedChanges(unsavedChanges);
                     }
                     cb();
+                });
+                chan.on('USERLIST_CHANGE', (list) => {
+                    if (config.events.onUserlistChange) {
+                        config.events.onUserlistChange(list);
+                    }
                 });
                 chan.on('ON_INSERT_IMAGE', function(data, cb) {
                     if (config.events.onInsertImage) {

@@ -135,50 +135,15 @@ define([
                 });
             });
         });
-        var u8_slice = function (A, start, end) {
-            return new Uint8Array(Array.prototype.slice.call(A, start, end));
-        };
-        var checkAnonProof = function (proofObj, channel, curvePrivate) {
-            var pub = proofObj.key;
-            var proofTxt = proofObj.proof;
-            try {
-                var u8_bundle = Util.decodeBase64(proofTxt);
-                var u8_nonce = u8_slice(u8_bundle, 0, Nacl.box.nonceLength);
-                var u8_cipher = u8_slice(u8_bundle, Nacl.box.nonceLength);
-                var u8_plain = Nacl.box.open(
-                    u8_cipher,
-                    u8_nonce,
-                    Util.decodeBase64(pub),
-                    Util.decodeBase64(curvePrivate)
-                );
-                return channel === Util.encodeUTF8(u8_plain);
-            } catch (e) {
-                console.error(e);
-                return false;
-            }
-        };
         sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {
-            var formHref = data.href;
             var cb = Utils.Util.once(_cb);
             var myKeys = {};
             var myFormKeys;
-            var accessKeys;
-            var CPNetflux, Pinpad;
-            var network;
             var noDriveAnswered = false;
             nThen(function (w) {
-                require([
-                    'chainpad-netflux',
-                    '/common/pinpad.js',
-                ], w(function (_CPNetflux, _Pinpad) {
-                    CPNetflux = _CPNetflux;
-                    Pinpad = _Pinpad;
-                }));
                 var personalDrive = !Cryptpad.initialTeam || Cryptpad.initialTeam === -1;
                 Cryptpad.getAccessKeys(w(function (_keys) {
                     if (!Array.isArray(_keys)) { return; }
-                    accessKeys = _keys;
-                    
                     _keys.some(function (_k) {
                         if ((personalDrive && !_k.id) || Cryptpad.initialTeam === Number(_k.id)) {
                             myKeys = _k;
@@ -194,112 +159,55 @@ define([
                     }
                     myFormKeys = keys;
                 }));
-                Cryptpad.makeNetwork(w(function (err, nw) {
-                    network = nw;
-                }));
                 Cryptpad.getPadMetadata({channel: data.channel}, w(function (md) {
                     if (md && md.deleteLines) { deleteLines = true; }
                 }));
             }).nThen(function () {
-                if (!network) { return void cb({error: "E_CONNECT"}); }
                 if (myFormKeys.formSeed) {
                     myFormKeys = Cryptpad.getAnonymousKeys(myFormKeys.formSeed, data.channel, Utils);
                 }
-                var keys;
-                var privateKey, publicKey;
-                var formData;
+
+                let secret, parsed;
                 if (data.drive) {
-                    var secret = Utils.Hash.getSecrets('form', formHref, data.password);
-                    keys = secret && secret.keys;
-                    formData = Utils.Hash.getFormData(secret);
+                    parsed = Utils.Hash.parseTypeHash('form', data.href);
+                    secret = Utils.Hash.getSecrets('form', data.href, data.password);
                 } else {
-                    formData = Utils.Hash.getFormData(Utils.secret);
-                    keys = Utils.secret && Utils.secret.keys;
+                    secret = Utils.secret;
                 }
-                privateKey = formData?.form_private;
-                publicKey = formData?.form_public;
+                let keys = (secret && secret.keys) || {};
+                let formData = Utils.Hash.getFormData(secret);
+                const privateKey = parsed?.auditorKey || formData?.form_private;
+                const publicKey = formData?.form_public;
+
                 var curvePrivate = privateKey || data.privateKey;
                 if (!curvePrivate) { return void cb({error: 'EFORBIDDEN'}); }
-                var crypto = Utils.Crypto.Mailbox.createEncryptor({
+                var cryptoKeys = {
                     curvePrivate: curvePrivate,
                     curvePublic: publicKey || data.publicKey,
                     validateKey: data.validateKey
-                });
+                };
 
-                var config = {
-                    network: network,
+                Cryptpad.getFormResponses({
+                    cryptoKeys,
                     channel: data.channel,
-                    noChainPad: true,
+                    edPublic: myKeys.edPublic,
                     validateKey: keys.secondaryValidateKey,
-                    owners: [myKeys.edPublic],
-                    crypto: crypto,
-                    metadata: {
-                        deleteLines: true
-                    }
-                    //Cache: Utils.Cache // TODO enable cache for form responses when the cache stops evicting old answers
-                };
-                var results = {};
-                config.onError = function (info) {
-                    cb({ error: info.type });
-                };
-                config.onRejected = function (data, cb) {
-                    if (!Array.isArray(data) || !data.length || data[0].length !== 16) {
-                        return void cb(true);
-                    }
-                    if (!Array.isArray(accessKeys)) { return void cb(true); }
-                    network.historyKeeper = data[0];
-                    nThen(function (waitFor) {
-                        accessKeys.forEach(function (obj) {
-                            Pinpad.create(network, obj, waitFor(function (e) {
-                                if (e) { console.error(e); }
-                            }));
-                        });
-                    }).nThen(function () {
-                        cb();
-                    });
-                };
-                config.onReady = function () {
-                    var myKey;
+                    cantEdit: data.cantEdit,
+                    deleteLines
+                }, (obj) => {
+                    if (obj?.error) { return void cb(obj); }
+                    const results = obj.results;
+
                     // If we have submitted an anonymous answer, retrieve it
+                    let myKey;
                     if (myFormKeys.curvePublic && results[myFormKeys.curvePublic]) {
                         myKey = myFormKeys.curvePublic;
                     }
+
                     cb({
-                        noDriveAnswered: noDriveAnswered,
-                        myKey: myKey,
-                        results: results
+                        noDriveAnswered, myKey, results
                     });
-                    network.disconnect();
-                };
-                config.onMessage = function (msg, peer, vKey, isCp, hash, senderCurve, cfg) {
-                    var parsed = Utils.Util.tryParse(msg);
-                    if (!parsed) { return; }
-                    var uid = parsed._uid || '000';
-
-                    // If we have a "non-anonymous" answer, it may be the edition of a
-                    // previous anonymous answer. Check if a previous anonymous answer exists
-                    // with the same uid and delete it.
-                    if (parsed._proof) {
-                        var check = checkAnonProof(parsed._proof, data.channel, curvePrivate);
-                        var theirAnonKey = parsed._proof.key;
-                        if (check && results[theirAnonKey] && results[theirAnonKey][uid]) {
-                            delete results[theirAnonKey][uid];
-                        }
-                    }
-
-                    parsed._time = cfg && cfg.time;
-                    if (deleteLines) { parsed._hash = hash; }
-
-                    if (data.cantEdit && results[senderCurve]
-                                    && results[senderCurve][uid]) { return; }
-                    results[senderCurve] = results[senderCurve] || {};
-                    results[senderCurve][uid] = {
-                        msg: parsed,
-                        hash: hash,
-                        time: cfg && cfg.time
-                    };
-                };
-                CPNetflux.start(config);
+                });
             });
         });
         var noDriveSeed = Utils.Hash.createChannelId();

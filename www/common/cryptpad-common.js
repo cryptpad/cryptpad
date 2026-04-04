@@ -284,6 +284,10 @@ define([
             });
         });
     };
+    common.getFormResponses = (data, cb) => {
+        postMessage("FORM_GET_RESPONSES", data, cb);
+    };
+
     common.muteChannel = function (channel, state, cb) {
         var mutedChannels = [];
         nThen(function (waitFor) {

@@ -1860,5 +1860,8 @@
     "color6": "Turkesa",
     "color7": "Urdina",
     "color8": "Morea",
-    "loading_encrypted": "muturretik muturrerako zifratzea"
+    "loading_encrypted": "muturretik muturrerako zifratzea",
+    "form_poll_required_hint": "Inkesta hau beharrezkoa da, gutxienez aukera batekin elkarreragin behar duzu.",
+    "fo_trash_move_error": "Partekatutako karpetaren edukia ezin da zaborrontzira eraman. Horren ordez, erabili \"Ezabatu\".",
+    "fo_sharedFolder_move_error": "Karpeta partekatuak ezin dira beste karpeta partekatu batzuetara eraman."
 }
