@@ -16,6 +16,7 @@ define([
     '/common/inner/common-mediatag.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
+    '/common/clipboard.js',
     '/common/common-credential.js',
     '/customize/application_config.js',
     '/api/config',
@@ -51,6 +52,7 @@ define([
     MT,
     Messages,
     h,
+    Clipboard,
     Cred,
     AppConfig,
     ApiConfig,
@@ -208,12 +210,23 @@ define([
 
         var publicKey = privateData.edPublic;
         if (publicKey) {
-            var $key = $('<div>', { 'class': 'cp-sidebarlayout-element' }).appendTo($div);
-            var userHref = Hash.getPublicSigningKeyString(privateData.origin, accountName, publicKey);
+            var $key = $('<div>', { 'class': 'cp-sidebarlayout-element cp-signing-key' }).appendTo($div);
+            var signingKey = Hash.getPublicSigningKeyString(privateData.origin, accountName, publicKey);
             var $pubLabel = $('<label>', { 'class': 'cp-default-label', 'for': 'publicKey' })
                 .text(Messages.settings_publicSigningKey);
-            var $pubInput = $('<input>', { 'type': 'text', 'value': userHref, 'id': 'publicKey' });
-            $key.append($pubLabel).append($pubInput);
+            var $pubInput = $('<input>', { 'type': 'text', 'value': signingKey, 'id': 'publicKey' });
+
+            var $inputBlock = $('<div>', { 'class': 'cp-sidebarlayout-input-block' }).append($pubInput);
+            $key.append($pubLabel).append($inputBlock);
+
+            $(h('button.btn.btn-secondary', { 'aria-labelledby': 'cp-profile-copy-data-button' }, [
+                Icons.get('copy'),
+                h('span#cp-profile-copy-data-button', Messages.copyToClipboard)
+            ])).click(function () {
+                Clipboard.copy(signingKey, (err) => {
+                    if (!err) { UI.log(Messages.genericCopySuccess); }
+                });
+            }).appendTo($inputBlock);
         }
 
 
