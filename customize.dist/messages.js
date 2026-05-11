@@ -134,6 +134,7 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.settings_profileShare = 'Share profile'; // XXX
     return Messages;
 
 });
