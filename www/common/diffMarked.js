@@ -263,33 +263,33 @@ define([
     };
 
     // Tasks list
+    var taskIconChecked = '<i data-lucide="square-check" aria-hidden="true"></i>';
+    var taskIconUnchecked = '<i data-lucide="square" aria-hidden="true"></i>';
     var checkedTaskItemPtn = /^\s*(<p>)?\[[xX]\](<\/p>)?\s*/;
-    var uncheckedTaskItemPtn = /^\s*(<p>)?\[ ?\](<\/p>)?\s*/;
+    var uncheckedTaskItemPtn = /^\s*(<p>)?\[ *\](<\/p>)?\s*/;
     var bogusCheckPtn = /<input checked="" disabled="" type="checkbox">/;
     var bogusUncheckPtn = /<input disabled="" type="checkbox">/;
     renderer.listitem = function (text) {
-        var isCheckedTaskItem = checkedTaskItemPtn.test(text);
-        var isUncheckedTaskItem = uncheckedTaskItemPtn.test(text);
-        var hasBogusCheckedInput = bogusCheckPtn.test(text);
-        var hasBogusUncheckedInput = bogusUncheckPtn.test(text);
-        var isCheckbox = true;
-        if (isCheckedTaskItem) {
-            text = text.replace(checkedTaskItemPtn,
-                '<i data-lucide="square-check" aria-hidden="true"></i>') + '\n';
-        } else if (isUncheckedTaskItem) {
-            text = text.replace(uncheckedTaskItemPtn,
-                '<i data-lucide="square" aria-hidden="true"></i>') + '\n';
-        } else if (hasBogusCheckedInput) {
-            text = text.replace(bogusCheckPtn,
-                '<i data-lucide="square-check" aria-hidden="true"></i>') + '\n';
-        } else if (hasBogusUncheckedInput) {
-            text = text.replace(bogusUncheckPtn,
-                '<i data-lucide="square" aria-hidden="true"></i>') + '\n';
+        var icon = '';
+        var body = text;
+        if (checkedTaskItemPtn.test(text)) {
+            icon = taskIconChecked;
+            body = text.replace(checkedTaskItemPtn, '');
+        } else if (uncheckedTaskItemPtn.test(text)) {
+            icon = taskIconUnchecked;
+            body = text.replace(uncheckedTaskItemPtn, '');
+        } else if (bogusCheckPtn.test(text)) {
+            icon = taskIconChecked;
+            body = text.replace(bogusCheckPtn, '');
+        } else if (bogusUncheckPtn.test(text)) {
+            icon = taskIconUnchecked;
+            body = text.replace(bogusUncheckPtn, '');
         } else {
-            isCheckbox = false;
+            return '<li>' + text + '</li>\n';
         }
-        var cls = (isCheckbox) ? ' class="todo-list-item"' : '';
-        return '<li'+ cls + '>' + text + '</li>\n';
+        body = body.replace(/^\s+/, '').replace(/^(<p[^>]*>)\s+/i, '$1');
+        return '<li class="todo-list-item"><span class="cp-task-marker" aria-hidden="true">' + icon +
+            '</span><div class="cp-task-body">' + body + '</div></li>\n';
     };
     restrictedRenderer.listitem = function (text) {
         if (bogusCheckPtn.test(text)) {
