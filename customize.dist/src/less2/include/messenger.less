@@ -7,6 +7,7 @@
 @import (reference) './avatar.less';
 @import (reference) './badges.less';
 @import (reference) "./colortheme-all.less";
+@import (reference) "./browser.less";
 
 .messenger_vars (
     @bg-color: @cp_messenger-bg,
@@ -89,7 +90,6 @@
         background-color: var(--msg-bg-color);
         color: @msg-color;
         color: var(--msg-color);
-        overflow-y: auto;
         display: flex;
         flex-flow: column;
         .cp-app-contacts-friend {
@@ -100,9 +100,15 @@
             margin-bottom: 0;
             cursor: pointer;
             position: relative;
-            height: @room-height;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            .cp-avatar {
+                flex-shrink: 0;
+                margin-right: 5px;
+            }
             .cp-app-contacts-right-col {
-                margin-left: 5px;
+                margin-left: 0;
                 display: flex;
                 flex-flow: column;
                 flex: 1;
@@ -112,13 +118,53 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
-                .cp-app-contacts-icons {
-                    text-align: right;
-                    & > span:hover {
-                        color: @msg-color-hover;
+                .cp-app-contacts-bottom-row {
+                    display: flex;
+                    align-items: center;
+                    flex-shrink: 0;
+                    .cp-app-contacts-mute-indicator {
+                        font-size: 0.75em;
+                        display: flex;
+                        align-items: center;
                     }
-                    svg {
-                        margin-right: 0.1rem;
+                    .cp-app-contacts-icons {
+                        margin-left: auto;
+                        .cp-app-contacts-dropdown-btn {
+                            display: flex;
+                            align-items: center;
+                            background: none;
+                            border: none;
+                            color: inherit;
+                            cursor: pointer;
+                            padding: 2px;
+                            border-radius: @variables_radius;
+                            flex-shrink: 0;
+                            &:hover {
+                                background-color:  var(--msg-bg-color-dark);
+                            }
+                            &:focus-visible {
+                                outline: @variables_focus_style;
+                                border-radius: @variables_radius;
+                            }
+                            svg {
+                                margin: 0;
+                            }
+                        }
+                        .cp-dropdown-content {
+                            min-width: auto;
+                            a {
+                                display: flex;
+                                align-items: center;
+                                gap: 5px;
+                            }
+                            svg {
+                                margin: 0;
+                            }
+                            li:focus-visible {
+                                outline: @variables_focus_style;
+                                border-radius: @variables_radius;
+                            }
+                        }
                     }
                 }
             }
@@ -133,6 +179,10 @@
                     color: var(--msg-bg-color-darker);
                     border-color: var(--msg-bg-color-darker);
                 }
+            }
+            &:focus-visible {
+                outline: @variables_focus_style;
+                border-radius: @variables_radius;
             }
             &.cp-app-contacts-notify {
                 animation: notif 2s ease-in-out infinite;
@@ -166,7 +216,7 @@
             .cp-app-contacts-category-content {
                 order: 2;
                 display: flex;
-                flex-flow: column-reverse;
+                flex-flow: column;
                 padding-bottom: 10px;
                 &:empty {
                     display: none;
@@ -236,6 +286,16 @@
         }
     }
 
+    &.cp-app-contacts-no-chats {
+        #cp-app-contacts-friendlist {
+            display: none;
+        }
+        #cp-app-contacts-messaging {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
     #cp-app-contacts-messaging {
         flex: 1;
         height: 100%;
@@ -245,6 +305,17 @@
 
         .cp-app-contacts-info {
             padding: 20px;
+            a {
+                color: @msg-color;
+                color: var(--msg-color);
+                &:focus-visible {
+                    outline: none;
+                    svg {
+                        outline: @variables_focus_style;
+                        border-radius: @variables_radius;
+                    }
+                }
+            }
         }
         .cp-app-contacts-header {
             background-color: @msg-bg-color-lighter;
@@ -257,19 +328,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 50px;
+            min-height: 50px;
             svg {
                 margin-right: 0;
             }
 
             .hover () {
                 cursor: pointer;
-                height: 100%;
-                line-height: 30px;
                 padding: 10px;
+                border-radius: @variables_radius;
                 &:hover {
-                    background-color: @msg-bg-color-darker;
-                    background-color: var(--msg-color-darker);
+                    background-color: var(--msg-bg-color-dark);
                 }
             }
 
@@ -277,9 +346,23 @@
             .cp-app-contacts-right-col {
                  flex: 1 1 auto;
                  text-align: center;
+                 min-width: 0;
+                .cp-app-contacts-name {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+            .cp-app-contacts-right-col {
+                overflow: hidden;
             }
             .cp-app-contacts-remove-history {
                 .hover;
+                margin-right: 3px;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
             }
             .cp-avatar-container {
                 display: flex;
@@ -293,6 +376,10 @@
                 .hover;
                 &.cp-app-contacts-faded {
                     color: @cryptpad_text_col;
+                }
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
                 }
             }
 
@@ -320,59 +407,78 @@
             height: 100%;
             display: flex;
             flex-flow: column;
+            .cp-app-contacts-history-cleared {
+                font-style: italic;
+                background-color: fade(@cp_help-bg, 50%);
+                padding: 2px 10px;
+                > svg {
+                    flex-shrink: 0;
+                    margin: 0;
+                }
+            }
             .cp-app-contacts-messages {
-                padding: 0 20px;
-                margin: 10px 0;
+                padding: 0 10px;
+                margin: 10px 2px;
                 flex: 1;
                 overflow-x: auto;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
                 .cp-app-contacts-message {
                     display: flex;
-                    flex-wrap: wrap;
-                    & > div {
-                        padding: 0 10px;
+                    flex-direction: column;
+                    .cp-app-contacts-sender {
+                        margin-top: 10px;
+                        font-weight: bold;
+                        background-color: var(--msg-bg-color-dark);
+                        display: flex;
+                        justify-content: space-between;
+                        border-radius: @variables_radius;
+                        padding: 0 5px;
+                    }
+                    .cp-app-contacts-message-row {
+                        display: flex;
+                        align-items: flex-start;
                     }
                     .cp-app-contacts-content {
                         overflow: hidden;
                         word-wrap: break-word;
+                        padding: 0 10px;
                         &> * {
                             margin: 0;
                         }
                         flex: 1;
-                        min-width: 70%;
-                        position: relative;
+                        min-width: 0;
                     }
                     .cp-app-contacts-date {
                         display: none;
                         font-style: italic;
                     }
-                    .cp-app-contacts-sender {
-                        margin-top: 10px;
-                        font-weight: bold;
-                        background-color: rgba(0,0,0,0.1);
-                        display: flex;
-                        justify-content: space-between;
-                        width: 100%;
-                    }
                     .cp-app-contacts-time {
-                        display: none;
+                        display: flex;
                         font-size: 0.8em;
-                        align-items: center;
+                        align-items: flex-start;
+                        justify-content: flex-end;
                         color: @msg-color;
-                        font-weight: bold;
-                        position: absolute;
-                        right: 0;
-                        top: 0;
-                        bottom: 0;
-                        background: rgba(0,0,0,0.3);
-                        border-top-left-radius: 50%;
-                        border-bottom-left-radius: 50%;
-                        padding: 0 10px;
+                        padding-right: 5px;
+                        opacity: 0.4;
+                        transition: opacity 0.2s ease;
+                        flex-shrink: 0;
+                        text-align: right;
+                        white-space: nowrap;
                     }
                     &:hover {
                         .cp-app-contacts-time {
-                            display: flex;
+                            opacity: 1;
                         }
                     }
+                }
+                .cp-app-contacts-system-notification {
+                    align-items: center;
+                    flex-direction: row;
+                    justify-content: center;
+                    color: fade(@cryptpad_text_col, 80%);
                 }
             }
         }
@@ -386,7 +492,7 @@
             justify-content: center;
             padding: 0 5%;
             textarea {
-                margin: 5px 0;
+                margin: 5px 2px 5px 0;
                 padding: 5px 10px;
                 border: none;
                 height: 54px; // 2 lines (22px height) + 2 margins (5px)
@@ -411,6 +517,7 @@
                 color: @cp_messenger-fg;
                 background-color: @msg-bg-color-darker;
                 background-color: var(--msg-bg-color-darker);
+                border-radius: @variables_radius;
                 &:hover {
                     background-color: @msg-bg-color-dark;
                     background-color: var(--msg-bg-color-dark);
@@ -423,6 +530,49 @@
                     margin: 0;
                 }
             }
+        }
+    }
+
+    .cp-app-contacts-back {
+        display: none;
+        cursor: pointer;
+        padding: 10px;
+        &:hover {
+            background-color: var(--msg-bg-color-dark);
+            border-radius: @variables_radius;
+        }
+    }
+
+    @media (max-width: @browser_media-medium-screen) {
+        #cp-app-contacts-container {
+            #cp-app-contacts-friendlist {
+                width: 100%;
+                flex: 1;
+            }
+            #cp-app-contacts-messaging {
+                display: none;
+            }
+            &.cp-app-contacts-chat-open {
+                #cp-app-contacts-friendlist {
+                    display: none;
+                }
+                #cp-app-contacts-messaging {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+            &.cp-app-contacts-no-chats {
+                #cp-app-contacts-friendlist {
+                    display: none;
+                }
+                #cp-app-contacts-messaging {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+        }
+        .cp-app-contacts-back {
+            display: flex;
         }
     }
 }

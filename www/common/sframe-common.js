@@ -768,7 +768,7 @@ define([
                 // Ctrl+E: New pad modal
                 var priv = ctx.metadataMgr.getPrivateData();
                 if (e.which === 69 && isApp) {
-                    if (priv.app === 'form' && !priv.canEdit && !priv.form_auditorKey) { return; }
+                    if (priv.app === 'form' && priv.readOnly && !priv.form_auditorHash && !priv.form_auditorKey) { return; }
                     e.preventDefault();
                     return void funcs.createNewPadModal();
                 }
@@ -1063,10 +1063,16 @@ define([
                 document.title = title;
             });
 
-            funcs.isPadStored(function (err, val) {
-                if (err || !val) { return; }
+            var showCrowdfunding = function () {
                 UIElements.displayCrowdfunding(funcs);
-            });
+            };
+            var privateData = ctx.metadataMgr.getPrivateData();
+            var isDriveContext = privateData.app === 'drive';
+            var isReadOnlyFormResponse = privateData.app === 'form' && privateData.readOnly && !privateData.form_auditorHash && !privateData.form_auditorKey;
+            var skipCrowdfunding = privateData.secureIframe === true || privateData.unsafeIframe === true || isReadOnlyFormResponse || isDriveContext;
+            if (!skipCrowdfunding) {
+                ctx.sframeChan.query('Q_CROWDFUNDING_INCREMENT_OPEN', {}, showCrowdfunding);
+            }
 
             ctx.sframeChan.ready();
 

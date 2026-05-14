@@ -29,19 +29,42 @@ var map = {
     'sv': 'Svenska',
     //'te': 'తెలుగు',
     'uk': 'Українська',
-    'zh': '中文(簡體)',
+    'zh': '中文(簡體)', // simplified
+    'zh_Hant': '中文(正體)', // traditional
 };
 
 var Messages = {};
 var LS_LANG = "CRYPTPAD_LANG";
 var getStoredLanguage = function () { return localStorage && localStorage.getItem(LS_LANG); };
 var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage || ''; };
+// Normalize browser/localStorage language labels to CryptPad internal keys.
+// We keep this centralized to avoid scattered `if (l === 'zh') ...` logic.
+var langAliases = {
+    'zh-cn': 'zh',
+    'zh-sg': 'zh',
+    'zh-hans': 'zh',
+
+    'zh-tw': 'zh_Hant',
+    'zh-hk': 'zh_Hant',
+    'zh-mo': 'zh_Hant',
+    'zh-hant': 'zh_Hant',
+};
+var normalizeLanguage = function (l) {
+    if (!l) { return l; }
+    // If it already matches a supported internal key, return as-is.
+    if (map[l]) { return l; }
+    var lLower = String(l).toLowerCase().replace('_', '-');
+    return langAliases[lLower] || l;
+};
 var getLanguage = Messages._getLanguage = function () {
     if (window.cryptpadLanguage) { return window.cryptpadLanguage; }
+
     var l = getBrowserLanguage();
     try {
         l = getStoredLanguage() || getBrowserLanguage();
     } catch (e) { console.log(e); }
+    l = normalizeLanguage(l);
+
     return map[l] ? l :
             (map[l.split('-')[0]] ? l.split('-')[0] :
                 (map[l.split('_')[0]] ? l.split('_')[0] : 'en'));

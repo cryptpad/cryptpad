@@ -14,7 +14,10 @@ define([
         return Math.random().toString(16).replace('0.', '');
     };
     var init = function () {
-        console.warn('INIT');
+        let devMode = false;
+        try { devMode = localStorage.CryptPad_dev === "1"; } catch (e) {}
+        if (devMode) { console.warn('INIT'); }
+
         var p = window.parent;
         var txid = getTxid();
         p.postMessage({ q: 'INTEGRATION_READY', txid: txid }, '*');
@@ -86,7 +89,7 @@ define([
             http.open('HEAD', url);
             http.onreadystatechange = function() {
                 if (this.readyState === this.DONE) {
-                    console.error(oldKey, this.status);
+                    if (devMode) { console.error(oldKey, this.status); }
                     if (this.status === 200) {
                         return cb({state: true});
                     }
@@ -150,7 +153,7 @@ define([
             }
             if (data.keepOld) { // they provide their own key, we must turn it into a hash
                 var key = sanitizeKey(data.key) + "000000000000000000000000000000000";
-                console.warn('KEY', key);
+                if (devMode) { console.warn('KEY', key); }
                 let hash = `/2/integration/edit/${key.slice(0,24)}/`;
                 return void cb({
                     key: hash,
@@ -265,7 +268,7 @@ define([
             xhr.responseType = 'blob';
             //xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = function () {
-                console.error(this.status);
+                if (devMode) { console.error(this.status); }
                 if (this.status === 200) {
                     cb();
                 } else {
@@ -278,7 +281,7 @@ define([
             xhr.send(blob);
         };
         chan.on('START', function (data, cb) {
-            console.warn('INNER START', data);
+            if (devMode) { console.warn('INNER START', data); }
             // data.key is a hash
             var href = Hash.hashToHref(data.key, data.application);
             if (data.editorConfig.lang) {
@@ -303,7 +306,7 @@ define([
                 });
             };
 
-            console.error(Hash.hrefToHexChannelId(href));
+            if (devMode) { console.error(Hash.hrefToHexChannelId(href)); }
             let startApp = function (blob) {
                 window.CP_integration_outer = {
                     pathname: `/${data.application}/`,
@@ -336,7 +339,6 @@ define([
                     path = '/common/onlyoffice/main.js';
                 }
                 require([path], function () {
-                    console.warn('SAO REQUIRED');
                     delete window.CP_integration_outer;
                     cb();
                 });

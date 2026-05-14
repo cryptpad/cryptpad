@@ -509,12 +509,15 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
     };
 
     var createCollapse = function (toolbar) {
-        var icon = Icons.get('chevron-up', {title: Messages.toolbar_collapse});
+        var icon = Icons.get('chevron-up');
         var notif = h('span.cp-collapsed-notif');
 
-        var $button = $(h('button.cp-toolbar-collapse',[
-            icon,
-            notif
+        var $button = $(h('button.cp-toolbar-collapse', {
+                'aria-label': Messages.toolbar_collapse,
+                'title': Messages.toolbar_collapse
+            }, [
+                icon,
+                notif
         ]));
         toolbar.$bottomR.prepend($button);
         $(notif).hide();
@@ -530,10 +533,14 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
             $button.toggleClass('cp-toolbar-button-active');
 
             const newIcon = hidden ?
-                Icons.get('chevron-down', {title: Messages.toolbar_expand}):
-                Icons.get('chevron-up', {title: Messages.toolbar_collapse});
+                Icons.get('chevron-down'):
+                Icons.get('chevron-up');
 
             $button.find('[data-lucide]').replaceWith(newIcon);
+            $button.attr({
+                'aria-label': hidden ? Messages.toolbar_expand : Messages.toolbar_collapse,
+                'title': hidden ? Messages.toolbar_expand : Messages.toolbar_collapse
+            });
 
             if (!hidden) { $(notif).hide(); }
 

@@ -213,7 +213,6 @@ define([
             opt.channelHex = secret.channel;
         }
 
-        console.warn(opt);
         return opt;
     };
 

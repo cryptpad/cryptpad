@@ -14,10 +14,11 @@ define([
     '/common/outer/http-command.js',
     '/common/outer/local-store.js',
     '/common/outer/login-block.js',
+    '/customize/login.js',
     '/customize/messages.js',
     '/common/common-icons.js',
 ], function (ApiConfig, $, h, Util, Cred, UI, Login, Constants,
-        ServerCommand, LocalStore, Block, Messages, Icons) {
+        ServerCommand, LocalStore, Block, CLogin, Messages, Icons) {
     if (window.top !== window) { return; }
 
     let ssoAuthCb = function (cb) {
@@ -31,6 +32,7 @@ define([
             publicKey: Util.decodeBase64(b64Keys.p)
         };
         var inviteToken = b64Keys.token;
+        CLogin.ssoRedirectTo(b64Keys);
         ServerCommand(keys, {
             command: 'SSO_AUTH_CB',
             url: window.location.href
@@ -63,7 +65,7 @@ define([
                 return void UI.warn(msg);
             }
             LocalStore.setSSOSeed(seed.toLowerCase());
-            window.location.href = '/drive/';
+            CLogin.redirect();
         });
     };
 

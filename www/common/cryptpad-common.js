@@ -2010,6 +2010,7 @@ define([
         var oldBlockKeys = oldAllocated.blockKeys;
         var blockKeys = newAllocated.blockKeys;
         var auth = data.auth;
+        var hasPassword = Boolean(data.newPassword);
 
         nThen(function (waitFor) {
             // Check if our drive is already owned
@@ -2135,6 +2136,7 @@ define([
             // Update "sso_block" data for SSO accounts
             Block.updateSSOBlock({
                 blockKeys: blockKeys,
+                hasPassword: hasPassword,
                 oldBlockKeys: oldBlockKeys
             }, waitFor(function (err) {
                 if (err) {

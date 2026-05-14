@@ -2813,14 +2813,21 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             });
         };
 
-        var importFile = function(content) {
-            // Abort if there is another real user in the channel (history keeper excluded)
+        // Abort if there is another real user in the channel (history keeper excluded)
+        var checkChannelUsers = function () {
             var m = metadataMgr.getChannelMembers().slice().filter(function (nId) {
                 return nId.length === 32;
             });
             if (m.length > 1) {
                 UI.removeModals();
-                return void UI.alert(Messages.oo_cantUpload);
+                UI.alert(Messages.oo_cantUpload);
+                return true;
+            }
+        };
+
+        var importFile = function(content) {
+            if (checkChannelUsers()) {
+                return;
             }
             if (!content) {
                 UI.removeModals();
@@ -2862,6 +2869,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             if (!supportsXLSX()) {
                 return void UI.alert(Messages.oo_invalidFormat);
             }
+            if (checkChannelUsers()) {
+                return;
+            }
+
             var div = h('div.cp-oo-x2tXls', [
                 Icons.get('loading'),
                 h('span', Messages.oo_importInProgress)
@@ -3460,6 +3471,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var $forgetButton = common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 setEditable(false);
+                toolbar.forgotten();
             });
             var $forget = UIElements.getEntryFromButton($forgetButton);
             toolbar.$drawer.append($forget);
@@ -3796,8 +3808,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     const integrationHasUnsavedChanges = function(unsavedChanges, cb) {
                         integrationChannel.query('Q_INTEGRATION_HAS_UNSAVED_CHANGES', unsavedChanges, cb);
                     };
+                    const onUserlistChange = (list) => {
+                        integrationChannel.event('Q_INTEGRATION_USERLIST_CHANGE', list);
+                    };
                     var inte = common.createIntegration(integrationSave,
-                                                integrationHasUnsavedChanges);
+                                            integrationHasUnsavedChanges,
+                                            onUserlistChange);
                     if (inte && cfg.autosave) {
                         evIntegrationSave.reg(function () {
                             inte.changed();
