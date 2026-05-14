@@ -103,7 +103,7 @@ define([
 
         const sendMyID = () => {
             const user = Util.clone(privateData?.integrationConfig?.
-                                    _?.editorConfig?.user);
+                                    _?.editorConfig?.user) || {};
             user.readOnly = isView;
             execCommand?.('SEND', {
                 msg: 'MYID',

@@ -106,6 +106,7 @@ define([
                             origin: window.location.origin,
                             pathname: window.location.pathname,
                             feedbackAllowed: Utils.Feedback.state,
+                            unsafeIframe: true,
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 

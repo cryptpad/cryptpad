@@ -5,6 +5,8 @@
 (function () {
     'use strict';
     var factory = function (/*Hash*/) {
+        let devMode = false;
+        try { devMode = localStorage.CryptPad_dev === "1"; } catch (e) {}
 
         // This API is used to load a CryptPad editor for a provided document in
         // an external platform.
@@ -48,7 +50,7 @@
                 var msg = data.msg;
                 var txid = data.txid;
                 if (commands[msg.q]) {
-                    console.warn('OUTER RECEIVED QUERY', msg.q, msg.data);
+                    if (devMode) { console.warn('OUTER RECEIVED QUERY', msg.q, msg.data); }
                     commands[msg.q](msg.data, function (args) {
                         _sendCb(txid, args);
                     });
@@ -62,7 +64,7 @@
                 var txid = getTxid();
                 if (cb) { handlers[txid] = cb; }
 
-                console.warn('OUTER SENT QUERY', q, data);
+                if (devMode) { console.warn('OUTER SENT QUERY', q, data); }
                 iWindow.postMessage({ msg: {
                     q: q,
                     data: data,

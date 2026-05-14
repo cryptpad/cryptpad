@@ -209,12 +209,13 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
     };
 
     Block.updateSSOBlock = function (data, cb) {
-        const { blockKeys, oldBlockKeys } = data;
+        const { blockKeys, oldBlockKeys, hasPassword } = data;
         var oldProof = oldBlockKeys && Block.proveAncestor(oldBlockKeys);
 
         ServerCommand(blockKeys.sign, {
             command: 'SSO_UPDATE_BLOCK',
-            ancestorProof: oldProof
+            ancestorProof: oldProof,
+            hasPassword
         }, cb);
 
     };

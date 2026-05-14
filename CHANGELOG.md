@@ -4,6 +4,81 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# 🌷 Spring release (2026.5.0)
+
+## Goals
+
+This release introduces an updated version of the Diagram app, now powered by Drawio 29. The app now defaults to the "sketch" theme, a simple infinite canvas suited to many uses from mind-mapping to freehand drawing. We introduce a theme switcher so that everyone can choose the right level of complexity for their needs. This release also comes with lots of fixes and improvements across CryptPad.
+
+## Features
+
+- Upgrade Diagram app to Drawio 29.6.7 [22fe846](https://github.com/cryptpad/cryptpad/pull/2192/changes/22fe846d75a7cdbc9a98878dd9c131ed5dbf5fe0)
+- Button to switch diagram mode [#2192](https://github.com/cryptpad/cryptpad/pull/2192)
+- Notifications for private messages [#2133](https://github.com/cryptpad/cryptpad/pull/2133)
+
+
+## Improvements
+
+- Improve Form accessibility  [#2260](https://github.com/cryptpad/cryptpad/pull/2260)
+- Enable zh-Hant/zh-Hans locales (#2237) and add alias system for locales [#2254](https://github.com/cryptpad/cryptpad/pull/2254)  by @toomore
+- Improve crowdfunding banner UI and show logic [#2242](https://github.com/cryptpad/cryptpad/pull/2242)
+- Contacts page improvements [#2219](https://github.com/cryptpad/cryptpad/pull/2219)
+
+
+## Fixes
+
+- fix: set bearer secret in env [#2268](https://github.com/cryptpad/cryptpad/pull/2268) by @ebuildy
+- Diagram initialized in read-only mode until document is ready [#2238](https://github.com/cryptpad/cryptpad/pull/2238)
+- Fix #2216: Table of contents not clickable in read-only mode [#2229](https://github.com/cryptpad/cryptpad/pull/2229) by @sliortega295-ops
+- Enforce immediate access-list lockout and prevent stale content visibility on refresh [#2226](https://github.com/cryptpad/cryptpad/pull/2226)
+- Fix app icons and spacing in Drive "Open in" context menu [#2213](https://github.com/cryptpad/cryptpad/pull/2213)
+- Fix leftside sidebar buttons' text overflow and prevent icon shrinking [#2212](https://github.com/cryptpad/cryptpad/pull/2212)
+- Fix paragraph selection in richtext for mobile [#2208](https://github.com/cryptpad/cryptpad/pull/2208)
+- Remove kanban tags when board is deleted [#2188](https://github.com/cryptpad/cryptpad/pull/2188)
+- Check for other users before OnlyOffice upload [#2228](https://github.com/cryptpad/cryptpad/pull/2228)
+- Update status for trashed OnlyOffice documents [#2183](https://github.com/cryptpad/cryptpad/pull/2183)
+
+
+## Dependencies
+
+- Upgrades
+  - chainpad-server: from ^5.2.4 to ^5.3.0
+  - drawio-npm: from 21.8.2+6 to 29.6.7+3
+
+## Upgrade notes
+
+### SSO plugin
+
+If your instance relies on the SSO plugin for authentication, please upgrade the plugin to [0.5.0](https://github.com/cryptpad/sso/releases/tag/0.5.0) as part of this upgrade.
+
+### CryptPad
+
+If you are upgrading from a version older than `2026.2.2` please read the upgrade notes of all versions between yours and `2026.5.0` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch --depth 1 origin tag 2026.5.0
+git checkout 2026.5.0
+npm ci
+npm run install:components
+./install-onlyoffice.sh
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+
+## Contributors
+
+Community: @toomore @sliortega295-ops @ebuildy
+
+CryptPad team: @AAAMON @Chouhartem @dariiing @davidbenque @DianaXWiki @wginolas @yflory @zuzanna-maria
+
+
 # ❄️🩹🩹 Winter fix release 2 (2026.2.2)
 
 ## Goals

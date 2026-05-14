@@ -859,6 +859,22 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
         delete sfDeleted[id];
     };
 
+    var msgNotif = {};
+    handlers['SEND_CHAT_MESSAGE'] = function (ctx, box, data, cb) {
+
+        var msgSender = data.msg.author;
+
+        //Check if sender is in contacts and not muted
+        if (msgNotif[msgSender] || isMuted(ctx, data) || !ctx.store.proxy.friends[msgSender]) { return void cb(true); }
+        msgNotif[msgSender] = 1;
+
+        cb(false);
+    };
+    removeHandlers['SEND_CHAT_MESSAGE'] = function (ctx, box, data) {
+        var msgSender = data.author;
+        delete msgNotif[msgSender];
+    };
+
     // New support
     handlers['NEW_TICKET'] = function (ctx, box, data, cb) {
         var msg = data.msg;

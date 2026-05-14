@@ -49,12 +49,17 @@ define([
     };
     if (window.location.hash) { setRedirectTo(); }
 
+    Exports.ssoRedirectTo = (localData) => {
+        redirectTo = localData?.redirectTo || redirectTo;
+    };
     Exports.ssoAuth = function (provider, cb) {
         var keys = Nacl.sign.keyPair();
         var inviteToken = window.location.hash.slice(1);
+
         localStorage.CP_sso_auth = JSON.stringify({
             s: Util.encodeBase64(keys.secretKey),
             p: Util.encodeBase64(keys.publicKey),
+            redirectTo,
             token: inviteToken
         });
         ServerCommand(keys, {
