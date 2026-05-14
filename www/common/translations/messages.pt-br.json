@@ -1693,5 +1693,18 @@
     "admin_invitationDeleteConfirm": "Tem certeza de que deseja apagar esse convite?",
     "admin_usersTitle": "Diretório do usuário",
     "admin_usersHint": "Lista de contas conhecidas nesta instância. Selecione abaixo para adicionar contas automaticamente, ou insira as informações manualmente utilizando o formulário.",
-    "admin_usersAdd": "Adicionar um usuário conhecido"
+    "admin_usersAdd": "Adicionar um usuário conhecido",
+    "support_moderatorNotification": "{0} adicionou você como moderador da equipe de suporte",
+    "crowdfunding_popup_text2": "Alternativamente, você pode se subscrever nessa instância.",
+    "form_input_ph_text": "Sua resposta aqui",
+    "form_input_ph_number": "Insira um número",
+    "form_date_time": "Selecione uma data e horário",
+    "contacts_muted": "Mudo",
+    "contacts_noFriends": "Sua lista de contatos está vazia",
+    "contacts_noFriendsInfo": "Inicie <a>adicionando um contato</a> para iniciar uma conversa.",
+    "contacts_historyCleared": "O histórico da conversa foi apagado para todos",
+    "diagram_modesOptionLabel": "Modificar o tema para {0} atualizará o aplicativo",
+    "diagram_sketchTheme": "Esboço",
+    "diagram_simpleTheme": "Simples",
+    "diagram_classicTheme": "Clássico"
 }

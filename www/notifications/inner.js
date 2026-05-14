@@ -218,7 +218,8 @@ define([
         var active = privateData.category || 'all';
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
-            var $category = $('<div>', {'class': 'cp-sidebarlayout-category', 'tabindex': 0, 'role': 'menuitem'}).appendTo($categories);
+            var name = Messages['notifications_cat_'+key] || key;
+            var $category = $('<div>', {'class': 'cp-sidebarlayout-category', 'tabindex': 0, 'role': 'menuitem', 'aria-label': name}).appendTo($categories);
             if (key === 'all') { $category.append($(Icons.get('all'))); }
             if (key === 'friends') { $category.append($(Icons.get('contacts-book'))); }
             if (key === 'pads') { $category.append($(Icons.get('file-pad'))); }
@@ -245,7 +246,7 @@ define([
                 showCategories(categories[key]);
             });
 
-            $category.append(Messages['notifications_cat_'+key] || key);
+            $category.append(h('span.cp-sidebarlayout-category-name', name));
         });
         showCategories(categories[active]);
     };

@@ -61,7 +61,6 @@ const factory = (Crypto, CPNetflux, Netflux, Util,
         nThen(function (waitFor) {
             Session.accessKeys.forEach(function (obj) {
                 Pinpad.create(config.network, obj, waitFor(function (e) {
-                    console.log('done', obj);
                     if (e) { console.error(e); }
                 }));
             });

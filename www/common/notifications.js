@@ -148,6 +148,25 @@ define([
         }
     };
 
+    // Send chat message
+    handlers['SEND_CHAT_MESSAGE'] = function(common, data) {
+        var content = data.content;
+        var msg = content.msg;
+        var key = 'sent_chatMessage';
+
+        var name = Util.fixHTML(msg.content.name) || Messages.anonymous;
+        content.getFormatText = function() {
+            return Messages._getKey(key, [name]);
+        };
+        content.handler = function() {
+            common.openURL('/contacts/');
+            defaultDismiss(common, data)();
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
     // New support message from the admins
     handlers['SUPPORT_MESSAGE'] = function(common, data) {
         var content = data.content;

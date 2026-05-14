@@ -152,7 +152,40 @@ define([
             }, true
         );
 
-        var parameters;
+        var checkDefaultTheme = function(cb) {
+            var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+            if (!privateData.settings['diagram'] || !privateData.settings['diagram'].mode) {
+                cb('sketch');
+            } else {
+                cb(privateData.settings['diagram'].mode);
+            }
+        };
+
+        var parameters = new URLSearchParams({
+            test: 1,
+            stealth: 1,
+            embed: 1,
+            drafts: 0,
+            p: 'cryptpad',
+            integrated: framework.isIntegrated() ? 'true' : 'false',
+            chrome: 0,
+            dark: window.CryptPad_theme === "dark" ? 1 : 0,
+
+            // Hide save and exit buttons
+            noSaveBtn: 1,
+            saveAndExit: 0,
+            noExitBtn: 1,
+            browser: 0,
+            pv: 0,
+
+            noDevice: 1,
+            filesupport: 0,
+
+            modified: 'unsavedChanges',
+            proto: 'json',
+
+            lang: Messages._languageUsed
+        });
 
         framework.onEditableChange(function () {
             var readOnly = framework.isReadOnly() || framework.isLocked();
@@ -163,41 +196,31 @@ define([
                 parameters.set('chrome', '1');
                 parameters.set('grid', '1');
             }
+        });
+
+         var loadDiagram = function () {
+            checkDefaultTheme(function(theme) {
+                var defaultTheme = theme;
+                parameters.set('ui', defaultTheme);
+            });
+            var isReadOnly = framework.isReadOnly() ? 0 : 1;
+            parameters.set('chrome', isReadOnly);
             drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
             + parameters;
-        });
+        };
 
         // starting the CryptPad framework
         framework.start();
 
-        parameters = new URLSearchParams({
-                test: 1,
-                stealth: 1,
-                embed: 1,
-                drafts: 0,
-                p: 'cryptpad',
-                integrated: framework.isIntegrated() ? 'true' : 'false',
-
-                chrome: framework.isReadOnly() ? 0 : 1,
-                dark: window.CryptPad_theme === "dark" ? 1 : 0,
-
-                // Hide save and exit buttons
-                noSaveBtn: 1,
-                saveAndExit: 0,
-                noExitBtn: 1,
-                browser: 0,
-
-                noDevice: 1,
-                filesupport: 0,
-
-                modified: 'unsavedChanges',
-                proto: 'json',
-
-                lang: Messages._languageUsed
-            });
-
-        drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
-            + parameters;
+        //wait for metadata to update before checking the theme and loading Drawio UI
+        var metadataMgr = framework._.sfCommon.getMetadataMgr();
+        var onChange = function () {
+            var privateData = metadataMgr.getPrivateData();
+            if (!privateData.settings.toolbar) { return; }
+            loadDiagram();
+            metadataMgr.off('change', onChange);
+        };
+        metadataMgr.onChange(onChange);
 
         window.addEventListener("message", (event) => {
             if (event.source === drawioFrame.contentWindow) {
@@ -209,6 +232,58 @@ define([
                 }
             }
         }, false);
+
+        var setTheme = function (theme, cb) {
+            framework._.sfCommon.setAttribute(['diagram', 'mode'], theme, function() {
+                cb();
+            });
+        };
+
+        var mkModeButton = function (framework) {
+            var modes = [Messages.diagram_sketchTheme, Messages.diagram_simpleTheme, Messages.diagram_classicTheme];
+            var types = [];
+
+            modes.forEach(function(mode){
+                types.push({
+                    tag: 'a',
+                    attributes: {
+                        'data-value': mode,
+                        'aria-label': Messages._getKey('diagram_modesOptionLabel', [mode]),
+                    },
+                    content: mode,
+                    action: function () {
+                        var $self = $('a[data-value="' + mode + '"]');
+                        parameters.set('ui', mode);
+                        drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
+                        + parameters;
+                        setTheme(mode, function() {
+                            $('.cp-dropdown-content').find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
+                            $self.addClass('cp-dropdown-element-active');
+                            $self.closest('li').focus();
+                            $('.cp-dropdown-content').hide();
+}                       );
+                    },
+                });
+            });
+            checkDefaultTheme(function(theme) {
+                var $drawer = UIElements.createDropdown({
+                    text: Messages.themeButton,
+                    options: types,
+                    common: framework._.sfCommon,
+                    iconCls: 'color-palette',
+                    initialValue: parameters.get('ui') || theme
+                });
+                framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
+                framework._.toolbar.$bottomL.append($drawer);
+                $drawer.addClass('cp-toolbar-appmenu');
+                $drawer.on('click', function () {
+                    $('a[data-value="' + parameters.get('ui') || theme + '"]').addClass('cp-dropdown-element-active');
+                });
+            });
+
+        };
+        mkModeButton(framework);
+
     };
 
     $('#cp-app-diagram-editor').hide();

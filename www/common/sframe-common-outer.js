@@ -1028,6 +1028,110 @@ define([
                         cb({error:e});
                     });
                 });
+                var CROWDFUNDING_PREFIX = 'cp_crowdfunding_';
+                var CROWDFUNDING_DRIVE_KEY = ['general', 'crowdfunding_metrics'];
+                // First action (opening or creating a document) count threshold before showing the banner
+                var CROWDFUNDING_MIN_ACTIONS = 5;
+                // Additional actions required after each shown banner
+                var CROWDFUNDING_ACTIONS_INTERVAL = 10;
+                // Quota usage threshold for quota-based banner display
+                var CROWDFUNDING_MIN_QUOTA_MB = 50;
+                // Cooldown between banner displays based on last shown timestamp in milliseconds
+                var CROWDFUNDING_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+                var crowdfundingGetLS = function () {
+                    var get = function (suffix) {
+                        var k = CROWDFUNDING_PREFIX + suffix;
+                        var val = localStorage.getItem(k);
+                        if (val !== null && val !== '') { return Number(val) || null; }
+                        return null;
+                    };
+                    return {
+                        visitCount: get('visitCount') || 0,
+                        firstSeen: get('firstSeen') || null,
+                        lastShownAtCount: get('lastShownAtCount') || 0,
+                        lastShownAtTime: get('lastShownAtTime') || 0
+                    };
+                };
+                // Read metrics: encrypted drive for logged-in users, localStorage for guests
+                var crowdfundingReadMetrics = function (cb) {
+                    if (!Utils.LocalStore.isLoggedIn()) { return cb(crowdfundingGetLS()); }
+                    Cryptpad.getAttribute(CROWDFUNDING_DRIVE_KEY, function (e, metrics) {
+                        if (e || !metrics || typeof metrics !== 'object') {
+                            return cb({
+                                visitCount: 0,
+                                firstSeen: null,
+                                lastShownAtCount: 0,
+                                lastShownAtTime: 0
+                            });
+                        }
+                        cb(metrics);
+                    });
+                };
+                // Write metrics: encrypted drive for logged-in users, localStorage for guests
+                var crowdfundingWriteMetrics = function (metrics, cb) {
+                    if (!Utils.LocalStore.isLoggedIn()) {
+                        try {
+                            ['visitCount', 'firstSeen', 'lastShownAtCount', 'lastShownAtTime'].forEach(function (k) {
+                                if (metrics[k] !== null && metrics[k] !== undefined) {
+                                    localStorage.setItem(CROWDFUNDING_PREFIX + k, String(metrics[k]));
+                                }
+                            });
+                        } catch (e) {}
+                        return cb && cb();
+                    }
+                    Cryptpad.setAttribute(CROWDFUNDING_DRIVE_KEY, metrics, function () {
+                        cb && cb();
+                    });
+                };
+                var crowdfundingIncrementAction = function (cb) {
+                    crowdfundingReadMetrics(function (metrics) {
+                        metrics.visitCount = (metrics.visitCount || 0) + 1;
+                        if (!metrics.firstSeen) { metrics.firstSeen = Date.now(); }
+                        crowdfundingWriteMetrics(metrics, cb);
+                    });
+                };
+
+                sframeChan.on('Q_CROWDFUNDING_SHOULD_SHOW', function (data, cb) {
+                    crowdfundingReadMetrics(function (metrics) {
+                        var actionCount = metrics.visitCount || 0;
+                        var lastShownAtCount = metrics.lastShownAtCount || 0;
+                        var lastShownAtTime = metrics.lastShownAtTime || 0;
+                        var now = Date.now();
+                        var nextThreshold = lastShownAtCount === 0 ? CROWDFUNDING_MIN_ACTIONS : lastShownAtCount + CROWDFUNDING_ACTIONS_INTERVAL;
+                        var enoughTimePassed = lastShownAtTime === 0 || (now - lastShownAtTime >= CROWDFUNDING_COOLDOWN_MS);
+                        var showFromActions = actionCount >= nextThreshold && enoughTimePassed;
+                        if (showFromActions) {
+                            return cb({
+                                show: true,
+                                actionCount: actionCount
+                            });
+                        }
+                        if (CROWDFUNDING_MIN_QUOTA_MB <= 0) {
+                            return cb({
+                                show: false,
+                                actionCount: actionCount
+                            });
+                        }
+                        Cryptpad.getPinnedUsage({}, function (e, used) {
+                            var usedMb = (typeof used === 'number') ? (used / (1024 * 1024)) : 0;
+                            cb({
+                                show: !e && usedMb >= CROWDFUNDING_MIN_QUOTA_MB && enoughTimePassed,
+                                actionCount: actionCount
+                            });
+                        });
+                    });
+                });
+                sframeChan.on('Q_RECORD_CROWDFUNDING_SHOWN', function (data, cb) {
+                    crowdfundingReadMetrics(function (metrics) {
+                        metrics.lastShownAtCount = (data && typeof data.count === 'number') ? data.count : (metrics.visitCount || 0);
+                        metrics.lastShownAtTime = Date.now();
+                        crowdfundingWriteMetrics(metrics, cb);
+                    });
+                });
+                sframeChan.on('Q_CROWDFUNDING_INCREMENT_OPEN', function (data, cb) {
+                    if (readOnly) { return cb && cb(); }
+                    crowdfundingIncrementAction(cb);
+                });
 
                 Cryptpad.mailbox.onEvent.reg(function (data, cb) {
                     sframeChan.query('EV_MAILBOX_EVENT', data, function (err, obj) {

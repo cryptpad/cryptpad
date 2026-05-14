@@ -62,7 +62,7 @@ const factory = (SRpc, Channel, Util) => {
                     } catch (e) {
                         console.error('Error in webworker when executing query ' + q);
                         console.error(e);
-                        console.log(data);
+                        //console.log(data);
                     }
                     if (q === "DISCONNECT") {
                         onClose();
@@ -99,7 +99,7 @@ const factory = (SRpc, Channel, Util) => {
                 } catch (e) {
                     console.error('Error in webworker when executing query JOIN_PAD');
                     console.error(e);
-                    console.log(data);
+                    //console.log(data);
                 }
             });
             chan.on('SEND_PAD_MSG', function (msg, cb) {
@@ -112,7 +112,7 @@ const factory = (SRpc, Channel, Util) => {
                 } catch (e) {
                     console.error('Error in webworker when executing query SEND_PAD_MSG');
                     console.error(e);
-                    console.log(data);
+                    //console.log(data);
                 }
             });
 

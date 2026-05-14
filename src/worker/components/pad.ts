@@ -167,6 +167,7 @@ const _join: Callback = (ctx, clientId, data) => {
     }
 
     const isNew = typeof channels[channelId] === "undefined";
+    const isAnonymousSession = !store.loggedIn;
 
     // Create or get existing channel object
     const channel = channels[channelId] ||= {
@@ -201,7 +202,7 @@ const _join: Callback = (ctx, clientId, data) => {
     }
 
     // Existing pad already loaded: send userlist and history
-    if (!isNew && channel.wc) {
+    const sendExistingState = () => {
         postMessage(clientId, "PAD_CONNECT", { // Initialize
             myID: channel.wc.myID,
             id: channel.wc.id,
@@ -218,7 +219,29 @@ const _join: Callback = (ctx, clientId, data) => {
             });
         });
         postMessage(clientId, "PAD_READY"); // Ready
-        return;
+    };
+    const preflightAnonAccess = (cb) => {
+        const allow = () => { cb(true); };
+        const deny = () => {
+            Cache?.clearChannel?.(channelId);
+            channel.bcast("PAD_ERROR", { type: "ERESTRICTED" });
+            ctx.leavePad(null, data, function () {});
+            cb(false);
+        };
+
+        if (!isAnonymousSession) { return void allow(); }
+        if (!store.anon_rpc) { return void allow(); }
+        _getMetadata(ctx, clientId, { channel: channelId }, md => {
+            if (md?.rejected) { return void deny(); }
+            allow();
+        });
+    };
+
+    if (!isNew) {
+        return void preflightAnonAccess((ok) => {
+            if (!ok) { return; }
+            sendExistingState();
+        });
     }
 
     // chainpad-netflux config
@@ -231,7 +254,7 @@ const _join: Callback = (ctx, clientId, data) => {
         }
         channel.bcast("PAD_ERROR", err);
 
-        if (type === "EDELETED" && Cache?.clearChannel) {
+        if (["EDELETED", "EEXPIRED", "ERESTRICTED"].includes(type) && Cache?.clearChannel) {
             Cache.clearChannel(channelId);
         }
 
@@ -343,7 +366,10 @@ const _join: Callback = (ctx, clientId, data) => {
             });
         }
     };
-    channel.cpNf = CpNetflux.start(conf);
+    preflightAnonAccess((ok) => {
+        if (!ok) { return; }
+        channel.cpNf = CpNetflux.start(conf);
+    });
 };
 
 // Send a message to a pad we already joined

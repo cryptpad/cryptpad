@@ -28,7 +28,7 @@ define([
         "grid": "layout-grid",
         "list": "list",
         "document-owner": "id-card-lanyard",
-        "burn-drive": "ban",
+        "burn-drive": "eraser",
         // Teams
         "teams": "users-round",
         "promote": "chevrons-up",
@@ -85,7 +85,7 @@ define([
         "share": "share-2",
         "download": "hard-drive-download",
         "destroy": "shredder",
-        "donate": "hand-coins",
+        "donate": "hand-heart",
         "send": "send",
         "cloud-upload": "cloud-upload",
         "print": "printer",
@@ -250,7 +250,10 @@ define([
         "badge-error": "circle-alert",
         // Other
         "maintenance": "construction",
-        "release-notes": "notepad-text"
+        "release-notes": "notepad-text",
+        "crowdfunding-donate": "hand-heart",
+        "crowdfunding-snooze": "timer",
+        "crowdfunding-donate2": "ticket"
     };
 
     Icons.add = (newIcons) => {

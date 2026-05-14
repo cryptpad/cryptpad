@@ -2053,7 +2053,7 @@ define([
     Messages.settings_cat_notifications = Messages.notificationsPage;
     Messages.settings_cat_profile = Messages.profileButton;
     var createLeftside = function() {
-        var $categories = $('<div>', { 'class': 'cp-sidebarlayout-categories' })
+        var $categories = $('<div>', { 'class': 'cp-sidebarlayout-categories', 'role': 'menu'})
             .appendTo(APP.$leftside);
         APP.$usage = $('<div>', { 'class': 'usage' }).appendTo(APP.$leftside);
         var active = privateData.category || 'account';
@@ -2068,11 +2068,13 @@ define([
             let name = SIDEBAR_NAMES[key] ||
                        Messages['settings_cat_' + key] || key;
             var $category = $(h('div.cp-sidebarlayout-category', {
+                'role': 'menuitem',
                 'tabindex': 0,
-                'data-category': key
+                'data-category': key,
+                'aria-label': name
             }, [
                 icon,
-                name,
+                h('span.cp-sidebarlayout-category-name', name),
             ])).appendTo($categories);
 
 
