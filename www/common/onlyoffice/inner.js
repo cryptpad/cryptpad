@@ -2630,7 +2630,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 return;
             }
 
-            const onCorruptionWarning = Util.once((id) => console.log('XXX id collision', id));
+            const onCorruptionWarning = Util.once((id) => {
+                console.log('id collision in document', id);
+                Feedback.send('OFFICE_DOCUMENT_ID_COLLISION', true);
+            });
 
             APP.docEditor.connectMockServer({
                 onMessage: fromOOHandler,
