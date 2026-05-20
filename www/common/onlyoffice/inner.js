@@ -565,6 +565,7 @@ define([
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
             myUniqueOOId = undefined;
+            myIndex = undefined;
             setMyId();
             
             if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
