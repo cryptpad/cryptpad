@@ -103,6 +103,9 @@ define([
             ids: {},
             mediasSources: {},
             version: privateData.ooForceVersion ? Number(privateData.ooForceVersion) : OOCurrentVersion.currentVersionNumber,
+            debug: {
+                idCollision: false,
+            },
         };
         var oldHashes = {};
         var oldIds = {};
@@ -2207,11 +2210,6 @@ define([
                 }];
                 common.checkTrimHistory(channels);
             }
-
-            content.debug = content.debug ?? {};
-            content.debug.idCollision = content.debug.idCollision ?? false;
-            APP.onLocal();
-
             console.log("OO ready");
         };
 
@@ -2640,7 +2638,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 if (content?.debug?.idCollision !== undefined // No feedback for old documents
                     && content?.debug?.idCollision === false) { // Send feedback only once
                     Feedback.send(`channel=${content.channel}&OFFICE_DOCUMENT_ID_COLLISION`, true);
-                    content.debug = content.debug ?? {};
+                    content.debug = content.debug || {};
                     content.debug.idCollision = true;
                     APP.onLocal();
                 }
