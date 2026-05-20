@@ -2629,16 +2629,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 makeChannel();
                 return;
             }
-
-            const onCorruptionWarning = Util.once((id) => console.log('XXX id collision', id));
-
             APP.docEditor.connectMockServer({
                 onMessage: fromOOHandler,
                 getParticipants: getParticipants,
                 onAuth: onAuth,
                 getImageURL: getImageURL,
                 getInitialChanges: getInitialChanges,
-                onCorruptionWarning: onCorruptionWarning,
             });
         };
 
