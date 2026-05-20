@@ -102,10 +102,7 @@ define([
             hashes: {},
             ids: {},
             mediasSources: {},
-            version: privateData.ooForceVersion ? Number(privateData.ooForceVersion) : OOCurrentVersion.currentVersionNumber,
-            debug: {
-                idCollision: false,
-            },
+            version: privateData.ooForceVersion ? Number(privateData.ooForceVersion) : OOCurrentVersion.currentVersionNumber
         };
         var oldHashes = {};
         var oldIds = {};
@@ -2635,13 +2632,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             const onCorruptionWarning = Util.once((id) => {
                 console.log('id collision in document', id);
-                if (content?.debug?.idCollision !== undefined // No feedback for old documents
-                    && content?.debug?.idCollision === false) { // Send feedback only once
-                    Feedback.send(`channel=${content.channel}&OFFICE_DOCUMENT_ID_COLLISION`, true);
-                    content.debug = content.debug || {};
-                    content.debug.idCollision = true;
-                    APP.onLocal();
-                }
+                Feedback.send('OFFICE_DOCUMENT_ID_COLLISION', true);
             });
 
             APP.docEditor.connectMockServer({
