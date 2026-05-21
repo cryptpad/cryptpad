@@ -134,6 +134,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.kanban_quickView = "Minimize card content"; // XXX
+    Messages.kanban_fullView = "Show card content";
     return Messages;
 
 });

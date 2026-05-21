@@ -1107,16 +1107,28 @@ define([
         var $cContainer = $('#cp-app-kanban-container');
         var addControls = function () {
             // Quick or normal mode
-            var small = h('button.cp-kanban-view-small', Icons.get('kanban-minimize'));
-            var big = h('button.cp-kanban-view', Icons.get('kanban-maximize'));
+            var small = h('button.cp-kanban-view-small', Icons.get('kanban-minimize'), {
+                'title': Messages.kanban_quickView,
+                'aria-label': Messages.kanban_quickView,
+                'aria-pressed': $cContainer.hasClass('cp-kanban-quick') ? 'true' : 'false'
+            });
+            var big = h('button.cp-kanban-view', Icons.get('kanban-maximize'), {
+                'title': Messages.kanban_fullView,
+                'aria-label': Messages.kanban_fullView,
+                'aria-pressed': $cContainer.hasClass('cp-kanban-quick') ? 'false' : 'true'
+            });
             $(small).click(function () {
                 if ($cContainer.hasClass('cp-kanban-quick')) { return; }
                 $cContainer.addClass('cp-kanban-quick');
+                small.setAttribute('aria-pressed', 'true');
+                big.setAttribute('aria-pressed', 'false');
                 //framework._.sfCommon.setPadAttribute('quickMode', true);
             });
             $(big).click(function () {
                 if (!$cContainer.hasClass('cp-kanban-quick')) { return; }
                 $cContainer.removeClass('cp-kanban-quick');
+                small.setAttribute('aria-pressed', 'false');
+                big.setAttribute('aria-pressed', 'true');
                 //framework._.sfCommon.setPadAttribute('quickMode', false);
             });
 
