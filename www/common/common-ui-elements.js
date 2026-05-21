@@ -4407,6 +4407,7 @@ define([
             var $color = $(h('button.cp-palette-color'));
             all.push($color);
             $color.addClass('cp-palette-'+(color || 'nocolor'));
+            $color.attr('aria-label', Messages['color' + i]);
             const checkIcon = Icons.get('check');
             $(checkIcon).addClass('cp-check-icon is-hidden'); // added hidden class to overcome Lucide rendering
             $color.append(checkIcon);
