@@ -7,11 +7,11 @@ module.exports = {
     // Enable SSO login on this instance
     enabled: false,
     // Block registration for non-SSO users on this instance
-    enforced: false,
+    enforced: true,
     // Allow users to add an additional CryptPad password to their SSO account
-    cpPassword: false,
+    cpPassword: true,
     // You can also force your SSO users to add a CryptPad password
-    forceCpPassword: false,
+    forceCpPassword: true,
     // List of SSO providers
     list: [
     /*
