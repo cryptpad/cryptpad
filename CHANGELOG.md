@@ -4,6 +4,38 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# 🌷🩹 Spring fix release (2026.5.1)
+
+This release contains the following fixes:
+- office apps corruption fix
+- update dependencies
+- fix TypeError on password change with user registry enabled
+- fix issues related to the SSO plugin (v0.6.0)
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2026.5.0` please read the upgrade notes of all versions between yours and `2026.5.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch --depth 1 origin tag 2026.5.1
+git checkout 2026.5.1
+npm ci
+npm run install:components
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+## Contributors
+
+CryptPad team: @AAAMON @Chouhartem @dariiing @davidbenque @DianaXWiki @wginolas @yflory @zuzanna-maria
+
+
 # 🌷 Spring release (2026.5.0)
 
 ## Goals
