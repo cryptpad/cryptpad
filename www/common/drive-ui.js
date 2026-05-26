@@ -4357,6 +4357,7 @@ define([
         // Display the selected directory into the content part (rightside)
         // NOTE: Elements in the trash are not using the same storage structure as the others
         var _displayDirectory = function (path, force) {
+
             if (APP.closed || (APP.$content && !$.contains(document.documentElement, APP.$content[0]))) { return; }
 
             APP.hideMenu();
@@ -4376,6 +4377,12 @@ define([
                 } else {
                     path = [ROOT];
                 }
+            } else if (driveConfig.APP.loggedIn && path[0] === 'sf') {
+                var fId = APP.newSharedFolder;
+                const key = Object.keys(proxy.drive.root).find(
+                    k => proxy.drive.root[k] === parseInt(fId)
+                );
+                path = ['root', String(key),'root'];
             }
 
             if (APP.loggedIn && path[0] === FILES_DATA) {
