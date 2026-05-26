@@ -1,0 +1,20 @@
+{
+    "name": "Cryptpad",
+    "short_name": "Cryptpad",
+    "description": "CryptPad: end-to-end encrypted collaboration suite",
+    "theme_color": "#006ccc",
+    "display": "standalone",
+    "start_url": "/drive/",
+    "scope": "/",
+    "icons": [
+        {
+            "src": "/customize/main-favicon.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        },
+        {
+            "src": "/customize/CryptPad_logo.svg",
+            "sizes": "any"
+        }
+    ]
+}
