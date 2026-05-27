@@ -856,12 +856,15 @@ define([
                     resetData(blob, file || fileType);
                     UI.removeLoadingScreen();
                 };
+                let type = common.getMetadataMgr().getPrivateData().ooType;
+                let file = getFileType();
                 if (!cp?.file) {
-                    return loadDocument(true, true, void 0, todo);
+                    let blob = loadInitDocument(type, true);
+                    return todo({ blob, file });
                 }
                 loadLastDocument(cp)
                     .then(todo)
-                    .catch((err) => {
+                    .catch(() => {
                         if (APP.isDownload) {
                             return void sframeChan.event('EV_OOIFRAME_DONE', {
                                 error: 'INVALID'
@@ -874,8 +877,6 @@ define([
                             $(vHashEl).removeClass('alert-warning').addClass('alert-danger');
                             return;
                         }
-                        var file = getFileType();
-                        var type = common.getMetadataMgr().getPrivateData().ooType;
                         if (APP.downloadType) { type = APP.downloadType; }
                         var blob = loadInitDocument(type, true);
                         ooChannel.queue = file.doc === 'spreadsheet' ? messages.slice(0, v) : messages.slice(0, v+1);
