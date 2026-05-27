@@ -851,13 +851,22 @@ define([
 
                 if (!exists) { return void UI.removeLoadingScreen(); }
 
+                let todo = ({blob, file, fileType}) => {
+                    ooChannel.queue = messages.slice(1, minor+1);
+                    resetData(blob, file || fileType);
+                    UI.removeLoadingScreen();
+                };
+                if (!cp?.file) {
+                    return loadDocument(true, true, void 0, todo);
+                }
                 loadLastDocument(cp)
-                    .then(({blob, fileType}) => {
-                        ooChannel.queue = messages.slice(1, minor+1);
-                        resetData(blob, fileType);
-                        UI.removeLoadingScreen();
-                    })
-                    .catch(() => {
+                    .then(todo)
+                    .catch((err) => {
+                        if (APP.isDownload) {
+                            return void sframeChan.event('EV_OOIFRAME_DONE', {
+                                error: 'INVALID'
+                            });
+                        }
                         if (cp.hash && vHashEl) {
                             // We requested a checkpoint but we can't find it...
                             UI.removeLoadingScreen();
@@ -3147,6 +3156,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }
             content = json.content;
             readOnly = true;
+            if (!content.version || content.version <= 7) {
+                return void sframeChan.event('EV_OOIFRAME_DONE', {
+                    error: 'MIGRATE'
+                });
+            }
             var version = (!content.version || content.version === 1) ? 'v1/' :
                           (content.version <= 3 ? 'v2b/' : OOCurrentVersion.currentVersion + '/');
             var s = h('script', {
@@ -3164,6 +3178,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             // minor version of 0. "openVersionHash" knows that it needs to give us the latest
             // version when "APP.isDownload" is true.
             var sheetVersion = lastIndex + '.0';
+            ooLoaded = false;
             openVersionHash(sheetVersion);
         });
 
