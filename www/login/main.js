@@ -82,15 +82,10 @@ define([
         var $uname = $('#name').focus();
 
         var $passwd = $('#password')
-        // background loading of login assets
-        // enter key while on password field clicks signup
-        .on('keydown', function (e) {
-            if (e.which !== 13) { return; } // enter
-            $('button.login').click();
-        });
 
         //var test;
-        $('button.login').click(function () {
+        $('#userForm').on('submit', function (e) {
+            e.preventDefault();
             var shouldImport = $checkImport[0].checked;
             var uname = $uname.val();
             var passwd = $passwd.val();
