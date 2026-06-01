@@ -432,7 +432,7 @@
     "contacts_rooms": "Salas",
     "contacts_fetchHistory": "Recuperar histórico antigo",
     "contacts_removeHistoryServerError": "Ocorreu um erro ao remover seu histórico de bate-papo. Tente novamente mais tarde",
-    "contacts_confirmRemoveHistory": "Tem certeza de que quer remover permanentemente o histórico do seu bate-papo? Os dados não poderão ser restaurados",
+    "contacts_confirmRemoveHistory": "Tem certeza de que quer remover o histórico do seu bate-papo? Os dados não poderão ser restaurados.",
     "contacts_removeHistoryTitle": "Limpar o histórico do bate-papo",
     "contacts_info4": "Qualquer participante pode limpar permanentemente o histórico do bate-papo",
     "contacts_info3": "Dê um duplo clique no ícone para ver o perfil",
