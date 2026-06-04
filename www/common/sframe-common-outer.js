@@ -957,8 +957,12 @@ define([
                 Cryptpad.universal.onEvent.reg(function (data) {
                     sframeChan.event('EV_UNIVERSAL_EVENT', data);
                 });
-                sframeChan.on('Q_UNIVERSAL_COMMAND', function (data, cb) {
-                    Cryptpad.universal.execCommand(data, cb);
+                sframeChan.on('Q_UNIVERSAL_COMMAND', function (content, cb) {
+                    if (content?.type === 'linked-doc') {
+                        content.data.data.signKey64 = secret.keys?.signKey;
+                        content.data.data.channel = secret.channel;
+                    }
+                    Cryptpad.universal.execCommand(content, cb);
                 });
 
                 sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {

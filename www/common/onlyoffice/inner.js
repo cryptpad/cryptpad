@@ -249,6 +249,52 @@ define([
             });
         };
 
+        const addLinkedCheckpoint = (cpData, cb) => {
+            let parsed = Hash.parsePadUrl(cpData.file);
+            let secret = Hash.getSecrets('file', parsed.hash);
+            APP.linkedModule.execCommand('ADD_LINKED_DATA', {
+                content: {
+                    type: 'checkpoints',
+                    data: {
+                        rtChannel: cpData.rtChannel,
+                        blob: secret.channel
+                    }
+                }
+            }, (obj) => {
+                if (obj?.error) { console.error(obj.error); }
+                cb();
+            });
+        };
+        const checkLinkedDocs = () => {
+            const value = {
+                channels: [], checkpoints: []
+            };
+            // Get last 10 cps
+            let hashes = content.hashes || {}; // checkpoints
+            let sortedCp = sortCpIndex(hashes).slice(-10);
+            sortedCp.forEach(cpIdx => {
+                const cpData = hashes[cpIdx];
+                let parsed = Hash.parsePadUrl(cpData.file);
+                let secret = Hash.getSecrets('file', parsed.hash);
+                if (!secret.channel) { return; }
+                value.checkpoints.push({
+                    blob: secret.channel,
+                    rtChannel: cpData.rtChannel || content.channel
+                });
+            });
+            // If < 10, add initial channel
+            if (sortedCp.length < 10) {
+                value.channels.unshift(content.channel);
+            }
+            console.error(value);
+            APP.linkedModule.execCommand('CHECK_CURRENT_DOC', {
+                // channel & signKey added in outer
+                expectedJSON: value
+            }, (obj) => {
+                if (obj?.error) { console.error(obj.error); }
+            });
+        };
+
 
         var getFileType = function () {
             var priv = common.getMetadataMgr().getPrivateData();
@@ -446,10 +492,12 @@ define([
                 _content.hashes[1] = {
                     file: data.url,
                     index: 0,
+                    rtChannel: Hash.createChannelId(),
                     version: OOCurrentVersion.currentVersionNumber
                 };
                 _content.version = OOCurrentVersion.currentVersionNumber;
-                _content.channel = Hash.createChannelId();
+                _content.channel = Hash.createChannelId(); // XXX XXX to remove?
+                // XXX XXX
                 _content.ids = {};
                 sframeChan.query('Q_SAVE_AS_TEMPLATE', {
                     toSave: JSON.stringify({
@@ -498,10 +546,11 @@ define([
             var current = all[all.length - 1] || 0;
 
             var i = current + 1;
-            content.hashes[i] = {
+            var cpData = content.hashes[i] = {
                 file: data.url,
                 hash: ev.hash,
                 index: ev.index,
+                rtChannel: Hash.createChannelId(),
                 version: OOCurrentVersion.currentVersionNumber
             };
             oldHashes = JSON.parse(JSON.stringify(content.hashes));
@@ -515,18 +564,23 @@ define([
             APP.onLocal();
             APP.realtime.onSettle(function () {
                 UI.log(Messages.saved);
-                APP.realtime.onSettle(function () {
-                    if (APP.migrate) {
-                        UI.removeModals();
-                        UI.alert(Messages.oo_sheetMigration_complete, function () {
-                            common.gotoURL();
-                        });
-                        return;
-                    }
-                    if (ev.callback) {
-                        return void ev.callback();
-                    }
+
+                // Add the checkpoint data to the linked documents
+                addLinkedCheckpoint(cpData, function () {
+                    APP.realtime.onSettle(function () {
+                        if (APP.migrate) {
+                            UI.removeModals();
+                            UI.alert(Messages.oo_sheetMigration_complete, function () {
+                                common.gotoURL();
+                            });
+                            return;
+                        }
+                        if (ev.callback) {
+                            return void ev.callback();
+                        }
+                    });
                 });
+
             });
             sframeChan.query('Q_OO_COMMAND', {
                 cmd: 'UPDATE_HASH',
@@ -577,6 +631,9 @@ define([
                 delete pendingChanges[key];
             });
             if (APP.stopHistory || APP.template) { APP.history = false; }
+
+            // XXX TODO Load correct rtChannel
+
             startOO(blob, type, true);
         };
 
@@ -3537,6 +3594,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     url: newLatest.file
                 }, function () { });
                 newDoc = !content.hashes || Object.keys(content.hashes).length === 0;
+                checkLinkedDocs();
             } else if (!privateData.isNewFile) {
                 // This is an empty doc but not a new file: error
                 onCorruptedCache();
@@ -4121,6 +4179,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         }).nThen(function (/*waitFor*/) {
             APP.supportModule = common.makeUniversal('support');
             APP.support = Support.create(common, false);
+            APP.linkedModule = common.makeUniversal('linked-doc');
             andThen(common);
         });
     };

@@ -8,7 +8,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                 SF, AccountTS, DriveTS, PadTS, Form, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
-                Calendar, BadgeTS, Block, NetConfig,
+                Calendar, BadgeTS, LinkedTS, Block, NetConfig,
                 Crypto, ChainPad, CpNetflux, Listmap,
                 Netflux, nThen) => {
 
@@ -16,6 +16,7 @@ const factory = (Sortify, UserObject, ProxyManager,
     const Drive = DriveTS.Drive;
     const Pad = PadTS.Pad;
     const Badge = BadgeTS.Badge;
+    const LinkedDoc = LinkedTS.LinkedDoc;
     const window = globalThis;
     globalThis.nacl = globalThis.nacl || Crypto.Nacl;
 
@@ -2428,6 +2429,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             loadUniversal(Messenger, 'messenger', waitFor);
             loadUniversal(History, 'history', waitFor);
             loadUniversal(Badge, 'badge', waitFor);
+            loadUniversal(LinkedDoc, 'linked-doc', waitFor);
             loadOnlyOffice();
             if (store) {
                 store.messenger = store.modules['messenger'];
@@ -3126,6 +3128,7 @@ module.exports = factory(
     require('./modules/history'),
     require('./modules/calendar'),
     require('./modules/badge'), // .ts
+    require('./modules/linked'), // .ts
     require('../common/outer/login-block'),
     require('../common/network-config'),
     require('chainpad-crypto'),
