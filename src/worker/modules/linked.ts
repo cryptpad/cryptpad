@@ -59,10 +59,7 @@ const checkCurrentDoc:Command = (ctx, data, clientId, cb) => {
 
     const missing = {};
     getLinkedDocuments(ctx, channel, (obj) => {
-        const error = obj?.error;
-        if (error) { return void cb({ error: 'NONO' }); }
-        const json = obj?.[0];
-        if (!json) { return void cb({ error: 'EEMPTY' }); }
+        const json = obj?.[0] || {};
 
         json?.checkpoints?.forEach(obj => {
             delete obj.time;

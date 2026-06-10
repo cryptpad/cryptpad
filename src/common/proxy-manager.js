@@ -1339,7 +1339,7 @@ const factory = (UserObject, Util, Hash,
                     var data = userObject.getFileData(fileId);
                     if (!data) { return; }
                     // Pin onlyoffice checkpoints
-                    if (data.lastVersion) {
+                    if (data.lastVersion ) {
                         var otherChan = Hash.hrefToHexChannelId(data.lastVersion);
                         result.add(otherChan);
                     }
@@ -1488,19 +1488,6 @@ const factory = (UserObject, Util, Hash,
             delete Env.pinPads;
             delete Env.unpinPads;
         };
-
-        let rtChannelTo;
-        const setRtChannelTo = () => {
-            clearTimeout(rtChannelTo);
-            rtChannelTo = setTimeout(() => {
-                if (Env.store.offline) { return void setRtChannelTo(); }
-                const list = findMissingRtChannel(Env);
-                Env.Store.fixMissingRtChannelInterval(list, () => {
-                    setRtChannelTo();
-                });
-            }, 120000);
-        };
-        setRtChannelTo();
 
         return {
             // Manager

@@ -27,15 +27,23 @@ const factory = (Feedback) => {
         var first = true;
 
         var c = ctx.clients[client];
-        if (!c) {
+        var chan = ctx.channels[channel];
+
+        if (!c) { // new tab
             c = ctx.clients[client] = {
                 channel: channel,
             };
-        } else {
+        } else if (c.channel !== channel) { // new channel on existing tab
+            // Remove client from existing chan
+            // and disconnect from chan if needed
+            ctx.removeClient(client, true);
+            c = ctx.clients[client] = {
+                channel: channel,
+            };
+        } else { // same channel existing tab
             return void cb();
         }
 
-        var chan = ctx.channels[channel];
         if (chan) {
             // This channel is already open in another tab
 
@@ -298,7 +306,7 @@ const factory = (Feedback) => {
     };
 
     // Remove the client from all its channels when a tab is closed
-    var removeClient = function (ctx, clientId) {
+    var removeClient = function (ctx, clientId, newChan) {
         var filter = function (c) {
             return c !== clientId;
         };
@@ -314,7 +322,7 @@ const factory = (Feedback) => {
             }
         }
 
-        if (ctx.clients[clientId]) {
+        if (ctx.clients[clientId] && !newChan) {
             var oldChannel = ctx.clients[clientId].channel;
             var oldChan = ctx.channels[oldChannel];
             if (oldChan) {
@@ -335,8 +343,8 @@ const factory = (Feedback) => {
             clients: {}
         };
 
-        oo.removeClient = function (clientId) {
-            removeClient(ctx, clientId);
+        oo.removeClient = ctx.removeClient = function (clientId, newChan) {
+            removeClient(ctx, clientId, newChan);
         };
         oo.leavePad = function (padChan) {
             leaveChannel(ctx, padChan);

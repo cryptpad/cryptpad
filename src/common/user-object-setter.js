@@ -68,6 +68,8 @@ const factory = (Util, Hash, Realtime, Feedback) => {
             var data = exp.getFileData(id, true);
             if (attr === "href") {
                 exp.setHref(null, id, value);
+            } else if (!value) {
+                delete data[attr];
             } else {
                 data[attr] = clone(value);
             }
@@ -89,10 +91,6 @@ const factory = (Util, Hash, Realtime, Feedback) => {
             let parsed = Hash.parsePadUrl(data.roHref || data.href);
             // If we were given an edit link, encrypt its value if needed
             if (data.href && data.href.indexOf('#') !== -1) { data.href = exp.cryptor.encrypt(data.href); }
-
-            if (['sheet', 'doc', 'presentation'].includes(parsed?.type) && !data.rtChannel) {
-                Feedback.send('PUSH_DATA_MISSING_RT_CHANNEL', true);
-            }
 
             files[FILES_DATA][id] = data;
             cb(null, id);
@@ -891,7 +889,7 @@ const factory = (Util, Hash, Realtime, Feedback) => {
                         // toClean.push(id);
                     }
 
-                    if (['sheet', 'doc', 'presentation'].includes(parsed.type) && !el.rtChannel) {
+                    if (!el.v && ['sheet', 'doc', 'presentation'].includes(parsed.type) && !el.rtChannel) {
                         missingRtChannel[el.channel] = el;
                     }
 

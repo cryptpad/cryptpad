@@ -44,25 +44,15 @@ define([
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('Q_OO_SAVE', function (data, cb) {
-                var chanId = Utils.Hash.hrefToHexChannelId(data.url);
-                Cryptpad.getPadAttribute('lastVersion', function (err, data) {
-                    if (!data) { return; }
-                    var oldChanId = Utils.Hash.hrefToHexChannelId(data);
-                    if (oldChanId !== chanId) { Cryptpad.unpinPads([oldChanId], function () {}); }
-                });
-
-                // If pad is stored, pin
-                Cryptpad.getPadAttribute('channel', function (err, data) {
-                    if (err || !data) { return; }
-                    Cryptpad.pinPads([chanId], function (e) {
-                        if (e) { return void cb(e); }
-                    });
-                });
+                // Legacy, we keep lastCpHash to compute history size
+                // from drive
+                // XXX server can find the last checkpoint
                 Cryptpad.setPadAttribute('lastVersion', data.url, cb);
                 channels.lastVersion = data.url;
                 Cryptpad.setPadAttribute('lastCpHash', data.hash, cb);
-                channels.lastCpHash = data.hash;
+                if (data.hash) { channels.lastCpHash = data.hash; }
             });
+
             sframeChan.on('Q_OO_OPENCHANNEL', function (data, cb) {
                 const other = Cryptpad.otherPadAttrs = {
                     rtChannel: data.channel
@@ -71,15 +61,16 @@ define([
                     other.lastVersion = channels.lastVersion;
                 }
                 other.lastCpHash = channels.lastCpHash;
+                channels.rtChannel = data.channel;
 
-                Cryptpad.getPadAttribute('rtChannel', function (err, res) {
-                    // If already stored, don't pin it again
-                    channels.rtChannel = data.channel;
-                    if (res && res === data.channel) { return; }
-                    Cryptpad.pinPads([data.channel], function () {
-                        Cryptpad.setPadAttribute('rtChannel', data.channel, function () {});
-                    });
-                });
+                // XXX mark as migrated? and clean existing data
+                if (channels?.lastVersion && !channels?.lastCpHash) {
+                    Cryptpad.setPadAttribute('v', 2, function () {});
+                    Cryptpad.setPadAttribute('rtChannel', void 0, () => {});
+                    Cryptpad.setPadAttribute('lastVersion', void 0, () => {});
+                    Cryptpad.setPadAttribute('lastCpHash', void 0, () => {});
+                }
+
                 var owners, expire;
                 nThen(function (waitFor) {
                     if (Utils.rtConfig) {
@@ -181,7 +172,7 @@ define([
             type: 'oo',
             addData: addData,
             addRpc: addRpc,
-            getPropChannels: getPropChannels,
+            getPropChannels: getPropChannels, // XXX TODO
             messaging: true,
             useCreationScreen: !isIntegration,
             noDrive: true,

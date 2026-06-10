@@ -576,7 +576,7 @@ define([
                             return;
                         }
                         if (ev.callback) {
-                            return void ev.callback();
+                            return void ev.callback(cpData);
                         }
                     });
                 });
@@ -596,7 +596,6 @@ define([
             body: $('body'),
             onUploaded: function (ev, data) {
                 if (!data || !data.url) { return; }
-                data.hash = ev.hash;
                 sframeChan.query('Q_OO_SAVE', data, function (err) {
                     onUploaded(ev, data, err);
                 });
@@ -607,7 +606,7 @@ define([
         };
         APP.FM = common.createFileManager(fmConfig);
 
-        var resetData = function (blob, type) {
+        var resetData = function (blob, type, cpData) {
             // If a read-only refresh popup was planned, abort it
             delete APP.refreshPopup;
             clearTimeout(APP.refreshRoTo);
@@ -621,7 +620,7 @@ define([
             myUniqueOOId = undefined;
             myIndex = undefined;
             setMyId();
-            
+
             if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
             $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
             ooLoaded = false;
@@ -632,9 +631,9 @@ define([
             });
             if (APP.stopHistory || APP.template) { APP.history = false; }
 
-            // XXX TODO Load correct rtChannel
-
-            startOO(blob, type, true);
+            openRtChannel(cpData, Util.once(() => {
+                startOO(blob, type, true);
+            }));
         };
 
         var saveToServer = function (blob, title) {
@@ -655,8 +654,8 @@ define([
             var file = getFileType();
             blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var data = {
-                hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
-                index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex,
+                //hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
+                index: 0, //(APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex,
                 time: new Date()
             };
             fixSheets();
@@ -666,9 +665,9 @@ define([
             }
             ooChannel.ready = false;
             ooChannel.queue = [];
-            data.callback = function () {
+            data.callback = function (cpData) {
                 if (APP.template) { APP.template = false; }
-                resetData(blob, file);
+                resetData(blob, file, cpData);
             };
 
             APP.FM.handleFile(blob, data);
@@ -773,7 +772,7 @@ define([
                 ooChannel.lastHash = lastCp.hash;
                 var parsed = Hash.parsePadUrl(lastCp.file);
                 var secret = Hash.getSecrets('file', parsed.hash);
-                if (!secret || !secret.channel) { return; }
+                if (!secret?.channel) { return reject('EINVAL'); }
                 var hexFileName = secret.channel;
                 var fileHost = privateData.fileHost || privateData.origin;
                 var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
@@ -784,7 +783,7 @@ define([
                 xhr.responseType = 'arraybuffer';
                 xhr.onload = function () {
                     if (/^[45]/.test('' + this.status)) {
-                        reject(this.status);
+                        reject('ENETWORK');
                         return void console.error('XHR error', this.status);
                     }
                     var arrayBuffer = xhr.response;
@@ -805,42 +804,11 @@ define([
                     }
                 };
                 xhr.onerror = function (err) {
-                    reject(err);
+                    reject('ENETWORK');
                 };
                 xhr.send(null);
             });
         };
-
-        /*
-        var refreshReadOnly = function () {
-            var cancel = h('button.cp-corner-cancel', Messages.cancel);
-            var reload = h('button.cp-corner-primary', [
-                Icons.get('refresh'),
-                Messages.oo_refresh
-            ]);
-
-            var actions = h('div', [cancel, reload]);
-            var m = UI.cornerPopup(Messages.oo_refreshText, actions, '');
-            $(reload).click(function () {
-                ooChannel.ready = false;
-                var lastCp = getLastCp();
-                loadLastDocument(lastCp, function () {
-                    var file = getFileType();
-                    var type = common.getMetadataMgr().getPrivateData().ooType;
-                    var blob = loadInitDocument(type, true);
-                    resetData(blob, file);
-                }, function (blob, file) {
-                    resetData(blob, file);
-                });
-                delete APP.refreshPopup;
-                m.delete();
-            });
-            $(cancel).click(function () {
-                delete APP.refreshPopup;
-                m.delete();
-            });
-        };
-        */
 
         var openVersionHash = function (version) {
             readOnly = true;
@@ -911,7 +879,7 @@ define([
                 loadLastDocument(cp)
                     .then(({blob, fileType}) => {
                         ooChannel.queue = messages.slice(1, minor+1);
-                        resetData(blob, fileType);
+                        resetData(blob, fileType, cp);
                         UI.removeLoadingScreen();
                     })
                     .catch(() => {
@@ -927,7 +895,7 @@ define([
                         if (APP.downloadType) { type = APP.downloadType; }
                         var blob = loadInitDocument(type, true);
                         ooChannel.queue = file.doc === 'spreadsheet' ? messages.slice(0, v) : messages.slice(0, v+1);
-                        resetData(blob, file);
+                        resetData(blob, file, {});
                         UI.removeLoadingScreen();
                     });
             });
@@ -1006,22 +974,17 @@ define([
             f(div, cb, opts);
         };
 
-        var openRtChannel = function (cb) {
-            if (rtChannel.ready) { return void cb(); }
-            var chan = content.channel || Hash.createChannelId();
-            if (!content.channel) {
-                content.channel = chan;
-                APP.onLocal();
-            }
+        var openRtChannel = function (cpData, cb) {
+            const channel = cpData?.rtChannel || content.channel;
+            const lastCpHash = cpData?.hash;
             sframeChan.query('Q_OO_OPENCHANNEL', {
-                channel: content.channel,
-                lastCpHash: getLastCp().hash
+                channel, lastCpHash
             }, function (err, obj) {
-                if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
-                // XXX an error loading a checkpoint was ignored, causing a sheet
-                // to load incorrectly. There's a risk of a new checkpoint being created
-                // with the resulting (incorrect) state. Errors like this should be reported
-                // to the user so they realize something is wrong.
+                if (obj?.error) { console.error(obj.error); }
+// XXX an error loading a checkpoint was ignored, causing a sheet
+// to load incorrectly. There's a risk of a new checkpoint being created
+// with the resulting (incorrect) state. Errors like this should be reported
+// to the user so they realize something is wrong.
             });
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
@@ -1043,18 +1006,6 @@ define([
                             return;
                         }
                         if (ooChannel.ready) {
-                            // In read-only mode, push the message to the queue and prompt
-                            // the user to refresh OO (without reloading the page)
-                            /*if (readOnly) {
-                                ooChannel.queue.push(obj.data);
-                                if (APP.refreshPopup) { return; }
-                                APP.refreshPopup = true;
-
-                                // Don't "spam" the user instantly and no more than
-                                // 1 popup every 15s
-                                APP.refreshRoTo = setTimeout(refreshReadOnly, READONLY_REFRESH_TO);
-                                return;
-                            }*/
                             ooChannel.send(obj.data.msg);
                             ooChannel.lastHash = obj.data.hash;
                             ooChannel.cpIndex++;
@@ -2947,35 +2898,40 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }, 100);
         };
 
-        var loadDocument = function (noCp, useNewDefault, i, cb) {
+        var loadDocument = function (noCp, useNewDefault, cb) {
             if (ooLoaded) { return; }
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var file = getFileType();
             if (!noCp) {
-                var lastCp = getLastCp(false, i);
+                var lastCp = getLastCp(false);
                 // If the last checkpoint is empty, load the "initial" doc instead
-                if (!lastCp || !lastCp.file) { return void loadDocument(true, useNewDefault, undefined, cb); }
+                if (!lastCp?.file) {
+                    return void loadDocument(true, useNewDefault, cb);
+                }
                 // Load latest checkpoint
                 return void loadLastDocument(lastCp)
                     .then(({blob, fileType}) => {
                         cb({
                             blob,
                             file: fileType
-                        });
+                        }, lastCp);
                     })
                     .catch((err) => {
-                        // Checkpoint error: load the previous one
-                        if (err === "DECRYPTION_ERROR" || err === "E_METADATA_DECRYPTION") {
-                            deleteLastCp(i);
-                        }
                         i = i || 0;
-                        loadDocument(noCp, useNewDefault, ++i, cb);
+                        // Can't download checkpoint from server, abort
+                        if (err === "ENETWORK") {
+                            UI.errorLoadingScreen(Messages.fivehundred_internalServerError);
+                            throw new Error(Messages.fivehundred_internalServerError);
+                            return;
+                        }
+                        // Not a network error, maybe encryption
+                        // Delete last cp and load previous one
+                        deleteLastCp();
+                        loadDocument(noCp, useNewDefault, cb);
                     });
             }
             var blob = loadInitDocument(type, useNewDefault);
-            cb({
-                blob, file
-            });
+            cb({ blob, file }, {});
         };
 
         var initializing = true;
@@ -3063,13 +3019,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             try {
                 const {blob, fileType} = await loadLastDocument(cp);
                 if (!keepQueue) { ooChannel.queue = []; }
-                resetData(blob, fileType);
+                resetData(blob, fileType, cp);
             } catch (e) {
                 var file = getFileType();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
                 if (!keepQueue) { ooChannel.queue = []; }
-                resetData(blob, file);
+                resetData(blob, file, {});
             }
         };
 
@@ -3603,6 +3559,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 Title.updateTitle(Title.defaultTitle);
             }
 
+            if (!content.channel) {
+                content.channel = Hash.createChannelId();
+                APP.onLocal();
+                checkLinkedDocs();
+            }
+
             APP.startNew = isNew;
 
             var version = OOCurrentVersion.currentVersion + '/';
@@ -3737,6 +3699,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             // Only execute the following code the first time we call onReady
             if (!firstReady) {
+                // XXX if new cp, reload...
+                // XXX maybe already handled by onRemote
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
@@ -3747,8 +3711,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             var useNewDefault = content.version && content.version >= 2;
 
-            loadDocument(newDoc, useNewDefault,void 0, cpObj => {
-            openRtChannel(Util.once(function () {
+            loadDocument(newDoc, useNewDefault, (cpObj, cpData) => {
+            openRtChannel(cpData, Util.once(function () {
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
@@ -3825,8 +3789,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                                 return void UI.errorLoadingScreen(Messages.error);
                             }
                             var blob = new Blob([bin], {type: 'text/plain'});
-                            //var file = getFileType();
-                            //resetData(blob, file);
                             saveToServer(blob, title);
                             Title.updateTitle(title);
                             UI.removeLoadingScreen();
@@ -4031,7 +3993,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var lastCp = getLastCp();
             loadLastDocument(lastCp)
                 .then(({blob, fileType}) => {
-                    resetData(blob, fileType);
+                    resetData(blob, fileType, lastCp);
                 })
                 .catch((err) => {
                     console.error(err);
