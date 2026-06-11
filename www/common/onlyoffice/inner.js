@@ -338,6 +338,12 @@ define([
                 return a-b;
             });
         };
+        const getLastCpId = (old) => {
+            const hashes = old ? oldHashes : content.hashes;
+            if (!hashes || !Object.keys(hashes).length) { return 0; }
+            const allIdx = sortCpIndex(hashes);
+            return allIdx[allIdx.length - 1];
+        };
         var getLastCp = function (old, i) {
             var hashes = old ? oldHashes : content.hashes;
             if (!hashes || !Object.keys(hashes).length) { return {}; }
@@ -491,7 +497,6 @@ define([
                 _content.hashes = {};
                 _content.hashes[1] = {
                     file: data.url,
-                    index: 0,
                     rtChannel: Hash.createChannelId(),
                     version: OOCurrentVersion.currentVersionNumber
                 };
@@ -548,8 +553,6 @@ define([
             var i = current + 1;
             var cpData = content.hashes[i] = {
                 file: data.url,
-                hash: ev.hash,
-                index: ev.index,
                 rtChannel: Hash.createChannelId(),
                 version: OOCurrentVersion.currentVersionNumber
             };
@@ -582,12 +585,6 @@ define([
                 });
 
             });
-            sframeChan.query('Q_OO_COMMAND', {
-                cmd: 'UPDATE_HASH',
-                data: ev.hash
-            }, function (err, obj) {
-                if (err || (obj && obj.error)) { console.error(err || obj.error); }
-            });
         };
 
         var fmConfig = {
@@ -595,10 +592,8 @@ define([
             noStore: true,
             body: $('body'),
             onUploaded: function (ev, data) {
-                if (!data || !data.url) { return; }
-                sframeChan.query('Q_OO_SAVE', data, function (err) {
-                    onUploaded(ev, data, err);
-                });
+                if (!data?.url) { return; }
+                onUploaded(ev, data);
             },
             onError: function (err) {
                 onUploaded(null, null, err);
@@ -654,8 +649,6 @@ define([
             var file = getFileType();
             blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var data = {
-                //hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
-                index: 0, //(APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex,
                 time: new Date()
             };
             fixSheets();
@@ -679,10 +672,9 @@ define([
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
 
             var locked = content.saveLock;
-            var lastCp = getLastCp();
 
             var currentIdx = ooChannel.cpIndex;
-            var needCp = force || (currentIdx - (lastCp.index || 0)) > FORCE_CHECKPOINT_INTERVAL;
+            var needCp = force || currentIdx > FORCE_CHECKPOINT_INTERVAL;
 
             if (!needCp) { return; }
 
@@ -719,10 +711,7 @@ define([
             content.saveLock = myOOId;
             APP.onLocal();
             APP.realtime.onSettle(function () {
-                onUploaded({
-                    hash: ooChannel.lastHash,
-                    index: ooChannel.cpIndex
-                }, {
+                onUploaded({}, {
                     url: getLastCp().file,
                 });
             });
@@ -768,7 +757,7 @@ define([
                 if (!lastCp || !lastCp.file) {
                     return void reject('EEMPTY');
                 }
-                ooChannel.cpIndex = lastCp.index || 0;
+                ooChannel.cpIndex = 0;
                 ooChannel.lastHash = lastCp.hash;
                 var parsed = Hash.parsePadUrl(lastCp.file);
                 var secret = Hash.getSecrets('file', parsed.hash);
@@ -813,17 +802,16 @@ define([
         var openVersionHash = function (version) {
             readOnly = true;
             var hashes = content.hashes || {};
-            var sortedCp = Object.keys(hashes).map(Number).sort(function (a, b) {
-                return hashes[a].index - hashes[b].index;
-            });
+            var sortedCp = sortCpIndex(hashes);
             var s = version.split('.');
             var v = parseInt(s[1]);
             if (s.length !== 2) { return UI.errorLoadingScreen(Messages.error); }
 
-            var major = Number(s[0]);
-            var cpId = sortedCp[major - 1];
-            var nextCpId = sortedCp[major];
-            var cp = hashes[cpId] || {};
+            const cpId = Number(s[0]);
+            const cp = hashes[cpId] || {};
+
+            const cpIdx = sortedCp.indexOf(cpId);
+            const nextCpId = sortedCp[cpidx + 1];
 
             var minor = Number(s[1]) + 1;
             if (APP.isDownload) { minor = undefined; }
@@ -831,6 +819,8 @@ define([
             var toHash = cp.hash || 'NONE';
             var fromHash = nextCpId ? hashes[nextCpId].hash : 'NONE';
 
+            // XXX XXX HISTORY
+            // if (cp.file && !cp.hash) {} // new format, full history...
             sframeChan.query('Q_GET_HISTORY_RANGE', {
                 channel: content.channel,
                 lastKnownHash: fromHash,
@@ -878,6 +868,7 @@ define([
 
                 loadLastDocument(cp)
                     .then(({blob, fileType}) => {
+                        // XXX HISTORY minor.... ?
                         ooChannel.queue = messages.slice(1, minor+1);
                         resetData(blob, fileType, cp);
                         UI.removeLoadingScreen();
@@ -2856,8 +2847,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 });
             };
             var data = {
-                hash: ooChannel.lastHash,
-                index: ooChannel.cpIndex,
                 callback: uploadedCallback
             };
             APP.FM.handleFile(blob, data);
@@ -3315,8 +3304,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         time = obj.time;
                     } else {
                         var major = Object.keys(content.hashes).length;
-                        var cpIndex = getLastCp().index || 0;
-                        var minor = ooChannel.cpIndex - cpIndex;
+                        var minor = ooChannel.cpIndex;
                         hash = major+'.'+minor;
                         time = +new Date();
                     }
@@ -3544,11 +3532,17 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     throw new Error(errorText);
                 }
                 content = hjson.content || content;
+
+                // Support old checkpoints
                 var newLatest = getLastCp();
-                sframeChan.query('Q_OO_SAVE', {
-                    hash: newLatest.hash,
-                    url: newLatest.file
-                }, function () { });
+                if (newLatest.hash) {
+                    sframeChan.query('Q_OO_SAVE', {
+                        channel: content.channel,
+                        hash: newLatest.hash,
+                        url: newLatest.file
+                    }, function () { });
+                }
+
                 newDoc = !content.hashes || Object.keys(content.hashes).length === 0;
                 checkLinkedDocs();
             } else if (!privateData.isNewFile) {
@@ -4037,19 +4031,14 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             var editor = getEditor();
             if (content.hashes) {
-                var latest = getLastCp(true);
-                var newLatest = getLastCp();
-                if (newLatest.index > latest.index || (newLatest.index && !latest.index)) {
+                var oldLastCp = getLastCpId(true);
+                var newLastCp = getLastCpId();
+                if (newLastCp > oldLastCp) {
                     ooChannel.queue = [];
                     ooChannel.ready = false;
                     var reload = function () {
                         // New checkpoint
-                        sframeChan.query('Q_OO_SAVE', {
-                            hash: newLatest.hash,
-                            url: newLatest.file
-                        }, function () {
-                            checkNewCheckpoint();
-                        });
+                        checkNewCheckpoint();
                     };
                     var editing = editor.asc_isDocumentModified ? editor.asc_isDocumentModified() : editor.isDocumentModify;
                     if (editing) {

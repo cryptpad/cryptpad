@@ -889,7 +889,7 @@ const factory = (Util, Hash, Realtime, Feedback) => {
                         // toClean.push(id);
                     }
 
-                    if (!el.v && ['sheet', 'doc', 'presentation'].includes(parsed.type) && !el.rtChannel) {
+                    if (!el.linked && ['sheet', 'doc', 'presentation'].includes(parsed.type) && !el.rtChannel) {
                         missingRtChannel[el.channel] = el;
                     }
 

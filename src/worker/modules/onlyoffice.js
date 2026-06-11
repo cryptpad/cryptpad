@@ -122,8 +122,7 @@ const factory = (Feedback) => {
                 metadata: {
                     //forcePlaceholder: true,
                     validateKey: obj.validateKey,
-                    owners: obj.owners,
-                    expire: obj.expire
+                    linked: obj.padChan
                 }
             };
             var msg = ['GET_HISTORY', wc.id, cfg];
@@ -215,25 +214,6 @@ const factory = (Feedback) => {
                 console.error(err);
             });
         });
-    };
-
-    var updateHash = function (ctx, data, clientId, cb) {
-        var c = ctx.clients[clientId];
-        if (!c) { return void cb({ error: 'NOT_IN_CHANNEL' }); }
-        var chan = ctx.channels[c.channel];
-        if (!chan) { return void cb({ error: 'INVALID_CHANNEL' }); }
-        var hash = data;
-        var index = -1;
-        chan.history.some(function (msg, idx) {
-            if (msg.slice(0,64) === hash) {
-                index = idx + 1;
-                return true;
-            }
-        });
-        if (index !== -1) {
-            chan.history = chan.history.slice(index);
-        }
-        cb();
     };
 
     var sendMessage = function (ctx, data, clientId, cb) {
@@ -354,9 +334,6 @@ const factory = (Feedback) => {
             var data = obj.data;
             if (cmd === 'SEND_MESSAGE') {
                 return void sendMessage(ctx, data, clientId, cb);
-            }
-            if (cmd === 'UPDATE_HASH') {
-                return void updateHash(ctx, data, clientId, cb);
             }
             if (cmd === 'OPEN_CHANNEL') {
                 return void openChannel(ctx, data, clientId, cb);

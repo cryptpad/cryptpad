@@ -33,7 +33,7 @@ define([
             if (redraw) { Env.evRedrawAll.fire(redraw); }
         }));
     };
-    Modal.getOtherChans = (priv, opts) => { // XXX TODO
+    Modal.getOtherChans = (priv, opts) => {
         // "attributes" contains the additional channels that the other user
         // has to store (rtChannel, answersChannels, lastVersion, lastCpHash)
         // - opts.attributes when access modal is created from the drive

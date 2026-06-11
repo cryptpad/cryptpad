@@ -737,7 +737,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             });
 
             if (['doc', 'sheet', 'presentation'].includes(parsed.type)) {
-                if (!pad.rtChannel) {
+                if (!pad.rtChannel && !pad.linked) {
                     return getRtChannelFromPad(pad, (err, rtChannel) => {
                         const key = 'ADDPAD_NO_RT_CHANNEL' ;
                         if (!err) {
