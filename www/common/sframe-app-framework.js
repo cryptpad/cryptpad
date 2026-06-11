@@ -996,6 +996,7 @@ define([
             title.setToolbar(toolbar);
 
             /* add a history button */
+            if(!cpNfInner.metadataMgr.getPrivateData().isPresent){
             var histConfig = {
                 onLocal: onLocal,
                 onRemote: onRemote,
@@ -1016,7 +1017,8 @@ define([
             var $histButton = common.createButton('history', true, {histConfig: histConfig});
             var $hist = UIElements.getEntryFromButton($histButton);
             toolbar.$drawer.append($hist);
-
+            }
+            
             var $snapshotButton = common.createButton('snapshots', true, {
                 remove: deleteSnapshot,
                 make: makeSnapshot,
