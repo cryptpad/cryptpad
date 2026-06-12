@@ -2129,12 +2129,11 @@ define([
                     });
                 }
 
-                if (APP.startNew) {
-                    var w = getWindow();
-                    if (lang === "fr") { lang = 'fr-fr'; }
-                    var l = w.Common.util.LanguageInfo.getLocalLanguageCode(lang);
-                    getEditor().asc_setDefaultLanguage(l);
-                }
+                var w = getWindow();
+                if (lang === "en") { lang = "en-us"; }
+                if (lang === "fr") { lang = 'fr-fr'; }
+                var l = w.Common.util.LanguageInfo.getLocalLanguageCode(lang);
+                getEditor().asc_setDefaultLanguage(l);
             }
             if (integrationChannel) {
                 integrationChannel.event('EV_INTEGRATION_READY');
