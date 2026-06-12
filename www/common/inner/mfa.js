@@ -212,7 +212,7 @@ define([
             }).nThen(function (waitFor) {
                 $content.empty();
                 var next = waitFor();
-                recoverySecret = Util.encodeBase64(Nacl.randomBytes(24));
+                recoverySecret = Nacl.randomBytes(24);
                 var button = h('button.btn.btn-primary', [
                     Icons.get('check'),
                     h('span', Messages.done)
@@ -222,7 +222,7 @@ define([
                     h('p', Messages.mfa_recovery_hint),
                     h('p', Messages.mfa_recovery_warning),
                     h('div.cp-password-container', [
-                        UI.dialog.selectable(recoverySecret),
+                        UI.dialog.selectable(Util.encodeBase64(recoverySecret)),
                         button
                     ])
                 ]));
@@ -282,9 +282,14 @@ define([
                         confirmOTP.disabled = true;
                         lock = true;
 
+                        // TODO: Crypto Agility
+                        let hashRecoveryKey = Nacl?.hash(Uint8Array.from(recoverySecret))?.toBase64();
+                        // Fallback to old format if not supported by the browser
+                        const contact = hashRecoveryKey ? "hash:" + hashRecoveryKey : "secret:" + Util.encodeBase64(recoverySecret);
+
                         var data = {
                             secret: secret,
-                            contact: "secret:" + recoverySecret, // TODO other recovery options
+                            contact: contact, // TODO other recovery options
                             code: code,
                         };
 
