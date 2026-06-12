@@ -33,7 +33,7 @@ const factory = (Feedback) => {
             c = ctx.clients[client] = {
                 channel: channel,
             };
-        } else if (c.channel !== channel) { // new channel on existing tab
+        } else if (c?.channel !== channel) { // new channel on existing tab
             // Remove client from existing chan
             // and disconnect from chan if needed
             ctx.removeClient(client, true);

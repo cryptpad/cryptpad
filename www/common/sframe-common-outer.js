@@ -1718,8 +1718,9 @@ define([
             sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
                 var crypto = Crypto.createEncryptor(secret.keys);
                 Cryptpad.getFullHistory({
-                    debug: data && data.debug,
-                    channel: secret.channel,
+                    debug: data?.debug,
+                    full: data?.full,
+                    channel: data.channel || secret.channel,
                     validateKey: secret.keys.validateKey
                 }, function (encryptedMsgs) {
                     var nt = nThen;

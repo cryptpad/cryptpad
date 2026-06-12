@@ -1892,7 +1892,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                 if (msg) {
                     msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
                     //var decryptedMsg = crypto.decrypt(msg, true);
-                    if (data.debug) {
+                    if (data.debug || data.full) {
                         msgs.push({
                             serverHash: msg.slice(0,64),
                             msg: msg,

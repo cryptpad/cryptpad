@@ -52,10 +52,6 @@
                 min-width: 0;
                 text-align: center;
             }
-            .cp-history-timeline-version {
-                font-size: 12px;
-                margin-right: 10px;
-            }
 
             .cp-toolbar-history-previous, .cp-toolbar-history-next {
                 display: inline-flex;
@@ -207,6 +203,30 @@
                     height: 18px;
                     display: flex;
                 }
+                .cp-history-timeline-patch {
+                    display: flex;
+                    .cp-history-bar-el {
+                        cursor: pointer;
+                        flex: 1;
+                        background-color: @history_userBg1;
+                        border: 2px solid @history_userBg1;
+                        &:nth-child(2n) {
+                            background-color: @history_userBg2;
+                            border: 2px solid @history_userBg2;
+                        }
+                        &.cp-selected {
+                            border: 2px solid @cryptpad_text_col;
+                            position: relative;
+                            svg {
+                                position: absolute;
+                                margin: 0;
+                                left: 50%;
+                                bottom: 65%;
+                                transform: translateX(-50%)
+                            }
+                        }
+                    }
+                }
                 .cp-history-timeline-users {
                     margin-bottom: 1px;
                     .cp-history-bar-el {
@@ -287,6 +307,38 @@
                 button:first-child {
                     margin-left: 0;
                 }
+            }
+        }
+
+        .cp-history-version {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8em;
+            & *:not(button > span) {
+                font-size: inherit;
+            }
+            .cp-dropdown-container {
+                svg {
+                    margin-top: 3px;
+                }
+                button {
+                    text-transform: unset;
+                    min-width: 50px;
+                    width: auto;
+                    padding: 3px;
+                    font-size: 0.9em;
+                }
+            }
+            .cp-history-version-time {
+                &.cp-hidden {
+                    visibility: hidden;
+                }
+            }
+            .cp-history-version-select {
+                display: flex;
+                align-items: center;
+                gap: 5px;
             }
         }
 

@@ -262,6 +262,11 @@ define([
                 }
             }, (obj) => {
                 if (obj?.error) { console.error(obj.error); }
+                const last = obj?.[0]?.checkpoints?.pop();
+                if (last?.blob === secret.channel && last?.time) {
+                    cpData.time = last.time;
+                    APP.onLocal();
+                }
                 cb();
             });
         };
@@ -625,6 +630,11 @@ define([
                 delete pendingChanges[key];
             });
             if (APP.stopHistory || APP.template) { APP.history = false; }
+
+            // History mode: don't load the rtChannel
+            if (APP.history) {
+                return void startOO(blob, type, true);
+            }
 
             openRtChannel(cpData, Util.once(() => {
                 startOO(blob, type, true);
@@ -3018,12 +3028,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }
         };
 
-        var loadHistoryCp = function (cp, keepQueue) {
-            APP.history = true;
-            APP.stopHistory = false;
-            loadCp(cp, keepQueue);
-        };
-
         var loadTemplate = function (href, pw, parsed) {
             APP.history = true;
             APP.template = true;
@@ -3242,16 +3246,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onCheckpoint = function (cp) {
                     // We want to load a checkpoint:
-                    loadCp(cp, true);
+                    loadCp(cp);
                 };
                 var onPatchBack = function (cp, msgs) {
-                    APP.history = true;
-                    APP.stopHistory = false;
                     if (msgs) {
                         var msgsFormatted = [];
                         msgs.forEach(function(msg) {
                             var parsedMsg = JSON.parse(msg.msg);
-        
                             var formattedMsg = {
                                 msg: parsedMsg,
                                 hash: msg.serverHash, 
@@ -3268,12 +3269,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         loadCp(cp);
                     }
                 };
-                var docType = function() {
-                    return APP.ooconfig.documentType;
-                };
                 var setHistoryMode = function (bool) {
                     if (bool) {
                         APP.history = true;
+                        APP.stopHistory = false;
                         toolbar.setHistory(true);
                         try { getEditor().asc_setRestriction(true); } catch (e) {}
                         return;
@@ -3284,10 +3283,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     ooChannel.queue = [];
                     ooChannel.ready = false;
                     // Fill the queue and then load the last CP
-                    rtChannel.getHistory(function () {
+                    //rtChannel.getHistory(function () {
                         var lastCp = getLastCp();
                         loadCp(lastCp, true);
-                    });
+                    //});
                 };
 
                 var deleteSnapshot = function (hash) {
@@ -3342,13 +3341,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     var histConfig = {
                         onPatch: onPatch,
                         onPatchBack: onPatchBack,
-                        docType: docType,
-                        loadCp: loadCp,
-                        loadHistoryCp: loadHistoryCp, 
                         onCheckpoint: onCheckpoint,
                         onRevert: commit,
                         setHistory: setHistoryMode,
-                        makeSnapshot: makeSnapshot,
+                        makeSnapshot,
+                        sortCpIndex,
                         onlyoffice: {
                             hashes: content.hashes || {},
                             channel: content.channel,
@@ -3558,6 +3555,14 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 APP.onLocal();
                 checkLinkedDocs();
             }
+
+Object.keys(content.hashes).forEach(id => {
+    let cpData = content.hashes[id];
+    if (!cpData.rtChannel) { return; }
+    delete cpData.index;
+    delete cpData.hash;
+});
+APP.onLocal();
 
             APP.startNew = isNew;
 
