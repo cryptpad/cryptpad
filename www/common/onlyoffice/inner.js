@@ -2129,11 +2129,26 @@ define([
                     });
                 }
 
-                var w = getWindow();
-                if (lang === "en") { lang = "en-us"; }
-                if (lang === "fr") { lang = 'fr-fr'; }
-                var l = w.Common.util.LanguageInfo.getLocalLanguageCode(lang);
-                getEditor().asc_setDefaultLanguage(l);
+                var defaultLanguageCode = String(getEditor().asc_getDefaultLanguage());
+
+                const langToLocale = {
+                    "en" : "en-us",
+                    "fr" : "fr-fr",
+                    "es" : "es-es",
+                    "de" : "de-de"
+                };
+
+                if (APP.startNew) {
+                    var w = getWindow();
+                    if (Object.keys(langToLocale).includes(lang)) {
+                        lang = langToLocale[lang];
+                    }
+                    var l = w.Common.util.LanguageInfo.getLocalLanguageCode(lang);
+                    getEditor().asc_setDefaultLanguage(l);
+
+                } else {
+                    getEditor().asc_setDefaultLanguage(defaultLanguageCode);
+                }
             }
             if (integrationChannel) {
                 integrationChannel.event('EV_INTEGRATION_READY');
