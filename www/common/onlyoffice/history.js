@@ -14,6 +14,73 @@ define([
     //var ChainPad = window.ChainPad;
     var History = {};
 
+    History.loadHistoryData = (cfg) => {
+        const {
+            sframeChan, mainRtChannel, hashes, sortedCp, downloadId,
+            currentCp, nextCp
+        } = cfg;
+
+        return new Promise((resolve, reject) => {
+            // New CP: use this cp's rtChannel
+            if (currentCp?.rtChannel) {
+                // Load all messages from currentCp.rtChannel
+                sframeChan.query('Q_GET_FULL_HISTORY', {
+                    channel: currentCp.rtChannel,
+                    isDownload: downloadId,
+                    full: true
+                }, function (err, data) {
+                    if (err) { return void reject(err); }
+                    resolve(data);
+                });
+                return;
+            }
+
+            // Old CP or no CP: use mainRtChannel
+
+            // No CP and no nextCp hash
+            if (!currentCp && !nextCp?.hash) {
+                // Load all messages from mainRtChannel
+                sframeChan.query('Q_GET_FULL_HISTORY', {
+                    channel: mainRtChannel,
+                    isDownload: downloadId,
+                    full: true
+                }, function (err, data) {
+                    if (err) { return void reject(err); }
+                    resolve(data);
+                });
+                return;
+            }
+
+            // If we have a startHash or an endHash, use
+            // the GET_HISTORY_RANGE command
+            let startHash = currentCp?.hash || 'NONE';
+            let endHash = nextCp?.hash;
+
+            if (currentCp?.hash || nextCp?.hash) {
+                sframeChan.query('Q_GET_HISTORY_RANGE', {
+                    channel: mainRtChannel,
+                    lastKnownHash: endHash,
+                    toHash: startHash,
+                    isDownload: downloadId,
+                }, function (err, data) {
+                    if (err || !Array.isArray(data.messages)) {
+                        return void reject(err || 'EINVAL');
+                    }
+                    let msgs = data.messages;
+                    if (data.messages[0].serverHash === startHash) {
+                        msgs.shift();
+                    }
+                    resolve(msgs);
+                });
+                return;
+            }
+
+            reject('INVALID_CP');
+        });
+
+
+    };
+
     History.create = function (common, config) {
         if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
         if (History.loading) { return void console.error("History is already being loaded..."); }
@@ -26,6 +93,7 @@ define([
             throw new Error("Missing config element");
         }
 
+        const metadataMgr = common.getMetadataMgr();
 
         const ooMessages = {};
 
@@ -64,79 +132,14 @@ define([
                 let currentCp = hashes[cpId];
                 let nextCp = hashes[sortedCp[cpIdx + 1]];
 
-                // New CP: use this cp's rtChannel
-
-                if (currentCp?.rtChannel) {
-                    // Load all messages from currentCp.rtChannel
-                    sframeChan.query('Q_GET_FULL_HISTORY', {
-                        channel: currentCp.rtChannel,
-                        full: true
-                    }, function (err, data) {
-                        if (err) { return void reject(err); }
-                        data.unshift(void 0);
-                        ooMessages[cpId] = data;
-                        resolve(data);
-                    });
-                    return;
-                }
-
-                // Old CP or no CP: use mainRtChannel
-
-                // No CP and no nextCp hash
-                if (!currentCp && !nextCp?.hash) {
-                    // Load all messages from mainRtChannel
-                    sframeChan.query('Q_GET_FULL_HISTORY', {
-                        channel: mainRtChannel,
-                        full: true
-                    }, function (err, data) {
-                        if (err) { return void reject(err); }
-                        data.unshift(void 0);
-                        ooMessages[cpId] = data;
-                        resolve(data);
-                    });
-                    return;
-                }
-
-                // If we have a startHash or an endHash, use
-                // the GET_HISTORY_RANGE command
-                /**
-                 * startHash is the first element to load from history
-                 *  - 'NONE' means load from the start of the file
-                 *  - otherwise load from the given hash
-                 */
-                let startHash = currentCp?.hash || 'NONE';
-                /**
-                 * endHash is the last (most recent) element to load
-                 *  - undefined means load until the end of the file
-                 *    - if nextCp doesn't exist or is on the new format
-                 *  - otherwise load until the given hash
-                 */
-                let endHash = nextCp?.hash;
-
-
-                // Old CP or no CP and nextCp hash
-                if (currentCp?.hash || nextCp?.hash) {
-                    // Load all messages of mainRtChannel from "hash" to nextCp.hash
-                    sframeChan.query('Q_GET_HISTORY_RANGE', {
-                        channel: mainRtChannel,
-                        lastKnownHash: endHash,
-                        toHash: startHash,
-                    }, function (err, data) {
-                        if (err || !Array.isArray(data.messages)) {
-                            return void reject(err || 'EINVAL');
-                        }
-                        let msgs = data.messages;
-                        if (data.messages[0].serverHash === startHash) {
-                            msgs.shift();
-                        }
-                        msgs.unshift(void 0);
-                        ooMessages[cpId] = msgs;
-                        resolve(msgs);
-                    });
-                    return;
-                }
-
-                reject('INVALID_CP');
+                History.loadHistoryData({
+                    sframeChan,
+                    mainRtChannel, hashes, sortedCp, currentCp, nextCp
+                }).then(data => {
+                    data.unshift(void 0);
+                    ooMessages[cpId] = data;
+                    resolve(data);
+                }).catch(reject);
             });
         };
 
@@ -178,23 +181,38 @@ define([
             $timeline.empty();
             const msgs = getCpMsgs();
             const cp = hashes[getCpId()];
+
+            const md = Util.clone(metadataMgr.getMetadata());
+            const snapshots = md?.snapshots || {};
+
             const els = msgs.map((msg, i) => {
                 const selected = i === msgIdx;
                 const selClass = selected ? '.cp-selected' : '';
                 const content = selected ? Icons.get('chevron-down', {})
                                          : undefined;
                 let title = `${getCpId()}.${i}`
+
+                const s = snapshots[title];
+
                 if (msg?.time) {
                     title += ' - ' + new Date(msg.time).toLocaleString();
                 } else if (i === 0 && cp?.time) {
                     title += ' - ' + new Date(cp.time).toLocaleString();
                 }
+
+                let snap;
+                if (s) {
+                    if (s?.title) { title += `\n${Util.fixHTML(s.title)}`; }
+                    snap = Icons.get('snapshot', {'data-snapshot': '1'});
+                }
+
                 return h('span.cp-history-bar-el'+selClass, {
                     title,
                     'data-msg': i
-                }, content);
+                }, [content, snap]);
             });
             $timeline.append(els);
+
             updateNavButtons();
         };
 
@@ -404,9 +422,12 @@ define([
             onKeyUp = function (e) { e.stopPropagation(); };
             $(window).on('keydown', onKeyDown).on('keyup', onKeyUp).focus();
 
-            $timeline.on('click', '.cp-history-bar-el', (ev) => {
-                const target = ev.target;
+            $timeline.on('click', '.cp-history-bar-el', (ev, el) => {
+                let target = ev.target;
                 if (!target) { return; }
+                if (!target.classList.contains('cp-history-bar-el')) {
+                    target = $(target).closest('.cp-history-bar-el')[0];
+                }
                 const attr = target?.attributes?.getNamedItem('data-msg');
                 const idx = Number(attr?.value || 0);
                 if (idx > msgIdx) {
@@ -424,9 +445,6 @@ define([
                 });
             });
             $(snapshot).click(function () {
-                // XXX
-                /*
-                if (cpIndex === -1 && msgIndex === -1) { return void UI.warn(Messages.snapshots_ooPickVersion); }
                 var input = h('input', {
                     placeholder: Messages.snapshots_placeholder
                 });
@@ -448,14 +466,14 @@ define([
                     onClick: function () {
                         var val = $input.val();
                         if (!val) { return true; }
-                        msgs = ooMessages[id];
+                        const patch = getCurrentMsg();
                         config.makeSnapshot(val, function (err) {
                             if (err) { return; }
                             $input.val('');
                             UI.log(Messages.saved);
                         }, {
-                            hash: getVersion(position),
-                            time: currentTime || patch && patch.time || 0
+                            hash: getCurrentVersion(),
+                            time: patch?.time || +new Date()
                         });
                     },
                     keys: [13],
@@ -465,7 +483,6 @@ define([
                 setTimeout(function () {
                     $input.focus();
                 });
-                */
             });
 
             // Close & restore buttons
@@ -494,9 +511,7 @@ define([
             msgIdx = msgs.length - 1;
             showVersion();
             updateTimeline();
-        });
-
-
+        }).catch(err => { console.error(err); });
     };
 
     return History;

@@ -144,6 +144,17 @@ define([
             return w.editor || w.editorCell;
         };
 
+        const addOfficeJS = (version) => {
+            if (typeof(version) === 'number') {
+                version = `v${version}/`;
+            }
+            var s = h('script', {
+                type:'text/javascript',
+                src: ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js?' + APP.urlArgs
+            });
+            $('#cp-app-oo-editor').append(s);
+        };
+
         var setEditable = function (state, force) {
             $('#cp-app-oo-editor').find('#cp-app-oo-offline').remove();
             /*
@@ -623,6 +634,14 @@ define([
 
             if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
             $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
+
+            const v = cpData.version || content.version;
+            if (v && v !== APP.currentOOVersion) {
+                $('#cp-app-oo-editor').find('script').remove();
+                addOfficeJS(v);
+                APP.currentOOVersion = v;
+            }
+
             ooLoaded = false;
             oldLocks = {};
             Object.keys(pendingChanges).forEach(function (key) {
@@ -811,56 +830,44 @@ define([
 
         var openVersionHash = function (version) {
             readOnly = true;
-            var hashes = content.hashes || {};
-            var sortedCp = sortCpIndex(hashes);
-            var s = version.split('.');
-            var v = parseInt(s[1]);
+            const hashes = content.hashes || {};
+            const sortedCp = sortCpIndex(hashes);
+
+            const s = version.split('.');
             if (s.length !== 2) { return UI.errorLoadingScreen(Messages.error); }
 
-            const cpId = Number(s[0]);
-            const cp = hashes[cpId] || {};
+            let cpId = Number(s[0]);
+            if (APP.isDownload) { cpId = sortedCp[sortedCp.length - 1]; }
+            const currentCp = hashes[cpId] || {};
 
             const cpIdx = sortedCp.indexOf(cpId);
-            const nextCpId = sortedCp[cpidx + 1];
+            const nextCp = sortedCp[cpIdx + 1];
 
-            var minor = Number(s[1]) + 1;
+            let minor = Number(s[1]);
             if (APP.isDownload) { minor = undefined; }
 
-            var toHash = cp.hash || 'NONE';
-            var fromHash = nextCpId ? hashes[nextCpId].hash : 'NONE';
-
-            // XXX XXX HISTORY
-            // if (cp.file && !cp.hash) {} // new format, full history...
-            sframeChan.query('Q_GET_HISTORY_RANGE', {
-                channel: content.channel,
-                lastKnownHash: fromHash,
-                toHash: toHash,
-                isDownload: APP.isDownload
-            }, function (err, data) {
-                if (err) { console.error(err); return void UI.errorLoadingScreen(Messages.error); }
-                if (!Array.isArray(data.messages)) {
-                    console.error('Not an array');
-                    return void UI.errorLoadingScreen(Messages.error);
-                }
-
-                // The first "cp" in history is the empty doc. It doesn't include the first patch
-                // of the history
-                var messages = data.messages;
-
+            History.loadHistoryData({
+                sframeChan,
+                mainRtChannel: content.channel,
+                hashes: content.hashes,
+                downloadId: APP.isDownload,
+                sortedCp, currentCp, nextCp
+            }).then(messages => {
+                // Parse messages
                 messages.forEach(function (obj) {
                     try { obj.msg = JSON.parse(obj.msg); } catch (e) { console.error(e); }
                 });
 
                 // The version exists if we have results in the "messages" array
                 // or if we requested a x.0 version
-                var exists = !Number(s[1]) || messages.length;
+                var exists = !minor || messages.length;
                 var vHashEl;
 
                 if (!privateData.embed) {
-                    var vTime = (messages[messages.length - 1] || {}).time;
+                    var vTime = (messages[minor - 1] || currentCp)?.time;
                     var vTimeStr = vTime ? new Date(vTime).toLocaleString()
                                          : 'v' + privateData.ooVersionHash;
-                    var vTxt = Messages._getKey('infobar_versionHash',  [vTimeStr]);
+                    var vTxt = Messages._getKey('infobar_versionHash', [vTimeStr]);
 
                     // If we expected patched and we don't have any, it means this part
                     // of the history has been deleted
@@ -876,29 +883,32 @@ define([
 
                 if (!exists) { return void UI.removeLoadingScreen(); }
 
-                loadLastDocument(cp)
-                    .then(({blob, fileType}) => {
-                        // XXX HISTORY minor.... ?
-                        ooChannel.queue = messages.slice(1, minor+1);
-                        resetData(blob, fileType, cp);
+                APP.history = true;
+                loadLastDocument(currentCp)
+                .then(({blob, fileType}) => {
+                    ooChannel.queue = messages.slice(0, minor);
+                    console.error(ooChannel.queue.slice());
+                    resetData(blob, fileType, currentCp);
+                    UI.removeLoadingScreen();
+                })
+                .catch(() => {
+                    if (cp.hash && vHashEl) {
+                        // We requested a checkpoint but we can't find it...
                         UI.removeLoadingScreen();
-                    })
-                    .catch(() => {
-                        if (cp.hash && vHashEl) {
-                            // We requested a checkpoint but we can't find it...
-                            UI.removeLoadingScreen();
-                            vHashEl.innerText = Messages.oo_deletedVersion;
-                            $(vHashEl).removeClass('alert-warning').addClass('alert-danger');
-                            return;
-                        }
-                        var file = getFileType();
-                        var type = common.getMetadataMgr().getPrivateData().ooType;
-                        if (APP.downloadType) { type = APP.downloadType; }
-                        var blob = loadInitDocument(type, true);
-                        ooChannel.queue = file.doc === 'spreadsheet' ? messages.slice(0, v) : messages.slice(0, v+1);
-                        resetData(blob, file, {});
-                        UI.removeLoadingScreen();
-                    });
+                        vHashEl.innerText = Messages.oo_deletedVersion;
+                        $(vHashEl).removeClass('alert-warning').addClass('alert-danger');
+                        return;
+                    }
+                    var file = getFileType();
+                    var type = common.getMetadataMgr().getPrivateData().ooType;
+                    if (APP.downloadType) { type = APP.downloadType; }
+                    var blob = loadInitDocument(type, true);
+                    ooChannel.queue = messages.slice(0, minor);
+                    resetData(blob, file, {});
+                    UI.removeLoadingScreen();
+                });
+            }).catch(err => {
+                if (err) { console.error(err); return void UI.errorLoadingScreen(Messages.error); }
             });
         };
 
@@ -1116,6 +1126,8 @@ define([
         };
         // Update the locks status in onlyoffice
         var handleNewLocks = function (o, n) {
+            if (APP.history) { return; }
+
             var hasNew = false;
             // Check if we have at least one new lock
             Object.keys(n || {}).some(function (id) {
@@ -1156,7 +1168,7 @@ define([
             var users = Object.keys(metadataMgr.getMetadata().users);
             Object.keys(locks).forEach(function (id) {
                 var nId = id.slice(0,32);
-                if (users.indexOf(nId) === -1) {
+                if (users.indexOf(nId) === -1 || APP.history) {
                     // Offline locks: support old format
                     var l = (locks[id] && !locks[id].block) ? getUserLock(id) : [locks[id]];
                     ooChannel.send({
@@ -3004,6 +3016,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         APP.onLocal = config.onLocal = function () {
             if (initializing) { return; }
             if (readOnly) { return; }
+            if (APP.history) { return; }
 
             // Update metadata
             var content = stringifyInner();
@@ -3155,11 +3168,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             readOnly = true;
             var version = (!content.version || content.version === 1) ? 'v1/' :
                           (content.version <= 3 ? 'v2b/' : OOCurrentVersion.currentVersion + '/');
-            var s = h('script', {
-                type:'text/javascript',
-                src: ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js?' + APP.urlArgs
-            });
-            $('#cp-app-oo-editor').empty().append(h('div#cp-app-oo-placeholder-a')).append(s);
+            $('#cp-app-oo-editor').empty().append(h('div#cp-app-oo-placeholder-a'));
+            addOfficeJS(version);
 
             var hashes = content.hashes || {};
             var idx = sortCpIndex(hashes);
@@ -3283,10 +3293,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     ooChannel.queue = [];
                     ooChannel.ready = false;
                     // Fill the queue and then load the last CP
-                    //rtChannel.getHistory(function () {
+
+                    rtChannel.getHistory(function () {
                         var lastCp = getLastCp();
                         loadCp(lastCp, true);
-                    //});
+                    });
                 };
 
                 var deleteSnapshot = function (hash) {
@@ -3556,14 +3567,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 checkLinkedDocs();
             }
 
-Object.keys(content.hashes).forEach(id => {
-    let cpData = content.hashes[id];
-    if (!cpData.rtChannel) { return; }
-    delete cpData.index;
-    delete cpData.hash;
-});
-APP.onLocal();
-
             APP.startNew = isNew;
 
             var version = OOCurrentVersion.currentVersion + '/';
@@ -3681,11 +3684,9 @@ APP.onLocal();
                 checkCheckpoint();
             }
 
-            var s = h('script', {
-                type:'text/javascript',
-                src: ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js?' + APP.urlArgs
-            });
-            $('#cp-app-oo-editor').append(s);
+            addOfficeJS(version);
+
+            APP.currentOOVersion = content.version || 1;
 
             if (metadataMgr.getPrivateData().burnAfterReading && content && content.channel) {
                 sframeChan.event('EV_BURN_PAD', content.channel);
@@ -3735,6 +3736,7 @@ APP.onLocal();
                     common.openCursorChannel(APP.onLocal);
                     cursor = common.createCursor(APP.onLocal);
                     cursor.onCursorUpdate(function (data) {
+                        if (APP.history) { return; }
                         // Leaving user
                         if (data && data.leave && data.id) {
                             // When a netflux user leaves, remove all their cursors
@@ -4017,6 +4019,8 @@ APP.onLocal();
             //var integrationSave = content.integrationSave;
 
             content = json.content;
+
+            if (APP.history) { return; }
 
             if (content.saveLock && wasLocked !== content.saveLock) {
                 // Someone new is creating a checkpoint: fix the sheets ids

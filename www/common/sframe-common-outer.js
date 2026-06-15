@@ -1716,12 +1716,18 @@ define([
 
             // History
             sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
-                var crypto = Crypto.createEncryptor(secret.keys);
+                let nSecret = secret;
+                if (data.isDownload && ooDownloadData[data.isDownload]) {
+                    var ooData = ooDownloadData[data.isDownload];
+                    delete ooDownloadData[data.isDownload];
+                    nSecret = Utils.Hash.getSecrets('sheet', ooData.hash, ooData.password);
+                }
+                var crypto = Crypto.createEncryptor(nSecret.keys);
                 Cryptpad.getFullHistory({
                     debug: data?.debug,
                     full: data?.full,
-                    channel: data.channel || secret.channel,
-                    validateKey: secret.keys.validateKey
+                    channel: data.channel || nSecret.channel,
+                    validateKey: nSecret.keys.validateKey
                 }, function (encryptedMsgs) {
                     var nt = nThen;
                     var decryptedMsgs = [];

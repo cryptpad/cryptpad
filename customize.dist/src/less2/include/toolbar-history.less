@@ -210,6 +210,9 @@
                         flex: 1;
                         background-color: @history_userBg1;
                         border: 2px solid @history_userBg1;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
                         &:nth-child(2n) {
                             background-color: @history_userBg2;
                             border: 2px solid @history_userBg2;
@@ -217,13 +220,17 @@
                         &.cp-selected {
                             border: 2px solid @cryptpad_text_col;
                             position: relative;
-                            svg {
+                            svg:not([data-snapshot]) {
                                 position: absolute;
                                 margin: 0;
                                 left: 50%;
                                 bottom: 65%;
                                 transform: translateX(-50%)
                             }
+                        }
+                        svg[data-snapshot] {
+                            height: 100%;
+                            margin: 0;
                         }
                     }
                 }

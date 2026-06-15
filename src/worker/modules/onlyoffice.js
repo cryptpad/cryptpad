@@ -41,6 +41,9 @@ const factory = (Feedback) => {
                 channel: channel,
             };
         } else { // same channel existing tab
+            setTimeout(() => {
+                ctx.emit('READY', chan.clients, [client]);
+            });
             return void cb();
         }
 
