@@ -230,7 +230,7 @@
     "contacts_info3": "Feu doble clic la seva icona per a veure el seu perfil",
     "contacts_info4": "Qualsevol dels participants pot esborrar permanent l'hitorial de xat",
     "contacts_removeHistoryTitle": "Neteja l'historial del xat",
-    "contacts_confirmRemoveHistory": "Segur que voleu suprimir permanentment l'historial de xat? Les dades no es podran restaurar",
+    "contacts_confirmRemoveHistory": "Segur que voleu suprimir l'historial de xat? Les dades no es podran restaurar.",
     "contacts_removeHistoryServerError": "Hi ha hagut un error en suprimir l'historial del xat. Torneu a provar-ho",
     "contacts_fetchHistory": "Recupera l'historial antic",
     "contacts_rooms": "Sales",

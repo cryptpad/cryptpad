@@ -239,7 +239,7 @@
     "contacts_info3": "Dubbelklik op hun icoon om hun profiel te bekijken",
     "contacts_info4": "Beide deelnemers kunnen de gesprekgeschiedenis voorgoed leegmaken",
     "contacts_removeHistoryTitle": "Gesprekgeschiedenis leegmaken",
-    "contacts_confirmRemoveHistory": "Weet u zeker dat u voorgoed de gesprekgeschiedenis wilt leegmaken? De data kan niet worden hersteld",
+    "contacts_confirmRemoveHistory": "Weet u zeker dat u de gesprekgeschiedenis wilt leegmaken? De data kan niet worden hersteld.",
     "contacts_removeHistoryServerError": "Foutmelding tijdens het verwijderen van uw gesprekgeschiedenis. Probeer later opnieuw",
     "contacts_fetchHistory": "Eerdere geschiedenis binnenhalen",
     "contacts_rooms": "Kamers",
