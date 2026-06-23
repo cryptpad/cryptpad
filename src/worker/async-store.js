@@ -393,7 +393,8 @@ const factory = (Sortify, UserObject, ProxyManager,
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
             s.rpc.uploadStatus({
                 id: data.id,
-                size: data.size
+                size: data.size,
+                linked: data.linked
             }, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);

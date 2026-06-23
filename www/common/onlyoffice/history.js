@@ -9,10 +9,15 @@ define([
     '/common/hyperscript.js',
     '/common/common-icons.js',
     '/common/common-util.js',
-
 ], function ($, UI, UIElements, h, Icons, Util) {
     //var ChainPad = window.ChainPad;
     var History = {};
+
+    History.sortCpIndex = function (hashes) {
+        return Object.keys(hashes).map(Number).sort(function (a, b) {
+            return a-b;
+        });
+    };
 
     History.loadHistoryData = (cfg) => {
         const {
@@ -100,7 +105,7 @@ define([
         const hashes = config.onlyoffice.hashes;
         const mainRtChannel = config.onlyoffice.channel;
 
-        const sortedCp = config.sortCpIndex(hashes);
+        const sortedCp = History.sortCpIndex(hashes);
 
         let cpIdx = sortedCp.length - 1;
         let msgIdx = 0;

@@ -1537,6 +1537,40 @@ define([
                         });
                     });
                 });
+
+                sframeChan.on('Q_TRIM_HISTORY', function (data, cb) {
+                    const { href } = data;
+                    const parsed = Utils.Hash.parsePadUrl(href);
+                    let type = parsed.type;
+                    if (['sheet', 'doc', 'presentation'].includes(type)) {
+                        type = 'common/onlyoffice';
+                    }
+                    const path = `/${type}/trim-history.js`;
+                    const cfg = {
+                        password: data.password
+                    };
+                    require([path], (Trimming) => {
+                        nThen(waitFor => {
+                            Cryptpad.getAccessKeys(waitFor((keys) => {
+                                cfg.accessKeys = keys;
+                            }));
+                        }).nThen(function () {
+                            Cryptget.get(parsed.hash, (err, val) => {
+                                if (err) { return void cb(); }
+                                const json = Utils.Util.tryParse(val);
+                                if (!json) { return void cb(); }
+                                const newJson = Trimming.trim(json);
+                                if (!newJson) { return void cb(); }
+                                console.error(newJson);
+                                Cryptget.put(parsed.hash, JSON.stringify(newJson), () => {
+                                    cb();
+                                }, cfg);
+                            }, cfg);
+                        });
+                    }, () => {
+                        cb();
+                    });
+                });
             };
             addCommonRpc(sframeChan, isSafe);
 

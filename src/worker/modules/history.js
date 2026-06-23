@@ -139,7 +139,9 @@ const factory = (Util, Hash, UserObject, nThen) => {
                         waitFor.abort();
                         return void cb(obj);
                     }
-                    dataSize = obj[0] || 0;
+                    let value = obj[0];
+                    dataSize = value?.size || 0;
+                    hash = value?.hash;
                 }));
             } else {
                 Store.getHistory(null, {
@@ -239,6 +241,7 @@ const factory = (Util, Hash, UserObject, nThen) => {
         });
     };
 
+    // XXX
     commands.TRIM_HISTORY = function (ctx, data, cId, cb) {
         if (!ctx.store.loggedIn || !ctx.store.rpc) { return void cb({ error: 'INSUFFICIENT_PERMISSIONS' }); }
         var channels = data.channels;

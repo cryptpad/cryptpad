@@ -635,8 +635,8 @@ define([
         });
     };
 
-    common.uploadStatus = function (teamId, id, size, cb) {
-        postMessage("UPLOAD_STATUS", {teamId, id, size}, function (obj) {
+    common.uploadStatus = function (data, cb) {
+        postMessage("UPLOAD_STATUS", data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });

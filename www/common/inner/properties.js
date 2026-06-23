@@ -19,6 +19,7 @@ define([
     var getPadProperties = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
+        var sframeChan = common.getSframeChannel();
         opts = opts || {};
         var $d = $('<div>');
         if (!data) { return void cb(void 0, $d); }
@@ -175,23 +176,29 @@ define([
                 spinner.spin();
                 history.execCommand('TRIM_HISTORY', {
                     pad: true,
+                    linked: data?.linked,
                     channels: trimChannels,
                     teamId: typeof(owned) === "number" && owned
                 }, function (obj) {
-                    spinner.hide();
-                    if (obj && obj.error || obj.warning) {
+                    if (obj && obj.error || obj.warning) {
                         console.error(obj.warning);
                         $(size).append(h('div.alert.alert-danger', Messages.trimHistory_error));
+                        spinner.hide();
                         return;
                     }
-                    $(size).remove();
-                    var formatted = UIElements.prettySize(bytes - historyBytes);
-                    $d.append(h('div.cp-app-prop', [
-                        Messages.upload_size,
-                        h('br'),
-                        h('span.cp-app-prop-content', formatted)
-                    ]));
-                    $d.append(h('div.alert.alert-success', Messages.trimHistory_success));
+                    sframeChan.query('Q_TRIM_HISTORY', {
+                        href: data.href
+                    }, function () {
+                        spinner.hide();
+                        $(size).remove();
+                        var formatted = UIElements.prettySize(bytes - historyBytes);
+                        $d.append(h('div.cp-app-prop', [
+                            Messages.upload_size,
+                            h('br'),
+                            h('span.cp-app-prop-content', formatted)
+                        ]));
+                        $d.append(h('div.alert.alert-success', Messages.trimHistory_success));
+                    });
                 });
             });
 

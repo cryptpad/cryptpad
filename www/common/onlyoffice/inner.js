@@ -260,11 +260,7 @@ define([
             });
         };
 
-        var sortCpIndex = function (hashes) {
-            return Object.keys(hashes).map(Number).sort(function (a, b) {
-                return a-b;
-            });
-        };
+        var sortCpIndex = History.sortCpIndex;
 
         const addLinkedCheckpoint = (cpData, cb) => {
             let parsed = Hash.parsePadUrl(cpData.file);
@@ -305,7 +301,7 @@ define([
                 });
             });
             // If < 10, add initial channel
-            if (sortedCp.length < 10) {
+            if (sortedCp.length < 10 && content.channel) {
                 value.checkpoints.unshift({
                     blob: 0,
                     rtChannel: content.channel
@@ -618,7 +614,7 @@ define([
                 })
             }, () => {});
         };
-        const onRtChannelError = (err) => {
+        const onRtChannelError = (err, channel) => {
             const wasReadOnly = readOnly;
             readOnly = true;
             offline = true;
@@ -627,7 +623,7 @@ define([
                 error: err?.error,
                 reason: err?.reason,
                 channel: privateData.channel,
-                rtChannel: content.channel
+                rtChannel: channel
             }, 0, 2);
 
             let txt = Messages.oo_rtChannelMissing;
@@ -694,7 +690,7 @@ define([
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
                     case 'ERROR':
-                        onRtChannelError(obj.data);
+                        onRtChannelError(obj.data, channel);
                         cb();
                         break;
                     case 'READY':
@@ -819,6 +815,8 @@ define([
                 resetData(blob, file, cpData);
             };
 
+            // XXX
+            blob.linked = privateData.channel;
             APP.FM.handleFile(blob, data);
         };
 
@@ -2224,9 +2222,10 @@ define([
 
             // Check if history can/should be trimmed
             var cp = getLastCp();
-            if (cp && cp.file && cp.hash) {
+            if (cp?.file) {
+                // XXX trim history to test
                 var channels = [{
-                    channel: content.channel,
+                    channel: cp.rtChannel || content.channel,
                     lastKnownHash: cp.hash
                 }];
                 common.checkTrimHistory(channels);
@@ -3358,7 +3357,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         onRevert: commit,
                         setHistory: setHistoryMode,
                         makeSnapshot,
-                        sortCpIndex,
                         onlyoffice: {
                             hashes: content.hashes || {},
                             channel: content.channel,
