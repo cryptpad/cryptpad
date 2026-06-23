@@ -66,6 +66,10 @@ const checkCurrentDoc:Command = (ctx, data, clientId, cb) => {
             delete obj.user;
         });
 
+        expectedJSON.media ||= [];
+        expectedJSON.checkpoints ||= [];
+        expectedJSON.channels ||= [];
+
         if (Sortify(json) === Sortify(expectedJSON)) { return void cb(); }
 
         // "user" won't be encrypted so we can't add the username

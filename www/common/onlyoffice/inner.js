@@ -260,6 +260,12 @@ define([
             });
         };
 
+        var sortCpIndex = function (hashes) {
+            return Object.keys(hashes).map(Number).sort(function (a, b) {
+                return a-b;
+            });
+        };
+
         const addLinkedCheckpoint = (cpData, cb) => {
             let parsed = Hash.parsePadUrl(cpData.file);
             let secret = Hash.getSecrets('file', parsed.hash);
@@ -283,7 +289,7 @@ define([
         };
         const checkLinkedDocs = () => {
             const value = {
-                channels: [], checkpoints: []
+                checkpoints: []
             };
             // Get last 10 cps
             let hashes = content.hashes || {}; // checkpoints
@@ -300,9 +306,11 @@ define([
             });
             // If < 10, add initial channel
             if (sortedCp.length < 10) {
-                value.channels.unshift(content.channel);
+                value.checkpoints.unshift({
+                    blob: 0,
+                    rtChannel: content.channel
+                });
             }
-            console.error(value);
             APP.linkedModule.execCommand('CHECK_CURRENT_DOC', {
                 // channel & signKey added in outer
                 expectedJSON: value
@@ -349,11 +357,6 @@ define([
 
         var now = function () { return +new Date(); };
 
-        var sortCpIndex = function (hashes) {
-            return Object.keys(hashes).map(Number).sort(function (a, b) {
-                return a-b;
-            });
-        };
         const getLastCpId = (old) => {
             const hashes = old ? oldHashes : content.hashes;
             if (!hashes || !Object.keys(hashes).length) { return 0; }
@@ -603,6 +606,130 @@ define([
             });
         };
 
+        const sendDebugSupportTicket = (message) => {
+            const title = "[Automatic] Office document locked";
+
+            APP.supportModule.execCommand('MAKE_TICKET', {
+                channel: Hash.createChannelId(),
+                title,
+                ticket: APP.support.getDebuggingData({
+                    title,
+                    message
+                })
+            }, () => {});
+        };
+        const onRtChannelError = (err) => {
+            const wasReadOnly = readOnly;
+            readOnly = true;
+            offline = true;
+
+            const message = JSON.stringify({
+                error: err?.error,
+                reason: err?.reason,
+                channel: privateData.channel,
+                rtChannel: content.channel
+            }, 0, 2);
+
+            let txt = Messages.oo_rtChannelMissing;
+            let value;
+            let f = UI.confirm;
+            let cb = (yes) => {
+                if (!yes) { return; }
+
+                // Set flag if support has already been contacted
+                content.missingRtChannel = +new Date();
+                readOnly = wasReadOnly;
+                APP.onLocal();
+                readOnly = true;
+
+                sendDebugSupportTicket(message);
+            };
+
+            let btnText = content.missingRtChannel ? Messages.sent : Messages.support_formButton;
+            let opts = {
+                ok: [
+                    Icons.get('send'),
+                    h('span', btnText)
+                ],
+                cancel: Messages.filePicker_close
+            };
+
+            if (content.missingRtChannel) {
+                value = h('strong', Messages._getKey('oo_rtChannelMissingDate', [
+                    new Date(content.missingRtChannel).toLocaleDateString()
+                ]));
+                setTimeout(() => {
+                    const $b = UI.findOKButton();
+                    $b.attr('disabled', 'disabled');
+                });
+            }
+
+            if (!ApiConfig.supportMailboxKey) {
+                txt = Messages.oo_rtChannelMissingNoSupport;
+                value = UI.getPreCopy(message);
+                f = UI.alert;
+                opts = undefined;
+                cb = undefined;
+            }
+
+            let div = h('div', [
+                h('p', txt),
+                value
+            ]);
+            f(div, cb, opts);
+        };
+
+        var openRtChannel = function (cpData, cb) {
+            const channel = cpData?.rtChannel || content.channel;
+            const lastCpHash = cpData?.hash;
+            sframeChan.query('Q_OO_OPENCHANNEL', {
+                channel, lastCpHash
+            }, function (err, obj) {
+                if (obj?.error) { console.error(obj.error); }
+// XXX an error loading a checkpoint was ignored, causing a sheet
+// to load incorrectly. There's a risk of a new checkpoint being created
+// with the resulting (incorrect) state. Errors like this should be reported
+// to the user so they realize something is wrong.
+            });
+            sframeChan.on('EV_OO_EVENT', function (obj) {
+                switch (obj.ev) {
+                    case 'ERROR':
+                        onRtChannelError(obj.data);
+                        cb();
+                        break;
+                    case 'READY':
+                        checkClients(obj.data);
+                        cb();
+                        break;
+                    case 'LEAVE':
+                        removeClient(obj.data);
+                        break;
+                    case 'MESSAGE':
+                        if (APP.history) {
+                            ooChannel.historyLastHash = obj.data.hash;
+                            ooChannel.currentIndex++;
+                            return;
+                        }
+                        if (ooChannel.ready) {
+                            ooChannel.send(obj.data.msg);
+                            ooChannel.lastHash = obj.data.hash;
+                            ooChannel.cpIndex++;
+                            common.notify();
+                        } else {
+                            ooChannel.queue.push(obj.data);
+                        }
+                        break;
+                    case 'HISTORY_SYNCED':
+                        if (typeof(APP.onHistorySynced) !== "function") { return; }
+                        APP.onHistorySynced();
+                        delete APP.onHistorySynced;
+                        break;
+
+                }
+            });
+        };
+
+
         var fmConfig = {
             noHandlers: true,
             noStore: true,
@@ -821,7 +948,7 @@ define([
                         });
                     }
                 };
-                xhr.onerror = function (err) {
+                xhr.onerror = function () {
                     reject('ENETWORK');
                 };
                 xhr.send(null);
@@ -849,9 +976,8 @@ define([
             History.loadHistoryData({
                 sframeChan,
                 mainRtChannel: content.channel,
-                hashes: content.hashes,
                 downloadId: APP.isDownload,
-                sortedCp, currentCp, nextCp
+                currentCp, nextCp
             }).then(messages => {
                 // Parse messages
                 messages.forEach(function (obj) {
@@ -892,7 +1018,7 @@ define([
                     UI.removeLoadingScreen();
                 })
                 .catch(() => {
-                    if (cp.hash && vHashEl) {
+                    if (currentCp.hash && vHashEl) {
                         // We requested a checkpoint but we can't find it...
                         UI.removeLoadingScreen();
                         vHashEl.innerText = Messages.oo_deletedVersion;
@@ -909,129 +1035,6 @@ define([
                 });
             }).catch(err => {
                 if (err) { console.error(err); return void UI.errorLoadingScreen(Messages.error); }
-            });
-        };
-
-        const sendDebugSupportTicket = (message) => {
-            const title = "[Automatic] Office document locked";
-
-            APP.supportModule.execCommand('MAKE_TICKET', {
-                channel: Hash.createChannelId(),
-                title,
-                ticket: APP.support.getDebuggingData({
-                    title,
-                    message
-                })
-            }, () => {});
-        };
-        const onRtChannelError = (err) => {
-            const wasReadOnly = readOnly;
-            readOnly = true;
-            offline = true;
-
-            const message = JSON.stringify({
-                error: err?.error,
-                reason: err?.reason,
-                channel: privateData.channel,
-                rtChannel: content.channel
-            }, 0, 2);
-
-            let txt = Messages.oo_rtChannelMissing;
-            let value;
-            let f = UI.confirm;
-            let cb = (yes) => {
-                if (!yes) { return; }
-
-                // Set flag if support has already been contacted
-                content.missingRtChannel = +new Date();
-                readOnly = wasReadOnly;
-                APP.onLocal();
-                readOnly = true;
-
-                sendDebugSupportTicket(message);
-            };
-
-            let btnText = content.missingRtChannel ? Messages.sent : Messages.support_formButton;
-            let opts = {
-                ok: [
-                    Icons.get('send'),
-                    h('span', btnText)
-                ],
-                cancel: Messages.filePicker_close
-            };
-
-            if (content.missingRtChannel) {
-                value = h('strong', Messages._getKey('oo_rtChannelMissingDate', [
-                    new Date(content.missingRtChannel).toLocaleDateString()
-                ]));
-                setTimeout(() => {
-                    const $b = UI.findOKButton();
-                    $b.attr('disabled', 'disabled');
-                });
-            }
-
-            if (!ApiConfig.supportMailboxKey) {
-                txt = Messages.oo_rtChannelMissingNoSupport;
-                value = UI.getPreCopy(message);
-                f = UI.alert;
-                opts = undefined;
-                cb = undefined;
-            }
-
-            let div = h('div', [
-                h('p', txt),
-                value
-            ]);
-            f(div, cb, opts);
-        };
-
-        var openRtChannel = function (cpData, cb) {
-            const channel = cpData?.rtChannel || content.channel;
-            const lastCpHash = cpData?.hash;
-            sframeChan.query('Q_OO_OPENCHANNEL', {
-                channel, lastCpHash
-            }, function (err, obj) {
-                if (obj?.error) { console.error(obj.error); }
-// XXX an error loading a checkpoint was ignored, causing a sheet
-// to load incorrectly. There's a risk of a new checkpoint being created
-// with the resulting (incorrect) state. Errors like this should be reported
-// to the user so they realize something is wrong.
-            });
-            sframeChan.on('EV_OO_EVENT', function (obj) {
-                switch (obj.ev) {
-                    case 'ERROR':
-                        onRtChannelError(obj.data);
-                        cb();
-                        break;
-                    case 'READY':
-                        checkClients(obj.data);
-                        cb();
-                        break;
-                    case 'LEAVE':
-                        removeClient(obj.data);
-                        break;
-                    case 'MESSAGE':
-                        if (APP.history) {
-                            ooChannel.historyLastHash = obj.data.hash;
-                            ooChannel.currentIndex++;
-                            return;
-                        }
-                        if (ooChannel.ready) {
-                            ooChannel.send(obj.data.msg);
-                            ooChannel.lastHash = obj.data.hash;
-                            ooChannel.cpIndex++;
-                            common.notify();
-                        } else {
-                            ooChannel.queue.push(obj.data);
-                        }
-                        break;
-                    case 'HISTORY_SYNCED':
-                        if (typeof(APP.onHistorySynced) !== "function") { return; }
-                        APP.onHistorySynced();
-                        delete APP.onHistorySynced;
-                        break;
-
-                }
             });
         };
 
@@ -2928,7 +2931,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         }, lastCp);
                     })
                     .catch((err) => {
-                        i = i || 0;
                         // Can't download checkpoint from server, abort
                         if (err === "ENETWORK") {
                             UI.errorLoadingScreen(Messages.fivehundred_internalServerError);

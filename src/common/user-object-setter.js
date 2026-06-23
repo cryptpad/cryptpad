@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (() => {
-const factory = (Util, Hash, Realtime, Feedback) => {
+const factory = (Util, Hash, Realtime) => {
     let window = globalThis;
     var module = {};
 
@@ -88,7 +88,6 @@ const factory = (Util, Hash, Realtime, Feedback) => {
             if (readOnly) { return void cb('EFORBIDDEN'); }
             var id = Util.createRandomInteger();
             var data = clone(_data);
-            let parsed = Hash.parsePadUrl(data.roHref || data.href);
             // If we were given an edit link, encrypt its value if needed
             if (data.href && data.href.indexOf('#') !== -1) { data.href = exp.cryptor.encrypt(data.href); }
 
@@ -1025,15 +1024,13 @@ if (typeof(module) !== 'undefined' && module.exports) {
     module.exports = factory(
         require('./common-util'),
         require('./common-hash'),
-        require('./common-realtime'),
-        require('./common-feedback'),
+        require('./common-realtime')
     );
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
     define([
         '/common/common-util.js',
         '/common/common-hash.js',
-        '/common/common-realtime.js',
-        '/common/common-feedback.js',
+        '/common/common-realtime.js'
     ], factory);
 } else {
     // unsupported initialization

@@ -1438,6 +1438,7 @@ const factory = (UserObject, Util, Hash,
         });
         return all;
     };
+    /*
     const findMissingRtChannel = (Env) => {
         const userObjects = _getUserObjects(Env);
         const all = [];
@@ -1449,6 +1450,7 @@ const factory = (UserObject, Util, Hash,
         });
         return all;
     };
+    */
 
     var create = function (proxy, data, uoConfig) {
         var Env = {

@@ -16,7 +16,7 @@ define([
 
     History.loadHistoryData = (cfg) => {
         const {
-            sframeChan, mainRtChannel, hashes, sortedCp, downloadId,
+            sframeChan, mainRtChannel, downloadId,
             currentCp, nextCp
         } = cfg;
 
@@ -101,7 +101,6 @@ define([
         const mainRtChannel = config.onlyoffice.channel;
 
         const sortedCp = config.sortCpIndex(hashes);
-        const maxCpIdx = sortedCp.length - 1;
 
         let cpIdx = sortedCp.length - 1;
         let msgIdx = 0;
@@ -143,7 +142,7 @@ define([
             });
         };
 
-        let $version, $share, $timeline, $pos;
+        let $version, $share, $timeline;
         let $next, $prev;
         const $hist = $toolbar.find('.cp-toolbar-history');
         $hist.addClass('cp-smallpatch');
@@ -190,7 +189,7 @@ define([
                 const selClass = selected ? '.cp-selected' : '';
                 const content = selected ? Icons.get('chevron-down', {})
                                          : undefined;
-                let title = `${getCpId()}.${i}`
+                let title = `${getCpId()}.${i}`;
 
                 const s = snapshots[title];
 
@@ -326,8 +325,6 @@ define([
             $timeline = $(line);
 
             var pos = h('span.cp-history-snapshots');
-            $pos = $(pos);
-
 
             var timeline = h('div.cp-toolbar-history-timeline', [
                 h('div.cp-history-timeline-line', [
@@ -422,7 +419,7 @@ define([
             onKeyUp = function (e) { e.stopPropagation(); };
             $(window).on('keydown', onKeyDown).on('keyup', onKeyUp).focus();
 
-            $timeline.on('click', '.cp-history-bar-el', (ev, el) => {
+            $timeline.on('click', '.cp-history-bar-el', (ev) => {
                 let target = ev.target;
                 if (!target) { return; }
                 if (!target.classList.contains('cp-history-bar-el')) {
@@ -441,7 +438,7 @@ define([
             // Versioned link
             $share.click(function () {
                 common.getSframeChannel().event('EV_SHARE_OPEN', {
-                    versionHash: getVersion(position)
+                    versionHash: getCurrentVersion()
                 });
             });
             $(snapshot).click(function () {
