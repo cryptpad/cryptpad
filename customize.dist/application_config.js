@@ -17,6 +17,7 @@ const factory = (AppConfig) => {
 
     // To inform users of the support ticket panel which languages your admins speak:
     //AppConfig.supportLanguages = [ 'en', 'fr' ];
+    AppConfig.disableCrowdfundingMessages = true;
     
     return AppConfig;
 };
