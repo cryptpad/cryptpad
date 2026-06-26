@@ -678,6 +678,24 @@ define([
             $roster.empty().append(roster);
         });
     };
+    var refreshTeamMetadataDisplay = function (common) {
+        if (!APP.team) { return; }
+        APP.module.execCommand('GET_TEAM_METADATA', {
+            teamId: APP.team
+        }, function (obj) {
+            if (obj && obj.error) { return; }
+            var $headerAvatar = APP.$leftside.find('.cp-team-cat-header .cp-avatar');
+            if ($headerAvatar.length) {
+                var $name = $headerAvatar.find('.cp-sidebarlayout-category-name').detach();
+                $headerAvatar.empty();
+                common.displayAvatar($headerAvatar, obj.avatar, obj.name);
+                if ($name.length) { $headerAvatar.append($name); }
+            }
+            if (typeof APP.refreshTeamAvatarBlock === 'function') {
+                APP.refreshTeamAvatarBlock(obj);
+            }
+        });
+    };
 
     var makePermissions = function () {
         var modal= UI.createModal({
@@ -1172,8 +1190,42 @@ define([
 
     makeBlock('avatar', function (common, cb) { // Msg.team_avatarHint, .team_avatarTitle
         // Upload
-        var avatar = h('div.cp-team-avatar.cp-avatar');
-        var $avatar = $(avatar);
+        var block = h('div#cp-team-avatar-preview');
+        var $avatar = $(h('span.cp-avatar')).appendTo($(block));
+
+        var displayAvatar = function (obj) {
+            $avatar.empty();
+            var val = obj.avatar;
+            var name = obj.name;
+            common.displayAvatar($avatar, val, name, function () {
+                if (!val) { return; }
+                $avatar.find('.cp-team-avatar-delete').remove();
+                var delButton = h('button.cp-team-avatar-delete.btn.btn-danger', {
+                    'aria-label': Messages.profile_remove_avatar,
+                    title: Messages.profile_remove_avatar
+                }, Icons.get('close'));
+                $avatar.append(delButton);
+                $(delButton).click(function () {
+                    APP.module.execCommand('GET_TEAM_METADATA', {
+                        teamId: APP.team
+                    }, function (meta) {
+                        if (meta && meta.error) { return void UI.warn(Messages.error); }
+                        meta.avatar = '';
+                        APP.module.execCommand('SET_TEAM_METADATA', {
+                            teamId: APP.team,
+                            metadata: meta
+                        }, function (res) {
+                            if (res && res.error) { return void UI.warn(Messages.error); }
+                            refreshTeamMetadataDisplay(common);
+                        });
+                    });
+                });
+            });
+        };
+        var refreshAvatar = function (obj) {
+            displayAvatar(obj);
+        };
+        APP.refreshTeamAvatarBlock = refreshAvatar;
         var data = MT.addAvatar(common, function (ev, data) {
             if (!data.url) { return void UI.warn(Messages.error); }
             APP.module.execCommand('GET_TEAM_METADATA', {
@@ -1185,11 +1237,7 @@ define([
                     teamId: APP.team,
                     metadata: obj
                 }, function () {
-                    $avatar.empty();
-                    // the UI is not supposed to allow admins to remove team names
-                    // so we expect that it will be there. Failing that the initials
-                    // from the default name will be displayed
-                    common.displayAvatar($avatar, data.url);
+                    refreshTeamMetadataDisplay(common);
                 });
             });
         });
@@ -1205,16 +1253,13 @@ define([
             if (obj && obj.error) {
                 return void UI.warn(Messages.error);
             }
-            var val = obj.avatar;
-            common.displayAvatar($avatar, val, obj.name);
+            refreshAvatar(obj);
 
-            // Display existing + button
-            var content = [
-                avatar,
+            cb([
+                block,
                 h('br'),
                 $upButton[0]
-            ];
-            cb(content);
+            ]);
         });
     }, true);
 
@@ -1589,6 +1634,7 @@ define([
                 if (ev === 'ROSTER_CHANGE') {
                     if (Number(APP.team) === Number(data)) {
                         redrawRoster(common);
+                        refreshTeamMetadataDisplay(common);
                     }
                     return;
                 }
