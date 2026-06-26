@@ -1561,7 +1561,6 @@ define([
                                 if (!json) { return void cb(); }
                                 const newJson = Trimming.trim(json);
                                 if (!newJson) { return void cb(); }
-                                console.error(newJson);
                                 Cryptget.put(parsed.hash, JSON.stringify(newJson), () => {
                                     cb();
                                 }, cfg);

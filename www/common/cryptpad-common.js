@@ -1386,6 +1386,16 @@ define([
         cb();
     };
 
+    const sendUniversalCmd = (type, cmd, data, cb) => {
+        universal.execCommand({
+            type,
+            data: {
+                cmd,
+                data
+            }
+        }, cb);
+    };
+
     common.changePadPassword = function (Crypt, Crypto, data, cb) {
         var href = data.href;
         var oldPassword = data.oldPassword;
@@ -1729,6 +1739,7 @@ define([
         var oldMetadata;
         var oldRtChannel;
         var privateData;
+        var lastCp;
 
         var newSecret;
         if (parsed.hashData.version >= 2) {
@@ -1746,7 +1757,8 @@ define([
         var optsPut = {
             password: newPassword,
             metadata: {
-                validateKey: newSecret.keys.validateKey
+                validateKey: newSecret.keys.validateKey,
+                linked: newSecret.channel
             },
         };
         var optsGet = {
@@ -1844,14 +1856,35 @@ define([
             }), optsGet);
         }).nThen(function (waitFor) {
             // Re-encrypt rtchannel
-            oldRtChannel = Util.find(cryptgetVal, ['content', 'channel']);
             var newCrypto = Crypto.createEncryptor(newSecret.keys);
             var oldCrypto = Crypto.createEncryptor(oldSecret.keys);
-            var cps = Util.find(cryptgetVal, ['content', 'hashes']);
-            var cpLength = Object.keys(cps).length;
-            var lastCp = cpLength ? cps[cpLength] : {};
+
+            var cps = cryptgetVal?.content?.hashes;
+            var sortedCpIdx = Object.keys(cps).map(Number).sort();
+            var lastCpIdx = sortedCpIdx.pop();
+            lastCp = cps[lastCpIdx] || {};
+
+            oldRtChannel = lastCp?.rtChannel ||
+                           cryptgetVal?.content?.channel;
+
             cryptgetVal.content.hashes = {};
-            common.getHistory({
+
+            // Update rtChannel in content
+            if (lastCpIdx) {
+                cryptgetVal.content.hashes[lastCpIdx] = {
+                    file: lastCp.file,
+                    rtChannel: newRtChannel,
+                    version: lastCp.version
+                };
+            } else {
+                cryptgetVal.content.channel = newRtChannel;
+            }
+
+            // Support old and new cp format
+            let f = common.getHistory;
+            if (!lastCp?.hash) { f = common.getFullHistory; }
+
+            f({
                 channel: oldRtChannel,
                 lastKnownHash: lastCp.hash
             }, waitFor(function (obj) {
@@ -1860,6 +1893,7 @@ define([
                     console.error(obj);
                     return void cb(obj.error);
                 }
+                // Re-encrypt messages
                 var msgs = obj;
                 var newHistory = msgs.map(function (str) {
                     try {
@@ -1871,18 +1905,16 @@ define([
                         return void cb({error: e});
                     }
                 });
-                // Update last knwon hash in cryptgetVal
-                if (cpLength && newHistory.length) {
-                    lastCp.hash = newHistory[0].slice(0, 64);
-                    lastCp.index = 50;
-                    cryptgetVal.content.hashes[1] =  lastCp;
-                }
+
                 common.onlyoffice.execCommand({
                     cmd: 'REENCRYPT',
                     data: {
                         channel: newRtChannel,
                         msgs: newHistory,
-                        metadata: optsPut.metadata
+                        metadata: {
+                            linked: newSecret.channel,
+                            validateKey: optsPut.metadata.validateKey
+                        }
                     }
                 }, waitFor(function (obj) {
                     if (obj && obj.error) {
@@ -1894,9 +1926,8 @@ define([
             }));
             Cache.clearChannel(newSecret.channel, waitFor());
         }).nThen(function (waitFor) {
-            // The new rt channel is ready
-            // The blob uses its own encryption and doesn't need to be reencrypted
-            cryptgetVal.content.channel = newRtChannel;
+            // The new rt channel is ready, we can create the new chainpad
+
             if (!newPassword) { optsPut.metadata.forcePlaceholder = true; }
             Crypt.put(newHash, JSON.stringify(cryptgetVal), waitFor(function (err) {
                 if (err) {
@@ -1904,6 +1935,60 @@ define([
                     return void cb({ error: err });
                 }
             }), optsPut);
+        }).nThen(function (waitFor) {
+            // The blob uses its own encryption and doesn't need to be
+            // reencrypted but we should make sure it's linked to the
+            // newSecret.channel
+            if (!lastCp.file) { return; }
+            const parsed = Hash.parsePadUrl(lastCp.file);
+            const fileSecret = Hash.getSecrets(parsed.type, parsed.hash);
+
+            common.setPadMetadata({
+                channel: fileSecret.channel,
+                command: 'SET_LINKED',
+                value: newSecret.channel
+            }, waitFor());
+
+            // If we had a checkpoint, make sure it won't be destroyed
+            // alongside the old document. We must remove it from the
+            // "linked" data
+
+            // Add the new "linked" data to the new document
+            const cp = {
+                blob: fileSecret.channel,
+                rtChannel: newRtChannel
+            };
+            const newLinkedData = { checkpoints: [cp] };
+            const newSigningKey = newSecret.keys?.signKey;
+            sendUniversalCmd('linked-doc', 'CHECK_CURRENT_DOC', {
+                channel: newSecret.channel,
+                expectedJSON: newLinkedData,
+                signKey64: newSigningKey
+            }, waitFor());
+
+            // Update old doc "linked" data
+            const oldSigningKey = oldSecret.keys?.signKey;
+            sendUniversalCmd('linked-doc', 'GET_LINKED_DATA', {
+                channel: oldSecret.channel
+            }, waitFor((json) => {
+                if (!json || json.error) { return; }
+
+                // Remove last cp "blob" from old "linked" data
+                // because we're re-using the same blob
+                const cp = json.checkpoints || [];
+                const lastCp = cp.pop();
+                // But preserve the associated rtChannel as "linked" so
+                // that this rtChannel can be destroyed with the main doc
+                if (lastCp?.rtChannel) {
+                    json.channels ||= [];
+                    json.channels.push(lastCp.rtChannel);
+                }
+                sendUniversalCmd('linked-doc', 'CHECK_CURRENT_DOC', {
+                    channel: oldSecret.channel,
+                    expectedJSON: json,
+                    signKey64: oldSigningKey
+                }, waitFor());
+            }));
         }).nThen(function (waitFor) {
             pad.leavePad({
                 channel: oldSecret.channel
@@ -1917,14 +2002,17 @@ define([
             common.setPadAttribute('channel', newSecret.channel, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
-            common.setPadAttribute('rtChannel', newRtChannel, waitFor(function (err) {
-                if (err) { warning = true; }
-            }), href);
             var viewHash = Hash.getViewHashFromKeys(newSecret);
             newRoHref = '/' + parsed.type + '/#' + viewHash;
             common.setPadAttribute('roHref', newRoHref, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
+
+            // Remove rtChannel and last cp data and mark as "linked"
+            common.setPadAttribute('linked', true, waitFor(() => {}), href);
+            common.setPadAttribute('rtChannel', void 0, waitFor(() => {}), href);
+            common.setPadAttribute('lastVersion', void 0, waitFor(() => {}), href);
+            common.setPadAttribute('lastCpHash', void 0, waitFor(() => {}), href);
 
             if (parsed.hashData.password && newPassword) { return; } // same hash
             common.setPadAttribute('href', newHref, waitFor(function (err) {

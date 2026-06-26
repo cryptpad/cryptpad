@@ -816,6 +816,7 @@ define([
             };
 
             // XXX
+            const privateData = metadataMgr.getPrivateData();
             blob.linked = privateData.channel;
             APP.FM.handleFile(blob, data);
         };

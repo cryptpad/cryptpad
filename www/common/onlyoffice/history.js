@@ -14,9 +14,7 @@ define([
     var History = {};
 
     History.sortCpIndex = function (hashes) {
-        return Object.keys(hashes).map(Number).sort(function (a, b) {
-            return a-b;
-        });
+        return Object.keys(hashes).map(Number).sort();
     };
 
     History.loadHistoryData = (cfg) => {

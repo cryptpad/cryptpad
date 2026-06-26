@@ -53,6 +53,15 @@ const signData = (data, signKey) => {
 
 */
 
+const getLinkedData:Command = (ctx, data, clientId, cb) => {
+    const { channel } = data;
+    getLinkedDocuments(ctx, channel, obj => {
+        if (obj?.error) { return void cb(obj); }
+        const json = obj?.[0] || {};
+        cb(json);
+    });
+};
+
 
 const checkCurrentDoc:Command = (ctx, data, clientId, cb) => {
     const { channel, expectedJSON, signKey64 } = data;
@@ -132,6 +141,9 @@ const LinkedDoc: LinkedDocModule<ModuleObject> = {
                 const data = obj.data;
                 if (cmd === 'CHECK_CURRENT_DOC') {
                     return void checkCurrentDoc(ctx, data, clientId, cb);
+                }
+                if (cmd === 'GET_LINKED_DATA') {
+                    return void getLinkedData(ctx, data, clientId, cb);
                 }
                 if (cmd === 'ADD_LINKED_DATA') {
                     return void addLinkedData(ctx, data, clientId, cb);

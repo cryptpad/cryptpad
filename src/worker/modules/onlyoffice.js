@@ -246,18 +246,40 @@ const factory = (Feedback) => {
         var channel = data.channel;
         var network = ctx.store.network;
 
+        var hk = network.historyKeeper;
+        const txid = Math.floor(Math.random() * 1000000);
+
         var onOpen = function (wc) {
-            var hk = network.historyKeeper;
+            const sendEncrypted = () => {
+                data.msgs.forEach(function (msg) {
+                    wc.bcast(msg);
+                });
+                wc.leave();
+                cb();
+            };
+
+            const onDirectMessage = (msg, sender) => {
+                // Ignore messages for others
+                if (sender !== hk) { return; }
+                try {
+                    const parsed = JSON.parse(msg);
+                    if (parsed?.txid !== txid) { return; }
+                    if (!parsed.channel) { return; }
+
+                    // Remove listener and send re-encrypted messages
+                    network.off('message', onDirectMessage);
+                    sendEncrypted();
+                } catch (e) { console.error(e); }
+            };
+
+            network.on('message', onDirectMessage);
+
             var cfg = {
+                txid: txid,
                 metadata: data.metadata
             };
             var msg = ['GET_HISTORY', wc.id, cfg];
             network.sendto(hk, JSON.stringify(msg));
-            data.msgs.forEach(function (msg) {
-                wc.bcast(msg);
-            });
-            wc.leave();
-            cb();
         };
 
         ctx.store.anon_rpc.send("IS_NEW_CHANNEL", channel, function (e, response) {
