@@ -1757,8 +1757,7 @@ define([
         var optsPut = {
             password: newPassword,
             metadata: {
-                validateKey: newSecret.keys.validateKey,
-                linked: newSecret.channel
+                validateKey: newSecret.keys.validateKey
             },
         };
         var optsGet = {
