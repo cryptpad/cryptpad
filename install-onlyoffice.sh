@@ -203,7 +203,7 @@ OPTIONS:
     -a, --accept-license
             Accept the license of OnlyOffice and do not ask when running this
             script. Read and accept this before using this option:
-            https://github.com/ONLYOFFICE/web-apps/blob/master/LICENSE.txt
+            https://github.com/ONLYOFFICE/web-apps/blob/master/LICENSE
 
     -t, --trust-repository
             Automatically configure the cloned onlyoffice-builds repository
