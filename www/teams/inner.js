@@ -1212,8 +1212,7 @@ define([
                         APP.module.execCommand('SET_TEAM_METADATA', {
                             teamId: APP.team,
                             metadata: meta
-                        }, function (res) {
-                            if (res && res.error) { return void UI.warn(Messages.error); }
+                        }, function () {
                             refreshTeamMetadataDisplay(common);
                         });
                     });
