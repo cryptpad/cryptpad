@@ -691,9 +691,7 @@ define([
                 common.displayAvatar($headerAvatar, obj.avatar, obj.name);
                 if ($name.length) { $headerAvatar.append($name); }
             }
-            if (typeof APP.refreshTeamAvatarBlock === 'function') {
-                APP.refreshTeamAvatarBlock(obj);
-            }
+            APP.refreshTeamAvatarBlock(obj);
         });
     };
 
