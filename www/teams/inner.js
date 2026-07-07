@@ -1254,7 +1254,7 @@ define([
                 return void UI.warn(Messages.error);
             }
             refreshAvatar(obj);
-
+            // Display existing + button
             cb([
                 block,
                 h('br'),
