@@ -2129,7 +2129,8 @@ define([
                     });
                 }
 
-                var defaultLanguageCode = String(getEditor().asc_getDefaultLanguage());
+                //Ensure spellcheck set correctly (works only with localized language variants)
+                var defaultLanguageCode = getEditor().asc_getDefaultLanguage();
 
                 const langToLocale = {
                     "en" : "en-us",
@@ -2138,8 +2139,21 @@ define([
                     "de" : "de-de"
                 };
 
+                const langCodeToLocale = {
+                    7: "de-de",
+                    9: "en-us",
+                    10: "es-es",
+                    12: "fr-fr"
+                };
+
+                const localeToLCID = Object.fromEntries(
+                    Object.values(window.frames[0].AscCommon.g_aCultureInfos)
+                        .map(info => [info.Name.toLowerCase(), info.LCID])
+                );
+
                 if (APP.startNew) {
                     var w = getWindow();
+                    //If default language variant is generic - localize it
                     if (Object.keys(langToLocale).includes(lang)) {
                         lang = langToLocale[lang];
                     }
@@ -2147,6 +2161,13 @@ define([
                     getEditor().asc_setDefaultLanguage(l);
 
                 } else {
+                    //Setting the language every time document loads prevents spellcheck from 'switching off'
+                    var localeLang = langCodeToLocale[defaultLanguageCode];
+
+                    //If default language variant is generic - localize it
+                    if (defaultLanguageCode < 1000 && localeLang) {
+                        defaultLanguageCode = localeToLCID[localeLang];
+                    }
                     getEditor().asc_setDefaultLanguage(defaultLanguageCode);
                 }
             }
@@ -2246,7 +2267,6 @@ define([
             let integrationConfig = privateData?.integrationConfig?._;
             //let ec = integrationConfig?.editorConfig;
             let dc = integrationConfig?.document;
-
             const ooconfig = {
                 document: {
                     fileType: file.type,
@@ -2316,7 +2336,6 @@ define([
             //var mode = (content && content.version > 2 && lock) ? "view" : "edit";
 
             const lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '').slice(0,2);
-
             // Config
             APP.ooconfig = createOOConfig(blob, file, lock, fromContent, lang, force);
             /*
