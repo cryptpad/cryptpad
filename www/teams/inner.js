@@ -678,15 +678,15 @@ define([
             $roster.empty().append(roster);
         });
     };
-    var refreshTeamMetadataDisplay = function (common) {
+    const refreshTeamMetadataDisplay = (common) => {
         if (!APP.team) { return; }
         APP.module.execCommand('GET_TEAM_METADATA', {
             teamId: APP.team
-        }, function (obj) {
+        }, (obj) => {
             if (obj && obj.error) { return; }
-            var $headerAvatar = APP.$leftside.find('.cp-team-cat-header .cp-avatar');
+            const $headerAvatar = APP.$leftside.find('.cp-team-cat-header .cp-avatar');
             if ($headerAvatar.length) {
-                var $name = $headerAvatar.find('.cp-sidebarlayout-category-name').detach();
+                const $name = $headerAvatar.find('.cp-sidebarlayout-category-name').detach();
                 $headerAvatar.empty();
                 common.displayAvatar($headerAvatar, obj.avatar, obj.name);
                 if ($name.length) { $headerAvatar.append($name); }
@@ -1187,32 +1187,31 @@ define([
     }, true);
 
     makeBlock('avatar', function (common, cb) { // Msg.team_avatarHint, .team_avatarTitle
-        // Upload
-        var block = h('div#cp-team-avatar-preview');
-        var $avatar = $(h('span.cp-avatar')).appendTo($(block));
+        const block = h('div#cp-team-avatar-preview');
+        const $avatar = $(h('span.cp-avatar')).appendTo($(block));
 
-        var refreshAvatar = function (obj) {
+        const refreshAvatar = (obj) => {
             $avatar.empty();
-            var val = obj.avatar;
-            var name = obj.name;
-            common.displayAvatar($avatar, val, name, function () {
+            const val = obj.avatar;
+            const name = obj.name;
+            common.displayAvatar($avatar, val, name, () => {
                 if (!val) { return; }
                 $avatar.find('.cp-team-avatar-delete').remove();
-                var delButton = h('button.cp-team-avatar-delete.btn.btn-danger', {
+                const delButton = h('button.cp-team-avatar-delete.btn.btn-danger', {
                     'aria-label': Messages.profile_remove_avatar,
                     title: Messages.profile_remove_avatar
                 }, Icons.get('close'));
                 $avatar.append(delButton);
-                $(delButton).click(function () {
+                $(delButton).click(() => {
                     APP.module.execCommand('GET_TEAM_METADATA', {
                         teamId: APP.team
-                    }, function (meta) {
+                    }, (meta) => {
                         if (meta && meta.error) { return void UI.warn(Messages.error); }
                         meta.avatar = '';
                         APP.module.execCommand('SET_TEAM_METADATA', {
                             teamId: APP.team,
                             metadata: meta
-                        }, function () {
+                        }, () => {
                             refreshTeamMetadataDisplay(common);
                         });
                     });
@@ -1220,22 +1219,22 @@ define([
             });
         };
         APP.refreshTeamAvatarBlock = refreshAvatar;
-        var data = MT.addAvatar(common, function (ev, data) {
-            if (!data.url) { return void UI.warn(Messages.error); }
+        const data = MT.addAvatar(common, (ev, upload) => {
+            if (!upload.url) { return void UI.warn(Messages.error); }
             APP.module.execCommand('GET_TEAM_METADATA', {
                 teamId: APP.team
-            }, function (obj) {
+            }, (obj) => {
                 if (obj && obj.error) { return void UI.warn(Messages.error); }
-                obj.avatar = data.url;
+                obj.avatar = upload.url;
                 APP.module.execCommand('SET_TEAM_METADATA', {
                     teamId: APP.team,
                     metadata: obj
-                }, function () {
+                }, () => {
                     refreshTeamMetadataDisplay(common);
                 });
             });
         });
-        var $upButton = common.createButton('upload', false, data);
+        const $upButton = common.createButton('upload', false, data);
         $upButton.addClass('cp-online');
         $upButton.removeProp('title');
         $upButton.text(Messages.profile_upload);
@@ -1243,12 +1242,11 @@ define([
 
         APP.module.execCommand('GET_TEAM_METADATA', {
             teamId: APP.team
-        }, function (obj) {
+        }, (obj) => {
             if (obj && obj.error) {
                 return void UI.warn(Messages.error);
             }
             refreshAvatar(obj);
-            // Display existing + button
             cb([
                 block,
                 h('br'),
