@@ -809,6 +809,9 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
                 $text.show();
                 $pencilIcon.show();
                 $saveIcon.hide();
+                setTimeout(() => {
+                    $text.focus();
+                }, 0);
                 //$pencilIcon.css('display', '');
             } else if (e.which === 32) {
                 e.stopPropagation();
