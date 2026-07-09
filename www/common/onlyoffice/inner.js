@@ -2267,6 +2267,7 @@ define([
             let integrationConfig = privateData?.integrationConfig?._;
             //let ec = integrationConfig?.editorConfig;
             let dc = integrationConfig?.document;
+
             const ooconfig = {
                 document: {
                     fileType: file.type,
@@ -2336,6 +2337,7 @@ define([
             //var mode = (content && content.version > 2 && lock) ? "view" : "edit";
 
             const lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '').slice(0,2);
+
             // Config
             APP.ooconfig = createOOConfig(blob, file, lock, fromContent, lang, force);
             /*
