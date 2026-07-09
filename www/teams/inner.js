@@ -1191,7 +1191,7 @@ define([
         var block = h('div#cp-team-avatar-preview');
         var $avatar = $(h('span.cp-avatar')).appendTo($(block));
 
-        var displayAvatar = function (obj) {
+        var refreshAvatar = function (obj) {
             $avatar.empty();
             var val = obj.avatar;
             var name = obj.name;
@@ -1218,9 +1218,6 @@ define([
                     });
                 });
             });
-        };
-        var refreshAvatar = function (obj) {
-            displayAvatar(obj);
         };
         APP.refreshTeamAvatarBlock = refreshAvatar;
         var data = MT.addAvatar(common, function (ev, data) {
