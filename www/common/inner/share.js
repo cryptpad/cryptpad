@@ -88,15 +88,10 @@ define([
                 large: true,
                 data: teams
             }, refreshButtons);
-            var fileList;
-            common.getFilesList(['file', 'pad'], function (err, list) {
-                fileList = list;
-            });
 
             common.getFilesList(['file', 'pad'], function (err, list) {
-                fileList = list;
                 teamsList.icons.forEach(function(icon) {
-                    var inTeam = Object.values(fileList).some(file =>
+                    var inTeam = Object.values(list).some(file =>
                         file.teamId === icon.getAttribute('data-teamid') &&
                         file.channel === config.channel
                     );
@@ -107,7 +102,7 @@ define([
                             return false;
                         });
                     }
-                })
+                });
             });
             
             $div.append(teamsList.div);
