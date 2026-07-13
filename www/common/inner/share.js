@@ -88,6 +88,28 @@ define([
                 large: true,
                 data: teams
             }, refreshButtons);
+            var fileList;
+            common.getFilesList(['file', 'pad'], function (err, list) {
+                fileList = list;
+            });
+
+            common.getFilesList(['file', 'pad'], function (err, list) {
+                fileList = list;
+                teamsList.icons.forEach(function(icon) {
+                    var inTeam = Object.values(fileList).some(file =>
+                        file.teamId === icon.getAttribute('data-teamid') &&
+                        file.channel === config.channel
+                    );
+                    if (inTeam) {
+                        $(icon).addClass('cp-disabled');
+                        $(icon).on('click', function(e) {
+                            e.preventDefault();
+                            return false;
+                        });
+                    }
+                })
+            });
+            
             $div.append(teamsList.div);
         }
 

@@ -1317,10 +1317,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             var list = {};
             var types = query.types;
             var where = query.where;
-            var filter = query.filter || {};
+            var filter = query.filter || {};
             var isFiltered = function (type, data) {
                 var filtered;
-                var fType = filter.fileType || [];
+                var fType = filter.fileType || [];
                 if (type === 'file' && fType.length) {
                     if (!data.fileType) { return true; }
                     filtered = !fType.some(function (t) {
@@ -1330,12 +1330,18 @@ const factory = (Sortify, UserObject, ProxyManager,
                 return filtered;
             };
             var channels = [];
-            getAllStores().forEach(function (s) {
+
+            var teamModule = store.modules['team'];
+            var teamIds = teamModule ? teamModule.getTeams() : [];
+
+            getAllStores().forEach(function (s, idx) {
+                var teamId = idx === 0 ? undefined : teamIds[idx - 1];
                 s.manager.getSecureFilesList(where).forEach(function (obj) {
                     var data = obj.data;
                     if (channels.indexOf(data.channel || data.id) !== -1) { return; }
                     var id = obj.id;
                     if (data.channel) { channels.push(data.channel || data.id); }
+                    data.teamId = teamId;
                     // Only include static links if "link" is requested
                     if (data.static) {
                         if (types.indexOf('link') !== -1) { list[id] = data; }
