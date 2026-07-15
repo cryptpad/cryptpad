@@ -1274,6 +1274,10 @@ define([
         var refresh = APP.refresh = function (cb, opt) {
             var type = APP.store[FILTER_BY];
             var path = type ? [FILTER, type, currentPath] : currentPath;
+                if (APP.newSharedFolder && priv.anonSFHref && opt) {
+                    opt.sf = true
+                }
+
             APP.displayDirectory(path, undefined, () => {
                 refreshDeprecated();
                 if (typeof(cb) === "function") { cb(); }
@@ -4330,7 +4334,7 @@ define([
             var $folderHeader = getFolderListHeader(true);
             var $fileHeader = getFileListHeader(true);
             var path = currentPath.slice(1);
-            var root = Util.find(data, path);
+            var root = Util.find(data, path) ? Util.find(data, path) : ['root'];
 
             var realPath = [ROOT, SHARED_FOLDER].concat(path);
 
@@ -4377,11 +4381,13 @@ define([
                 } else {
                     path = [ROOT];
                 }
-            } else if (driveConfig.APP.loggedIn && path[0] === 'sf') {
+            } else if (APP.loggedIn && path[0] === 'sf') {
                 var fId = APP.newSharedFolder;
-                const key = Object.keys(proxy.drive.root).find(
-                    k => proxy.drive.root[k] === parseInt(fId)
-                );
+
+                const key = Object.entries(proxy.drive.root).find(
+                ([_, value]) => value === Number(APP.newSharedFolder)
+                )?.[0];
+
                 path = ['root', String(key),'root'];
             }
 
@@ -4629,6 +4635,10 @@ define([
                     //  Wait for shared folder metadata
                     // _displayDirectory(path, force);
                     // cb();
+                }
+                if (opt?.sf) {
+                    path = ['sf', String(APP.newSharedFolder), 'root'];
+
                 }
                 updateSharedFolders(sframeChan, manager, files, folders, function () {
                     _displayDirectory(path, force);
