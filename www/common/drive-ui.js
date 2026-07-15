@@ -4335,7 +4335,6 @@ define([
             var $fileHeader = getFileListHeader(true);
             var path = currentPath.slice(1);
             var root = Util.find(data, path) ? Util.find(data, path) : ['root'];
-
             var realPath = [ROOT, SHARED_FOLDER].concat(path);
 
             if (manager.hasSubfolder(root)) { $list.append($folderHeader); }
