@@ -2793,7 +2793,6 @@ define([
 
                 var $span = $('<span>', {'class': 'cp-app-drive-path-element'});
                 if (idx < path.length - 1) {
-
                     if (!noStyle) {
                         $span.addClass('cp-app-drive-path-clickable');
                         $span.click(function (e) {
@@ -2807,7 +2806,6 @@ define([
                     name = getElementName(path);
                 }
                 $span.data("path", path.slice(0, idx + 1));
-
                 addDragAndDropHandlers($span, path.slice(0, idx), true, true);
 
                 if (idx === 0) { name = p === SHARED_FOLDER ? name : getPrettyName(p); }
@@ -4363,7 +4361,6 @@ define([
         // Display the selected directory into the content part (rightside)
         // NOTE: Elements in the trash are not using the same storage structure as the others
         var _displayDirectory = function (path, force) {
-
             if (APP.closed || (APP.$content && !$.contains(document.documentElement, APP.$content[0]))) { return; }
 
             APP.hideMenu();
@@ -4386,7 +4383,7 @@ define([
             } else if (APP.loggedIn && path[0] === 'sf') {
 
                 const key = Object.entries(proxy.drive.root).find(
-                ([value]) => value === Number(APP.newSharedFolder)
+                ([key, value]) => value === Number(APP.newSharedFolder)
                 )?.[0];
 
                 path = ['root', String(key), 'root'];
