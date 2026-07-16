@@ -2224,7 +2224,6 @@ define([
             // Check if history can/should be trimmed
             var cp = getLastCp();
             if (cp?.file) {
-                // XXX trim history to test
                 var channels = [{
                     channel: cp.rtChannel || content.channel,
                     lastKnownHash: cp.hash
