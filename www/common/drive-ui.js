@@ -1275,7 +1275,7 @@ define([
             var type = APP.store[FILTER_BY];
             var path = type ? [FILTER, type, currentPath] : currentPath;
                 if (APP.newSharedFolder && priv.anonSFHref && opt) {
-                    opt.sf = true
+                    opt.sf = true;
                 }
 
             APP.displayDirectory(path, undefined, () => {
@@ -2767,6 +2767,7 @@ define([
             path.forEach(function (p, idx) {
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
                 if (skipNext) { skipNext = false; return; }
+                if ( idx > 0 && p === ROOT && path[0] === SHARED_FOLDER ) { return; }
                 if (APP.newSharedFolder && priv.isEmbed && p === ROOT && !idx) { return; }
                 var name = p;
 
@@ -2792,6 +2793,7 @@ define([
 
                 var $span = $('<span>', {'class': 'cp-app-drive-path-element'});
                 if (idx < path.length - 1) {
+
                     if (!noStyle) {
                         $span.addClass('cp-app-drive-path-clickable');
                         $span.click(function (e) {
@@ -2805,6 +2807,7 @@ define([
                     name = getElementName(path);
                 }
                 $span.data("path", path.slice(0, idx + 1));
+
                 addDragAndDropHandlers($span, path.slice(0, idx), true, true);
 
                 if (idx === 0) { name = p === SHARED_FOLDER ? name : getPrettyName(p); }
@@ -4334,7 +4337,7 @@ define([
             var $folderHeader = getFolderListHeader(true);
             var $fileHeader = getFileListHeader(true);
             var path = currentPath.slice(1);
-            var root = Util.find(data, path) ? Util.find(data, path) : ['root'];
+            var root = Util.find(data, path) ? Util.find(data, path) : {};
             var realPath = [ROOT, SHARED_FOLDER].concat(path);
 
             if (manager.hasSubfolder(root)) { $list.append($folderHeader); }
@@ -4381,13 +4384,12 @@ define([
                     path = [ROOT];
                 }
             } else if (APP.loggedIn && path[0] === 'sf') {
-                var fId = APP.newSharedFolder;
 
                 const key = Object.entries(proxy.drive.root).find(
-                ([_, value]) => value === Number(APP.newSharedFolder)
+                ([value]) => value === Number(APP.newSharedFolder)
                 )?.[0];
 
-                path = ['root', String(key),'root'];
+                path = ['root', String(key), 'root'];
             }
 
             if (APP.loggedIn && path[0] === FILES_DATA) {
