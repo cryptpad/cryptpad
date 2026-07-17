@@ -7,11 +7,19 @@
 ## Required vars
 # CPAD_MAIN_DOMAIN
 # CPAD_SANDBOX_DOMAIN
+
+## Optional vars
 # CPAD_CONF
 
 set -e
 
 CPAD_HOME="/cryptpad"
+
+# Validate required vars or exit early
+if [[ -z "$CPAD_MAIN_DOMAIN" || -z "$CPAD_SANDBOX_DOMAIN" ]]; then
+    printf "Some of the following required env vars are empty: CPAD_MAIN_DOMAIN, CPAD_SANDBOX_DOMAIN\n"
+    exit 1
+fi
 
 if [ ! -f "$CPAD_CONF" ]; then
     echo -e "\n\
