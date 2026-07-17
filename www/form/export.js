@@ -164,12 +164,15 @@ define([
                 var time = new Date(obj.time).toISOString();
                 var msg = obj.msg || {};
                 var user = msg._userdata || {};
-                var line = [];
-                var arrLine = [];
-                line.push(time);
-                arrLine.push(time);
-                line.push(user.name || Messages.anonymous);
-                arrLine.push(user.name || Messages.anonymous);
+                var username = user.name || Messages.anonymous;
+                var line = [
+                    time,
+                    username,
+                ];
+                var arrLine = [
+                    time,
+                    username,
+                ];
                 order.forEach(function (key) {
                     var type = form[key].type;
                     if (!TYPES[type]) { return; } // Ignore static types
