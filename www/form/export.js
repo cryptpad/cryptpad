@@ -165,23 +165,29 @@ define([
                 var msg = obj.msg || {};
                 var user = msg._userdata || {};
                 var line = [];
+                var arrLine = [];
                 line.push(time);
+                arrLine.push(time);
                 line.push(user.name || Messages.anonymous);
+                arrLine.push(user.name || Messages.anonymous);
                 order.forEach(function (key) {
                     var type = form[key].type;
                     if (!TYPES[type]) { return; } // Ignore static types
                     if (TYPES[type].exportCSV) {
                         var res = TYPES[type].exportCSV(msg[key], form[key]);
                         Array.prototype.push.apply(line, res);
+                        Array.prototype.push.apply(arrLine, res);
                         return;
                     }
-                    line.push(String(msg[key] || ''));
+                    var str = String(msg[key] || '');
+                    line.push(str);
+                    arrLine.push(toCellValue(key, str));
                 });
                 line.forEach(function (v, i) {
                     if (i) { csv += ','; }
                     csv += escapeCSV(v);
                 });
-                array.push(line);
+                array.push(arrLine);
         });
         if (isArray) { return array; }
         return csv;
