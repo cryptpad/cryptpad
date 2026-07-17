@@ -136,6 +136,28 @@ define([
         });
         array.push(questions);
 
+        /**
+         * Numeric "Text" answers must stay JS strings for the CSV output 
+         * (escapeCSV treats falsy values as empty), but need to be real
+         * Numbers for the "array" format so the Sheet importer 
+         * (method `makePatch` inside onlyoffice/inner.js) creates numeric
+         * cells instead of text cells.
+         * 
+         * @returns {*|number}
+         */
+        var toCellValue = function (key, str) {
+            var opts = form[key].opts;
+            if (
+                form[key].type === 'input' &&
+                opts && opts.type === 'number' &&
+                str !== '' &&
+                !isNaN(Number(str))
+            ) {
+                return Number(str);
+            }
+            return str;
+        };
+
         sortedKeys.forEach(function (k) {
                 var obj = answers[k];
                 csv += '\n';
