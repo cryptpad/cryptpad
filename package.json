@@ -105,6 +105,7 @@
     "unused-translations": "node ./scripts/translations/unused-translations.js",
     "test": "node scripts/TestSelenium.js",
     "test-rpc": "cd scripts/tests && node test-rpc",
+    "test-unit": "node --test scripts/tests/unit.js",
     "evict-inactive": "node scripts/evict-inactive.js",
     "build": "node scripts/build.js",
     "clear": "node scripts/clear.js",
