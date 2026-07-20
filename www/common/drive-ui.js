@@ -3649,10 +3649,10 @@ define([
 
         var naturalSort = function(a, b) {
             if (typeof(a) === "string") {
-                a = splitStringToTextAndNumbers(a);
+                a = splitStringToTextAndNumbers(a.trim());
             }
             if (typeof(b) === "string") {
-                b = splitStringToTextAndNumbers(b);
+                b = splitStringToTextAndNumbers(b.trim());
             }
 
             var comp = lexicographicCompare(a, b);
