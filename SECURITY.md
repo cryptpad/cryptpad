@@ -15,7 +15,7 @@ However, we quickly release new minor versions in case of need.
 
 Please keep up with the latest release published here: https://github.com/cryptpad/cryptpad/releases
 
-Note that every GitHub release page has an RSS compatible feed that you can subscribe on to be informed of every new release.
+Note that every GitHub release page has an [RSS compatible feed](https://github.com/cryptpad/cryptpad/releases.atom) that you can subscribe on to be informed of every new release.
 
 We do also communicate about this topic on:
 - [Our blog](https://blog.cryptpad.org)
