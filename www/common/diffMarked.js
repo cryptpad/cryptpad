@@ -266,7 +266,7 @@ define([
     var taskIconChecked = '<i data-lucide="square-check" aria-hidden="true"></i>';
     var taskIconUnchecked = '<i data-lucide="square" aria-hidden="true"></i>';
     var checkedTaskItemPtn = /^\s*(<p>)?\[[xX]\](<\/p>)?\s*/;
-    var uncheckedTaskItemPtn = /^\s*(<p>)?\[ *\](<\/p>)?\s*/;
+    var uncheckedTaskItemPtn = /^\s*(<p>)?\[ ?\](<\/p>)?\s*/;
     var bogusCheckPtn = /<input checked="" disabled="" type="checkbox">/;
     var bogusUncheckPtn = /<input disabled="" type="checkbox">/;
     renderer.listitem = function (text) {
