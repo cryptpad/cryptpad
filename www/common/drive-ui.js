@@ -4383,7 +4383,7 @@ define([
             } else if (APP.loggedIn && path[0] === 'sf') {
 
                 const key = Object.entries(proxy.drive.root).find(
-                ([key, value]) => value === Number(APP.newSharedFolder)
+                ([, value]) => value === Number(APP.newSharedFolder)
                 )?.[0];
 
                 path = ['root', String(key), 'root'];
