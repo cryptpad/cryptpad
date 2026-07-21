@@ -6,6 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Security Policy
 
+CryptPad security policy is detailed on the following document: https://cryptpad.org/security/
+
 ## Supported Versions
 
 Considering the amount of resources necessary to backport security or bug fixes to previous, unsupported CryptPad versions, it's not something we do.
