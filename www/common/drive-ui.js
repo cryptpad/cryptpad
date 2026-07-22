@@ -498,6 +498,7 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
+                    'data-type': 'link',
                 },[
                     Icons.get('link'),
                     Messages.fm_link_new
