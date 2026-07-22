@@ -3042,7 +3042,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }
         };
 
-        var loadTemplate = function (href, pw, parsed) {
+        var loadTemplate = function (href, password, parsed) {
             APP.history = true;
             APP.template = true;
             var editor = getEditor();
@@ -3058,29 +3058,16 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var lastIndex = idx[idx.length - 1];
             var lastCp = hashes[lastIndex] || {};
 
-            // Current cp or initial hash (invalid hash ==> initial hash)
-            var toHash = lastCp.hash || 'NONE';
-            // Last hash
-            var fromHash = 'NONE';
-
             content.mediasSources = medias;
 
-            sframeChan.query('Q_GET_HISTORY_RANGE', {
-                href: href,
-                password: pw,
-                channel: _content.channel,
-                lastKnownHash: fromHash,
-                toHash: toHash,
-            }, function (err, data) {
-                if (err) { return void console.error(err); }
-                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
-
-                // The first "cp" in history is the empty doc. It doesn't include the first patch
-                // of the history
-                var initialCp = !lastCp.hash;
-
-                var messages = (data.messages || []).slice(initialCp ? 0 : 1);
-
+            History.loadHistoryData({
+                sframeChan,
+                href, password,
+                mainRtChannel: content.channel,
+                currentCp: lastCp,
+                nextCp: undefined
+            }).then(messages => {
+                if (!Array.isArray(messages)) { return void console.error('Not an array!'); }
                 ooChannel.queue = messages.map(function (obj) {
                     return {
                         hash: obj.serverHash,
@@ -3090,6 +3077,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 ooChannel.historyLastHash = ooChannel.lastHash;
                 ooChannel.currentIndex = ooChannel.cpIndex;
                 loadCp(lastCp, true);
+            }).catch(err => {
+                console.error(err);
             });
         };
 
@@ -3561,7 +3550,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 Title.updateTitle(Title.defaultTitle);
             }
 
-            if (!content.channel) {
+            if (!content.channel && !Object.keys(content.hashes).length) {
                 content.channel = Hash.createChannelId();
                 APP.onLocal();
                 checkLinkedDocs();

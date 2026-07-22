@@ -15,6 +15,9 @@ const factory = () => {
         const lastCp = hashes[lastIdx];
         if (!lastCp) { return content; }
         content.content.hashes = hashes = {};
+        if (lastCp.rtChannel) {
+            delete content.content.channel;
+        }
         hashes[lastIdx] = lastCp;
         return content;
     };

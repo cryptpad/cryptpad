@@ -22,7 +22,7 @@ define([
     History.loadHistoryData = (cfg) => {
         const {
             sframeChan, mainRtChannel, downloadId,
-            currentCp, nextCp
+            currentCp, nextCp, href, password
         } = cfg;
 
         return new Promise((resolve, reject) => {
@@ -30,6 +30,7 @@ define([
             if (currentCp?.rtChannel) {
                 // Load all messages from currentCp.rtChannel
                 sframeChan.query('Q_GET_FULL_HISTORY', {
+                    href, password, // get secret from other pad (template)
                     channel: currentCp.rtChannel,
                     isDownload: downloadId,
                     full: true
@@ -41,11 +42,15 @@ define([
             }
 
             // Old CP or no CP: use mainRtChannel
+            if (!mainRtChannel) {
+                return void reject('EINVAL');
+            }
 
             // No CP and no nextCp hash
             if (!currentCp && !nextCp?.hash) {
                 // Load all messages from mainRtChannel
                 sframeChan.query('Q_GET_FULL_HISTORY', {
+                    href, password, // get secret from other pad (template)
                     channel: mainRtChannel,
                     isDownload: downloadId,
                     full: true
@@ -63,6 +68,7 @@ define([
 
             if (currentCp?.hash || nextCp?.hash) {
                 sframeChan.query('Q_GET_HISTORY_RANGE', {
+                    href, password, // get secret from other pad (template)
                     channel: mainRtChannel,
                     lastKnownHash: endHash,
                     toHash: startHash,
@@ -257,7 +263,7 @@ define([
         // Dropdown to select checkpoint (or "major version")
         const makeDropdown = ($dropdown) => {
             const all = sortedCp.slice();
-            all.unshift(0);
+            if (mainRtChannel) { all.unshift(0); }
             const options = all.map((id, idx) => {
                 const cp = hashes[id] || {};
                 let time = '';;
@@ -281,12 +287,17 @@ define([
                 buttonCls: 'btn btn-default small'
             };
             const dd = UIElements.createDropdown(dropdownConfig);
-            dd.setValue(cpIdx + 1);
+            if (mainRtChannel) { dd.setValue(cpIdx + 1); }
+            else { dd.setValue(cpIdx); }
             dd.onChange.reg((id, idx) => {
                 loading = true;
                 dd.find('> button').attr('disabled', 'disabled');
 
-                cpIdx = idx - 1; // -1 because we've added "0" to the list
+                if (!mainRtChannel) { cpIdx = idx; }
+                else {
+                    cpIdx = idx - 1; // -1 because we've added "0" to the list
+                }
+
                 hideVersion();
 
                 loadMessages().then(() => {

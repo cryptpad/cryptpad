@@ -1443,6 +1443,53 @@ define([
                         }
                     }, cb);
                 });
+
+                // History
+                sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
+                    let nSecret = secret;
+                    if (data.isDownload && ooDownloadData[data.isDownload]) {
+                        var ooData = ooDownloadData[data.isDownload];
+                        delete ooDownloadData[data.isDownload];
+                        nSecret = Utils.Hash.getSecrets('sheet', ooData.hash, ooData.password);
+                    } else if (data.href) {
+                        var _parsed = Utils.Hash.parsePadUrl(data.href);
+                        nSecret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, data.password);
+                    }
+                    var crypto = Crypto.createEncryptor(nSecret.keys);
+                    Cryptpad.getFullHistory({
+                        debug: data?.debug,
+                        full: data?.full,
+                        channel: data.channel || nSecret.channel,
+                        validateKey: nSecret.keys.validateKey
+                    }, function (encryptedMsgs) {
+                        var nt = nThen;
+                        var decryptedMsgs = [];
+                        var total = encryptedMsgs.length;
+                        encryptedMsgs.forEach(function (_msg, i) {
+                            nt = nt(function (waitFor) {
+                                // The 3rd parameter "true" means we're going to skip signature validation.
+                                // We don't need it since the message is already validated serverside by hk
+                                if (typeof(_msg) === "object") {
+                                    decryptedMsgs.push({
+                                        author: _msg.author,
+                                        serverHash: _msg.serverHash,
+                                        time: _msg.time,
+                                        msg: crypto.decrypt(_msg.msg, true, true)
+                                    });
+                                } else {
+                                    decryptedMsgs.push(crypto.decrypt(_msg, true, true));
+                                }
+                                setTimeout(waitFor(function () {
+                                    sframeChan.event('EV_FULL_HISTORY_STATUS', (i+1)/total);
+                                }));
+                            }).nThen;
+                        });
+                        nt(function () {
+                            cb(decryptedMsgs);
+                        });
+                    });
+                });
+
                 sframeChan.on('Q_GET_HISTORY_RANGE', function (data, cb) {
                     var nSecret = secret;
                     if (cfg.isDrive) {
@@ -1745,49 +1792,6 @@ define([
 
             sframeChan.on('Q_ANON_GET_PREVIEW_CONTENT', function (data, cb) {
                 Cryptpad.anonGetPreviewContent(data, cb);
-            });
-
-            // History
-            sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
-                let nSecret = secret;
-                if (data.isDownload && ooDownloadData[data.isDownload]) {
-                    var ooData = ooDownloadData[data.isDownload];
-                    delete ooDownloadData[data.isDownload];
-                    nSecret = Utils.Hash.getSecrets('sheet', ooData.hash, ooData.password);
-                }
-                var crypto = Crypto.createEncryptor(nSecret.keys);
-                Cryptpad.getFullHistory({
-                    debug: data?.debug,
-                    full: data?.full,
-                    channel: data.channel || nSecret.channel,
-                    validateKey: nSecret.keys.validateKey
-                }, function (encryptedMsgs) {
-                    var nt = nThen;
-                    var decryptedMsgs = [];
-                    var total = encryptedMsgs.length;
-                    encryptedMsgs.forEach(function (_msg, i) {
-                        nt = nt(function (waitFor) {
-                            // The 3rd parameter "true" means we're going to skip signature validation.
-                            // We don't need it since the message is already validated serverside by hk
-                            if (typeof(_msg) === "object") {
-                                decryptedMsgs.push({
-                                    author: _msg.author,
-                                    serverHash: _msg.serverHash,
-                                    time: _msg.time,
-                                    msg: crypto.decrypt(_msg.msg, true, true)
-                                });
-                            } else {
-                                decryptedMsgs.push(crypto.decrypt(_msg, true, true));
-                            }
-                            setTimeout(waitFor(function () {
-                                sframeChan.event('EV_FULL_HISTORY_STATUS', (i+1)/total);
-                            }));
-                        }).nThen;
-                    });
-                    nt(function () {
-                        cb(decryptedMsgs);
-                    });
-                });
             });
 
             // Store
@@ -2093,7 +2097,7 @@ define([
                 nThen(function (waitFor) {
                     channels.forEach(function (chan) {
                         if (chan === "chainpad") { chan = secret.channel; }
-                        console.error(chan);
+                        if (!chan) { return; }
                         Utils.Cache.clearChannel(chan, waitFor());
                     });
                 }).nThen(cb);
