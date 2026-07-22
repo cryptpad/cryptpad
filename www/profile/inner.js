@@ -71,25 +71,24 @@ define([
     var bogusUncheckPtn = /<input disabled="" type="checkbox">/;
     renderer.listitem = function (text) {
         var icon = '';
-        var body = text;
         if (checkedTaskItemPtn.test(text)) {
             icon = taskIconChecked;
-            body = text.replace(checkedTaskItemPtn, '');
+            text = text.replace(checkedTaskItemPtn, '');
         } else if (uncheckedTaskItemPtn.test(text)) {
             icon = taskIconUnchecked;
-            body = text.replace(uncheckedTaskItemPtn, '');
+            text = text.replace(uncheckedTaskItemPtn, '');
         } else if (bogusCheckPtn.test(text)) {
             icon = taskIconChecked;
-            body = text.replace(bogusCheckPtn, '');
+            text = text.replace(bogusCheckPtn, '');
         } else if (bogusUncheckPtn.test(text)) {
             icon = taskIconUnchecked;
-            body = text.replace(bogusUncheckPtn, '');
+            text = text.replace(bogusUncheckPtn, '');
         } else {
             return '<li>' + text + '</li>\n';
         }
-        body = body.replace(/^\s+/, '').replace(/^(<p[^>]*>)\s+/i, '$1');
+        text = text.replace(/^\s+/, '').replace(/^(<p[^>]*>)\s+/i, '$1');
         return '<li class="todo-list-item"><span class="cp-task-marker" aria-hidden="true">' + icon +
-            '</span><div class="cp-task-body">' + body + '</div></li>\n';
+            '</span><div class="cp-task-body">' + text + '</div></li>\n';
     };
 
     var DISPLAYNAME_ID = "cp-app-profile-displayname";
