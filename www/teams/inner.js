@@ -683,12 +683,12 @@ define([
         APP.module.execCommand('GET_TEAM_METADATA', {
             teamId: APP.team
         }, (obj) => {
-            if (obj && obj.error) { return; }
+            if (obj?.error) { return; }
             const $headerAvatar = APP.$leftside.find('.cp-team-cat-header .cp-avatar');
             if ($headerAvatar.length) {
                 const $name = $headerAvatar.find('.cp-sidebarlayout-category-name').detach();
                 $headerAvatar.empty();
-                common.displayAvatar($headerAvatar, obj.avatar, obj.name);
+                common.displayAvatar($headerAvatar, obj?.avatar, obj?.name);
                 if ($name.length) { $headerAvatar.append($name); }
             }
             APP.refreshTeamAvatarBlock(obj);
@@ -1192,8 +1192,8 @@ define([
 
         const refreshAvatar = (obj) => {
             $avatar.empty();
-            const val = obj.avatar;
-            const name = obj.name;
+            const val = obj?.avatar;
+            const name = obj?.name;
             common.displayAvatar($avatar, val, name, () => {
                 if (!val) { return; }
                 $avatar.find('.cp-team-avatar-delete').remove();
@@ -1206,7 +1206,7 @@ define([
                     APP.module.execCommand('GET_TEAM_METADATA', {
                         teamId: APP.team
                     }, (meta) => {
-                        if (meta && meta.error) { return void UI.warn(Messages.error); }
+                        if (meta?.error) { return void UI.warn(Messages.error); }
                         meta.avatar = '';
                         APP.module.execCommand('SET_TEAM_METADATA', {
                             teamId: APP.team,
@@ -1224,7 +1224,7 @@ define([
             APP.module.execCommand('GET_TEAM_METADATA', {
                 teamId: APP.team
             }, (obj) => {
-                if (obj && obj.error) { return void UI.warn(Messages.error); }
+                if (obj?.error) { return void UI.warn(Messages.error); }
                 obj.avatar = upload.url;
                 APP.module.execCommand('SET_TEAM_METADATA', {
                     teamId: APP.team,
@@ -1243,7 +1243,7 @@ define([
         APP.module.execCommand('GET_TEAM_METADATA', {
             teamId: APP.team
         }, (obj) => {
-            if (obj && obj.error) {
+            if (obj?.error) {
                 return void UI.warn(Messages.error);
             }
             refreshAvatar(obj);
