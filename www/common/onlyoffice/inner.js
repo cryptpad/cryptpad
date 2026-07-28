@@ -2336,10 +2336,6 @@ define([
                 }
             };
 
-            APP.UploadImageFiles = function (files, type, id, jwt, cb) {
-                return void cb();
-            };
-
             const getImageURL = function(name) {
                 return new Promise((resolve) => {
                     if (name && /^data:image/.test(name)) {
@@ -2429,6 +2425,75 @@ define([
                             resolve("");
                         }
                     }, void 0, common.getCache());
+                });
+            };
+
+            APP.UploadImageFiles = function (files, type, id, jwt, cb) {
+                if (!files || !files.length) { return void cb([]); }
+
+                var checkFileFormat = function (file) {
+                    return file.type === ('image/png' || 'image/jpg' || 'image/svg');
+                };
+
+                if (!APP.FMImages) {
+                    var fmConfigImages = {
+                        noHandlers: true,
+                        noStore: true,
+                        body: $('body'),
+                        onUploaded: function (ev, data) {
+                            if (!ev.callback) { return; }
+                            debug("Image uploaded at " + data.url);
+                            var parsed = Hash.parsePadUrl(data.url);
+                            if (parsed.type === 'file') {
+                                var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                                var fileHost = privateData.fileHost || privateData.origin;
+                                var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
+                                var key = Hash.encodeBase64(secret.keys.cryptKey);
+                                ev.mediasSources[ev.name] = { name: ev.name, src: src, key: key };
+                            }
+                            ev.callback();
+                        },
+                    };
+                    APP.FMImages = common.createFileManager(fmConfigImages);
+                }
+
+                var mediasSources = getMediasSources();
+                var urls = [];
+                var remaining = files.length;
+
+                var finish = function () {
+                    remaining--;
+                    if (remaining <= 0) { cb(null, urls); }
+                };
+
+                var uploadImage = function (blob, suggestedName) {
+                    var name = suggestedName || ('image-' + Util.uid());
+                    while (mediasSources[name]) { name = name + '-' + Util.uid(); }
+
+                    var handleFileData = {
+                        name: name,
+                        mediasSources: mediasSources(),
+                        callback: function () {
+                            APP.onLocal();
+                            getImageURL(name).then(function (blobUrl) {
+                                if (blobUrl) { urls.push(blobUrl); }
+                                finish();
+                            });
+                        }
+                    };
+
+                    APP.FMImages.handleFile(blob, handleFileData);
+                };
+
+                var filesArray = Array.from(files);
+
+                filesArray.forEach(function (file) {
+                    if (checkFileFormat(file)) {
+                        uploadImage(file, file.name);
+                        return;
+                    }
+                    console.error('Unsupported file format', file);
+                    finish();
                 });
             };
 
