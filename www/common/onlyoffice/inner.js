@@ -3349,7 +3349,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         onlyoffice: {
                             hashes: content.hashes || {},
                             channel: content.channel,
-                            lastHash: ooChannel.lastHash
+                            lastHash: ooChannel.lastHash,
+                            ctime: content.ctime
                         },
                         $toolbar: $('.cp-toolbar-container')
                     };
@@ -3552,6 +3553,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             if (!content.channel && !Object.keys(content.hashes).length) {
                 content.channel = Hash.createChannelId();
+                content.ctime ||= +new Date();
                 APP.onLocal();
                 checkLinkedDocs();
             }

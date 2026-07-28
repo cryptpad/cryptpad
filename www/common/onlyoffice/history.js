@@ -110,6 +110,7 @@ define([
 
         const hashes = config.onlyoffice.hashes;
         const mainRtChannel = config.onlyoffice.channel;
+        const ctime = config.onlyoffice.ctime;
 
         const sortedCp = History.sortCpIndex(hashes);
 
@@ -267,9 +268,8 @@ define([
             const options = all.map((id, idx) => {
                 const cp = hashes[id] || {};
                 let time = '';;
-                if (cp?.time) {
-                    time = ` - ${new Date(cp.time).toLocaleString()}`;
-                }
+                let t = cp?.time || (idx === 0 && id === 0 && ctime);
+                if (t) { time = ` - ${new Date(t).toLocaleString()}`; }
                 return {
                     tag: 'a',
                     attributes: {
