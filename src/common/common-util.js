@@ -857,6 +857,25 @@ const factory = (NaclUtil) => {
     };
     /* End of code copied from saferphore */
 
+    const sortKeys = obj => {
+        if (Array.isArray(obj)) {
+            return obj.map(sortKeys);
+        }
+        if (obj instanceof Object) {
+            return Object.keys(obj).sort().reduce((result, key) => {
+                result[key] = obj[key];
+                return result;
+            }, {});
+        }
+        return obj;
+    };
+
+    // Should have the same behaviour as
+    // https://www.npmjs.com/package/json.sortify when called with one argument
+    Util.sortify = (obj) => {
+        return JSON.stringify(sortKeys(obj));
+    };
+
     return Util;
 };
 
