@@ -17,7 +17,6 @@ define([
     '/common/common-signing-keys.js',
     '/common/hyperscript.js',
     '/common/clipboard.js',
-    'json.sortify',
     '/api/config',
     '/api/instance',
     '/lib/datepicker/flatpickr.js',
@@ -42,7 +41,6 @@ define([
     Keys,
     h,
     Clipboard,
-    Sortify,
     ApiConfig,
     Instance,
     Flatpickr,
@@ -2794,7 +2792,7 @@ define([
             var clone = Util.clone(json);
             delete clone.proof;
 
-            var msg = Util.decodeUTF8(Sortify(clone));
+            var msg = Util.decodeUTF8(Util.sortify(clone));
             var sig = Util.decodeBase64(json.proof);
             var pub = Util.decodeBase64(json.blockId);
             return Nacl.sign.detached.verify(msg, sig, pub);

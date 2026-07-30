@@ -4,7 +4,6 @@
 
 define([
     'jquery',
-    'json.sortify',
     '/api/config',
     '/components/chainpad-crypto/crypto.js',
     '/common/sframe-app-framework.js',
@@ -53,7 +52,6 @@ define([
     'less!/form/app-form.less',
 ], function (
     $,
-    Sortify,
     ApiConfig,
     Crypto,
     Framework,
@@ -3927,7 +3925,7 @@ define([
                     answers = Util.clone(results || {});
                     _answers = Util.clone(answers);
                 }
-                if (!answers || Sortify(_answers) !== Sortify(results)) {
+                if (!answers || Util.sortify(_answers) !== Util.sortify(results)) {
                     window.onbeforeunload = function () {
                         return true;
                     };
