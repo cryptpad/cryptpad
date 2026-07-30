@@ -4908,13 +4908,65 @@ define([
                 Messages.form_geturl
             ]);
             var preview = h('div.cp-forms-results-participant', [previewBtn, participantBtn]);
+            var shouldWarnGuestAuthor = function () {
+                if (framework._.sfCommon.isLoggedIn()) { return false; }
+                if (!APP.isEditor) { return false; }
+                // TODO: guest-drive case, dismiss flag, once-per-session, etc.
+                return true;
+            };
+            var warnGuestAuthorThen = function (then) {
+                if (!shouldWarnGuestAuthor()) { return void then(); }
+
+                sframeChan.query('Q_GET_EDIT_URL', null, function (err, editUrl) {
+                    if (err || !editUrl) { return void then(); }
+
+                    var linkInput = UI.dialog.selectableArea(editUrl, {
+                        id: 'cp-form-guest-author-link',
+                        rows: 2
+                    });
+                    var content = h('div', [
+                        h('h4', Messages.form_guestAuthorTitle),
+                        h('p', Messages.form_guestAuthorBody),
+                        h('label', { for: 'cp-form-guest-author-link' }, Messages.form_guestAuthorLink),
+                        linkInput
+                    ]);
+                    var modal = UI.dialog.customModal(content, {
+                        buttons: [{
+                            className: 'secondary',
+                            name: Messages.share_linkCopy,
+                            iconClass: 'copy',
+                            onClick: function () {
+                                Clipboard.copy(editUrl, function (copyErr) {
+                                    if (!copyErr) { UI.log(Messages.form_guestAuthorCopied); }
+                                    else { UI.warn(Messages.error); }
+                                });
+                                return true; // keep modal open
+                            },
+                            keys: []
+                        }, {
+                            className: 'primary',
+                            name: Messages.continue,
+                            onClick: function () {
+                                then();
+                            },
+                            keys: [13]
+                        }]
+                    });
+                    UI.openCustomModal(modal);
+                });
+            };
+
             $(previewBtn).click(function () {
-                sframeChan.event('EV_OPEN_VIEW_URL');
+                warnGuestAuthorThen(function () {
+                    sframeChan.event('EV_OPEN_VIEW_URL');
+                });
             });
             $(participantBtn).click(function () {
-                sframeChan.query('Q_COPY_VIEW_URL', null, function (err, success) {
-                    if (success) { return void UI.log(Messages.shareSuccess); }
-                    UI.warn(Messages.error);
+                warnGuestAuthorThen(function () {
+                    sframeChan.query('Q_COPY_VIEW_URL', null, function (err, success) {
+                        if (success) { return void UI.log(Messages.shareSuccess); }
+                        UI.warn(Messages.error);
+                    });
                 });
             });
 
