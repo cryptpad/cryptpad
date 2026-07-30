@@ -157,6 +157,11 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    // XXX
+    Messages.form_guestAuthorTitle = "Save your author link";
+    Messages.form_guestAuthorLink = "This is your author link. Copy and save it before continuing. CryptPad cannot recover it if you lose it.";
+    Messages.form_guestAuthorBody = "You are not logged in. Preview and Copy public link use the respondents' link, which cannot be used to edit this form or see answers.";
+    Messages.form_guestAuthorCopied = "Author link copied";
     return Messages;
 
 });

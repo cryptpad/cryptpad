@@ -2231,6 +2231,10 @@ define([
                     });
                 });
             });
+            sframeChan.on('Q_GET_EDIT_URL', function (data, cb) {
+                if (!hashes.editHash) { return void cb(); }
+                cb(window.location.origin + Utils.Hash.hashToHref(hashes.editHash, 'form'));
+            });
             sframeChan.on('EV_OPEN_VIEW_URL', function () {
                 var url = Utils.Hash.hashToHref(hashes.viewHash, 'form');
                 var a = window.open(url);
