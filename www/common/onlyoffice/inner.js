@@ -277,7 +277,7 @@ define([
                 }
             });
             if (version) { version = Math.min(version, content.version || 1); }
-            return version;
+            return version || content.version || 1;
         };
 
         const addLinkedCheckpoint = (cpData, cb) => {
