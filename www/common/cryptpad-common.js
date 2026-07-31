@@ -1875,6 +1875,7 @@ define([
                     rtChannel: newRtChannel,
                     version: lastCp.version
                 };
+                delete cryptgetVal.content.channel;
             } else {
                 cryptgetVal.content.channel = newRtChannel;
             }

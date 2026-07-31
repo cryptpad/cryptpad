@@ -87,7 +87,6 @@ define([
     var toolbar;
     var cursor;
 
-
     var andThen = function (common) {
         var Title;
         var sframeChan = common.getSframeChannel();
@@ -104,6 +103,7 @@ define([
             mediasSources: {},
             version: privateData.ooForceVersion ? Number(privateData.ooForceVersion) : OOCurrentVersion.currentVersionNumber
         };
+        content.originalVersion = content.version;
         var oldHashes = {};
         var oldIds = {};
         var oldLocks = {};
@@ -261,6 +261,24 @@ define([
         };
 
         var sortCpIndex = History.sortCpIndex;
+
+        const getOriginalVersion = () => {
+            const hashes = content.hashes || {};
+            const allIdx = sortCpIndex(hashes);
+            let version;
+            // Find the first checkpoint with a version.
+            // If this version is smaller than content.version, use it
+            // as original version (Math.min below)
+            allIdx.some((id) => {
+                const v = hashes[id]?.version;
+                if (v) {
+                    version = v;
+                    return true;
+                }
+            });
+            if (version) { version = Math.min(version, content.version || 1); }
+            return version;
+        };
 
         const addLinkedCheckpoint = (cpData, cb) => {
             let parsed = Hash.parsePadUrl(cpData.file);
@@ -758,7 +776,7 @@ define([
             if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
             $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
 
-            const v = cpData.version || content.version;
+            const v = cpData.version || content.originalVersion || content.version;
             if (v && v !== APP.currentOOVersion) {
                 $('#cp-app-oo-editor').find('script').remove();
                 addOfficeJS(v);
@@ -3529,7 +3547,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     UI.errorLoadingScreen(errorText);
                     throw new Error(errorText);
                 }
-                content = hjson.content || content;
+                content = hjson.content || content;
 
                 // Support old checkpoints
                 var newLatest = getLastCp();
@@ -3564,91 +3582,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var msg;
             // Old version detected: use the old OO and start the migration if we can
             if (privateData.ooForceVersion) {
-                if (privateData.ooForceVersion === "1") {
-                    version = "v1/";
+                version = `v${privateData.ooForceVersion}/`;
+            } else if (content && (!content.version || content.version < OOCurrentVersion.currentVersionNumber)) {
+                version = `v${content.version || 1}/`;
+                if (content.version === 2 || content.version === 3) {
+                    version = 'v2b/';
                 }
-            } else if (content && (!content.version || content.version === 1)) {
-                version = 'v1/';
-                APP.migrate = true;
-                // Registedred ~~users~~ editors can start the migration
-                if (common.isLoggedIn() && !readOnly) {
-                    content.migration = true;
-                    APP.onLocal();
-                } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    if (APP.helpMenu) {
-                        $(APP.helpMenu.menu).after(msg);
-                    } else {
-                        $('#cp-app-oo-editor').prepend(msg);
-                    }
-                    readOnly = true;
+                if (!content.originalVersion) {
+                    content.originalVersion = getOriginalVersion();
                 }
-            } else if (content && content.version <= 4) { // V2 or V3
-                version = content.version <= 3 ? 'v2b/' : 'v4/';
-                APP.migrate = true;
-                // Registedred ~~users~~ editors can start the migration
-                if (common.isLoggedIn() && !readOnly) {
-                    content.migration = true;
-                    APP.onLocal();
-                } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    if (APP.helpMenu) {
-                        $(APP.helpMenu.menu).after(msg);
-                    } else {
-                        $('#cp-app-oo-editor').prepend(msg);
-                    }
-                    readOnly = true;
-                }
-            } else if (content && content.version <= 5) {
-                version = 'v5/';
-                APP.migrate = true;
-                // Registedred ~~users~~ editors can start the migration
-                if (common.isLoggedIn() && !readOnly) {
-                    content.migration = true;
-                    APP.onLocal();
-                } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    if (APP.helpMenu) {
-                        $(APP.helpMenu.menu).after(msg);
-                    } else {
-                        $('#cp-app-oo-editor').prepend(msg);
-                    }
-                    readOnly = true;
-                }
-            } else if (content && content.version <= 6) {
-                version = 'v6/';
-                APP.migrate = true;
-                // Registedred ~~users~~ editors can start the migration
-                if (common.isLoggedIn() && !readOnly) {
-                    content.migration = true;
-                    APP.onLocal();
-                } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    if (APP.helpMenu) {
-                        $(APP.helpMenu.menu).after(msg);
-                    } else {
-                        $('#cp-app-oo-editor').prepend(msg);
-                    }
-                    readOnly = true;
-                }
-            } else if (content && content.version <= 7) {
-                version = 'v7/';
-                APP.migrate = true;
-                // Registedred ~~users~~ editors can start the migration
-                if (common.isLoggedIn() && !readOnly) {
-                    content.migration = true;
-                    APP.onLocal();
-                } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    if (APP.helpMenu) {
-                        $(APP.helpMenu.menu).after(msg);
-                    } else {
-                        $('#cp-app-oo-editor').prepend(msg);
-                    }
-                    readOnly = true;
-                }
-            } else if (content && content.version <= 8) {
-                version = 'v8/';
                 APP.migrate = true;
                 // Registedred ~~users~~ editors can start the migration
                 if (common.isLoggedIn() && !readOnly) {
