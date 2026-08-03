@@ -620,6 +620,7 @@ define([
             });
         };
 
+        /*
         const sendDebugSupportTicket = (message) => {
             const title = "[Automatic] Office document locked";
 
@@ -691,7 +692,7 @@ define([
                 value
             ]);
             f(div, cb, opts);
-        };
+        };*/
 
         var openRtChannel = function (cpData, cb) {
             const channel = cpData?.rtChannel || content.channel;
@@ -708,7 +709,7 @@ define([
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
                     case 'ERROR':
-                        onRtChannelError(obj.data, channel);
+                        //onRtChannelError(obj.data, channel);
                         cb();
                         break;
                     case 'READY':
@@ -2152,7 +2153,7 @@ define([
                 //getEditor().setViewModeDisconnect(); // can't be used anymore, display an OO error popup
             } else {
                 setEditable(true);
-                delete content.missingRtChannel;
+                delete content.missingRtChannel; // XXX to remove (automatic support tickets)
                 APP.onLocal();
                 deleteOfflineLocks();
                 handleNewLocks({}, content.locks);
