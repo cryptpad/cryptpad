@@ -2432,7 +2432,7 @@ define([
                 if (!files || !files.length) { return void cb([]); }
 
                 var checkFileFormat = function (file) {
-                    return file.type === ('image/png' || 'image/jpg' || 'image/svg');
+                    return file.type === ('image/png' || 'image/jpg');
                 };
 
                 if (!APP.FMImages) {
