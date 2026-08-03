@@ -187,7 +187,6 @@ define([
                 if (to) { window.clearTimeout(to); }
                 to = window.setTimeout(updateContainer, 300);
             });
-            var priv = metadataMgr.getPrivateData();
             // If file, display the upload button
             if (types.indexOf('file') !== -1) {
                 var f = (filters && filters.filter) || {};
@@ -196,9 +195,6 @@ define([
                     data.accept = f.fileType.map(function (val) {
                         if (/^[a-z]+\/$/.test(val)) {
                             val += '*';
-                        }
-                        if (val === 'image/*' && (priv.app === 'doc' || 'sheet' || 'presentation')) {
-                            val = ['image/png', 'image/svg+xml', 'image/jpeg'];
                         }
                         return val;
                     });
@@ -226,7 +222,7 @@ define([
                     Object.keys(list).forEach(function (id) {
                         var data = list[id];
                         var name = data.filename || data.title || data.name || '?';
-                        if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1 || (['doc', 'sheet', 'presentation'].includes(priv.app) && data.fileType === 'image/webp')) {
+                        if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
                             return;
                         }
                         var $span = $('<span>', {
