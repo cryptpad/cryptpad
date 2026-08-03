@@ -131,24 +131,8 @@ define([
     var nativePrint = window.print.bind(window);
 
     var printFullContent = function () {
-        var target = document.querySelector('.cp-form-creator-container');
-        if (!target) { nativePrint(); return; }
-
-        var prevHeight = target.style.height;
-        var prevOverflow = target.style.overflow;
-        var prevOverflowY = target.style.overflowY;
-        var prevMaxHeight = target.style.maxHeight;
-
-        target.style.setProperty('height', 'auto', 'important');
-        target.style.setProperty('max-height', 'none', 'important');
-        target.style.setProperty('overflow', 'visible', 'important');
-        target.style.setProperty('overflow-y', 'visible', 'important');
 
         var restore = function () {
-            target.style.height = prevHeight;
-            target.style.overflow = prevOverflow;
-            target.style.overflowY = prevOverflowY;
-            target.style.maxHeight = prevMaxHeight;
             window.onafterprint = null;
         };
 
