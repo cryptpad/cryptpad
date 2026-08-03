@@ -3050,6 +3050,8 @@ const factory = (Sortify, UserObject, ProxyManager,
                 data.requires = 'pad';
             }
 
+            store.loggedIn = typeof(data.userHash) !== "undefined";
+
             start(clientId, data, Util.once(obj => {
                 if (obj.error === 'GET_HK') {
                     return void callback({
