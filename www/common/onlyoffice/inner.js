@@ -3579,6 +3579,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             APP.startNew = isNew;
 
+            if (!content.originalVersion) {
+                content.originalVersion = getOriginalVersion();
+            }
+
             var version = OOCurrentVersion.currentVersion + '/';
             var msg;
             // Old version detected: use the old OO and start the migration if we can
@@ -3588,9 +3592,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 version = `v${content.version || 1}/`;
                 if (content.version === 2 || content.version === 3) {
                     version = 'v2b/';
-                }
-                if (!content.originalVersion) {
-                    content.originalVersion = getOriginalVersion();
                 }
                 APP.migrate = true;
                 // Registedred ~~users~~ editors can start the migration
