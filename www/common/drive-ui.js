@@ -1274,9 +1274,9 @@ define([
         var refresh = APP.refresh = function (cb, opt) {
             var type = APP.store[FILTER_BY];
             var path = type ? [FILTER, type, currentPath] : currentPath;
-                if (APP.newSharedFolder && priv.anonSFHref && opt) {
-                    opt.sf = true;
-                }
+            if (APP.newSharedFolder && priv.anonSFHref && opt) {
+                opt.sf = true;
+            }
 
             APP.displayDirectory(path, undefined, () => {
                 refreshDeprecated();
@@ -4335,7 +4335,7 @@ define([
             var $folderHeader = getFolderListHeader(true);
             var $fileHeader = getFileListHeader(true);
             var path = currentPath.slice(1);
-            var root = Util.find(data, path) ? Util.find(data, path) : {};
+            var root = Util.find(data, path) || {};
             var realPath = [ROOT, SHARED_FOLDER].concat(path);
 
             if (manager.hasSubfolder(root)) { $list.append($folderHeader); }
