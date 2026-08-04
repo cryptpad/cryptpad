@@ -2472,7 +2472,7 @@ define([
 
                     var handleFileData = {
                         name: name,
-                        mediasSources: mediasSources(),
+                        mediasSources: mediasSources,
                         callback: function () {
                             APP.onLocal();
                             getImageURL(name).then(function (blobUrl) {
