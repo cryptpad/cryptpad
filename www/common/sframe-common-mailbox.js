@@ -13,8 +13,6 @@ define([
     '/customize/application_config.js',
     '/customize/messages.js',
     '/common/common-icons.js',
-    'less!/notifications/app-notifications.less',
-
 ], function ($, Util, Hash, UI, UIElements, Notifications, h, AppConfig, Messages, Icons) {
     var Mailbox = {};
 
