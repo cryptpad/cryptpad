@@ -1246,6 +1246,11 @@ define([
             cb(void 0, list);
         });
     };
+    common.getPadTeams = function (query, cb) {
+        postMessage("GET_PAD_TEAMS", query, function (teams) {
+            cb(void 0, teams);
+        });
+    };
     // Get a template href from its id
     common.getPadData = function (id, cb) {
         postMessage("GET_PAD_DATA", id, function (data) {

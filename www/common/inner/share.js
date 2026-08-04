@@ -89,12 +89,14 @@ define([
                 data: teams
             }, refreshButtons);
 
-            common.getFilesList(['file', 'pad'], function (err, list) {
+
+            common.getPadTeams({channel: config.channel}, function (err, teamIds) {
+                if (err) { return void console.error(err); }
+                teamIds = teamIds || [];
                 teamsList.icons.forEach(function(icon) {
-                    var inTeam = Object.values(list).some(file =>
-                        file.teamId === icon.getAttribute('data-teamid') &&
-                        file.channel === config.channel
-                    );
+                    var inTeam = teamIds.some(function (id) {
+                        return String(id) === icon.getAttribute('data-teamid');
+                    });
                     if (inTeam) {
                         $(icon).addClass('cp-disabled');
                         $(icon).on('click', function(e) {

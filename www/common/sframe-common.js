@@ -689,6 +689,12 @@ define([
         });
     };
 
+    funcs.getPadTeams = function (query, cb) {
+        ctx.sframeChan.query('Q_GET_PAD_TEAMS', query, function (err, data) {
+            cb(err || data.error, data.data);
+        });
+    };
+
     funcs.getCache = function () {
         return ctx.cache;
     };

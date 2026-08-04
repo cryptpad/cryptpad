@@ -162,6 +162,16 @@ define([
                     });
                 });
 
+
+                sframeChan.on('Q_GET_PAD_TEAMS', function (types, cb) {
+                    Cryptpad.getPadTeams(types, function (err, data) {
+                        cb({
+                            error: err,
+                            data: data
+                        });
+                    });
+                });
+
                 sframeChan.on('EV_SECURE_ACTION', function (data) {
                     config.onAction(data);
                 });

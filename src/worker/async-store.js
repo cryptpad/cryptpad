@@ -1330,18 +1330,12 @@ const factory = (Sortify, UserObject, ProxyManager,
                 return filtered;
             };
             var channels = [];
-
-            var teamModule = store.modules['team'];
-            var teamIds = teamModule ? teamModule.getTeams() : [];
-
-            getAllStores().forEach(function (s, idx) {
-                var teamId = idx === 0 ? undefined : teamIds[idx - 1];
+            getAllStores().forEach(function (s) {
                 s.manager.getSecureFilesList(where).forEach(function (obj) {
                     var data = obj.data;
                     if (channels.indexOf(data.channel || data.id) !== -1) { return; }
                     var id = obj.id;
                     if (data.channel) { channels.push(data.channel || data.id); }
-                    data.teamId = teamId;
                     // Only include static links if "link" is requested
                     if (data.static) {
                         if (types.indexOf('link') !== -1) { list[id] = data; }
@@ -1355,6 +1349,22 @@ const factory = (Sortify, UserObject, ProxyManager,
                 });
             });
             cb(list);
+        };
+
+        // Get all teams where a given pad is stored
+        Store.getPadTeams = function (clientId, data, cb) {
+            var channel = data && data.channel;
+            if (!channel) { return void cb({error: 'EINVAL'}); }
+
+            var teamIds = [];
+            getAllStores().forEach(function (s) {
+                if (!s.id) { return; } // Skip our own drive, we only want teams here
+                var chans = s.manager.findChannel(channel, true);
+                if (chans && chans.length) {
+                    teamIds.push(s.id);
+                }
+            });
+            cb(teamIds);
         };
 
         // Get the first pad we can find in any of our drives and return its file data
