@@ -284,6 +284,7 @@ define([
                 options, // Entries displayed in the menu
                 isSelect: true,
                 caretDown: true,
+                smallContent: true,
                 buttonCls: 'btn btn-default small'
             };
             const dd = UIElements.createDropdown(dropdownConfig);
