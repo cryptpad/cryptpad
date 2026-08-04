@@ -159,8 +159,9 @@ define(req, function(AppConfig, Default, Language) {
 
     // XXX
     Messages.form_guestAuthorTitle = "Save your author link";
-    Messages.form_guestAuthorLink = "This is your author link. Copy and save it before continuing. CryptPad cannot recover it if you lose it.";
-    Messages.form_guestAuthorBody = "You are not logged in. Preview and Copy public link use the respondents' link, which cannot be used to edit this form or see answers.";
+    Messages.form_guestAuthorBody = "You are not logged in. CryptPad cannot recover your author link if you lose it.";
+    Messages.form_guestAuthorBodyUnstored = "This form is not in your guest drive. Store it there or copy your author link. CryptPad cannot recover it if you lose it.";
+    Messages.form_guestAuthorBodyStored = "This form is in your guest drive on this browser only. Copy and save your author link before continuing.";
     Messages.form_guestAuthorCopied = "Author link copied";
     return Messages;
 

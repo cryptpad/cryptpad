@@ -4911,48 +4911,57 @@ define([
             var shouldWarnGuestAuthor = function () {
                 if (framework._.sfCommon.isLoggedIn()) { return false; }
                 if (!APP.isEditor) { return false; }
-                // TODO: guest-drive case, dismiss flag, once-per-session, etc.
                 return true;
             };
             var warnGuestAuthorThen = function (then) {
                 if (!shouldWarnGuestAuthor()) { return void then(); }
 
-                sframeChan.query('Q_GET_EDIT_URL', null, function (err, editUrl) {
-                    if (err || !editUrl) { return void then(); }
+                framework._.sfCommon.isPadStored(function (err, stored) {
+                    sframeChan.query('Q_GET_EDIT_URL', null, function (urlErr, editUrl) {
+                        if (urlErr || !editUrl) { return void then(); }
 
-                    var linkInput = UI.dialog.selectableArea(editUrl, {
-                        id: 'cp-form-guest-author-link',
-                        rows: 2
+                        var hasGuestDrive = Boolean(metadataMgr.getPrivateData().driveChannel);
+                        var bodyMsg = Messages.form_guestAuthorBody;
+                        if (stored) {
+                            bodyMsg = Messages.form_guestAuthorBodyStored;
+                        } else if (hasGuestDrive) {
+                            // Drive exists but this form was not saved
+                            bodyMsg = Messages.form_guestAuthorBodyUnstored;
+                        }
+                        var linkInput = UI.dialog.selectableArea(editUrl, {
+                            id: 'cp-form-guest-author-link',
+                            rows: 2,
+                            'aria-label': Messages.form_guestAuthorTitle
+                        });
+                        var content = h('div', [
+                            h('h4', Messages.form_guestAuthorTitle),
+                            h('p', bodyMsg),
+                            linkInput
+                        ]);
+                        var modal = UI.dialog.customModal(content, {
+                            buttons: [{
+                                className: 'secondary',
+                                name: Messages.share_linkCopy,
+                                iconClass: 'copy',
+                                onClick: function () {
+                                    Clipboard.copy(editUrl, function (copyErr) {
+                                        if (!copyErr) { UI.log(Messages.form_guestAuthorCopied); }
+                                        else { UI.warn(Messages.error); }
+                                    });
+                                    return true; // keep modal open
+                                },
+                                keys: []
+                            }, {
+                                className: 'primary',
+                                name: Messages.continue,
+                                onClick: function () {
+                                    then();
+                                },
+                                keys: [13]
+                            }]
+                        });
+                        UI.openCustomModal(modal);
                     });
-                    var content = h('div', [
-                        h('h4', Messages.form_guestAuthorTitle),
-                        h('p', Messages.form_guestAuthorBody),
-                        h('label', { for: 'cp-form-guest-author-link' }, Messages.form_guestAuthorLink),
-                        linkInput
-                    ]);
-                    var modal = UI.dialog.customModal(content, {
-                        buttons: [{
-                            className: 'secondary',
-                            name: Messages.share_linkCopy,
-                            iconClass: 'copy',
-                            onClick: function () {
-                                Clipboard.copy(editUrl, function (copyErr) {
-                                    if (!copyErr) { UI.log(Messages.form_guestAuthorCopied); }
-                                    else { UI.warn(Messages.error); }
-                                });
-                                return true; // keep modal open
-                            },
-                            keys: []
-                        }, {
-                            className: 'primary',
-                            name: Messages.continue,
-                            onClick: function () {
-                                then();
-                            },
-                            keys: [13]
-                        }]
-                    });
-                    UI.openCustomModal(modal);
                 });
             };
 
