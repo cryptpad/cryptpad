@@ -845,16 +845,16 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
 
     var createPageTitle = function (toolbar, config) {
         if (!config.pageTitle) { return; }
-        var $titleContainer = $('<span>', {
+        var $titleContainer = $('<div>', {
             'class': TITLE_CLS
         }).appendTo(toolbar.$top);
 
         toolbar.$top.find('.filler').hide();
 
-        var $hoverable = $('<span>', {'class': 'cp-toolbar-title-hoverable'}).appendTo($titleContainer);
+        var $hoverable = $('<div>', {'class': 'cp-toolbar-title-hoverable'}).appendTo($titleContainer);
 
         // Buttons
-        var $b = $('<span>', {
+        var $b = $('<h1>', {
             'class': 'cp-toolbar-title-value cp-toolbar-title-value-page'
         }).appendTo($hoverable).text(config.pageTitle);
 
