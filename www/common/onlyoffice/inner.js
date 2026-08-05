@@ -3082,7 +3082,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             History.loadHistoryData({
                 sframeChan,
                 href, password,
-                mainRtChannel: content.channel,
+                mainRtChannel: _content.channel,
                 currentCp: lastCp,
                 nextCp: undefined
             }).then(messages => {

@@ -47,7 +47,7 @@ define([
             }
 
             // No CP and no nextCp hash
-            if (!currentCp && !nextCp?.hash) {
+            if (!currentCp?.file && !nextCp?.hash) {
                 // Load all messages from mainRtChannel
                 sframeChan.query('Q_GET_FULL_HISTORY', {
                     href, password, // get secret from other pad (template)
