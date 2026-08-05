@@ -522,6 +522,23 @@ define([
             mkHelpMenu(framework);
         }
 
+        var nativePrint = window.print.bind(window);
+
+        var printFullContent = function () {
+            var $print = $('#cp-app-code-print');
+            var $content = $('#cp-app-code-preview-content');
+            $print.html($content.html());
+
+            setTimeout(function () { nativePrint(); }, 50);
+        };
+
+        window.addEventListener('keydown', function (e) {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p' && privateData.isEmbed) {
+                e.preventDefault();
+                printFullContent();
+            }
+        });
+
         var evModeChange = Util.mkEvent();
         evModeChange.reg(previewPane.modeChange);
         evModeChange.reg(markdownTb.modeChange);
