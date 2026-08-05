@@ -857,6 +857,7 @@ const factory = (NaclUtil) => {
     };
     /* End of code copied from saferphore */
 
+    const isNumericalExpr = /^(0|[1-9]\d*)$/;
     const sortKeys = obj => {
         if (Array.isArray(obj)) {
             return obj.map(sortKeys);
@@ -865,13 +866,13 @@ const factory = (NaclUtil) => {
             let numeric = [];
             let nonNumeric = [];
             Object.keys(obj).forEach(key => {
-                if (/^(0|[1-9]\d*)$/.test(key)) {
+                if (isNumericalExpr.test(key)) {
                     numeric.push(+key);
                 } else {
                     nonNumeric.push(key);
                 }
             });
-            return numeric.sort((a,b) => a - b).concat(nonNumeric.sort()).reduce((result, key) => {
+            return numeric.sort((a, b) => a - b).concat(nonNumeric.sort()).reduce((result, key) => {
                 result[key] = sortKeys(obj[key]);
                 return result;
             }, {});
