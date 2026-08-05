@@ -862,8 +862,17 @@ const factory = (NaclUtil) => {
             return obj.map(sortKeys);
         }
         if (obj instanceof Object) {
-            return Object.keys(obj).sort().reduce((result, key) => {
-                result[key] = obj[key];
+            let numeric = [];
+            let nonNumeric = [];
+            Object.keys(obj).forEach(key => {
+                if (/^(0|[1-9]\d*)$/.test(key)) {
+                    numeric.push(+key);
+                } else {
+                    nonNumeric.push(key);
+                }
+            });
+            return numeric.sort((a,b) => a - b).concat(nonNumeric.sort()).reduce((result, key) => {
+                result[key] = sortKeys(obj[key]);
                 return result;
             }, {});
         }
