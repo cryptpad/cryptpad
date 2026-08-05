@@ -187,6 +187,7 @@ define([
                 if (to) { window.clearTimeout(to); }
                 to = window.setTimeout(updateContainer, 300);
             });
+
             // If file, display the upload button
             if (types.indexOf('file') !== -1) {
                 var f = (filters && filters.filter) || {};
