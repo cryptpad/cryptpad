@@ -1787,6 +1787,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
             if (obj && obj.error) { return; }
             if (!obj.mailbox) { return; }
+            if (!store.loggedIn) { return; }
 
             // Decrypt the mailbox
             var crypto = Crypto.createEncryptor(secret.keys);

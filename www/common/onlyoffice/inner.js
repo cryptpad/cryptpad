@@ -2178,6 +2178,9 @@ define([
                     getEditor().asc_setDefaultLanguage(l);
                 }
             }
+
+            sframeChan.event('EV_OO_DOC_READY');
+
             if (integrationChannel) {
                 integrationChannel.event('EV_INTEGRATION_READY');
             }
@@ -3623,14 +3626,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             APP.currentOOVersion = content.version || 1;
 
-            if (metadataMgr.getPrivateData().burnAfterReading && content && content.channel) {
-                sframeChan.event('EV_BURN_PAD', content.channel);
-            }
-
             if (privateData.ooVersionHash) {
                 return void openVersionHash(privateData.ooVersionHash);
             }
-
 
             // Only execute the following code the first time we call onReady
             if (!firstReady) {

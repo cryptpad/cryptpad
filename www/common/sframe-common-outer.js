@@ -2416,7 +2416,10 @@ define([
                 };
 
                 if (burnAfterReading) {
-                    Cryptpad.padRpc.onReadyEvent.reg(function () {
+                    nThen(w => {
+                        Cryptpad.padRpc.onReadyEvent.reg(w());
+                        if (isOO) { sframeChan.on('EV_OO_DOC_READY', w()); }
+                    }).nThen(() => {
                         Cryptpad.burnPad({
                             password: password,
                             href: currentPad.href,
