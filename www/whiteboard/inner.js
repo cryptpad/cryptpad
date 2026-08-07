@@ -4,7 +4,6 @@
 
 define([
     'jquery',
-    'json.sortify',
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
@@ -24,7 +23,6 @@ define([
     'less!/whiteboard/app-whiteboard.less'
 ], function (
     $,
-    Sortify,
     nThen,
     SFCommon,
     Framework,
@@ -265,7 +263,7 @@ define([
 
         var first = true;
         var updatePalette = function (newPalette) {
-            if (first || Sortify(palette) !== Sortify(newPalette)) {
+            if (first || Util.sortify(palette) !== Util.sortify(newPalette)) {
                 palette = newPalette;
                 $colors.html('<div class="hidden">&nbsp;</div>');
                 $colors.css('width', (palette.length * 20)+'px');

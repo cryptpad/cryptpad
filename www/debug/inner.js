@@ -6,7 +6,6 @@ define([
     'jquery',
     '/components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
-    'json.sortify',
     '/common/common-util.js',
     '/components/nthen/index.js',
     '/common/sframe-common.js',
@@ -29,7 +28,6 @@ define([
     $,
     Crypto,
     Toolbar,
-    JSONSortify,
     Util,
     nThen,
     SFCommon,
@@ -636,7 +634,7 @@ define([
                 newContent.metadata = md;
             }
             try {
-                cpNfInner.chainpad.contentUpdate(JSONSortify(newContent));
+                cpNfInner.chainpad.contentUpdate(Util.sortify(newContent));
                 return true;
             } catch (e) {
                 console.error(e);
@@ -685,7 +683,7 @@ define([
                                 newContent.metadata.snapshots = _snapshots;
                             }
                         } catch (e) { console.error(e); }
-                        toRestore = JSONSortify(newContent);
+                        toRestore = Util.sortify(newContent);
                     }
                     config.onLocal(null, true);
                 },

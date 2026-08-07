@@ -6,7 +6,6 @@ define([
     'jquery',
     '/components/hyper-json/hyperjson.js',
     '/common/toolbar.js',
-    'json.sortify',
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/customize/messages.js',
@@ -28,7 +27,6 @@ define([
     $,
     Hyperjson,
     Toolbar,
-    JSONSortify,
     nThen,
     SFCommon,
     Messages,
@@ -242,10 +240,10 @@ define([
 
         var oldContent;
         var contentUpdate = function (newContent, waitFor) {
-            var sNew = JSONSortify(newContent);
-            if (sNew === JSONSortify(oldContent)) { return; }
+            var sNew = Util.sortify(newContent);
+            if (sNew === Util.sortify(oldContent)) { return; }
             try {
-                if (integration && sNew !== JSONSortify(normalize(oldContent || EMPTY))) {
+                if (integration && sNew !== Util.sortify(normalize(oldContent || EMPTY))) {
                     evIntegrationSave.fire();
                 }
                 evContentUpdate.fire(newContent, waitFor);
@@ -274,8 +272,8 @@ define([
             }).nThen(function () {
                 if (!readOnly) {
                     var newContent2NoMeta = normalize(contentGetter());
-                    var newContent2StrNoMeta = JSONSortify(newContent2NoMeta);
-                    var newContentStrNoMeta = JSONSortify(newContent);
+                    var newContent2StrNoMeta = Util.sortify(newContent2NoMeta);
+                    var newContentStrNoMeta = Util.sortify(newContent);
 
                     if (newContent2StrNoMeta !== newContentStrNoMeta) {
                         console.error("shjson2 !== shjson");
@@ -307,7 +305,7 @@ define([
                 }
 
                 // Notify only when the content has changed, not when someone has joined/left
-                if (JSONSortify(newContent) !== JSONSortify(oldContent)) {
+                if (Util.sortify(newContent) !== Util.sortify(oldContent)) {
                     common.notify();
                 }
             });
@@ -386,7 +384,7 @@ define([
                 newContent.metadata = md;
             }
             try {
-                cpNfInner.chainpad.contentUpdate(JSONSortify(newContent));
+                cpNfInner.chainpad.contentUpdate(Util.sortify(newContent));
                 return true;
             } catch (e) {
                 console.error(e);
@@ -430,7 +428,7 @@ define([
                 //cpNfInner.metadataMgr.addAuthor();
             }
             */
-            if (integration && oldContent && JSONSortify(content) !== JSONSortify(normalize(oldContent || {}))) {
+            if (integration && oldContent && Util.sortify(content) !== Util.sortify(normalize(oldContent || {}))) {
                 cpNfInner.offPatchSent(integrationOnPatch);
                 cpNfInner.onPatchSent(integrationOnPatch);
             }
@@ -445,7 +443,7 @@ define([
                 content.metadata = cpNfInner.metadataMgr.getMetadataLazy();
             }
 
-            var contentStr = JSONSortify(content);
+            var contentStr = Util.sortify(content);
             try {
                 cpNfInner.chainpad.contentUpdate(contentStr);
             } catch (e) {

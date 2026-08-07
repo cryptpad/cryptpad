@@ -6,7 +6,6 @@ define([
     'jquery',
     '/api/config',
     '/common/toolbar.js',
-    'json.sortify',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-ui-elements.js',
@@ -31,7 +30,6 @@ define([
     $,
     ApiConfig,
     Toolbar,
-    JSONSortify,
     Util,
     Hash,
     UIElements,
@@ -64,9 +62,7 @@ define([
     };
     var onConnectEvt = Util.mkEvent(true);
 
-    var stringify = function (obj) {
-        return JSONSortify(obj);
-    };
+    var stringify = Util.sortify;
 
     var E_OVER_LIMIT = 'E_OVER_LIMIT';
 
@@ -1252,8 +1248,8 @@ define([
         var refreshDeprecated = function () {
             if (!APP.passwordModal) { return; }
             var deprecated = files.sharedFoldersTemp;
-            if (JSONSortify(deprecated) === APP.deprecatedSF) { return; }
-            APP.deprecatedSF = JSONSortify(deprecated);
+            if (Util.sortify(deprecated) === APP.deprecatedSF) { return; }
+            APP.deprecatedSF = Util.sortify(deprecated);
             if (typeof (deprecated) === "object" && Object.keys(deprecated).length) {
                 var nt = nThen;
                 Object.keys(deprecated).forEach(function (fId) {

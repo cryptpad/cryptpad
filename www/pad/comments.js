@@ -4,7 +4,6 @@
 
 define([
     'jquery',
-    'json.sortify',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/hyperscript.js',
@@ -12,7 +11,7 @@ define([
     '/common/common-ui-elements.js',
     '/customize/messages.js',
     '/common/common-icons.js',
-], function($, Sortify, Util, Hash, h, UI, UIElements, Messages, Icons) {
+], function($, Util, Hash, h, UI, UIElements, Messages, Icons) {
     var Comments = {};
 
     /*
@@ -64,7 +63,7 @@ define([
         }
 
         var data = Env.comments.authors[myAuthorId] = Env.comments.authors[myAuthorId] || {};
-        var old = Sortify(data);
+        var old = Util.sortify(data);
         data.name = userData.name;
         data.avatar = userData.avatar;
         data.profile = userData.profile;
@@ -72,7 +71,7 @@ define([
         data.notifications = userData.notifications;
         data.uid = userData.uid;
 
-        if (typeof(onChange) === "function" && Sortify(data) !== old) {
+        if (typeof(onChange) === "function" && Util.sortify(data) !== old) {
             onChange();
         }
         return myAuthorId;
@@ -293,7 +292,7 @@ define([
 
     var redrawComments = function(Env) {
         // Don't redraw if there were no change
-        var str = Sortify(Env.comments || {});
+        var str = Util.sortify(Env.comments || {});
         if (str === Env.oldComments) { return; }
         Env.oldComments = str;
 

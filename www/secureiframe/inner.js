@@ -12,7 +12,6 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/hyperscript.js',
-    'json.sortify',
     '/customize/messages.js',
     '/common/common-icons.js',
 
@@ -28,7 +27,6 @@ define([
     Util,
     Hash,
     h,
-    Sortify,
     Messages
 )
 {

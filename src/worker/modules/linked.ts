@@ -6,7 +6,6 @@ import nacl from 'tweetnacl/nacl-fast';
 import nThen from 'nthen';
 import { Module, ModuleObject, Command } from '../types'
 import * as Util from '../../common/common-util.js';
-import Sortify from 'json.sortify';
 
 export interface LinkedDocModule<T> extends Module<T> {
     setCustomize: (data: any) => void
@@ -79,7 +78,7 @@ const checkCurrentDoc:Command = (ctx, data, clientId, cb) => {
         expectedJSON.checkpoints ||= [];
         expectedJSON.channels ||= [];
 
-        if (Sortify(json) === Sortify(expectedJSON)) { return void cb(); }
+        if (Util.sortify(json) === Util.sortify(expectedJSON)) { return void cb(); }
 
         // "user" won't be encrypted so we can't add the username
         const user = ctx.store.proxy.edPublic || 'GUEST';
