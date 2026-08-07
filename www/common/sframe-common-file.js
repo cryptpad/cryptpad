@@ -340,6 +340,29 @@ define([
 
             var manualStore = createManualStore();
 
+            // Life time
+            var expire = h('div.cp-creation-expire', [
+                UI.createCheckbox('cp-creation-expire', Messages.creation_expiration, false, {
+                    labelAlt: Messages.creation_expiresIn
+                }),
+                h('form.cp-creation-expire-picker.cp-creation-slider', { autocomplete: "off" }, [
+                    h('input#cp-creation-expire-val', {
+                        type: "number",
+                        min: 1,
+                        max: 100,
+                        value: 3
+                    }),
+                    h('select#cp-creation-expire-unit', [
+                        h('option', { value: 'hour' }, Messages.creation_expireHours),
+                        h('option', { value: 'day' }, Messages.creation_expireDays),
+                        h('option', {
+                            value: 'month',
+                            selected: 'selected'
+                        }, Messages.creation_expireMonths)
+                    ])
+                ]),
+            ]);
+
             // Ask for name, password and owner
             var content = h('div', [
                 h('h4', Messages.upload_modal_title),
@@ -359,8 +382,21 @@ define([
                     UI.createCheckbox('cp-upload-owned', Messages.upload_modal_owner, modalState.owned),
                     createHelper(Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
                 ]),
-                manualStore
+                manualStore,
+                expire
             ]);
+
+                    // Display expiration form when checkbox checked
+        $(content).find('#cp-creation-expire').on('change', function () {
+            if ($(this).is(':checked')) {
+                $creation.find('.cp-creation-expire-picker:not(.active)').addClass('active');
+                $creation.find('.cp-creation-expire:not(.active)').addClass('active');
+                $creation.find('#cp-creation-expire-val').focus();
+                return;
+            }
+            $creation.find('.cp-creation-expire-picker').removeClass('active');
+            $creation.find('.cp-creation-expire').removeClass('active');
+        });
 
             var $content = $(content);
             $content.find('#cp-upload-owned').on('change', function () {
@@ -391,12 +427,33 @@ define([
                 var newExt = newExtIdx !== -1 ? newName.slice(newExtIdx) : "";
                 if (newExt !== ext) { newName += ext; }
 
+                            var expireVal = 0;
+            if($('#cp-creation-expire').is(':checked')) {
+                var unit = 0;
+                switch ($('#cp-creation-expire-unit').val()) {
+                    case "hour" : unit = 3600;           break;
+                    case "day"  : unit = 3600 * 24;      break;
+                    case "month": unit = 3600 * 24 * 30; break;
+                    default: unit = 0;
+                }
+                expireVal = (Math.min(Number($('#cp-creation-expire-val').val()), 100) || 0) * unit;
+            }
+
+                        common.setAttribute(['general', 'creation', 'expire'], val.expire, function (e) {
+                if (e) { return void console.error(e); }
+            });
+
+            if (val.expire) {
+                Feedback.send('EXPIRING_PAD-'+val.expire);
+            }
+
                 cb({
                     name: newName,
                     password: password,
                     owned: owned,
                     forceSave: forceSave,
                     alt: alt,
+                    expire: expireVal
                 });
             });
         };
