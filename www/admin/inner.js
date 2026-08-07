@@ -1064,8 +1064,12 @@ define([
 
             Util.onClickEnter($button, function () {
                 let files = input.files;
+                let fileTypes = ['image/png', 'image/svg+xml', 'image/jpeg'];
                 if (files.length !== 1) {
                     UI.warn(Messages.error);
+                    return;
+                } else if (!fileTypes.includes(files[0].type)) {
+                    UI.warn(Messages.admin_logoType_error);
                     return;
                 }
                 spinner.spin();

@@ -161,6 +161,7 @@ define(req, function(AppConfig, Default, Language) {
     Messages.kanban_fullView = "Show card content";
     Messages.contacts_noFriendsInfo = 'Start by adding a contact to begin a conversation.';
     Messages.settings_profileShare = 'Share profile'; // XXX
+    Messages.admin_logoType_error = 'The logo image file type is not allowed'; // XXX
 
     return Messages;
 
