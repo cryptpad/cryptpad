@@ -19,6 +19,7 @@ define([
     var getPadProperties = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
+        var sframeChan = common.getSframeChannel();
         opts = opts || {};
         var $d = $('<div>');
         if (!data) { return void cb(void 0, $d); }
@@ -32,6 +33,7 @@ define([
             data.rtChannel = data.rtChannel || p.rtChannel;
             data.lastVersion = data.lastVersion || p.lastVersion;
             data.lastCpHash = data.lastCpHash || p.lastCpHash;
+            data.linked ||= p.linked;
         }
 
         if (data.channel) {
@@ -78,12 +80,14 @@ define([
         var bytes = 0;
         var historyBytes;
         var chan = [data.channel];
-        if (data.answersChannel) { chan.push(data.answersChannel); }
-        if (data.rtChannel) { chan.push(data.rtChannel); }
-        if (data.lastVersion) { chan.push(Hash.hrefToHexChannelId(data.lastVersion)); }
+        if (!data?.linked) {
+            if (data.answersChannel) { chan.push(data.answersChannel); }
+            if (data.rtChannel) { chan.push(data.rtChannel); }
+            if (data.lastVersion) { chan.push(Hash.hrefToHexChannelId(data.lastVersion)); }
+        }
 
         // Get the channels with history (no blobs)
-        var channels = chan.filter(function (c) { return c.length === 32; }).map(function (id) {
+        var channels = chan.filter(c => c.length === 32).map(id => {
             if (id === data.rtChannel && data.lastVersion && data.lastCpHash) {
                 return {
                     channel: id,
@@ -98,25 +102,29 @@ define([
         var history = common.makeUniversal('history');
         var trimChannels = [];
         nThen(function (waitFor) {
-            // Get total size
-            chan.forEach(function (c) {
-                common.getFileSize(c, waitFor(function (e, _bytes) {
-                    if (e) {
-                        // there was a problem with the RPC
-                        console.error(e);
-                    }
-                    bytes += _bytes;
-                }), true);
-            });
+            if (!owned) {
+                // Get total size
+                chan.forEach(function (c) {
+                    common.getFileSize(c, waitFor(function (e, _bytes) {
+                        if (e) {
+                            // there was a problem with the RPC
+                            console.error(e);
+                        }
+                        bytes += _bytes;
+                    }), true);
+                });
+                return;
+            }
 
-            if (!owned) { return; }
-            // Get history size
+            // Get data and history size
             history.execCommand('GET_HISTORY_SIZE', {
                 pad: true,
+                linked: data?.linked,
                 channels: channels,
                 teamId: typeof(owned) === "number" && owned
             }, waitFor(function (obj) {
                 if (obj && obj.error) { return; }
+                bytes = obj.total;
                 historyBytes = obj.size;
                 trimChannels = obj.channels;
             }));
@@ -168,23 +176,29 @@ define([
                 spinner.spin();
                 history.execCommand('TRIM_HISTORY', {
                     pad: true,
+                    linked: data?.linked,
                     channels: trimChannels,
                     teamId: typeof(owned) === "number" && owned
                 }, function (obj) {
-                    spinner.hide();
-                    if (obj && obj.error || obj.warning) {
+                    if (obj && obj.error || obj.warning) {
                         console.error(obj.warning);
                         $(size).append(h('div.alert.alert-danger', Messages.trimHistory_error));
+                        spinner.hide();
                         return;
                     }
-                    $(size).remove();
-                    var formatted = UIElements.prettySize(bytes - historyBytes);
-                    $d.append(h('div.cp-app-prop', [
-                        Messages.upload_size,
-                        h('br'),
-                        h('span.cp-app-prop-content', formatted)
-                    ]));
-                    $d.append(h('div.alert.alert-success', Messages.trimHistory_success));
+                    sframeChan.query('Q_TRIM_HISTORY', {
+                        href: data.href
+                    }, function () {
+                        spinner.hide();
+                        $(size).remove();
+                        var formatted = UIElements.prettySize(bytes - historyBytes);
+                        $d.append(h('div.cp-app-prop', [
+                            Messages.upload_size,
+                            h('br'),
+                            h('span.cp-app-prop-content', formatted)
+                        ]));
+                        $d.append(h('div.alert.alert-success', Messages.trimHistory_success));
+                    });
                 });
             });
 

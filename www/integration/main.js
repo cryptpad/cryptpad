@@ -230,7 +230,7 @@ define([
             return Config.httpUnsafeOrigin;
         };
         let getBlobClient = (cb) => {
-            chan.send('GET_BLOB', obj => {
+            chan.send('GET_BLOB', {}, obj => {
                 if (obj?.error) { console.error(obj?.error); }
                 cb(obj?.blob);
             });
