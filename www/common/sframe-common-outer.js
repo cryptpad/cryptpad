@@ -2314,7 +2314,7 @@ define([
                 sframeChan.on('Q_INTEGRATION_USERLIST_CHANGE', function (obj, cb) {
                     cfg?.integrationUtils?.onUserlistChange?.(obj, cb);
                 });
-                sframeChan.on('Q_INTEGRATION_ERROR', function (obj) {
+                sframeChan.on('EV_INTEGRATION_ERROR', function (obj) {
                     if (cfg.integrationUtils && cfg.integrationUtils.onError) {
                         cfg.integrationUtils.onError(obj);
                     }
