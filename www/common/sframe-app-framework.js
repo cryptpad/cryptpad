@@ -996,27 +996,30 @@ define([
             title.setToolbar(toolbar);
 
             /* add a history button */
-            var histConfig = {
-                onLocal: onLocal,
-                onRemote: onRemote,
-                setHistory: setHistoryMode,
-                extractMetadata: extractMetadata, // extract from current version
-                getLastMetadata: getLastMetadata, // get from authdoc
-                setLastMetadata: setLastMetadata, // set to userdoc/authdoc
-                applyVal: function (val) {
-                    var newContent = JSON.parse(val);
-                    var meta = extractMetadata(newContent);
-                    cpNfInner.metadataMgr.updateMetadata(meta);
-                    contentUpdate(normalize(newContent) || ["BODY",{},[]], function (h) {
-                        return h;
-                    });
-                },
-                $toolbar: $(toolbarContainer)
-            };
-            var $histButton = common.createButton('history', true, {histConfig: histConfig});
-            var $hist = UIElements.getEntryFromButton($histButton);
-            toolbar.$drawer.append($hist);
-
+            var privateDat = cpNfInner.metadataMgr.getPrivateData();
+            if (!(privateDat.isPresent && privateDat.app === 'code')) {
+                var histConfig = {
+                    onLocal: onLocal,
+                    onRemote: onRemote,
+                    setHistory: setHistoryMode,
+                    extractMetadata: extractMetadata, // extract from current version
+                    getLastMetadata: getLastMetadata, // get from authdoc
+                    setLastMetadata: setLastMetadata, // set to userdoc/authdoc
+                    applyVal: function (val) {
+                        var newContent = JSON.parse(val);
+                        var meta = extractMetadata(newContent);
+                        cpNfInner.metadataMgr.updateMetadata(meta);
+                        contentUpdate(normalize(newContent) || ["BODY",{},[]], function (h) {
+                            return h;
+                        });
+                    },
+                    $toolbar: $(toolbarContainer)
+                };
+                var $histButton = common.createButton('history', true, {histConfig: histConfig});
+                var $hist = UIElements.getEntryFromButton($histButton);
+                toolbar.$drawer.append($hist);
+            }
+            
             var $snapshotButton = common.createButton('snapshots', true, {
                 remove: deleteSnapshot,
                 make: makeSnapshot,
