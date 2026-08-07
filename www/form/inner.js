@@ -668,7 +668,11 @@ define([
                     if (hasUid) { $(el).data('uid', uid); }
                 });
             }
+
             var res = { values: values };
+            if (v.required) {
+                res['required'] = true;
+            }
 
             // If multiline block, get items
             if (v.items) {
