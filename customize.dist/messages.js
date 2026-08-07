@@ -160,6 +160,7 @@ define(req, function(AppConfig, Default, Language) {
     Messages.kanban_quickView = "Minimize card content"; // XXX
     Messages.kanban_fullView = "Show card content";
     Messages.contacts_noFriendsInfo = 'Start by adding a contact to begin a conversation.';
+    Messages.settings_profileShare = 'Share profile'; // XXX
 
     return Messages;
 
