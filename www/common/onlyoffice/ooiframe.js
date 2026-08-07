@@ -12,27 +12,34 @@ define([
 ], function (nThen, ApiConfig, $, RequireConfig, Messages) {
     var requireConfig = RequireConfig();
 
-    var ready = false;
-    var currentCb;
-    var queue = [];
+    //var ready = false;
+    const state = {};
+    ['doc', 'sheet', 'presentation'].forEach(app => {
+        state[app] = {
+            ready: false,
+            queue: [],
+            cb: undefined
+        };
+    });
 
     var create = function (config) {
+        const s = state[config.type];
         // Loaded in load #2
         var sframeChan;
         var Util = config.modules.Utils.Util;
         var _onReadyEvt = Util.mkEvent(true);
         var refresh = function (data, cb) {
-            if (currentCb) {
-                queue.push({data: data, cb: cb});
+            if (s.cb) {
+                s.queue.push({data: data, cb: cb});
                 return;
             }
-            if (!ready) {
+            if (!s.ready) {
                 _onReadyEvt.reg(function () {
                     refresh(data, cb);
                 });
                 return;
             }
-            currentCb = cb;
+            s.cb = cb;
             sframeChan.event('EV_OOIFRAME_REFRESH', data);
         };
         nThen(function (waitFor) {
@@ -50,8 +57,8 @@ define([
             };
             window.rc = requireConfig;
             window.apiconf = ApiConfig;
-            $('#sbox-oo-iframe').attr('src',
-                ApiConfig.httpSafeOrigin + '/sheet/inner.html?' + requireConfig.urlArgs +
+            $(`#sbox-oo-iframe-${config.type}`).attr('src',
+                ApiConfig.httpSafeOrigin + `/${config.type}/inner.html?` + requireConfig.urlArgs +
                     '#' + encodeURIComponent(JSON.stringify(req)));
 
             // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -76,7 +83,7 @@ define([
                 // First, we have to answer to this message, otherwise we're going to block
                 // sframe-boot.js. Then we can start the channel.
                 var msgEv = Utils.Util.mkEvent();
-                var iframe = $('#sbox-oo-iframe')[0].contentWindow;
+                var iframe = $(`#sbox-oo-iframe-${config.type}`)[0].contentWindow;
                 var postMsg = function (data) {
                     iframe.postMessage(data, '*');
                 };
@@ -122,6 +129,7 @@ define([
                             pathname: window.location.pathname,
                             feedbackAllowed: Utils.Feedback.state,
                             secureIframe: true,
+                            ooType: config.type,
                             supportsWasm: Utils.Util.supportsWasm()
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
@@ -139,15 +147,15 @@ define([
                 });
 
                 sframeChan.on('EV_OOIFRAME_DONE', function (data) {
-                    if (queue.length) {
+                    if (s.queue.length) {
                         setTimeout(function () {
-                            var first = queue.shift();
+                            var first = s.queue.shift();
                             refresh(first.data, first.cb);
                         });
                     }
-                    if (!currentCb) { return; }
-                    currentCb(data);
-                    currentCb = undefined;
+                    if (!s.cb) { return; }
+                    s.cb(data);
+                    s.cb = undefined;
                 });
 
                 // X2T
@@ -157,8 +165,8 @@ define([
                 });
 
                 sframeChan.onReady(function () {
-                    if (ready === true) { return; }
-                    ready = true;
+                    if (s.ready) { return; }
+                    s.ready = true;
                     _onReadyEvt.fire();
                 });
             });

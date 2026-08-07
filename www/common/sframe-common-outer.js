@@ -1958,7 +1958,7 @@ define([
                     UnsafeObject.$iframe = $('<iframe>', {
                         id: 'sbox-unsafe-iframe',
                         allow: 'clipboard-write'
-                    }).appendTo($('body')).hide();
+                    }).appendTo($('body'));//.hide();
                     UnsafeObject.modal = UnsafeIframe.create(config);
                 }
                 UnsafeObject.modal.refresh(cfg, function (data) {
@@ -1970,21 +1970,24 @@ define([
             // OO iframe
             var OOIframeObject = {};
             var initOOIframe = function (cfg, cb) {
-                if (!OOIframeObject.$iframe) {
+                const app = cfg.type;
+                if (!OOIframeObject[app]?.$iframe) {
+                    const obj = OOIframeObject[app] ||= {};
                     var config = {};
+                    config.type = app;
                     config.addCommonRpc = addCommonRpc;
                     config.modules = {
                         Cryptpad: Cryptpad,
                         SFrameChannel: SFrameChannel,
                         Utils: Utils
                     };
-                    OOIframeObject.$iframe = $('<iframe>', {
-                        id: 'sbox-oo-iframe',
+                    obj.$iframe = $('<iframe>', {
+                        id: `sbox-oo-iframe-${app}`,
                         allow: 'clipboard-write'
-                    }).appendTo($('body')).hide();
-                    OOIframeObject.modal = OOIframe.create(config);
+                    }).appendTo($('body'));//.hide();
+                    obj.modal = OOIframe.create(config);
                 }
-                OOIframeObject.modal.refresh(cfg, function (data) {
+                OOIframeObject[app]?.modal?.refresh(cfg, function (data) {
                     cb(data);
                 });
             };
@@ -2138,18 +2141,24 @@ define([
                     // so that we can disconnect the network
                     cgNetworkStatus[cgNetworkId] ||= [];
                     cgNetworkStatus[cgNetworkId].push(new Promise((res) => {
-                        Cryptget.get(data.hash, function (err, val) {
+                        try {
+                            Cryptget.get(data.hash, function (err, val) {
+                                res(network);
+                                cb({
+                                    error: err,
+                                    data: val
+                                });
+                            }, data.opts, function (progress) {
+                                sframeChan.event("EV_CRYPTGET_PROGRESS", {
+                                    hash: data.hash,
+                                    progress: progress,
+                                });
+                            });
+                        } catch (e) {
                             res(network);
-                            cb({
-                                error: err,
-                                data: val
-                            });
-                        }, data.opts, function (progress) {
-                            sframeChan.event("EV_CRYPTGET_PROGRESS", {
-                                hash: data.hash,
-                                progress: progress,
-                            });
-                        });
+                            console.error(data.hash, e, data);
+                            cb({error: 'EINVAL'});
+                        }
                     }));
                 };
 
