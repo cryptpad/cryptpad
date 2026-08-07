@@ -2171,11 +2171,46 @@ define([
                     });
                 }
 
+                //Ensure spellcheck set correctly (works only with localized language variants)
+                var defaultLanguageCode = getEditor().asc_getDefaultLanguage();
+
+                const langToLocale = {
+                    "en" : "en-us",
+                    "fr" : "fr-fr",
+                    "es" : "es-es",
+                    "de" : "de-de"
+                };
+
+                const langCodeToLocale = {
+                    7: "de-de",
+                    9: "en-us",
+                    10: "es-es",
+                    12: "fr-fr"
+                };
+
+                const localeToLCID = Object.fromEntries(
+                    Object.values(window.frames[0].AscCommon.g_aCultureInfos)
+                        .map(info => [info.Name.toLowerCase(), info.LCID])
+                );
+
                 if (APP.startNew) {
                     var w = getWindow();
-                    if (lang === "fr") { lang = 'fr-fr'; }
+                    //If default language variant is generic - localize it
+                    if (Object.keys(langToLocale).includes(lang)) {
+                        lang = langToLocale[lang];
+                    }
                     var l = w.Common.util.LanguageInfo.getLocalLanguageCode(lang);
                     getEditor().asc_setDefaultLanguage(l);
+
+                } else {
+                    //Setting the language every time document loads prevents spellcheck from 'switching off'
+                    var localeLang = langCodeToLocale[defaultLanguageCode];
+
+                    //If default language variant is generic - localize it
+                    if (defaultLanguageCode < 1000 && localeLang) {
+                        defaultLanguageCode = localeToLCID[localeLang];
+                    }
+                    getEditor().asc_setDefaultLanguage(defaultLanguageCode);
                 }
             }
 
