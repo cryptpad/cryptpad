@@ -8,7 +8,7 @@ const factory = (UserObject, ProxyManager,
                 SF, AccountTS, DriveTS, PadTS, Form, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
-                Calendar, BadgeTS, Block, NetConfig,
+                Calendar, BadgeTS, LinkedTS, Block, NetConfig,
                 Crypto, ChainPad, CpNetflux, Listmap,
                 Netflux, nThen) => {
 
@@ -16,6 +16,7 @@ const factory = (UserObject, ProxyManager,
     const Drive = DriveTS.Drive;
     const Pad = PadTS.Pad;
     const Badge = BadgeTS.Badge;
+    const LinkedDoc = LinkedTS.LinkedDoc;
     const window = globalThis;
     globalThis.nacl = globalThis.nacl || Crypto.Nacl;
 
@@ -392,7 +393,8 @@ const factory = (UserObject, ProxyManager,
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
             s.rpc.uploadStatus({
                 id: data.id,
-                size: data.size
+                size: data.size,
+                linked: data.linked
             }, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);
@@ -736,7 +738,7 @@ const factory = (UserObject, ProxyManager,
             });
 
             if (['doc', 'sheet', 'presentation'].includes(parsed.type)) {
-                if (!pad.rtChannel) {
+                if (!pad.rtChannel && !pad.linked) {
                     return getRtChannelFromPad(pad, (err, rtChannel) => {
                         const key = 'ADDPAD_NO_RT_CHANNEL' ;
                         if (!err) {
@@ -1785,6 +1787,7 @@ const factory = (UserObject, ProxyManager,
             var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
             if (obj && obj.error) { return; }
             if (!obj.mailbox) { return; }
+            if (!store.loggedIn) { return; }
 
             // Decrypt the mailbox
             var crypto = Crypto.createEncryptor(secret.keys);
@@ -1891,7 +1894,7 @@ const factory = (UserObject, ProxyManager,
                 if (msg) {
                     msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
                     //var decryptedMsg = crypto.decrypt(msg, true);
-                    if (data.debug) {
+                    if (data.debug || data.full) {
                         msgs.push({
                             serverHash: msg.slice(0,64),
                             msg: msg,
@@ -2428,6 +2431,7 @@ const factory = (UserObject, ProxyManager,
             loadUniversal(Messenger, 'messenger', waitFor);
             loadUniversal(History, 'history', waitFor);
             loadUniversal(Badge, 'badge', waitFor);
+            loadUniversal(LinkedDoc, 'linked-doc', waitFor);
             loadOnlyOffice();
             if (store) {
                 store.messenger = store.modules['messenger'];
@@ -3125,6 +3129,7 @@ module.exports = factory(
     require('./modules/history'),
     require('./modules/calendar'),
     require('./modules/badge'), // .ts
+    require('./modules/linked'), // .ts
     require('../common/outer/login-block'),
     require('../common/network-config'),
     require('chainpad-crypto'),

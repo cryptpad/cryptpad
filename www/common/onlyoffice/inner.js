@@ -82,7 +82,6 @@ define([
     var toolbar;
     var cursor;
 
-
     var andThen = function (common) {
         var Title;
         var sframeChan = common.getSframeChannel();
@@ -99,6 +98,7 @@ define([
             mediasSources: {},
             version: privateData.ooForceVersion ? Number(privateData.ooForceVersion) : OOCurrentVersion.currentVersionNumber
         };
+        content.originalVersion = content.version;
         var oldHashes = {};
         var oldIds = {};
         var oldLocks = {};
@@ -137,6 +137,17 @@ define([
             var w = getWindow();
             if (!w) { return; }
             return w.editor || w.editorCell;
+        };
+
+        const addOfficeJS = (version) => {
+            if (typeof(version) === 'number') {
+                version = `v${version}/`;
+            }
+            var s = h('script', {
+                type:'text/javascript',
+                src: ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js?' + APP.urlArgs
+            });
+            $('#cp-app-oo-editor').append(s);
         };
 
         var setEditable = function (state, force) {
@@ -244,6 +255,79 @@ define([
             });
         };
 
+        var sortCpIndex = History.sortCpIndex;
+
+        const getOriginalVersion = () => {
+            const hashes = content.hashes || {};
+            const allIdx = sortCpIndex(hashes);
+            let version;
+            // Find the first checkpoint with a version.
+            // If this version is smaller than content.version, use it
+            // as original version (Math.min below)
+            allIdx.some((id) => {
+                const v = hashes[id]?.version;
+                if (v) {
+                    version = v;
+                    return true;
+                }
+            });
+            if (version) { version = Math.min(version, content.version || 1); }
+            return version || content.version || 1;
+        };
+
+        const addLinkedCheckpoint = (cpData, cb) => {
+            let parsed = Hash.parsePadUrl(cpData.file);
+            let secret = Hash.getSecrets('file', parsed.hash);
+            APP.linkedModule.execCommand('ADD_LINKED_DATA', {
+                content: {
+                    type: 'checkpoints',
+                    data: {
+                        rtChannel: cpData.rtChannel,
+                        blob: secret.channel
+                    }
+                }
+            }, (obj) => {
+                if (obj?.error) { console.error(obj.error); }
+                const last = obj?.[0]?.checkpoints?.pop();
+                if (last?.blob === secret.channel && last?.time) {
+                    cpData.time = last.time;
+                    APP.onLocal();
+                }
+                cb();
+            });
+        };
+        const checkLinkedDocs = () => {
+            const value = {
+                checkpoints: []
+            };
+            // Get last 10 cps
+            let hashes = content.hashes || {}; // checkpoints
+            let sortedCp = sortCpIndex(hashes).slice(-10);
+            sortedCp.forEach(cpIdx => {
+                const cpData = hashes[cpIdx];
+                let parsed = Hash.parsePadUrl(cpData.file);
+                let secret = Hash.getSecrets('file', parsed.hash);
+                if (!secret.channel) { return; }
+                value.checkpoints.push({
+                    blob: secret.channel,
+                    rtChannel: cpData.rtChannel || content.channel
+                });
+            });
+            // If < 10, add initial channel
+            if (sortedCp.length < 10 && content.channel) {
+                value.checkpoints.unshift({
+                    blob: 0,
+                    rtChannel: content.channel
+                });
+            }
+            APP.linkedModule.execCommand('CHECK_CURRENT_DOC', {
+                // channel & signKey added in outer
+                expectedJSON: value
+            }, (obj) => {
+                if (obj?.error) { console.error(obj.error); }
+            });
+        };
+
 
         var getFileType = function () {
             var priv = common.getMetadataMgr().getPrivateData();
@@ -282,10 +366,11 @@ define([
 
         var now = function () { return +new Date(); };
 
-        var sortCpIndex = function (hashes) {
-            return Object.keys(hashes).map(Number).sort(function (a, b) {
-                return a-b;
-            });
+        const getLastCpId = (old) => {
+            const hashes = old ? oldHashes : content.hashes;
+            if (!hashes || !Object.keys(hashes).length) { return 0; }
+            const allIdx = sortCpIndex(hashes);
+            return allIdx[allIdx.length - 1];
         };
         var getLastCp = function (old, i) {
             var hashes = old ? oldHashes : content.hashes;
@@ -440,11 +525,12 @@ define([
                 _content.hashes = {};
                 _content.hashes[1] = {
                     file: data.url,
-                    index: 0,
+                    rtChannel: Hash.createChannelId(),
                     version: OOCurrentVersion.currentVersionNumber
                 };
                 _content.version = OOCurrentVersion.currentVersionNumber;
-                _content.channel = Hash.createChannelId();
+                _content.channel = Hash.createChannelId(); // XXX XXX to remove?
+                // XXX XXX
                 _content.ids = {};
                 sframeChan.query('Q_SAVE_AS_TEMPLATE', {
                     toSave: JSON.stringify({
@@ -493,10 +579,9 @@ define([
             var current = all[all.length - 1] || 0;
 
             var i = current + 1;
-            content.hashes[i] = {
+            var cpData = content.hashes[i] = {
                 file: data.url,
-                hash: ev.hash,
-                index: ev.index,
+                rtChannel: Hash.createChannelId(),
                 version: OOCurrentVersion.currentVersionNumber
             };
             oldHashes = JSON.parse(JSON.stringify(content.hashes));
@@ -510,367 +595,27 @@ define([
             APP.onLocal();
             APP.realtime.onSettle(function () {
                 UI.log(Messages.saved);
-                APP.realtime.onSettle(function () {
-                    if (APP.migrate) {
-                        UI.removeModals();
-                        UI.alert(Messages.oo_sheetMigration_complete, function () {
-                            common.gotoURL();
-                        });
-                        return;
-                    }
-                    if (ev.callback) {
-                        return void ev.callback();
-                    }
-                });
-            });
-            sframeChan.query('Q_OO_COMMAND', {
-                cmd: 'UPDATE_HASH',
-                data: ev.hash
-            }, function (err, obj) {
-                if (err || (obj && obj.error)) { console.error(err || obj.error); }
-            });
-        };
 
-        var fmConfig = {
-            noHandlers: true,
-            noStore: true,
-            body: $('body'),
-            onUploaded: function (ev, data) {
-                if (!data || !data.url) { return; }
-                data.hash = ev.hash;
-                sframeChan.query('Q_OO_SAVE', data, function (err) {
-                    onUploaded(ev, data, err);
-                });
-            },
-            onError: function (err) {
-                onUploaded(null, null, err);
-            }
-        };
-        APP.FM = common.createFileManager(fmConfig);
-
-        var resetData = function (blob, type) {
-            // If a read-only refresh popup was planned, abort it
-            delete APP.refreshPopup;
-            clearTimeout(APP.refreshRoTo);
-
-            // Don't create the initial checkpoint indefinitely in a loop
-            delete APP.initCheckpoint;
-
-            if (!isLockedModal.modal) {
-                isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
-            }
-            myUniqueOOId = undefined;
-            myIndex = undefined;
-            setMyId();
-            
-            if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
-            $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
-            ooLoaded = false;
-            oldLocks = {};
-            Object.keys(pendingChanges).forEach(function (key) {
-                clearTimeout(pendingChanges[key]);
-                delete pendingChanges[key];
-            });
-            if (APP.stopHistory || APP.template) { APP.history = false; }
-            startOO(blob, type, true);
-        };
-
-        var saveToServer = function (blob, title) {
-            if (APP.cantCheckpoint) { return; } // TOO_LARGE
-            var text = !blob && getContent();
-            if (!text && !blob) {
-                setEditable(false, true);
-                sframeChan.query('Q_CLEAR_CACHE_CHANNELS', [
-                    'chainpad',
-                    content.channel,
-                ], function () {});
-                UI.alert(Messages.realtime_unrecoverableError, function () {
-                    common.gotoURL();
-                });
-                return;
-            }
-            blob = blob || new Blob([text], {type: 'plain/text'});
-            var file = getFileType();
-            blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
-            var data = {
-                hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
-                index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex,
-                time: new Date()
-            };
-            fixSheets();
-
-            if (!isLockedModal.modal) {
-                isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
-            }
-            ooChannel.ready = false;
-            ooChannel.queue = [];
-            data.callback = function () {
-                if (APP.template) { APP.template = false; }
-                resetData(blob, file);
-            };
-
-            APP.FM.handleFile(blob, data);
-        };
-
-        var noLogin = false;
-
-        var makeCheckpoint = function (force) {
-            if (APP.cantCheckpoint) { return; } // TOO_LARGE
-
-            var locked = content.saveLock;
-            var lastCp = getLastCp();
-
-            var currentIdx = ooChannel.cpIndex;
-            var needCp = force || (currentIdx - (lastCp.index || 0)) > FORCE_CHECKPOINT_INTERVAL;
-
-            if (!needCp) { return; }
-
-            if (!locked || !isUserOnline(locked) || force) {
-                if (!common.isLoggedIn() && !isRegisteredUserOnline() && !noLogin) {
-                    var login = h('button.cp-corner-primary', Messages.login_login);
-                    var register = h('button.cp-corner-primary', Messages.login_register);
-                    var cancel = h('button.cp-corner-cancel', Messages.cancel);
-                    var actions = h('div', [cancel, register, login]);
-                    var modal = UI.cornerPopup(Messages.oo_login, actions, '', {alt: true});
-                    $(register).click(function () {
-                        common.setLoginRedirect('register');
-                        modal.delete();
+                // Add the checkpoint data to the linked documents
+                addLinkedCheckpoint(cpData, function () {
+                    APP.realtime.onSettle(function () {
+                        if (APP.migrate) {
+                            UI.removeModals();
+                            UI.alert(Messages.oo_sheetMigration_complete, function () {
+                                common.gotoURL();
+                            });
+                            return;
+                        }
+                        if (ev.callback) {
+                            return void ev.callback(cpData);
+                        }
                     });
-                    $(login).click(function () {
-                        common.setLoginRedirect('login');
-                        modal.delete();
-                    });
-                    $(cancel).click(function () {
-                        modal.delete();
-                        noLogin = true;
-                    });
-                    return;
-                }
-                if (!common.isLoggedIn()) { return; }
-                content.saveLock = myOOId;
-                APP.onLocal();
-                APP.realtime.onSettle(function () {
-                    saveToServer();
                 });
-            }
-        };
-        var restoreLastCp = function () {
-            content.saveLock = myOOId;
-            APP.onLocal();
-            APP.realtime.onSettle(function () {
-                onUploaded({
-                    hash: ooChannel.lastHash,
-                    index: ooChannel.cpIndex
-                }, {
-                    url: getLastCp().file,
-                });
-            });
-        };
-        // Add a timeout to check if a checkpoint was correctly saved by the locking user
-        // and "unlock the sheet" or "make a checkpoint" if needed
-        var cpTo;
-        var checkCheckpoint = function () {
-            clearTimeout(cpTo);
-            var saved = stringify(content.hashes);
-            var locked = content.saveLock;
-            var to = 20000 + (Math.random() * 20000);
-            cpTo = setTimeout(function () {
-                // If no checkpoint was added and the same user still has the lock
-                // then make a checkpoint if needed (cp interval)
-                if (stringify(content.hashes) === saved && locked === content.saveLock) {
-                    content.saveLock = undefined;
-                    makeCheckpoint();
-                }
-            }, to);
-        };
 
-        var loadInitDocument = function (type, useNewDefault) {
-            var newText;
-            switch (type) {
-                case 'sheet' :
-                    newText = EmptyCell(useNewDefault);
-                    break;
-                case 'doc':
-                    newText = EmptyDoc();
-                    break;
-                case 'presentation':
-                    newText = EmptySlide();
-                    break;
-                default:
-                    newText = '';
-            }
-            return new Blob([newText], {type: 'text/plain'});
-        };
-
-        const loadLastDocument = function (lastCp) {
-            return new Promise((resolve, reject) => {
-                if (!lastCp || !lastCp.file) {
-                    return void reject('EEMPTY');
-                }
-                ooChannel.cpIndex = lastCp.index || 0;
-                ooChannel.lastHash = lastCp.hash;
-                var parsed = Hash.parsePadUrl(lastCp.file);
-                var secret = Hash.getSecrets('file', parsed.hash);
-                if (!secret || !secret.channel) { return; }
-                var hexFileName = secret.channel;
-                var fileHost = privateData.fileHost || privateData.origin;
-                var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
-                var key = secret.keys && secret.keys.cryptKey;
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', src, true);
-                if (window.sendCredentials) { xhr.withCredentials = true; }
-                xhr.responseType = 'arraybuffer';
-                xhr.onload = function () {
-                    if (/^[45]/.test('' + this.status)) {
-                        reject(this.status);
-                        return void console.error('XHR error', this.status);
-                    }
-                    var arrayBuffer = xhr.response;
-                    if (arrayBuffer) {
-                        var u8 = new Uint8Array(arrayBuffer);
-                        FileCrypto.decrypt(u8, key, function (err, decrypted) {
-                            if (err) {
-                                if (err === "DECRYPTION_ERROR" ||
-                                err === "E_METADATA_DECRYPTION") {
-                                    console.warn(err);
-                                    return void reject(err);
-                                }
-                                return void console.error(err);
-                            }
-                            var blob = new Blob([decrypted.content], {type: 'plain/text'});
-                            resolve({blob, fileType: getFileType()});
-                        });
-                    }
-                };
-                xhr.onerror = function (err) {
-                    reject(err);
-                };
-                xhr.send(null);
             });
         };
 
         /*
-        var refreshReadOnly = function () {
-            var cancel = h('button.cp-corner-cancel', Messages.cancel);
-            var reload = h('button.cp-corner-primary', [
-                Icons.get('refresh'),
-                Messages.oo_refresh
-            ]);
-
-            var actions = h('div', [cancel, reload]);
-            var m = UI.cornerPopup(Messages.oo_refreshText, actions, '');
-            $(reload).click(function () {
-                ooChannel.ready = false;
-                var lastCp = getLastCp();
-                loadLastDocument(lastCp, function () {
-                    var file = getFileType();
-                    var type = common.getMetadataMgr().getPrivateData().ooType;
-                    var blob = loadInitDocument(type, true);
-                    resetData(blob, file);
-                }, function (blob, file) {
-                    resetData(blob, file);
-                });
-                delete APP.refreshPopup;
-                m.delete();
-            });
-            $(cancel).click(function () {
-                delete APP.refreshPopup;
-                m.delete();
-            });
-        };
-        */
-
-        var openVersionHash = function (version) {
-            readOnly = true;
-            var hashes = content.hashes || {};
-            var sortedCp = Object.keys(hashes).map(Number).sort(function (a, b) {
-                return hashes[a].index - hashes[b].index;
-            });
-            var s = version.split('.');
-            var v = parseInt(s[1]);
-            if (s.length !== 2) { return UI.errorLoadingScreen(Messages.error); }
-
-            var major = Number(s[0]);
-            var cpId = sortedCp[major - 1];
-            var nextCpId = sortedCp[major];
-            var cp = hashes[cpId] || {};
-
-            var minor = Number(s[1]) + 1;
-            if (APP.isDownload) { minor = undefined; }
-
-            var toHash = cp.hash || 'NONE';
-            var fromHash = nextCpId ? hashes[nextCpId].hash : 'NONE';
-
-            sframeChan.query('Q_GET_HISTORY_RANGE', {
-                channel: content.channel,
-                lastKnownHash: fromHash,
-                toHash: toHash,
-                isDownload: APP.isDownload
-            }, function (err, data) {
-                if (err) { console.error(err); return void UI.errorLoadingScreen(Messages.error); }
-                if (!Array.isArray(data.messages)) {
-                    console.error('Not an array');
-                    return void UI.errorLoadingScreen(Messages.error);
-                }
-
-                // The first "cp" in history is the empty doc. It doesn't include the first patch
-                // of the history
-                var messages = data.messages;
-
-                messages.forEach(function (obj) {
-                    try { obj.msg = JSON.parse(obj.msg); } catch (e) { console.error(e); }
-                });
-
-                // The version exists if we have results in the "messages" array
-                // or if we requested a x.0 version
-                var exists = !Number(s[1]) || messages.length;
-                var vHashEl;
-
-                if (!privateData.embed) {
-                    var vTime = (messages[messages.length - 1] || {}).time;
-                    var vTimeStr = vTime ? new Date(vTime).toLocaleString()
-                                         : 'v' + privateData.ooVersionHash;
-                    var vTxt = Messages._getKey('infobar_versionHash',  [vTimeStr]);
-
-                    // If we expected patched and we don't have any, it means this part
-                    // of the history has been deleted
-                    var vType = "warning";
-                    if (!exists) {
-                        vTxt = Messages.oo_deletedVersion;
-                        vType = "danger";
-                    }
-
-                    vHashEl = h('div.alert.alert-'+vType+'.cp-burn-after-reading', vTxt);
-                    $('#cp-app-oo-editor').prepend(vHashEl);
-                }
-
-                if (!exists) { return void UI.removeLoadingScreen(); }
-
-                loadLastDocument(cp)
-                    .then(({blob, fileType}) => {
-                        ooChannel.queue = messages.slice(1, minor+1);
-                        resetData(blob, fileType);
-                        UI.removeLoadingScreen();
-                    })
-                    .catch(() => {
-                        if (cp.hash && vHashEl) {
-                            // We requested a checkpoint but we can't find it...
-                            UI.removeLoadingScreen();
-                            vHashEl.innerText = Messages.oo_deletedVersion;
-                            $(vHashEl).removeClass('alert-warning').addClass('alert-danger');
-                            return;
-                        }
-                        var file = getFileType();
-                        var type = common.getMetadataMgr().getPrivateData().ooType;
-                        if (APP.downloadType) { type = APP.downloadType; }
-                        var blob = loadInitDocument(type, true);
-                        ooChannel.queue = file.doc === 'spreadsheet' ? messages.slice(0, v) : messages.slice(0, v+1);
-                        resetData(blob, file);
-                        UI.removeLoadingScreen();
-                    });
-            });
-        };
-
         const sendDebugSupportTicket = (message) => {
             const title = "[Automatic] Office document locked";
 
@@ -883,7 +628,7 @@ define([
                 })
             }, () => {});
         };
-        const onRtChannelError = (err) => {
+        const onRtChannelError = (err, channel) => {
             const wasReadOnly = readOnly;
             readOnly = true;
             offline = true;
@@ -892,7 +637,7 @@ define([
                 error: err?.error,
                 reason: err?.reason,
                 channel: privateData.channel,
-                rtChannel: content.channel
+                rtChannel: channel
             }, 0, 2);
 
             let txt = Messages.oo_rtChannelMissing;
@@ -942,29 +687,24 @@ define([
                 value
             ]);
             f(div, cb, opts);
-        };
+        };*/
 
-        var openRtChannel = function (cb) {
-            if (rtChannel.ready) { return void cb(); }
-            var chan = content.channel || Hash.createChannelId();
-            if (!content.channel) {
-                content.channel = chan;
-                APP.onLocal();
-            }
+        var openRtChannel = function (cpData, cb) {
+            const channel = cpData?.rtChannel || content.channel;
+            const lastCpHash = cpData?.hash;
             sframeChan.query('Q_OO_OPENCHANNEL', {
-                channel: content.channel,
-                lastCpHash: getLastCp().hash
+                channel, lastCpHash
             }, function (err, obj) {
-                if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
-                // XXX an error loading a checkpoint was ignored, causing a sheet
-                // to load incorrectly. There's a risk of a new checkpoint being created
-                // with the resulting (incorrect) state. Errors like this should be reported
-                // to the user so they realize something is wrong.
+                if (obj?.error) { console.error(obj.error); }
+// XXX an error loading a checkpoint was ignored, causing a sheet
+// to load incorrectly. There's a risk of a new checkpoint being created
+// with the resulting (incorrect) state. Errors like this should be reported
+// to the user so they realize something is wrong.
             });
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
                     case 'ERROR':
-                        onRtChannelError(obj.data);
+                        //onRtChannelError(obj.data, channel);
                         cb();
                         break;
                     case 'READY':
@@ -981,18 +721,6 @@ define([
                             return;
                         }
                         if (ooChannel.ready) {
-                            // In read-only mode, push the message to the queue and prompt
-                            // the user to refresh OO (without reloading the page)
-                            /*if (readOnly) {
-                                ooChannel.queue.push(obj.data);
-                                if (APP.refreshPopup) { return; }
-                                APP.refreshPopup = true;
-
-                                // Don't "spam" the user instantly and no more than
-                                // 1 popup every 15s
-                                APP.refreshRoTo = setTimeout(refreshReadOnly, READONLY_REFRESH_TO);
-                                return;
-                            }*/
                             ooChannel.send(obj.data.msg);
                             ooChannel.lastHash = obj.data.hash;
                             ooChannel.cpIndex++;
@@ -1008,6 +736,318 @@ define([
                         break;
 
                 }
+            });
+        };
+
+
+        var fmConfig = {
+            noHandlers: true,
+            noStore: true,
+            body: $('body'),
+            onUploaded: function (ev, data) {
+                if (!data?.url) { return; }
+                onUploaded(ev, data);
+            },
+            onError: function (err) {
+                onUploaded(null, null, err);
+            }
+        };
+        APP.FM = common.createFileManager(fmConfig);
+
+        var resetData = function (blob, type, cpData) {
+            // If a read-only refresh popup was planned, abort it
+            delete APP.refreshPopup;
+            clearTimeout(APP.refreshRoTo);
+
+            // Don't create the initial checkpoint indefinitely in a loop
+            delete APP.initCheckpoint;
+
+            if (!isLockedModal.modal) {
+                isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
+            }
+            myUniqueOOId = undefined;
+            myIndex = undefined;
+            setMyId();
+
+            if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
+            $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
+
+            const v = cpData.version || content.originalVersion || content.version;
+            if (v && v !== APP.currentOOVersion) {
+                $('#cp-app-oo-editor').find('script').remove();
+                addOfficeJS(v);
+                APP.currentOOVersion = v;
+            }
+
+            ooLoaded = false;
+            oldLocks = {};
+            Object.keys(pendingChanges).forEach(function (key) {
+                clearTimeout(pendingChanges[key]);
+                delete pendingChanges[key];
+            });
+            if (APP.stopHistory || APP.template) { APP.history = false; }
+
+            // History mode: don't load the rtChannel
+            if (APP.history) {
+                return void startOO(blob, type, true);
+            }
+
+            openRtChannel(cpData, Util.once(() => {
+                startOO(blob, type, true);
+            }));
+        };
+
+        var saveToServer = function (blob, title) {
+            if (APP.cantCheckpoint) { return; } // TOO_LARGE
+            var text = !blob && getContent();
+            if (!text && !blob) {
+                setEditable(false, true);
+                sframeChan.query('Q_CLEAR_CACHE_CHANNELS', [
+                    'chainpad',
+                    content.channel,
+                ], function () {});
+                UI.alert(Messages.realtime_unrecoverableError, function () {
+                    common.gotoURL();
+                });
+                return;
+            }
+            blob = blob || new Blob([text], {type: 'plain/text'});
+            var file = getFileType();
+            blob.name = title || (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
+            var data = {
+                time: new Date()
+            };
+            fixSheets();
+
+            if (!isLockedModal.modal) {
+                isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
+            }
+            ooChannel.ready = false;
+            ooChannel.queue = [];
+            data.callback = function (cpData) {
+                if (APP.template) { APP.template = false; }
+                resetData(blob, file, cpData);
+            };
+
+            // XXX
+            const privateData = metadataMgr.getPrivateData();
+            blob.linked = privateData.channel;
+            APP.FM.handleFile(blob, data);
+        };
+
+        var noLogin = false;
+
+        var makeCheckpoint = function (force) {
+            if (APP.cantCheckpoint) { return; } // TOO_LARGE
+
+            var locked = content.saveLock;
+
+            var currentIdx = ooChannel.cpIndex;
+            var needCp = force || currentIdx > FORCE_CHECKPOINT_INTERVAL;
+
+            if (!needCp) { return; }
+
+            if (!locked || !isUserOnline(locked) || force) {
+                if (!common.isLoggedIn() && !isRegisteredUserOnline() && !noLogin) {
+                    var login = h('button.cp-corner-primary', Messages.login_login);
+                    var register = h('button.cp-corner-primary', Messages.login_register);
+                    var cancel = h('button.cp-corner-cancel', Messages.cancel);
+                    var actions = h('div', [cancel, register, login]);
+                    var modal = UI.cornerPopup(Messages.oo_login, actions, '', {alt: true});
+                    $(register).click(function () {
+                        common.setLoginRedirect('register');
+                        modal.delete();
+                    });
+                    $(login).click(function () {
+                        common.setLoginRedirect('login');
+                        modal.delete();
+                    });
+                    $(cancel).click(function () {
+                        modal.delete();
+                        noLogin = true;
+                    });
+                    return;
+                }
+                if (!common.isLoggedIn()) { return; }
+                content.saveLock = myOOId;
+                APP.onLocal();
+                APP.realtime.onSettle(function () {
+                    saveToServer();
+                });
+            }
+        };
+        var restoreLastCp = function () {
+            content.saveLock = myOOId;
+            APP.onLocal();
+            APP.realtime.onSettle(function () {
+                onUploaded({}, {
+                    url: getLastCp().file,
+                });
+            });
+        };
+        // Add a timeout to check if a checkpoint was correctly saved by the locking user
+        // and "unlock the sheet" or "make a checkpoint" if needed
+        var cpTo;
+        var checkCheckpoint = function () {
+            clearTimeout(cpTo);
+            var saved = stringify(content.hashes);
+            var locked = content.saveLock;
+            var to = 20000 + (Math.random() * 20000);
+            cpTo = setTimeout(function () {
+                // If no checkpoint was added and the same user still has the lock
+                // then make a checkpoint if needed (cp interval)
+                if (stringify(content.hashes) === saved && locked === content.saveLock) {
+                    content.saveLock = undefined;
+                    makeCheckpoint();
+                }
+            }, to);
+        };
+
+        var loadInitDocument = function (type, useNewDefault) {
+            var newText;
+            switch (type) {
+                case 'sheet' :
+                    newText = EmptyCell(useNewDefault);
+                    break;
+                case 'doc':
+                    newText = EmptyDoc();
+                    break;
+                case 'presentation':
+                    newText = EmptySlide();
+                    break;
+                default:
+                    newText = '';
+            }
+            return new Blob([newText], {type: 'text/plain'});
+        };
+
+        const loadLastDocument = function (lastCp) {
+            return new Promise((resolve, reject) => {
+                if (!lastCp || !lastCp.file) {
+                    return void reject('EEMPTY');
+                }
+                ooChannel.cpIndex = 0;
+                ooChannel.lastHash = lastCp.hash;
+                var parsed = Hash.parsePadUrl(lastCp.file);
+                var secret = Hash.getSecrets('file', parsed.hash);
+                if (!secret?.channel) { return reject('EINVAL'); }
+                var hexFileName = secret.channel;
+                var fileHost = privateData.fileHost || privateData.origin;
+                var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
+                var key = secret.keys && secret.keys.cryptKey;
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', src, true);
+                if (window.sendCredentials) { xhr.withCredentials = true; }
+                xhr.responseType = 'arraybuffer';
+                xhr.onload = function () {
+                    if (/^[45]/.test('' + this.status)) {
+                        reject('ENETWORK');
+                        return void console.error('XHR error', this.status);
+                    }
+                    var arrayBuffer = xhr.response;
+                    if (arrayBuffer) {
+                        var u8 = new Uint8Array(arrayBuffer);
+                        FileCrypto.decrypt(u8, key, function (err, decrypted) {
+                            if (err) {
+                                if (err === "DECRYPTION_ERROR" ||
+                                err === "E_METADATA_DECRYPTION") {
+                                    console.warn(err);
+                                    return void reject(err);
+                                }
+                                return void console.error(err);
+                            }
+                            var blob = new Blob([decrypted.content], {type: 'plain/text'});
+                            resolve({blob, fileType: getFileType()});
+                        });
+                    }
+                };
+                xhr.onerror = function () {
+                    reject('ENETWORK');
+                };
+                xhr.send(null);
+            });
+        };
+
+        var openVersionHash = function (version) {
+            readOnly = true;
+            const hashes = content.hashes || {};
+            const sortedCp = sortCpIndex(hashes);
+
+            const s = version.split('.');
+            if (s.length !== 2) { return UI.errorLoadingScreen(Messages.error); }
+
+            let cpId = Number(s[0]);
+            if (APP.isDownload) { cpId = sortedCp[sortedCp.length - 1]; }
+            const currentCp = hashes[cpId] || {};
+
+            const cpIdx = sortedCp.indexOf(cpId);
+            const nextCp = sortedCp[cpIdx + 1];
+
+            let minor = Number(s[1]);
+            if (APP.isDownload) { minor = undefined; }
+
+            History.loadHistoryData({
+                sframeChan,
+                mainRtChannel: content.channel,
+                downloadId: APP.isDownload,
+                currentCp, nextCp
+            }).then(messages => {
+                // Parse messages
+                messages.forEach(function (obj) {
+                    try { obj.msg = JSON.parse(obj.msg); } catch (e) { console.error(e); }
+                });
+
+                // The version exists if we have results in the "messages" array
+                // or if we requested a x.0 version
+                var exists = !minor || messages.length;
+                var vHashEl;
+
+                if (!privateData.embed) {
+                    var vTime = (messages[minor - 1] || currentCp)?.time;
+                    var vTimeStr = vTime ? new Date(vTime).toLocaleString()
+                                         : 'v' + privateData.ooVersionHash;
+                    var vTxt = Messages._getKey('infobar_versionHash', [vTimeStr]);
+
+                    // If we expected patched and we don't have any, it means this part
+                    // of the history has been deleted
+                    var vType = "warning";
+                    if (!exists) {
+                        vTxt = Messages.oo_deletedVersion;
+                        vType = "danger";
+                    }
+
+                    vHashEl = h('div.alert.alert-'+vType+'.cp-burn-after-reading', vTxt);
+                    $('#cp-app-oo-editor').prepend(vHashEl);
+                }
+
+                if (!exists) { return void UI.removeLoadingScreen(); }
+
+                APP.history = true;
+                loadLastDocument(currentCp)
+                .then(({blob, fileType}) => {
+                    ooChannel.queue = messages.slice(0, minor);
+                    console.error(ooChannel.queue.slice());
+                    resetData(blob, fileType, currentCp);
+                    UI.removeLoadingScreen();
+                })
+                .catch(() => {
+                    if (currentCp.hash && vHashEl) {
+                        // We requested a checkpoint but we can't find it...
+                        UI.removeLoadingScreen();
+                        vHashEl.innerText = Messages.oo_deletedVersion;
+                        $(vHashEl).removeClass('alert-warning').addClass('alert-danger');
+                        return;
+                    }
+                    var file = getFileType();
+                    var type = common.getMetadataMgr().getPrivateData().ooType;
+                    if (APP.downloadType) { type = APP.downloadType; }
+                    var blob = loadInitDocument(type, true);
+                    ooChannel.queue = messages.slice(0, minor);
+                    resetData(blob, file, {});
+                    UI.removeLoadingScreen();
+                });
+            }).catch(err => {
+                if (err) { console.error(err); return void UI.errorLoadingScreen(Messages.error); }
             });
         };
 
@@ -1102,6 +1142,8 @@ define([
         };
         // Update the locks status in onlyoffice
         var handleNewLocks = function (o, n) {
+            if (APP.history) { return; }
+
             var hasNew = false;
             // Check if we have at least one new lock
             Object.keys(n || {}).some(function (id) {
@@ -1142,7 +1184,7 @@ define([
             var users = Object.keys(metadataMgr.getMetadata().users);
             Object.keys(locks).forEach(function (id) {
                 var nId = id.slice(0,32);
-                if (users.indexOf(nId) === -1) {
+                if (users.indexOf(nId) === -1 || APP.history) {
                     // Offline locks: support old format
                     var l = (locks[id] && !locks[id].block) ? getUserLock(id) : [locks[id]];
                     ooChannel.send({
@@ -2106,7 +2148,7 @@ define([
                 //getEditor().setViewModeDisconnect(); // can't be used anymore, display an OO error popup
             } else {
                 setEditable(true);
-                delete content.missingRtChannel;
+                delete content.missingRtChannel; // XXX to remove (automatic support tickets)
                 APP.onLocal();
                 deleteOfflineLocks();
                 handleNewLocks({}, content.locks);
@@ -2131,6 +2173,9 @@ define([
                     getEditor().asc_setDefaultLanguage(l);
                 }
             }
+
+            sframeChan.event('EV_OO_DOC_READY');
+
             if (integrationChannel) {
                 integrationChannel.event('EV_INTEGRATION_READY');
             }
@@ -2195,9 +2240,9 @@ define([
 
             // Check if history can/should be trimmed
             var cp = getLastCp();
-            if (cp && cp.file && cp.hash) {
+            if (cp?.file) {
                 var channels = [{
-                    channel: content.channel,
+                    channel: cp.rtChannel || content.channel,
                     lastKnownHash: cp.hash
                 }];
                 common.checkTrimHistory(channels);
@@ -2843,8 +2888,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 });
             };
             var data = {
-                hash: ooChannel.lastHash,
-                index: ooChannel.cpIndex,
                 callback: uploadedCallback
             };
             APP.FM.handleFile(blob, data);
@@ -2885,35 +2928,39 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }, 100);
         };
 
-        var loadDocument = function (noCp, useNewDefault, i, cb) {
+        var loadDocument = function (noCp, useNewDefault, cb) {
             if (ooLoaded) { return; }
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var file = getFileType();
             if (!noCp) {
-                var lastCp = getLastCp(false, i);
+                var lastCp = getLastCp(false);
                 // If the last checkpoint is empty, load the "initial" doc instead
-                if (!lastCp || !lastCp.file) { return void loadDocument(true, useNewDefault, undefined, cb); }
+                if (!lastCp?.file) {
+                    return void loadDocument(true, useNewDefault, cb);
+                }
                 // Load latest checkpoint
                 return void loadLastDocument(lastCp)
                     .then(({blob, fileType}) => {
                         cb({
                             blob,
                             file: fileType
-                        });
+                        }, lastCp);
                     })
                     .catch((err) => {
-                        // Checkpoint error: load the previous one
-                        if (err === "DECRYPTION_ERROR" || err === "E_METADATA_DECRYPTION") {
-                            deleteLastCp(i);
+                        // Can't download checkpoint from server, abort
+                        if (err === "ENETWORK") {
+                            UI.errorLoadingScreen(Messages.fivehundred_internalServerError);
+                            throw new Error(Messages.fivehundred_internalServerError);
+                            return;
                         }
-                        i = i || 0;
-                        loadDocument(noCp, useNewDefault, ++i, cb);
+                        // Not a network error, maybe encryption
+                        // Delete last cp and load previous one
+                        deleteLastCp();
+                        loadDocument(noCp, useNewDefault, cb);
                     });
             }
             var blob = loadInitDocument(type, useNewDefault);
-            cb({
-                blob, file
-            });
+            cb({ blob, file }, {});
         };
 
         var initializing = true;
@@ -2987,6 +3034,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         APP.onLocal = config.onLocal = function () {
             if (initializing) { return; }
             if (readOnly) { return; }
+            if (APP.history) { return; }
 
             // Update metadata
             var content = stringifyInner();
@@ -3001,23 +3049,17 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             try {
                 const {blob, fileType} = await loadLastDocument(cp);
                 if (!keepQueue) { ooChannel.queue = []; }
-                resetData(blob, fileType);
+                resetData(blob, fileType, cp);
             } catch (e) {
                 var file = getFileType();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
                 if (!keepQueue) { ooChannel.queue = []; }
-                resetData(blob, file);
+                resetData(blob, file, {});
             }
         };
 
-        var loadHistoryCp = function (cp, keepQueue) {
-            APP.history = true;
-            APP.stopHistory = false;
-            loadCp(cp, keepQueue);
-        };
-
-        var loadTemplate = function (href, pw, parsed) {
+        var loadTemplate = function (href, password, parsed) {
             APP.history = true;
             APP.template = true;
             var editor = getEditor();
@@ -3033,29 +3075,16 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var lastIndex = idx[idx.length - 1];
             var lastCp = hashes[lastIndex] || {};
 
-            // Current cp or initial hash (invalid hash ==> initial hash)
-            var toHash = lastCp.hash || 'NONE';
-            // Last hash
-            var fromHash = 'NONE';
-
             content.mediasSources = medias;
 
-            sframeChan.query('Q_GET_HISTORY_RANGE', {
-                href: href,
-                password: pw,
-                channel: _content.channel,
-                lastKnownHash: fromHash,
-                toHash: toHash,
-            }, function (err, data) {
-                if (err) { return void console.error(err); }
-                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
-
-                // The first "cp" in history is the empty doc. It doesn't include the first patch
-                // of the history
-                var initialCp = !lastCp.hash;
-
-                var messages = (data.messages || []).slice(initialCp ? 0 : 1);
-
+            History.loadHistoryData({
+                sframeChan,
+                href, password,
+                mainRtChannel: _content.channel,
+                currentCp: lastCp,
+                nextCp: undefined
+            }).then(messages => {
+                if (!Array.isArray(messages)) { return void console.error('Not an array!'); }
                 ooChannel.queue = messages.map(function (obj) {
                     return {
                         hash: obj.serverHash,
@@ -3065,6 +3094,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 ooChannel.historyLastHash = ooChannel.lastHash;
                 ooChannel.currentIndex = ooChannel.cpIndex;
                 loadCp(lastCp, true);
+            }).catch(err => {
+                console.error(err);
             });
         };
 
@@ -3144,11 +3175,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             readOnly = true;
             var version = (!content.version || content.version === 1) ? 'v1/' :
                           (content.version <= 3 ? 'v2b/' : OOCurrentVersion.currentVersion + '/');
-            var s = h('script', {
-                type:'text/javascript',
-                src: ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js?' + APP.urlArgs
-            });
-            $('#cp-app-oo-editor').empty().append(h('div#cp-app-oo-placeholder-a')).append(s);
+            $('#cp-app-oo-editor').empty().append(h('div#cp-app-oo-placeholder-a'));
+            addOfficeJS(version);
 
             var hashes = content.hashes || {};
             var idx = sortCpIndex(hashes);
@@ -3235,16 +3263,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onCheckpoint = function (cp) {
                     // We want to load a checkpoint:
-                    loadCp(cp, true);
+                    loadCp(cp);
                 };
                 var onPatchBack = function (cp, msgs) {
-                    APP.history = true;
-                    APP.stopHistory = false;
                     if (msgs) {
                         var msgsFormatted = [];
                         msgs.forEach(function(msg) {
                             var parsedMsg = JSON.parse(msg.msg);
-        
                             var formattedMsg = {
                                 msg: parsedMsg,
                                 hash: msg.serverHash, 
@@ -3261,12 +3286,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         loadCp(cp);
                     }
                 };
-                var docType = function() {
-                    return APP.ooconfig.documentType;
-                };
                 var setHistoryMode = function (bool) {
                     if (bool) {
                         APP.history = true;
+                        APP.stopHistory = false;
                         toolbar.setHistory(true);
                         try { getEditor().asc_setRestriction(true); } catch (e) {}
                         return;
@@ -3277,6 +3300,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     ooChannel.queue = [];
                     ooChannel.ready = false;
                     // Fill the queue and then load the last CP
+
                     rtChannel.getHistory(function () {
                         var lastCp = getLastCp();
                         loadCp(lastCp, true);
@@ -3297,8 +3321,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         time = obj.time;
                     } else {
                         var major = Object.keys(content.hashes).length;
-                        var cpIndex = getLastCp().index || 0;
-                        var minor = ooChannel.cpIndex - cpIndex;
+                        var minor = ooChannel.cpIndex;
                         hash = major+'.'+minor;
                         time = +new Date();
                     }
@@ -3336,17 +3359,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     var histConfig = {
                         onPatch: onPatch,
                         onPatchBack: onPatchBack,
-                        docType: docType,
-                        loadCp: loadCp,
-                        loadHistoryCp: loadHistoryCp, 
                         onCheckpoint: onCheckpoint,
                         onRevert: commit,
                         setHistory: setHistoryMode,
-                        makeSnapshot: makeSnapshot,
+                        makeSnapshot,
                         onlyoffice: {
                             hashes: content.hashes || {},
                             channel: content.channel,
-                            lastHash: ooChannel.lastHash
+                            lastHash: ooChannel.lastHash,
+                            ctime: content.ctime
                         },
                         $toolbar: $('.cp-toolbar-container')
                     };
@@ -3525,13 +3546,20 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     UI.errorLoadingScreen(errorText);
                     throw new Error(errorText);
                 }
-                content = hjson.content || content;
+                content = hjson.content || content;
+
+                // Support old checkpoints
                 var newLatest = getLastCp();
-                sframeChan.query('Q_OO_SAVE', {
-                    hash: newLatest.hash,
-                    url: newLatest.file
-                }, function () { });
+                if (newLatest.hash) {
+                    sframeChan.query('Q_OO_SAVE', {
+                        channel: content.channel,
+                        hash: newLatest.hash,
+                        url: newLatest.file
+                    }, function () { });
+                }
+
                 newDoc = !content.hashes || Object.keys(content.hashes).length === 0;
+                checkLinkedDocs();
             } else if (!privateData.isNewFile) {
                 // This is an empty doc but not a new file: error
                 onCorruptedCache();
@@ -3540,97 +3568,29 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 Title.updateTitle(Title.defaultTitle);
             }
 
+            if (!content.channel && !Object.keys(content.hashes).length) {
+                content.channel = Hash.createChannelId();
+                content.ctime ||= +new Date();
+                APP.onLocal();
+                checkLinkedDocs();
+            }
+
             APP.startNew = isNew;
+
+            if (!content.originalVersion) {
+                content.originalVersion = getOriginalVersion();
+            }
 
             var version = OOCurrentVersion.currentVersion + '/';
             var msg;
             // Old version detected: use the old OO and start the migration if we can
             if (privateData.ooForceVersion) {
-                if (privateData.ooForceVersion === "1") {
-                    version = "v1/";
+                version = `v${privateData.ooForceVersion}/`;
+            } else if (content && (!content.version || content.version < OOCurrentVersion.currentVersionNumber)) {
+                version = `v${content.version || 1}/`;
+                if (content.version === 2 || content.version === 3) {
+                    version = 'v2b/';
                 }
-            } else if (content && (!content.version || content.version === 1)) {
-                version = 'v1/';
-                APP.migrate = true;
-                // Registedred ~~users~~ editors can start the migration
-                if (common.isLoggedIn() && !readOnly) {
-                    content.migration = true;
-                    APP.onLocal();
-                } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    if (APP.helpMenu) {
-                        $(APP.helpMenu.menu).after(msg);
-                    } else {
-                        $('#cp-app-oo-editor').prepend(msg);
-                    }
-                    readOnly = true;
-                }
-            } else if (content && content.version <= 4) { // V2 or V3
-                version = content.version <= 3 ? 'v2b/' : 'v4/';
-                APP.migrate = true;
-                // Registedred ~~users~~ editors can start the migration
-                if (common.isLoggedIn() && !readOnly) {
-                    content.migration = true;
-                    APP.onLocal();
-                } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    if (APP.helpMenu) {
-                        $(APP.helpMenu.menu).after(msg);
-                    } else {
-                        $('#cp-app-oo-editor').prepend(msg);
-                    }
-                    readOnly = true;
-                }
-            } else if (content && content.version <= 5) {
-                version = 'v5/';
-                APP.migrate = true;
-                // Registedred ~~users~~ editors can start the migration
-                if (common.isLoggedIn() && !readOnly) {
-                    content.migration = true;
-                    APP.onLocal();
-                } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    if (APP.helpMenu) {
-                        $(APP.helpMenu.menu).after(msg);
-                    } else {
-                        $('#cp-app-oo-editor').prepend(msg);
-                    }
-                    readOnly = true;
-                }
-            } else if (content && content.version <= 6) {
-                version = 'v6/';
-                APP.migrate = true;
-                // Registedred ~~users~~ editors can start the migration
-                if (common.isLoggedIn() && !readOnly) {
-                    content.migration = true;
-                    APP.onLocal();
-                } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    if (APP.helpMenu) {
-                        $(APP.helpMenu.menu).after(msg);
-                    } else {
-                        $('#cp-app-oo-editor').prepend(msg);
-                    }
-                    readOnly = true;
-                }
-            } else if (content && content.version <= 7) {
-                version = 'v7/';
-                APP.migrate = true;
-                // Registedred ~~users~~ editors can start the migration
-                if (common.isLoggedIn() && !readOnly) {
-                    content.migration = true;
-                    APP.onLocal();
-                } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    if (APP.helpMenu) {
-                        $(APP.helpMenu.menu).after(msg);
-                    } else {
-                        $('#cp-app-oo-editor').prepend(msg);
-                    }
-                    readOnly = true;
-                }
-            } else if (content && content.version <= 8) {
-                version = 'v8/';
                 APP.migrate = true;
                 // Registedred ~~users~~ editors can start the migration
                 if (common.isLoggedIn() && !readOnly) {
@@ -3657,23 +3617,18 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 checkCheckpoint();
             }
 
-            var s = h('script', {
-                type:'text/javascript',
-                src: ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js?' + APP.urlArgs
-            });
-            $('#cp-app-oo-editor').append(s);
+            addOfficeJS(version);
 
-            if (metadataMgr.getPrivateData().burnAfterReading && content && content.channel) {
-                sframeChan.event('EV_BURN_PAD', content.channel);
-            }
+            APP.currentOOVersion = content.version || 1;
 
             if (privateData.ooVersionHash) {
                 return void openVersionHash(privateData.ooVersionHash);
             }
 
-
             // Only execute the following code the first time we call onReady
             if (!firstReady) {
+                // XXX if new cp, reload...
+                // XXX maybe already handled by onRemote
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
@@ -3684,8 +3639,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             var useNewDefault = content.version && content.version >= 2;
 
-            loadDocument(newDoc, useNewDefault,void 0, cpObj => {
-            openRtChannel(Util.once(function () {
+            loadDocument(newDoc, useNewDefault, (cpObj, cpData) => {
+            openRtChannel(cpData, Util.once(function () {
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
@@ -3709,6 +3664,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     common.openCursorChannel(APP.onLocal);
                     cursor = common.createCursor(APP.onLocal);
                     cursor.onCursorUpdate(function (data) {
+                        if (APP.history) { return; }
                         // Leaving user
                         if (data && data.leave && data.id) {
                             // When a netflux user leaves, remove all their cursors
@@ -3762,8 +3718,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                                 return void UI.errorLoadingScreen(Messages.error);
                             }
                             var blob = new Blob([bin], {type: 'text/plain'});
-                            //var file = getFileType();
-                            //resetData(blob, file);
                             saveToServer(blob, title);
                             Title.updateTitle(title);
                             UI.removeLoadingScreen();
@@ -3968,7 +3922,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var lastCp = getLastCp();
             loadLastDocument(lastCp)
                 .then(({blob, fileType}) => {
-                    resetData(blob, fileType);
+                    resetData(blob, fileType, lastCp);
                 })
                 .catch((err) => {
                     console.error(err);
@@ -3994,6 +3948,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             content = json.content;
 
+            if (APP.history) { return; }
+
             if (content.saveLock && wasLocked !== content.saveLock) {
                 // Someone new is creating a checkpoint: fix the sheets ids
                 fixSheets();
@@ -4012,19 +3968,14 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             var editor = getEditor();
             if (content.hashes) {
-                var latest = getLastCp(true);
-                var newLatest = getLastCp();
-                if (newLatest.index > latest.index || (newLatest.index && !latest.index)) {
+                var oldLastCp = getLastCpId(true);
+                var newLastCp = getLastCpId();
+                if (newLastCp > oldLastCp) {
                     ooChannel.queue = [];
                     ooChannel.ready = false;
                     var reload = function () {
                         // New checkpoint
-                        sframeChan.query('Q_OO_SAVE', {
-                            hash: newLatest.hash,
-                            url: newLatest.file
-                        }, function () {
-                            checkNewCheckpoint();
-                        });
+                        checkNewCheckpoint();
                     };
                     var editing = editor.asc_isDocumentModified ? editor.asc_isDocumentModified() : editor.isDocumentModify;
                     if (editing) {
@@ -4116,6 +4067,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         }).nThen(function (/*waitFor*/) {
             APP.supportModule = common.makeUniversal('support');
             APP.support = Support.create(common, false);
+            APP.linkedModule = common.makeUniversal('linked-doc');
             andThen(common);
         });
     };
