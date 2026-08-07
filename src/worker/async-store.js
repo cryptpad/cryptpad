@@ -1352,7 +1352,7 @@ const factory = (Sortify, UserObject, ProxyManager,
         };
 
         // Get all teams where a given pad is stored
-        Store.getPadTeams = function (clientId, data, cb) {
+        Store.getPadTeams = function (userId, data, cb) {
             var channel = data && data.channel;
             if (!channel) { return void cb({error: 'EINVAL'}); }
 
