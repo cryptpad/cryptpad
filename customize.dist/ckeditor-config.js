@@ -16,7 +16,7 @@ CKEDITOR.editorConfig = function( config ) {
     var isMobile = window.matchMedia ? window.matchMedia('(pointer: coarse)').matches : navigator.maxTouchPoints > 0;
     config.removePlugins= 'resize,elementspath,liststyle' + (isMobile ? ',contextmenu,tabletools,tableselection' : '');
     config.resize_enabled= false; //bottom-bar
-    config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify,mediatag,print,blockbase64,mathjax,wordcount,comments';
+    config.extraPlugins= 'autocorrect,autolink,colorbutton,colordialog,font,indentblock,justify,mediatag,print,blockbase64,mathjax,wordcount,comments';
     config.toolbarGroups= [
         // {"name":"clipboard","groups":["clipboard","undo"]},
         //{"name":"editing","groups":["find","selection"]},
