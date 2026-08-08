@@ -10,9 +10,11 @@
    but you should not change it directly (/common/translations/messages.{LANG}.js)
 */
 define(['/common/translations/messages.js'], function (Messages) {
-    // Replace the existing keys in your copied file here:
-    // Messages.button_newpad = "New Rich Text Document";
 
+    Messages.form_other_option = "Additional text option: ";
+    Messages.form_other_on = "Enabled";
+    Messages.form_other_off = "Disabled";
+    Messages.form_other_placeholder = "Other...";
     return Messages;
 });
 
