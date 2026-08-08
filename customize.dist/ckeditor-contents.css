@@ -107,10 +107,18 @@ ol,ul,dl
     padding-right: 0px;
 }
 
-h1,h2,h3,h4,h5,h6
-{
-    font-weight: normal;
-    line-height: 1.2;
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid hsl(0, 0%, 90%);
+    margin-top: 1em;
+    margin-bottom: 0.5rem;
+}
+h4, h5, h6 {
+    border-bottom: none;
+}
+p {
+    margin-top: 0;
 }
 
 hr
