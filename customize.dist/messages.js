@@ -157,6 +157,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    //XXX
+    Messages.contacts_noFriendsInfo = 'Start by adding a contact to begin a conversation.';
     return Messages;
 
 });
