@@ -1274,6 +1274,10 @@ define([
         var refresh = APP.refresh = function (cb, opt) {
             var type = APP.store[FILTER_BY];
             var path = type ? [FILTER, type, currentPath] : currentPath;
+            if (APP.newSharedFolder && priv.anonSFHref && opt) {
+                opt.sf = true;
+            }
+
             APP.displayDirectory(path, undefined, () => {
                 refreshDeprecated();
                 if (typeof(cb) === "function") { cb(); }
@@ -2763,6 +2767,7 @@ define([
             path.forEach(function (p, idx) {
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
                 if (skipNext) { skipNext = false; return; }
+                if ( idx > 0 && p === ROOT && path[0] === SHARED_FOLDER ) { return; }
                 if (APP.newSharedFolder && priv.isEmbed && p === ROOT && !idx) { return; }
                 var name = p;
 
@@ -4330,8 +4335,7 @@ define([
             var $folderHeader = getFolderListHeader(true);
             var $fileHeader = getFileListHeader(true);
             var path = currentPath.slice(1);
-            var root = Util.find(data, path);
-
+            var root = Util.find(data, path) || {};
             var realPath = [ROOT, SHARED_FOLDER].concat(path);
 
             if (manager.hasSubfolder(root)) { $list.append($folderHeader); }
@@ -4376,6 +4380,13 @@ define([
                 } else {
                     path = [ROOT];
                 }
+            } else if (APP.loggedIn && path[0] === 'sf') {
+
+                const key = Object.entries(proxy.drive.root).find(
+                ([, value]) => value === Number(APP.newSharedFolder)
+                )?.[0];
+
+                path = ['root', String(key), 'root'];
             }
 
             if (APP.loggedIn && path[0] === FILES_DATA) {
@@ -4622,6 +4633,10 @@ define([
                     //  Wait for shared folder metadata
                     // _displayDirectory(path, force);
                     // cb();
+                }
+                if (opt?.sf) {
+                    path = ['sf', String(APP.newSharedFolder), 'root'];
+
                 }
                 updateSharedFolders(sframeChan, manager, files, folders, function () {
                     _displayDirectory(path, force);
