@@ -139,6 +139,7 @@ define([
                 APP.teamEdPublic = null;
                 APP.drive = null;
                 APP.cryptor = null;
+                delete APP.refreshTeamAvatarBlock;
                 APP.toolbar.$bottomR.empty();
                 APP.toolbar.$bottomM.empty();
                 APP.toolbar.$bottomL.empty();
@@ -458,6 +459,7 @@ define([
                 var secret = Hash.getSecrets('team', team.hash || team.roHash, team.password);
                 APP.cryptor = UserObject.createCryptor(secret.keys.secondaryKey);
                 // Load data
+                delete APP.refreshTeamAvatarBlock;
                 APP.team = id;
                 APP.teamEdPublic = Util.find(team, ['keys', 'drive', 'edPublic']);
                 buildUI(common, true, team.owner);
@@ -676,6 +678,24 @@ define([
             }
             var roster = APP.refreshRoster(common, obj);
             $roster.empty().append(roster);
+        });
+    };
+    const refreshTeamMetadataDisplay = (common) => {
+        if (!APP.team) { return; }
+        APP.module.execCommand('GET_TEAM_METADATA', {
+            teamId: APP.team
+        }, (obj) => {
+            if (obj?.error) { return; }
+            const $headerAvatar = APP.$leftside.find('.cp-team-cat-header .cp-avatar');
+            if ($headerAvatar.length) {
+                const $name = $headerAvatar.find('.cp-sidebarlayout-category-name').detach();
+                $headerAvatar.empty();
+                common.displayAvatar($headerAvatar, obj?.avatar, obj?.name);
+                if ($name.length) { $headerAvatar.append($name); }
+            }
+            if (typeof APP.refreshTeamAvatarBlock === 'function') {
+                APP.refreshTeamAvatarBlock(obj);
+            }
         });
     };
 
@@ -1171,29 +1191,46 @@ define([
     }, true);
 
     makeBlock('avatar', function (common, cb) { // Msg.team_avatarHint, .team_avatarTitle
-        // Upload
-        var avatar = h('div.cp-team-avatar.cp-avatar');
-        var $avatar = $(avatar);
-        var data = MT.addAvatar(common, function (ev, data) {
-            if (!data.url) { return void UI.warn(Messages.error); }
+        const block = h('div#cp-team-avatar-preview');
+        const $avatar = $(h('span.cp-avatar')).appendTo($(block));
+        const setAvatar = (url) => {
             APP.module.execCommand('GET_TEAM_METADATA', {
                 teamId: APP.team
-            }, function (obj) {
-                if (obj && obj.error) { return void UI.warn(Messages.error); }
-                obj.avatar = data.url;
+            }, (meta) => {
+                if (meta?.error) { return void UI.warn(Messages.error); }
+                meta.avatar = url;
                 APP.module.execCommand('SET_TEAM_METADATA', {
                     teamId: APP.team,
-                    metadata: obj
-                }, function () {
-                    $avatar.empty();
-                    // the UI is not supposed to allow admins to remove team names
-                    // so we expect that it will be there. Failing that the initials
-                    // from the default name will be displayed
-                    common.displayAvatar($avatar, data.url);
+                    metadata: meta
+                }, () => {
+                    refreshTeamMetadataDisplay(common);
                 });
             });
+        };
+
+        const refreshAvatar = (obj) => {
+            $avatar.empty();
+            const val = obj?.avatar;
+            const name = obj?.name;
+            common.displayAvatar($avatar, val, name, () => {
+                if (!val) { return; }
+                $avatar.find('.cp-team-avatar-delete').remove();
+                const delButton = h('button.cp-team-avatar-delete.btn.btn-danger', {
+                    'aria-label': Messages.profile_remove_avatar,
+                    title: Messages.profile_remove_avatar
+                }, Icons.get('close'));
+                $avatar.append(delButton);
+                $(delButton).click(() => {
+                    setAvatar('');
+                });
+            });
+        };
+        APP.refreshTeamAvatarBlock = refreshAvatar;
+        const data = MT.addAvatar(common, (ev, upload) => {
+            if (!upload.url) { return void UI.warn(Messages.error); }
+            setAvatar(upload.url);
         });
-        var $upButton = common.createButton('upload', false, data);
+        const $upButton = common.createButton('upload', false, data);
         $upButton.addClass('cp-online');
         $upButton.removeProp('title');
         $upButton.text(Messages.profile_upload);
@@ -1201,20 +1238,16 @@ define([
 
         APP.module.execCommand('GET_TEAM_METADATA', {
             teamId: APP.team
-        }, function (obj) {
-            if (obj && obj.error) {
+        }, (obj) => {
+            if (obj?.error) {
                 return void UI.warn(Messages.error);
             }
-            var val = obj.avatar;
-            common.displayAvatar($avatar, val, obj.name);
-
-            // Display existing + button
-            var content = [
-                avatar,
+            refreshAvatar(obj);
+            cb([
+                block,
                 h('br'),
                 $upButton[0]
-            ];
-            cb(content);
+            ]);
         });
     }, true);
 
@@ -1589,6 +1622,7 @@ define([
                 if (ev === 'ROSTER_CHANGE') {
                     if (Number(APP.team) === Number(data)) {
                         redrawRoster(common);
+                        refreshTeamMetadataDisplay(common);
                     }
                     return;
                 }
