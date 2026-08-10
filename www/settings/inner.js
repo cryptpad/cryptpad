@@ -217,10 +217,10 @@ define([
             var $pubInput = $('<input>', { 'type': 'text', 'value': userHref, 'id': 'publicKey' });
             var $copyButton = $(h('button.btn.btn-primary.cp-settings-publickey-copy', {
                 'type': 'button',
-                'aria-label': Messages.profile_copyKey
+                'aria-label': Messages.copy
             }, [
                 Icons.get('copy'),
-                h('span.cp-button-name', Messages.profile_copyKey)
+                h('span.cp-button-name', Messages.copy)
             ])).click(function () {
                 Clipboard.copy(userHref, function (err) {
                     if (!err) { UI.log(Messages.genericCopySuccess); }
