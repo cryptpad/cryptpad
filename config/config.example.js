@@ -89,8 +89,9 @@ module.exports = {
 
 /*  httpSafePort purpose is to emulate another origin for the sandbox when
  *  you don't have two domains at hand (i.e. when httpSafeOrigin not defined).
- *  It is meant to be used only in case where you are working on a local 
+ *  It is meant to be used only in case where you are working on a local
  *  development instance. The default value is your httpPort + 1.
+ *  Setting this to 0 or setting httpSafeOrigin disables this listener.
  *
  */
     //httpSafePort: 3001,
@@ -103,7 +104,7 @@ module.exports = {
  *
  *  In production environments, your reverse proxy (usually NGINX)
  *  will need to forward websocket traffic (/cryptpad_websocket)
- *  to this port.
+ *  to this port - it cannot be disabled.
  *
  */
     // websocketPort: 3003,
