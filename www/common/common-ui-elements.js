@@ -3398,6 +3398,7 @@ define([
         if (priv.app === 'drive') { return; }
         if (!priv.channel) { return; }
         if (priv.app === 'form' && priv.readOnly && !priv.form_auditorHash && !priv.form_auditorKey) { return; }
+        if (priv.integration) { return; }
 
         var todo = function () {
             crowdfundingState = true;
