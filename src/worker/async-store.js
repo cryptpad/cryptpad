@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-const factory = (Sortify, UserObject, ProxyManager,
+const factory = (UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
                 Realtime, Messaging, Pinpad, Rpc, Cryptget, Cache,
                 SF, AccountTS, DriveTS, PadTS, Form, Cursor,
@@ -930,9 +930,9 @@ const factory = (Sortify, UserObject, ProxyManager,
                 toSign.drive = store.driveChannel;
                 toSign.edPublic = edPublic;
                 var signKey = Util.decodeBase64(store.proxy.edPrivate);
-                var proof = Crypto.Nacl.sign.detached(Util.decodeUTF8(Sortify(toSign)), signKey);
+                var proof = Crypto.Nacl.sign.detached(Util.decodeUTF8(Util.sortify(toSign)), signKey);
 
-                var check = Crypto.Nacl.sign.detached.verify(Util.decodeUTF8(Sortify(toSign)),
+                var check = Crypto.Nacl.sign.detached.verify(Util.decodeUTF8(Util.sortify(toSign)),
                     proof,
                     Util.decodeBase64(edPublic));
 
@@ -941,7 +941,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                 var proofTxt = Util.encodeBase64(proof);
                 cb({
                     proof: proofTxt,
-                    toSign: JSON.parse(Sortify(toSign))
+                    toSign: JSON.parse(Util.sortify(toSign))
                 });
             });
         };
@@ -3100,7 +3100,6 @@ const factory = (Sortify, UserObject, ProxyManager,
 };
 
 module.exports = factory(
-    require('json.sortify'),
     require('../common/user-object'),
     require('../common/proxy-manager'),
     require('./components/migrate-user-object'),

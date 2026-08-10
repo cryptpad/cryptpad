@@ -4,7 +4,6 @@
 
 define([
     'jquery',
-    'json.sortify',
     '/customize/login.js',
     '/common/cryptpad-common.js',
     //'/common/test.js',
@@ -21,7 +20,7 @@ define([
 
     '/components/tweetnacl/nacl-fast.min.js',
 
-], function ($, Sortify, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback,
+], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback,
     Clipboard, LocalStore, Block, ServerCommand) {
     if (window.top !== window) { return; }
 
@@ -77,7 +76,7 @@ define([
                 date: new Date().toISOString(),
                 blockId: Util.encodeBase64(pub),
             };
-            var proof = Nacl.sign.detached(Util.decodeUTF8(Sortify(toSign)), sec);
+            var proof = Nacl.sign.detached(Util.decodeUTF8(Util.sortify(toSign)), sec);
             toSign.proof = Util.encodeBase64(proof);
             proofStr = JSON.stringify(toSign, 0, 2);
             $mfaProof.html(proofStr);

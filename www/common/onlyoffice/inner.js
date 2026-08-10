@@ -5,7 +5,6 @@
 define([
     'jquery',
     '/common/toolbar.js',
-    'json.sortify',
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
@@ -36,7 +35,6 @@ define([
 ], function (
     $,
     Toolbar,
-    JSONSortify,
     nThen,
     SFCommon,
     UI,
@@ -80,10 +78,7 @@ define([
         console.debug(x, type);
     };
 
-    var stringify = function (obj) {
-        return JSONSortify(obj);
-    };
-
+    var stringify =  Util.sortify;
     var toolbar;
     var cursor;
 
