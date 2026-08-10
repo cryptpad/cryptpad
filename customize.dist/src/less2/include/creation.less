@@ -119,15 +119,16 @@
         .cp-creation-checkboxes {
             min-width: 300px;
             flex-flow: column;
-            align-items: baseline !important;
-            max-height: 150px;
-            min-height: 120px !important;
+            align-items: stretch !important;
+            max-height: 180px;
+            min-height: 140px !important;
             justify-content: space-evenly;
             flex: 1;
             & > div {
                 display: flex;
                 width: 100%;
                 max-width: 100%;
+                min-width: 0;
                 margin: auto;
                 text-align: left;
             }
@@ -258,40 +259,50 @@
             }
 
             .cp-creation-teams {
-                display: none !important;
-                .cp-creation-teams-grid {
-                    display: flex;
-                    flex-wrap: wrap;
-                    padding: 0 2px;
-                    flex: 1;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                min-width: 0;
+                width: 100%;
+                .cp-creation-store-label,
+                .cp-creation-help {
+                    flex: none;
                 }
-                .cp-creation-team {
-                    .avatar_main(25px);
-                    width: 140px;
-                    height: 35px;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    padding: 5px;
-                    cursor: default;
-                    font: @colortheme_app-font;
-                    margin: 0 1px;
-
-                    .tools_unselectable();
-
-                    &.cp-selected {
-                        background-color: @cp_creation-button-bg;
-                        color: @cp_creation-button-fg;
-                    }
-                    .cp-creation-team-name {
-                        overflow: hidden;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
+                .cp-dropdown-container {
+                    flex: 1 1 0;
+                    width: 0;
+                    min-width: 0;
+                    display: block;
+                    button.btn {
                         width: 100%;
-                        text-align: center;
-                        line-height: 18px;
+                        max-width: 100%;
+                        box-sizing: border-box;
+                        justify-content: flex-start;
+                        text-align: left;
+                        overflow: hidden;
+                        .cp-dropdown-button-title {
+                            flex: 1 1 0;
+                            min-width: 0;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            text-align: left;
+                        }
                     }
-                    border: 1px solid @cp_creation-button-bg;
+                    .cp-dropdown-content {
+                        left: 0;
+                        right: 0;
+                        width: auto;
+                        min-width: 0;
+                        max-width: 100%;
+                        overflow-x: hidden;
+                        li[role="menuitem"] > a {
+                            display: block;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    }
                 }
             }
 

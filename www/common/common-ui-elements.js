@@ -2810,56 +2810,65 @@ define([
             ));
         }
 
-        // Team pad
-        var team;
-        // FIXME: broken wen cache is enabled
-        var teamExists = privateData.teams && Object.keys(privateData.teams).length;
-        var teamValue;
+        // Store location: CryptDrive, team drives, or nowhere
         // storeInTeam can be
         // * a team ID ==> store in the team drive, and the team will be the owner
         // * -1 ==> store in the user drive, and the user will be the owner
-        // * undefined ==> ask
-        if (teamExists) {
-            var teams = Object.keys(privateData.teams).map(function (id) {
-                var data = privateData.teams[id];
-                var avatar = h('span.cp-creation-team-avatar.cp-avatar');
-                // We assume that teams always have a non-empty name, so we don't need a UID
-                common.displayAvatar($(avatar), data.avatar, data.name);
-                return h('div.cp-creation-team', {
-                    'data-id': id,
-                    title: data.name,
-                },[
-                    avatar,
-                    h('span.cp-creation-team-name', data.name)
-                ]);
+        // * none ==> do not store
+        var teamValue = privateData.storeInTeam != null ? String(privateData.storeInTeam) : '-1';
+        var getStoreLabel = function (val) {
+            if (val === '-1') { return Messages.settings_cat_drive; }
+            if (!val || val === 'none') { return Messages.autostore_hide; }
+            var teamData = privateData.teams && privateData.teams[val];
+            return (teamData && teamData.name) || val;
+        };
+        var storeOptions = [{
+            tag: 'a',
+            attributes: { 'data-value': '-1' },
+            content: [Messages.settings_cat_drive]
+        }];
+        Object.keys(privateData.teams || {}).forEach(function (id) {
+            var data = privateData.teams[id];
+            if (!data) { return; }
+            storeOptions.push({
+                tag: 'a',
+                attributes: { 'data-value': id },
+                content: [data.name]
             });
-            teams.unshift(h('div.cp-creation-team', {
-                'data-id': '-1',
-                title: Messages.settings_cat_drive
-            }, [
-                h('span.cp-creation-team-avatar', Icons.get('drive')),
-                h('span.cp-creation-team-name', Messages.settings_cat_drive)
-            ]));
-            team = h('div.cp-creation-teams', [
-                Messages.team_pcsSelectLabel,
-                h('div.cp-creation-teams-grid', teams),
-                createHelper('#', Messages.team_pcsSelectHelp)
-            ]);
-            var $team = $(team);
-            $team.find('.cp-creation-team').click(function () {
-                if ($(this).hasClass('cp-selected')) {
-                    teamValue = undefined;
-                    return void $(this).removeClass('cp-selected');
-                }
-                $team.find('.cp-creation-team').removeClass('cp-selected');
-                $(this).addClass('cp-selected');
-                teamValue = $(this).attr('data-id');
-            });
-            if (privateData.storeInTeam) {
-                $team.find('[data-id="'+privateData.storeInTeam+'"]').addClass('cp-selected');
-                teamValue = privateData.storeInTeam;
-            }
-        }
+        });
+        storeOptions.push({
+            tag: 'a',
+            attributes: { 'data-value': 'none' },
+            content: [Messages.autostore_hide]
+        });
+        var $storeDropdown = UIElements.createDropdown({
+            text: getStoreLabel(teamValue),
+            options: storeOptions,
+            isSelect: true,
+            caretDown: true,
+            initialValue: teamValue,
+            buttonTitle: getStoreLabel(teamValue),
+            common: common
+        });
+        var $storeBtn = $storeDropdown.find('button');
+        $storeBtn.addClass('btn');
+        $storeDropdown.setValue(teamValue, getStoreLabel(teamValue), true);
+        var updateStoreTitle = function (label) {
+            var btn = $storeBtn[0];
+            if (btn && btn._tippy) { btn._tippy.destroy(); }
+            $storeBtn.find('.cp-dropdown-button-title').removeAttr('title');
+            $storeBtn.attr('title', label);
+        };
+        updateStoreTitle(getStoreLabel(teamValue));
+        $storeDropdown.onChange.reg(function (text, value) {
+            teamValue = (value === undefined || value === null) ? 'none' : String(value);
+            updateStoreTitle(text || getStoreLabel(teamValue));
+        });
+        var team = h('div.cp-creation-teams', [
+            h('span.cp-creation-store-label', Messages.team_pcsSelectLabel),
+            $storeDropdown[0],
+            createHelper('#', Messages.team_pcsSelectHelp)
+        ]);
 
 
         // Owned pads
@@ -3140,11 +3149,17 @@ define([
             var $template = $creation.find('.cp-creation-template-selected');
             var templateId = $template.data('id') || undefined;
             var templateContent = $template.data('content') || undefined;
-            // Team
+            // Team / drive storage
+            // -1 ==> own CryptDrive; team id ==> team drive; none ==> nowhere
             var team;
-            if (teamValue) {
-                team = privateData.teams[teamValue] || {};
-                team.id = Number(teamValue);
+            if (teamValue === '-1') {
+                team = { id: -1 };
+            } else if (teamValue && teamValue !== 'none') {
+                var selectedTeam = privateData.teams[teamValue] || {};
+                team = {
+                    id: Number(teamValue),
+                    edPublic: selectedTeam.edPublic
+                };
             }
 
             return {

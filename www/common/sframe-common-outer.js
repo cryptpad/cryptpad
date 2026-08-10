@@ -2492,6 +2492,8 @@ define([
 
                 if (data.team) {
                     Cryptpad.initialTeam = data.team.id;
+                } else {
+                    delete Cryptpad.initialTeam;
                 }
                 if (data.owned && data.team && data.team.edPublic) {
                     rtConfig.metadata.owners = [data.team.edPublic];
