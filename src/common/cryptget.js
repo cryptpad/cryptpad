@@ -83,7 +83,7 @@ const factory = (Crypto, CPNetflux, Netflux, Util,
         var config = {
             websocketURL: NetConfig.getWebsocketURL(opt.origin),
             channel: secret.channel,
-            validateKey: secret.keys.validateKey || undefined,
+            validateKey: secret.keys?.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
             logLevel: 0,
             initialState: opt.initialState,

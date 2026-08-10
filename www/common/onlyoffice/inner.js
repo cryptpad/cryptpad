@@ -1031,12 +1031,16 @@ define([
                 loadLastDocument(currentCp)
                 .then(({blob, fileType}) => {
                     ooChannel.queue = messages.slice(0, minor);
-                    console.error(ooChannel.queue.slice());
                     resetData(blob, fileType, currentCp);
                     UI.removeLoadingScreen();
                 })
                 .catch(() => {
-                    if (currentCp.hash && vHashEl) {
+                    if (APP.isDownload && currentCp?.file) {
+                        return void sframeChan.event('EV_OOIFRAME_DONE', {
+                            error: 'INVALID'
+                        });
+                    }
+                    if (currentCp?.file && currentCp.hash && vHashEl) {
                         // We requested a checkpoint but we can't find it...
                         UI.removeLoadingScreen();
                         vHashEl.innerText = Messages.oo_deletedVersion;
@@ -3178,6 +3182,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }
             content = json.content;
             readOnly = true;
+            if (!content.version || content.version <= 7) {
+                return void sframeChan.event('EV_OOIFRAME_DONE', {
+                    error: 'MIGRATE'
+                });
+            }
             var version = (!content.version || content.version === 1) ? 'v1/' :
                           (content.version <= 3 ? 'v2b/' : OOCurrentVersion.currentVersion + '/');
             $('#cp-app-oo-editor').empty().append(h('div#cp-app-oo-placeholder-a'));
@@ -3192,6 +3201,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             // minor version of 0. "openVersionHash" knows that it needs to give us the latest
             // version when "APP.isDownload" is true.
             var sheetVersion = lastIndex + '.0';
+            ooLoaded = false;
             openVersionHash(sheetVersion);
         });
 
