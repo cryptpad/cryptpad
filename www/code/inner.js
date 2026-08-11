@@ -522,7 +522,7 @@ define([
             mkHelpMenu(framework);
         }
 
-        var nativePrint = window.print.bind(window);
+        var nativePrint = window.print;
 
         var printFullContent = function () {
             var $print = $('#cp-app-code-print');
@@ -533,7 +533,7 @@ define([
         };
 
         window.addEventListener('keydown', function (e) {
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p' && privateData.isEmbed) {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p' && privateData.isPresent) {
                 e.preventDefault();
                 printFullContent();
             }
