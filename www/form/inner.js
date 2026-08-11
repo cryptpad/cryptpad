@@ -137,7 +137,6 @@ define([
     window.print = printFullContent;
 
     window.addEventListener('keydown', function (e) {
-        console.log("app", APP)
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
             e.preventDefault();
             printFullContent();
