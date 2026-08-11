@@ -2810,19 +2810,19 @@ define([
             ));
         }
 
-        // Store location: CryptDrive, team drives, or nowhere
+        // Team pad
         // storeInTeam can be
         // * a team ID ==> store in the team drive, and the team will be the owner
         // * -1 ==> store in the user drive, and the user will be the owner
-        // * none ==> do not store
-        var teamValue = privateData.storeInTeam !== null ? String(privateData.storeInTeam) : '-1';
-        var getStoreLabel = function (val) {
+        // * undefined ==> ask (CryptDrive / team / don't store); default CryptDrive
+        var team;
+        var teamValue = privateData.storeInTeam != null ? String(privateData.storeInTeam) : '-1';
+        var getTeamLabel = function (val) {
             if (val === '-1') { return Messages.settings_cat_drive; }
             if (!val || val === 'none') { return Messages.autostore_hide; }
-            var teamData = privateData.teams && privateData.teams[val];
-            return (teamData && teamData.name) || val;
+            return privateData.teams?.[val]?.name || val;
         };
-        var storeOptions = [{
+        var teamOptions = [{
             tag: 'a',
             attributes: { 'data-value': '-1' },
             content: [Messages.settings_cat_drive]
@@ -2830,43 +2830,39 @@ define([
         Object.keys(privateData.teams || {}).forEach(function (id) {
             var data = privateData.teams[id];
             if (!data) { return; }
-            storeOptions.push({
+            teamOptions.push({
                 tag: 'a',
                 attributes: { 'data-value': id },
                 content: [data.name]
             });
         });
-        storeOptions.push({
+        teamOptions.push({
             tag: 'a',
             attributes: { 'data-value': 'none' },
             content: [Messages.autostore_hide]
         });
-        var $storeDropdown = UIElements.createDropdown({
-            text: getStoreLabel(teamValue),
-            options: storeOptions,
+        var $teamSelect = UIElements.createDropdown({
+            text: getTeamLabel(teamValue),
+            options: teamOptions,
             isSelect: true,
             caretDown: true,
             initialValue: teamValue,
-            buttonTitle: getStoreLabel(teamValue),
+            buttonTitle: getTeamLabel(teamValue),
             common: common
         });
-        var $storeBtn = $storeDropdown.find('button');
-        $storeBtn.addClass('btn');
-        $storeDropdown.setValue(teamValue, getStoreLabel(teamValue), true);
-        var updateStoreTitle = function (label) {
-            var btn = $storeBtn[0];
-            if (btn && btn._tippy) { btn._tippy.destroy(); }
-            $storeBtn.find('.cp-dropdown-button-title').removeAttr('title');
-            $storeBtn.attr('title', label);
+        var $teamBtn = $teamSelect.find('button').addClass('btn');
+        var setTeamTitle = function (label) {
+            $teamBtn[0]?._tippy?.destroy();
+            $teamBtn.attr('title', label).find('.cp-dropdown-button-title').removeAttr('title');
         };
-        updateStoreTitle(getStoreLabel(teamValue));
-        $storeDropdown.onChange.reg(function (text, value) {
-            teamValue = (value === undefined || value === null) ? 'none' : String(value);
-            updateStoreTitle(text || getStoreLabel(teamValue));
+        setTeamTitle(getTeamLabel(teamValue));
+        $teamSelect.onChange.reg(function (text, value) {
+            teamValue = value == null ? 'none' : String(value);
+            setTeamTitle(text || getTeamLabel(teamValue));
         });
-        var team = h('div.cp-creation-teams', [
+        team = h('div.cp-creation-teams', [
             h('span.cp-creation-store-label', Messages.team_pcsSelectLabel),
-            $storeDropdown[0],
+            $teamSelect[0],
             createHelper('#', Messages.team_pcsSelectHelp)
         ]);
 
