@@ -2815,7 +2815,7 @@ define([
         // * a team ID ==> store in the team drive, and the team will be the owner
         // * -1 ==> store in the user drive, and the user will be the owner
         // * none ==> do not store
-        var teamValue = privateData.storeInTeam != null ? String(privateData.storeInTeam) : '-1';
+        var teamValue = privateData.storeInTeam !== null ? String(privateData.storeInTeam) : '-1';
         var getStoreLabel = function (val) {
             if (val === '-1') { return Messages.settings_cat_drive; }
             if (!val || val === 'none') { return Messages.autostore_hide; }
