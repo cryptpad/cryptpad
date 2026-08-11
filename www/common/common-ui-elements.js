@@ -3149,17 +3149,11 @@ define([
             var $template = $creation.find('.cp-creation-template-selected');
             var templateId = $template.data('id') || undefined;
             var templateContent = $template.data('content') || undefined;
-            // Team / drive storage
-            // -1 ==> own CryptDrive; team id ==> team drive; none ==> nowhere
+            // Team
             var team;
-            if (teamValue === '-1') {
-                team = { id: -1 };
-            } else if (teamValue && teamValue !== 'none') {
-                var selectedTeam = privateData.teams[teamValue] || {};
-                team = {
-                    id: Number(teamValue),
-                    edPublic: selectedTeam.edPublic
-                };
+            if (teamValue && teamValue !== 'none') {
+                team = privateData.teams[teamValue] || {};
+                team.id = Number(teamValue);
             }
 
             return {
