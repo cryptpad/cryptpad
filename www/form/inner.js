@@ -128,23 +128,16 @@ define([
         return cancelBlock;
     };
 
-    var nativePrint = window.print.bind(window);
+    var nativePrint = window.print;
 
     var printFullContent = function () {
-
-        var restore = function () {
-            window.onafterprint = null;
-        };
-
-        window.onafterprint = restore;
-        setTimeout(restore, 60000);
-
         setTimeout(function () { nativePrint(); }, 50);
     };
 
     window.print = printFullContent;
 
     window.addEventListener('keydown', function (e) {
+        console.log("app", APP)
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
             e.preventDefault();
             printFullContent();
