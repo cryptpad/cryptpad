@@ -34,8 +34,6 @@ const factory = (Util, Hash, Realtime) => {
 
         var debug = exp.debug;
 
-        let missingRtChannel = {};
-
         exp._setReadOnly = function (state) {
             readOnly = state;
             if (!readOnly) { exp.fixFiles(); }
@@ -888,10 +886,6 @@ const factory = (Util, Hash, Realtime) => {
                         // toClean.push(id);
                     }
 
-                    if (!el.linked && ['sheet', 'doc', 'presentation'].includes(parsed.type) && !el.rtChannel) {
-                        missingRtChannel[el.channel] = el;
-                    }
-
                     if ((loggedIn || config.testMode) && rootFiles.indexOf(id) === -1) {
                         debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", id, el);
                         var newName = Hash.createChannelId();
@@ -998,20 +992,6 @@ const factory = (Util, Hash, Realtime) => {
                 return;
             }
             debug("File system was clean.", ms);
-        };
-
-        exp.getMissingRtChannel = () => {
-            const channels = missingRtChannel;
-            missingRtChannel = {};
-            if (readOnly) { return; }
-            if (!Object.keys(channels).length) { return; }
-            return channels;
-        };
-
-        exp.findMissingRtChannel = () => {
-            missingRtChannel = {};
-            exp.fixFiles();
-            return exp.getMissingRtChannel();
         };
 
         return exp;

@@ -664,39 +664,6 @@ const factory = (Sortify, UserObject, ProxyManager,
             };
         };
 
-        const getRtChannelFromPad = (data, cb) => {
-            const opts = {
-                network: store.network
-            };
-            const href = data.href || data.roHref;
-
-            let pws = Array.isArray(data.password) ? data.password
-                                                   : [data.password];
-            pws = pws.filter(Boolean);
-            let i = 0;
-            let l = pws.length;
-
-            const parsed = Hash.parsePadUrl(href);
-            const check = password => {
-                opts.password = password;
-                Cryptget.get(parsed.hash, (err, content) => {
-                    if (err) {
-                        if (i >= l) {
-                            return void cb(err);
-                        }
-                        return check(pws[i++]);
-                    }
-                    const p = Util.tryParse(content);
-                    const rtChannel = p?.content?.channel;
-                    if (!rtChannel) { return void cb('NO_CHAN'); }
-                    cb(void 0, rtChannel);
-                }, opts);
-            };
-
-            check(pws[i++]);
-
-        };
-
         Store.addPad = function (clientId, data, cb) {
             if (!data.href && !data.roHref) { return void cb({error:'NO_HREF'}); }
             var secret;
@@ -722,36 +689,18 @@ const factory = (Sortify, UserObject, ProxyManager,
             var s = getStore(data.teamId);
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
 
-            const add = Util.once(() => {
-                s.manager.addPad(data.path, pad, function (e) {
-                    if (e) { return void cb({error: e}); }
-                    // Send a CHANGE events to all the teams because we may have just
-                    // added a pad to a shared folder stored in multiple teams
-                    getAllStores().forEach(function (_s) {
-                        var send = _s.id ? _s.sendEvent : sendDriveEvent;
-                        send('DRIVE_CHANGE', {
-                            path: ['drive', UserObject.FILES_DATA]
-                        }, clientId);
-                    });
-                    onSync(data.teamId, cb);
+            s.manager.addPad(data.path, pad, function (e) {
+                if (e) { return void cb({error: e}); }
+                // Send a CHANGE events to all the teams because we may have just
+                // added a pad to a shared folder stored in multiple teams
+                getAllStores().forEach(function (_s) {
+                    var send = _s.id ? _s.sendEvent : sendDriveEvent;
+                    send('DRIVE_CHANGE', {
+                        path: ['drive', UserObject.FILES_DATA]
+                    }, clientId);
                 });
+                onSync(data.teamId, cb);
             });
-
-            if (['doc', 'sheet', 'presentation'].includes(parsed.type)) {
-                if (!pad.rtChannel && !pad.linked) {
-                    return getRtChannelFromPad(pad, (err, rtChannel) => {
-                        const key = 'ADDPAD_NO_RT_CHANNEL' ;
-                        if (!err) {
-                            Feedback.send(key, true);
-                            pad.rtChannel = rtChannel;
-                        } else {
-                            Feedback.send(`${key}_ERROR`, true);
-                        }
-                        add();
-                    });
-                }
-            }
-            add();
         };
 
         var getOwnedPads = function (account) {
@@ -2270,93 +2219,6 @@ const factory = (Sortify, UserObject, ProxyManager,
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
-        Store.fixMissingRtChannelInterval = (list, cb) => {
-            // "list" is an array containing bugged data for each user object
-            // of this proxy-manager
-
-            let n = nThen;
-            list.forEach(obj => {
-                Object.keys(obj).forEach(chan => {
-                    n = n(waitFor => {
-                        const proxy = obj[chan];
-                        const data = Util.clone(proxy);
-                        getRtChannelFromPad(data, waitFor((err, rtChannel) => {
-                            if (err) { return; }
-                            Feedback.send(`FIX_RT_CHANNEL_INTERVAL`, true);
-                            proxy.rtChannel = rtChannel;
-                        }));
-                    }).nThen;
-                });
-            });
-            n(() => {
-                setTimeout(cb);
-            });
-        };
-        Store.fixMissingRtChannel = (cb) => {
-            const all = {};
-            const addMissing = (missing) => {
-                missing.forEach(obj => {
-                    const readOnly = !!obj._readOnly;
-                    delete obj._readOnly;
-                    Object.keys(obj).forEach(chan => {
-                        if (readOnly) { return; }
-                        let proxy = obj[chan];
-                        let href = proxy.roHref || proxy.href;
-                        const data = all[chan] ||= {
-                            href,
-                            password: [],
-                            list: []
-                        };
-                        if (proxy.password && !data.password.includes(proxy.password)) {
-                            data.password.push(proxy.password);
-                        }
-                        data.list.push(proxy);
-                    });
-                });
-            };
-
-            try {
-                const mine = store.manager.getMissingRtChannel();
-                addMissing(mine);
-            } catch (e) {
-                return setTimeout(cb);
-            }
-            const teamsId = store.modules?.team?.getTeams() || [];
-            teamsId.forEach(id => {
-                const team = store.modules.team.getTeam(id);
-                try {
-                const teamMissing = team.manager.getMissingRtChannel();
-                    addMissing(teamMissing);
-                } catch (e) {
-                    return setTimeout(cb);
-                }
-            });
-
-            let n = nThen;
-            Object.keys(all).forEach(chan => {
-                n = n(waitFor => {
-                    const data = all[chan];
-                    getRtChannelFromPad(data, waitFor((err, rtChannel) => {
-                        if (err) {
-                            // TODO: add a flag to the proxy to avoid checking
-                            // this document again (at least until the proxy.password
-                            // has changed)
-                            // Bonus: we can also tell the user that some documents
-                            // are unavailable
-                            return;
-                        }
-                        Feedback.send(`MISSING_RT_CHANNEL_FIXED`, true);
-                        data.list.forEach(proxy => {
-                            proxy.rtChannel = rtChannel;
-                        });
-                    }));
-                }).nThen;
-            });
-            n(() => {
-                setTimeout(cb);
-            });
-        };
-
         Store.refreshDriveUI = function () {
             getAllStores().forEach(function (_s) {
                 var send = _s.id ? _s.sendEvent : sendDriveEvent;
@@ -2511,8 +2373,6 @@ const factory = (Sortify, UserObject, ProxyManager,
                     // Make teams non-blocking
                     if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 });
-            }).nThen(function (waitFor) {
-                Store.fixMissingRtChannel(waitFor());
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
