@@ -1435,9 +1435,8 @@ const factory = (UserObject, Util, Hash,
             if (!missing || uo.readOnly) { return; }
             Object.keys(missing).forEach(chan => {
                 let obj = missing[chan];
-                if (!obj.channel) { return; }
-                all[obj.channel] ||= [];
-                all[obj.channel].push(obj);
+                all[chan] ||= [];
+                all[chan].push(obj);
             });
         });
         return all;

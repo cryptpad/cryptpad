@@ -707,6 +707,8 @@ const factory = (Sortify, UserObject, ProxyManager,
                         });
                     }
 
+                    Feedback.send(`ADD_MISSING_LINKED_DATA:${chan}`, true);
+
                     // Send RESET cmd
                     store.modules['linked-doc'].checkCurrentDoc({
                         channel: chan,
