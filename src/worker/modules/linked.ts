@@ -150,6 +150,9 @@ const LinkedDoc: LinkedDocModule<ModuleObject> = {
                 }
                 cb();
             },
+            checkCurrentDoc: (data, cb) => {
+                checkCurrentDoc(ctx, data, null, cb);
+            }
         }
     },
     setCustomize: data => {

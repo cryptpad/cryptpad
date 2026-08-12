@@ -1427,6 +1427,22 @@ const factory = (UserObject, Util, Hash,
         });
     };
 
+    const getMissingLinkedData = (Env) => {
+        const userObjects = _getUserObjects(Env);
+        const all = {};
+        userObjects.forEach(function (uo) {
+            const missing = uo.getMissingLinkedData();
+            if (!missing || uo.readOnly) { return; }
+            Object.keys(missing).forEach(chan => {
+                let obj = missing[chan];
+                if (!obj.channel) { return; }
+                all[obj.channel] ||= [];
+                all[obj.channel].push(obj);
+            });
+        });
+        return all;
+    };
+
     var create = function (proxy, data, uoConfig) {
         var Env = {
             pinPads: data.pin,
@@ -1495,6 +1511,8 @@ const factory = (UserObject, Util, Hash,
             getEditHash: callWithEnv(getEditHash),
             user: Env.user,
             folders: Env.folders,
+            // Fix rtChannel
+            getMissingLinkedData: callWithEnv(getMissingLinkedData)
         };
     };
 

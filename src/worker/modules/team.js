@@ -363,6 +363,8 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                     progress: ctx.progress
                 });
             });
+        }).nThen(function (waitFor) {
+            ctx.Store.fixMissingLinkedData(team, waitFor());
         }).nThen(function () {
             if (!team.rpc) { return; }
             var list = getTeamChannelList(ctx, true, id);

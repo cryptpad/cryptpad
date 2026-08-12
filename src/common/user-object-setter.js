@@ -34,6 +34,8 @@ const factory = (Util, Hash, Realtime) => {
 
         var debug = exp.debug;
 
+        let missingLinkedData = {};
+
         exp._setReadOnly = function (state) {
             readOnly = state;
             if (!readOnly) { exp.fixFiles(); }
@@ -886,6 +888,13 @@ const factory = (Util, Hash, Realtime) => {
                         // toClean.push(id);
                     }
 
+                    if (el.linked && el.atime < 1786572000000 && !el.fixedLinked) { // cryptpad.fr fix
+                        missingLinkedData[el.channel] = {
+                            proxy: el,
+                            href: exp.getHref(el)
+                        };
+                    }
+
                     if ((loggedIn || config.testMode) && rootFiles.indexOf(id) === -1) {
                         debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", id, el);
                         var newName = Hash.createChannelId();
@@ -992,6 +1001,13 @@ const factory = (Util, Hash, Realtime) => {
                 return;
             }
             debug("File system was clean.", ms);
+        };
+
+        exp.getMissingLinkedData = () => {
+            const channels = missingLinkedData;
+            if (readOnly) { return; }
+            if (!Object.keys(channels).length) { return; }
+            return channels;
         };
 
         return exp;

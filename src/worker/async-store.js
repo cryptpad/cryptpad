@@ -664,6 +664,62 @@ const factory = (Sortify, UserObject, ProxyManager,
             };
         };
 
+        const addLinkedDataFromPad = (data, cb) => {
+            const opts = {
+                network: store.network
+            };
+            const { chan, href, pws } = data;
+
+            let i = 0;
+            let l = pws.length;
+
+            const parsed = Hash.parsePadUrl(href);
+            const check = password => {
+                opts.password = password;
+                Cryptget.get(parsed.hash, (err, contentStr) => {
+                    if (err) {
+                        if (i >= l) { return void cb('INVALID_PASSWORD'); }
+                        return check(pws[i++]);
+                    }
+                    const content = Util.tryParse(contentStr)?.content;
+                    const secret = Hash.getSecrets('pad', parsed.hash, password);
+
+                    // Compute expected JSON
+                    const value = {
+                        checkpoints: []
+                    };
+                    let hashes = content.hashes || {}; // checkpoints
+                    let sortedCp = Object.keys(hashes).map(Number).sort((a, b) => a-b).slice(-10);
+                    sortedCp.forEach(cpIdx => {
+                        const cpData = hashes[cpIdx];
+                        let parsed = Hash.parsePadUrl(cpData.file);
+                        let secret = Hash.getSecrets('file', parsed.hash);
+                        if (!secret.channel) { return; }
+                        value.checkpoints.push({
+                            blob: secret.channel,
+                            rtChannel: cpData.rtChannel || content.channel
+                        });
+                    });
+                    if (sortedCp.length < 10 && content.channel) {
+                        value.checkpoints.unshift({
+                            blob: 0,
+                            rtChannel: content.channel
+                        });
+                    }
+
+                    // Send RESET cmd
+                    store.modules['linked-doc'].checkCurrentDoc({
+                        channel: chan,
+                        expectedJSON: value,
+                        signKey64: secret.keys?.signKey
+                    }, cb);
+                }, opts);
+            };
+
+            check(pws[i++]);
+
+        };
+
         Store.addPad = function (clientId, data, cb) {
             if (!data.href && !data.roHref) { return void cb({error:'NO_HREF'}); }
             var secret;
@@ -2219,6 +2275,35 @@ const factory = (Sortify, UserObject, ProxyManager,
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        Store.fixMissingLinkedData = (s, _cb) => {
+            const cb = Util.once(Util.mkAsync(_cb));
+            try {
+                let n = nThen;
+                const missing = s.manager.getMissingLinkedData();
+                Object.keys(missing).forEach(chan => {
+                    n = n(waitFor => {
+                        const list = missing[chan];
+                        let href;
+                        list.some(obj => {
+                            if (!obj.href) { return; }
+                            href = obj.href;
+                            return true;
+                        });
+                        let pws = Util.deduplicateString(list.map(obj => obj.proxy.password).filter(Boolean));
+                        pws.unshift('');
+                        if (!href) { return; }
+                        addLinkedDataFromPad({ chan, href, pws }, waitFor((err) => {
+                            if (err) { return; }
+                            list.forEach(obj => { obj.proxy.fixedLinked = 1; });
+                        }));
+                    }).nThen;
+                });
+                n(() => { cb(); });
+            } catch(e) {
+                cb();
+            }
+        };
+
         Store.refreshDriveUI = function () {
             getAllStores().forEach(function (_s) {
                 var send = _s.id ? _s.sendEvent : sendDriveEvent;
@@ -2373,6 +2458,8 @@ const factory = (Sortify, UserObject, ProxyManager,
                     // Make teams non-blocking
                     if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 });
+            }).nThen(function (waitFor) {
+                Store.fixMissingLinkedData(store, waitFor());
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
