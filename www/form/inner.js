@@ -4913,20 +4913,53 @@ define([
                 if (!APP.isEditor) { return false; }
                 return true;
             };
-            var warnGuestAuthorThen = function (then) {
+            var showGuestPublicLinkModal = function () {
+                sframeChan.query('Q_GET_VIEW_URL', null, function (urlErr, viewUrl) {
+                    if (urlErr || !viewUrl) { return; }
+                    var linkInput = UI.dialog.selectableArea(viewUrl, {
+                        id: 'cp-form-guest-public-link',
+                        rows: 2,
+                        'aria-label': Messages.form_guestPublicTitle
+                    });
+                    var content = h('div', [
+                        h('h4', Messages.form_guestPublicTitle),
+                        h('p', Messages.form_guestPublicBody),
+                        linkInput
+                    ]);
+                    var frame;
+                    var modal = UI.dialog.customModal(content, {
+                        buttons: [{
+                            className: 'primary',
+                            name: Messages.share_linkCopy,
+                            iconClass: 'copy',
+                            onClick: function () {
+                                Clipboard.copy(viewUrl, function (copyErr) {
+                                    if (!copyErr) {
+                                        UI.log(Messages.shareSuccess);
+                                        frame.closeModal();
+                                    } else {
+                                        UI.warn(Messages.error);
+                                    }
+                                });
+                                return true;
+                            },
+                            keys: [13]
+                        }]
+                    });
+                    frame = UI.openCustomModal(modal);
+                });
+            };
+            var warnGuestAuthorThen = function (then, opt) {
+                opt = opt || {};
                 if (!shouldWarnGuestAuthor()) { return void then(); }
 
                 framework._.sfCommon.isPadStored(function (err, stored) {
                     sframeChan.query('Q_GET_EDIT_URL', null, function (urlErr, editUrl) {
                         if (urlErr || !editUrl) { return void then(); }
 
-                        var hasGuestDrive = Boolean(metadataMgr.getPrivateData().driveChannel);
                         var bodyMsg = Messages.form_guestAuthorBody;
                         if (stored) {
                             bodyMsg = Messages.form_guestAuthorBodyStored;
-                        } else if (hasGuestDrive) {
-                            // Drive exists but this form was not saved
-                            bodyMsg = Messages.form_guestAuthorBodyUnstored;
                         }
                         var linkInput = UI.dialog.selectableArea(editUrl, {
                             id: 'cp-form-guest-author-link',
@@ -4948,12 +4981,12 @@ define([
                                         if (!copyErr) { UI.log(Messages.form_guestAuthorCopied); }
                                         else { UI.warn(Messages.error); }
                                     });
-                                    return true; // keep modal open
+                                    return true;
                                 },
                                 keys: []
                             }, {
                                 className: 'primary',
-                                name: Messages.continue,
+                                name: opt.publicLinkFlow ? Messages.form_guestAuthorContinuePublic : Messages.continue,
                                 onClick: function () {
                                     then();
                                 },
@@ -4971,12 +5004,14 @@ define([
                 });
             });
             $(participantBtn).click(function () {
-                warnGuestAuthorThen(function () {
+                if (!shouldWarnGuestAuthor()) {
                     sframeChan.query('Q_COPY_VIEW_URL', null, function (err, success) {
                         if (success) { return void UI.log(Messages.shareSuccess); }
                         UI.warn(Messages.error);
                     });
-                });
+                    return;
+                }
+                warnGuestAuthorThen(showGuestPublicLinkModal, { publicLinkFlow: true });
             });
 
             // Private / public status

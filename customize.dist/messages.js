@@ -158,11 +158,14 @@ define(req, function(AppConfig, Default, Language) {
     };
 
     // XXX
-    Messages.form_guestAuthorTitle = "Save your author link";
-    Messages.form_guestAuthorBody = "You are not logged in. CryptPad cannot recover your author link if you lose it.";
-    Messages.form_guestAuthorBodyUnstored = "This form is not in your guest drive. Store it there or copy your author link. CryptPad cannot recover it if you lose it.";
-    Messages.form_guestAuthorBodyStored = "This form is in your guest drive on this browser only. Copy and save your author link before continuing.";
+    Messages.form_guestAuthorTitle = "Save your author link before sharing";
+    Messages.form_guestEditLinkDefinition = "This form's author link is the private link to modify questions and read responses.";
+    Messages.form_guestAuthorBody = "This author link is currently not stored anywhere since you are not logged in. To avoid loosing access in future please save this link now:.";
+    Messages.form_guestAuthorBodyStored = "This author link is currently only stored on this device, please save it  to avoid loosing access to your form.";
     Messages.form_guestAuthorCopied = "Author link copied";
+    Messages.form_guestAuthorContinuePublic = "Continue to public link";
+    Messages.form_guestPublicTitle = "Copy your public link";
+    Messages.form_guestPublicBody = "Share this link with participants so they can fill out your form.";
     return Messages;
 
 });
