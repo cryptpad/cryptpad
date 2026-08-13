@@ -688,7 +688,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                     const value = {
                         checkpoints: []
                     };
-                    let hashes = content.hashes || {}; // checkpoints
+                    let hashes = content?.hashes || {}; // checkpoints
                     let sortedCp = Object.keys(hashes).map(Number).sort((a, b) => a-b).slice(-10);
                     sortedCp.forEach(cpIdx => {
                         const cpData = hashes[cpIdx];
@@ -713,7 +713,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                     store.modules['linked-doc'].checkCurrentDoc({
                         channel: chan,
                         expectedJSON: value,
-                        signKey64: secret.keys?.signKey
+                        signKey64: secret?.keys?.signKey
                     }, cb);
                 }, opts);
             };
