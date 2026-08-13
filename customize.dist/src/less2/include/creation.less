@@ -297,10 +297,27 @@
                         max-width: 100%;
                         overflow-x: hidden;
                         li[role="menuitem"] > a {
-                            display: block;
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
                             overflow: hidden;
-                            text-overflow: ellipsis;
-                            white-space: nowrap;
+                            .cp-creation-team-avatar {
+                                .avatar_main(20px);
+                                flex: none;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                svg, .lucide {
+                                    margin: 0;
+                                }
+                            }
+                            .cp-creation-team-name {
+                                flex: 1 1 0;
+                                min-width: 0;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                            }
                         }
                     }
                 }

@@ -2825,21 +2825,23 @@ define([
         var teamOptions = [{
             tag: 'a',
             attributes: { 'data-value': '-1' },
-            content: [Messages.settings_cat_drive]
+            content: [h('span.cp-creation-team-avatar', Icons.get('drive')), h('span.cp-creation-team-name', Messages.settings_cat_drive)]
         }];
         Object.keys(privateData.teams || {}).forEach(function (id) {
             var data = privateData.teams[id];
             if (!data) { return; }
+            var avatar = h('span.cp-creation-team-avatar.cp-avatar');
+            common.displayAvatar($(avatar), data.avatar, data.name);
             teamOptions.push({
                 tag: 'a',
                 attributes: { 'data-value': id },
-                content: [data.name]
+                content: [avatar, h('span.cp-creation-team-name', data.name)]
             });
         });
         teamOptions.push({
             tag: 'a',
             attributes: { 'data-value': 'none' },
-            content: [Messages.autostore_hide]
+            content: [h('span.cp-creation-team-avatar', Icons.get('close')), h('span.cp-creation-team-name', Messages.autostore_hide)]
         });
         var $teamSelect = UIElements.createDropdown({
             text: getTeamLabel(teamValue),
@@ -2858,12 +2860,14 @@ define([
         setTeamTitle(getTeamLabel(teamValue));
         $teamSelect.onChange.reg(function (text, value) {
             teamValue = value == null ? 'none' : String(value);
-            setTeamTitle(text || getTeamLabel(teamValue));
+            var label = getTeamLabel(teamValue);
+            $teamBtn.find('.cp-dropdown-button-title').text(label);
+            setTeamTitle(label);
         });
         team = h('div.cp-creation-teams', [
             h('span.cp-creation-store-label', Messages.team_pcsSelectLabel),
             $teamSelect[0],
-            createHelper('#', Messages.team_pcsSelectHelp)
+            // createHelper('#', Messages.team_pcsSelectHelp) - commented until the documentation is updated
         ]);
 
 
