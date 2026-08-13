@@ -674,6 +674,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             let l = pws.length;
 
             const parsed = Hash.parsePadUrl(href);
+            if (!parsed?.hash) { return cb(); } // We cannot fixed it anyhow
             const check = password => {
                 opts.password = password;
                 Cryptget.get(parsed.hash, (err, contentStr) => {
@@ -682,6 +683,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                         return check(pws[i++]);
                     }
                     const content = Util.tryParse(contentStr)?.content;
+                    if (!content) { return cb(); } // Same as above: we can’t read the content
                     const secret = Hash.getSecrets('pad', parsed.hash, password);
 
                     // Compute expected JSON
