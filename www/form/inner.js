@@ -127,6 +127,14 @@ define([
 
         return cancelBlock;
     };
+
+    window.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
+            e.preventDefault();
+            window.print();
+        }
+    });
+
     var editTextOptions = function (opts, setCursorGetter, cb) {
         var evOnSave = Util.mkEvent();
 

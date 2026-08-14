@@ -1553,3 +1553,15 @@
     .charts_main();
 }
 
+@media print {
+    html,
+    body {
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .cp-form-creator-container {
+        max-height: none !important;
+        overflow-y: visible !important
+    }
+}
