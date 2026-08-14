@@ -28,6 +28,7 @@
     "connect-gzip-static": "^4.2.1",
     "cookie-parser": "^1.4.7",
     "croppie": "^2.5.0",
+    "cryptpad-server": "^0.0.1",
     "dragula": "3.7.2",
     "drawio": "github:cryptpad/drawio-npm#npm-29.6.7+3",
     "express": "~4.22.1",
