@@ -488,6 +488,14 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
             hide();
         });
         */
+        let focus;
+        $button.on('mousedown', function () {
+            focus = document.activeElement;
+        });
+        let focus;
+        $button.on('mousedown', function () {
+            focus = document.activeElement;
+        });
         $button.click(function () {
             var visible = $content.is(':visible');
             if (visible) { hide(); }
@@ -495,6 +503,12 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
             visible = !visible;
             Common.setAttribute(['toolbar', 'userlist-drawer'], visible);
             Feedback.send(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
+
+            if (focus.nodeName === "IFRAME") {
+                $(focus.contentWindow).focus();
+            } else {
+                $(focus).focus();
+            }
         });
         show();
         Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
@@ -617,12 +631,22 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
             hide(true);
         });
         */
+        let focus;
+        $button.on('mousedown', function () {
+            focus = document.activeElement;
+        });
         $button.click(function () {
             var visible = $content.is(':visible');
             if (visible) { hide(true); }
             else { show(); }
             visible = !visible;
             Common.setAttribute(['toolbar', 'chat-drawer'], visible);
+
+            if (focus.nodeName === "IFRAME") {
+                $(focus.contentWindow).focus();
+            } else {
+                $(focus).focus();
+            }
         });
         show();
         Common.getAttribute(['toolbar', 'chat-drawer'], function (err, val) {

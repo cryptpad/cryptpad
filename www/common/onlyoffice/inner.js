@@ -2681,6 +2681,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 getImageURL: getImageURL,
                 getInitialChanges: getInitialChanges,
             });
+
+            
         };
 
         APP.printPdf = function (obj, cb) {
