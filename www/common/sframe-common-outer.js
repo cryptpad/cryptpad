@@ -2392,7 +2392,7 @@ define([
             // If our channel was deleted from all of our drives, sitch back to full hash
             // in the address bar
             Cryptpad.padRpc.onChannelDeleted.reg(function (channel) {
-                if (channel !== secret.channel) { return; }
+                if (channel !== secret.channel || currentPad.app === 'drive') { return; }
                 Cryptpad.setTabHref(currentPad.href);
             });
 
