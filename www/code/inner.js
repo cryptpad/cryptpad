@@ -522,20 +522,10 @@ define([
             mkHelpMenu(framework);
         }
 
-        var nativePrint = window.print;
-
-        var printFullContent = function () {
-            var $print = $('#cp-app-code-print');
-            var $content = $('#cp-app-code-preview-content');
-            $print.html($content.html());
-
-            setTimeout(function () { nativePrint(); }, 50);
-        };
-
         window.addEventListener('keydown', function (e) {
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p' && privateData.isPresent) {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
                 e.preventDefault();
-                printFullContent();
+                $('.cp-toolbar-icon-print').click();
             }
         });
 
