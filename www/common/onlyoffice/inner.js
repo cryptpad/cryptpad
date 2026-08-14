@@ -2288,6 +2288,28 @@ define([
             return ooconfig;
         };
 
+        var initializeImageUpload = function () {
+            var fmConfigImages = {
+                noHandlers: true,
+                noStore: true,
+                body: $('body'),
+                onUploaded: function (ev, data) {
+                    if (!ev.callback) { return; }
+                    debug("Image uploaded at " + data.url);
+                    var parsed = Hash.parsePadUrl(data.url);
+                    if (parsed.type === 'file') {
+                        var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                        var fileHost = privateData.fileHost || privateData.origin;
+                        var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
+                        var key = Hash.encodeBase64(secret.keys.cryptKey);
+                        ev.mediasSources[ev.name] = { name: ev.name, src: src, key: key };
+                    }
+                    ev.callback();
+                },
+            };
+            APP.FMImages = common.createFileManager(fmConfigImages);
+        };
+
         var firstOO = true;
         startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
@@ -2436,25 +2458,7 @@ define([
                 };
 
                 if (!APP.FMImages) {
-                    var fmConfigImages = {
-                        noHandlers: true,
-                        noStore: true,
-                        body: $('body'),
-                        onUploaded: function (ev, data) {
-                            if (!ev.callback) { return; }
-                            debug("Image uploaded at " + data.url);
-                            var parsed = Hash.parsePadUrl(data.url);
-                            if (parsed.type === 'file') {
-                                var secret = Hash.getSecrets('file', parsed.hash, data.password);
-                                var fileHost = privateData.fileHost || privateData.origin;
-                                var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
-                                var key = Hash.encodeBase64(secret.keys.cryptKey);
-                                ev.mediasSources[ev.name] = { name: ev.name, src: src, key: key };
-                            }
-                            ev.callback();
-                        },
-                    };
-                    APP.FMImages = common.createFileManager(fmConfigImages);
+                    initializeImageUpload();
                 }
 
                 var mediasSources = getMediasSources();
@@ -2835,26 +2839,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
         var x2tImportImages = function (images, callback) {
             if (!APP.FMImages) {
-                var fmConfigImages = {
-                    noHandlers: true,
-                    noStore: true,
-                    body: $('body'),
-                    onUploaded: function (ev, data) {
-                        if (!ev.callback) { return; }
-                        debug("Image uploaded at " + data.url);
-                        var parsed = Hash.parsePadUrl(data.url);
-                        if (parsed.type === 'file') {
-                            var secret = Hash.getSecrets('file', parsed.hash, data.password);
-                            var fileHost = privateData.fileHost || privateData.origin;
-                            var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
-                            var key = Hash.encodeBase64(secret.keys.cryptKey);
-                            debug("Final src: " + src);
-                            ev.mediasSources[ev.name] = { name : ev.name, src : src, key : key };
-                        }
-                        ev.callback();
-                    }
-                };
-                APP.FMImages = common.createFileManager(fmConfigImages);
+                initializeImageUpload();
             }
 
             // Import Images
