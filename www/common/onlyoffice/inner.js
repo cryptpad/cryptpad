@@ -2533,7 +2533,7 @@ define([
                     types: ['file'],
                     where: ['root'],
                     filter: {
-                        fileType: ['image/']
+                        fileType: ['image/png', 'image/jpeg']
                     }
                 }, function (data) {
                     if (data.type !== 'file') {
