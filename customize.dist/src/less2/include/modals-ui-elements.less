@@ -339,6 +339,37 @@
             }
         }
     }
+    .cp-creation-expire {
+        background-color: red;
+        .cp-creation-expire-picker {
+            text-align: center;
+            input {
+                width: 45px;
+                margin: 0 5px;
+                padding: 0 0 0 3px;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
+            }
+            select {
+                border-radius: @variables_radius;
+                margin: 0.2rem;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
+            }
+        }
+        &.active {
+            label {
+                flex: none;
+            }
+            .cp-creation-slider {
+                flex: 1;
+            }
+        }
+    }
     #cp-upload-preview-container {
         max-width: 100%;
         max-height: 300px;
