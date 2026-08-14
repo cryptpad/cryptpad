@@ -96,7 +96,7 @@ define([
             hashes: {},
             ids: {},
             mediasSources: {},
-            version: privateData.ooForceVersion ? Number(privateData.ooForceVersion) : OOCurrentVersion.currentVersionNumber
+            version: privateData.ooForceVersion ? Number(privateData.ooForceVersion) : OOCurrentVersion.currentVersionNumber,
         };
         content.originalVersion = content.version;
         var oldHashes = {};
@@ -2286,6 +2286,11 @@ define([
                 }];
                 common.checkTrimHistory(channels);
             }
+
+            content.debug = content.debug ?? {};
+            content.debug.idCollision = content.debug.idCollision ?? false;
+            APP.onLocal();
+
             console.log("OO ready");
         };
 
@@ -2708,12 +2713,25 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 makeChannel();
                 return;
             }
+
+            const onCorruptionWarning = Util.once((id) => {
+                console.log('id collision in document', id);
+                if (content?.debug?.idCollision !== undefined // No feedback for old documents
+                    && content?.debug?.idCollision === false) { // Send feedback only once
+                    Feedback.send(`channel=${content.channel}&OFFICE_DOCUMENT_ID_COLLISION`, true);
+                    content.debug = content.debug ?? {};
+                    content.debug.idCollision = true;
+                    APP.onLocal();
+                }
+            });
+
             APP.docEditor.connectMockServer({
                 onMessage: fromOOHandler,
                 getParticipants: getParticipants,
                 onAuth: onAuth,
                 getImageURL: getImageURL,
                 getInitialChanges: getInitialChanges,
+                onCorruptionWarning: onCorruptionWarning,
             });
         };
 
@@ -3081,7 +3099,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             pinImages();
         };
 
-        const loadCp = async function (cp, keepQueue) {
+        const loadCheckpoint = async function (cp, keepQueue) {
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
@@ -3099,6 +3117,12 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var loadTemplate = function (href, password, parsed) {
+            var loadHistoryCp = function (cp, keepQueue) {
+                APP.history = true;
+                APP.stopHistory = false;
+                loadCheckpoint(cp, keepQueue);
+            };
+ 
             APP.history = true;
             APP.template = true;
             var editor = getEditor();
@@ -3124,7 +3148,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 nextCp: undefined
             }).then(messages => {
                 if (!Array.isArray(messages)) { return void console.error('Not an array!'); }
-                ooChannel.queue = messages.map(function (obj) {
+                ooChannel.queue = messages.map(function(obj) {
                     return {
                         hash: obj.serverHash,
                         msg: JSON.parse(obj.msg)
@@ -3132,7 +3156,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 });
                 ooChannel.historyLastHash = ooChannel.lastHash;
                 ooChannel.currentIndex = ooChannel.cpIndex;
-                loadCp(lastCp, true);
+                loadCheckpoint(lastCp, true);
             }).catch(err => {
                 console.error(err);
             });
@@ -3308,7 +3332,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onCheckpoint = function (cp) {
                     // We want to load a checkpoint:
-                    loadCp(cp);
+                    loadCheckpoint(cp);
                 };
                 var onPatchBack = function (cp, msgs) {
                     if (msgs) {
@@ -3325,10 +3349,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         });
                         ooChannel.queue = msgsFormatted;
                         setTimeout(function () {
-                            loadCp(cp, true);
+                            loadCheckpoint(cp, true);
                         }, 200);
                     } else {
-                        loadCp(cp);
+                        loadCheckpoint(cp);
                     }
                 };
                 var setHistoryMode = function (bool) {
@@ -3348,7 +3372,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                     rtChannel.getHistory(function () {
                         var lastCp = getLastCp();
-                        loadCp(lastCp, true);
+                        loadCheckpoint(lastCp, true);
                     });
                 };
 
@@ -3404,6 +3428,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     var histConfig = {
                         onPatch: onPatch,
                         onPatchBack: onPatchBack,
+                        docType: docType,
+                        loadCp: loadCheckpoint,
+                        loadHistoryCp: loadHistoryCp, 
                         onCheckpoint: onCheckpoint,
                         onRevert: commit,
                         setHistory: setHistoryMode,
