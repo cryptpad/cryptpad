@@ -2457,9 +2457,7 @@ define([
                     return (file.type === 'image/png' || file.type === 'image/jpeg');
                 };
 
-                if (!APP.FMImages) {
-                    initializeImageUpload();
-                }
+                if (!APP.FMImages) { initializeImageUpload(); }
 
                 var mediasSources = getMediasSources();
                 var urls = [];
@@ -2838,9 +2836,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var x2tImportImages = function (images, callback) {
-            if (!APP.FMImages) {
-                initializeImageUpload();
-            }
+            if (!APP.FMImages) { initializeImageUpload(); }
 
             // Import Images
             debug("Import Images");
