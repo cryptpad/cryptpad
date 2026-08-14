@@ -674,7 +674,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             let l = pws.length;
 
             const parsed = Hash.parsePadUrl(href);
-            if (!parsed?.hash) { return cb(); } // We cannot fixed it anyhow
+            if (!parsed?.hash) { // href is not parsable
+                Feedback.send(`ADD_MISSING_LINKED_DATA_PARSE_HREF:${href}`, true);
+                return cb('E_LINKED_PARSE_HREF');
+            }
             const check = password => {
                 opts.password = password;
                 Cryptget.get(parsed.hash, (err, contentStr) => {
