@@ -128,18 +128,10 @@ define([
         return cancelBlock;
     };
 
-    var nativePrint = window.print;
-
-    var printFullContent = function () {
-        setTimeout(function () { nativePrint(); }, 50);
-    };
-
-    window.print = printFullContent;
-
     window.addEventListener('keydown', function (e) {
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
             e.preventDefault();
-            printFullContent();
+            window.print();
         }
     });
 
