@@ -160,7 +160,7 @@ define(req, function(AppConfig, Default, Language) {
     // XXX
     Messages.form_guestAuthorTitle = "Save your author link before sharing";
     Messages.form_guestEditLinkDefinition = "This form's author link is the private link to modify questions and read responses.";
-    Messages.form_guestAuthorBody = "This author link is currently not stored anywhere since you are not logged in. To avoid loosing access in future please save this link now:.";
+    Messages.form_guestAuthorBody = "This author link is currently not stored anywhere since you are not logged in. To avoid loosing access in future please save this link now:";
     Messages.form_guestAuthorBodyStored = "This author link is currently only stored on this device, please save it  to avoid loosing access to your form.";
     Messages.form_guestAuthorCopied = "Author link copied";
     Messages.form_guestAuthorContinuePublic = "Continue to public link";

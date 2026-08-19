@@ -4968,6 +4968,7 @@ define([
                         });
                         var content = h('div', [
                             h('h4', Messages.form_guestAuthorTitle),
+                            h('p', Messages.form_guestEditLinkDefinition),
                             h('p', bodyMsg),
                             linkInput
                         ]);
