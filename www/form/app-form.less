@@ -217,6 +217,8 @@
             padding: 20px 20px 150px 20px;
             .cp-form-view-footer-text {
                 text-align: center;
+                line-height: 180%;
+                margin-bottom: 2rem;
                 svg.cp-form-footer-icon {
                     margin: 0 0.3rem 0.1rem 0;
                     width: 1em;
@@ -224,7 +226,7 @@
                     color: @cryptpad_color_brand;
                 }
                 a {
-                    color: @cryptpad_color_brand;
+                    color: @cryptpad_color_link;
                     text-decoration: none;
                     &:hover {
                         text-decoration: underline;
@@ -929,7 +931,7 @@
                     align-items: baseline;
                     border-radius: @variables_radius;
                     margin-top: 0.5rem;
-                    padding: 1px; 
+                    padding: 1px;
                     .CodeMirror {
                         cursor: default;
                         flex: 1;
@@ -1500,10 +1502,10 @@
     .cp-form-response-modal {
         .cp-form-markdown-editor-wrapper {
             border: 1px solid @cp_forms-border;
-            border-radius: @variables_radius; 
+            border-radius: @variables_radius;
         }
         .CodeMirror {
-            border-radius: 0 0 @variables_radius @variables_radius; 
+            border-radius: 0 0 @variables_radius @variables_radius;
         }
     }
 
@@ -1569,4 +1571,3 @@
 
     .charts_main();
 }
-
