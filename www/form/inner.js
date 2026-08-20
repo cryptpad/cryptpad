@@ -3347,7 +3347,7 @@ define([
             APP.framework._.sfCommon.gotoURL('/');
         });
         var content = UI.setHTML(h('div.cp-form-block.cp-form-view-footer-text'), Messages.form_footerInfo);
-        content.appendChild(Icons.get('form', { 'class': 'cp-form-footer-icon', 'aria-hidden': true }));
+        content.insertBefore(Icons.get('lock', {'class': 'cp-form-footer-icon', 'aria-hidden': true}), content.firstChild);
         var footer = h('div.cp-form-view-footer', [content, logo]);
         return footer;
     };
