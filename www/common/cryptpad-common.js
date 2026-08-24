@@ -1248,7 +1248,7 @@ define([
     };
     common.getPadTeams = function (query, cb) {
         postMessage("GET_PAD_TEAMS", query, function (teams) {
-            cb(void 0, teams);
+            cb(teams);
         });
     };
     // Get a template href from its id

@@ -83,7 +83,7 @@ define([
 
         if (Object.keys(teams).length) {
             common.getPadTeams({channel: config.channel}, function (err, teamIds) {
-                if (err) { return void console.error(err); }
+                if (err) { console.error(err); }
                 teamIds = teamIds || [];
 
                 var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
