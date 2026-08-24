@@ -2207,6 +2207,9 @@ define([
                 }];
                 common.checkTrimHistory(channels);
             }
+
+            APP.handleImageDrop(); 
+
             console.log("OO ready");
         };
 
@@ -2287,6 +2290,7 @@ define([
             console.error('updated config', ooconfig);
             return ooconfig;
         };
+        
 
         var initializeImageUpload = function () {
             var fmConfigImages = {
@@ -2448,6 +2452,37 @@ define([
                         }
                     }, void 0, common.getCache());
                 });
+            };
+
+            APP.handleImageDrop = function () {
+                var OOframe = APP.docEditor.getIframe().contentWindow;
+
+                OOframe.addEventListener('drop', function (e) {
+                    var files = e.dataTransfer && e.dataTransfer.files;
+
+                    if (files && files.length) {
+                        return;
+                    }
+
+                    var url = e.dataTransfer.getData('text/uri-list') ||
+                            e.dataTransfer.getData('URL');
+
+                    if (!url) {
+                        var html = e.dataTransfer.getData('text/html');
+                        var match = html && html.match(/<img[^>]+src=["']([^"']+)["']/i);
+                        url = match && match[1];
+                    }
+
+                    if (!url) {
+                        return;
+                    }
+
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    UI.alert(Messages.oo_blockURLImageDrop);
+
+                }, true);
             };
 
             APP.UploadImageFiles = function (files, type, id, jwt, cb) {
