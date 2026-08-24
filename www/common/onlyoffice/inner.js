@@ -2208,7 +2208,7 @@ define([
                 common.checkTrimHistory(channels);
             }
 
-            APP.handleImageDrop(); 
+            APP.handleImageDrop();
 
             console.log("OO ready");
         };
@@ -2290,7 +2290,7 @@ define([
             console.error('updated config', ooconfig);
             return ooconfig;
         };
-        
+
 
         var initializeImageUpload = function () {
             var fmConfigImages = {
