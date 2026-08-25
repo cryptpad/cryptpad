@@ -2296,6 +2296,8 @@ define([
             content.debug.idCollision = content.debug.idCollision ?? false;
             APP.onLocal();
 
+            APP.handleImageDrop();
+
             console.log("OO ready");
         };
 
@@ -2377,6 +2379,29 @@ define([
             return ooconfig;
         };
 
+
+        var initializeImageUpload = function () {
+            var fmConfigImages = {
+                noHandlers: true,
+                noStore: true,
+                body: $('body'),
+                onUploaded: function (ev, data) {
+                    if (!ev.callback) { return; }
+                    debug("Image uploaded at " + data.url);
+                    var parsed = Hash.parsePadUrl(data.url);
+                    if (parsed.type === 'file') {
+                        var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                        var fileHost = privateData.fileHost || privateData.origin;
+                        var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
+                        var key = Hash.encodeBase64(secret.keys.cryptKey);
+                        ev.mediasSources[ev.name] = { name: ev.name, src: src, key: key };
+                    }
+                    ev.callback();
+                },
+            };
+            APP.FMImages = common.createFileManager(fmConfigImages);
+        };
+
         var firstOO = true;
         startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
@@ -2423,10 +2448,6 @@ define([
                         a: 255
                     };
                 }
-            };
-
-            APP.UploadImageFiles = function (files, type, id, jwt, cb) {
-                return void cb();
             };
 
             const getImageURL = function(name) {
@@ -2518,6 +2539,86 @@ define([
                             resolve("");
                         }
                     }, void 0, common.getCache());
+                });
+            };
+
+            APP.handleImageDrop = function () {
+                var OOframe = APP.docEditor.getIframe().contentWindow;
+
+                OOframe.addEventListener('drop', function (e) {
+                    var files = e.dataTransfer && e.dataTransfer.files;
+
+                    if (files && files.length) {
+                        return;
+                    }
+
+                    var url = e.dataTransfer.getData('text/uri-list') ||
+                            e.dataTransfer.getData('URL');
+
+                    if (!url) {
+                        var html = e.dataTransfer.getData('text/html');
+                        var match = html && html.match(/<img[^>]+src=["']([^"']+)["']/i);
+                        url = match && match[1];
+                    }
+
+                    if (!url) {
+                        return;
+                    }
+
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    UI.alert(Messages.oo_blockURLImageDrop);
+
+                }, true);
+            };
+
+            APP.UploadImageFiles = function (files, type, id, jwt, cb) {
+                if (!files || !files.length) { return void cb([]); }
+
+                var checkFileFormat = function (file) {
+                    return (file.type === 'image/png' || file.type === 'image/jpeg');
+                };
+
+                if (!APP.FMImages) { initializeImageUpload(); }
+
+                var mediasSources = getMediasSources();
+                var urls = [];
+                var remaining = files.length;
+
+                var finish = function () {
+                    remaining--;
+                    if (remaining <= 0) { cb(null, urls); }
+                };
+
+                var uploadImage = function (blob, suggestedName) {
+                    var name = suggestedName || ('image-' + Util.uid());
+                    while (mediasSources[name]) { name = name + '-' + Util.uid(); }
+
+                    var handleFileData = {
+                        name: name,
+                        mediasSources: mediasSources,
+                        callback: function () {
+                            APP.onLocal();
+                            getImageURL(name).then(function (blobUrl) {
+                                if (blobUrl) { urls.push(blobUrl); }
+                                finish();
+                            });
+                        }
+                    };
+
+                    APP.FMImages.handleFile(blob, handleFileData);
+                };
+
+                var filesArray = Array.from(files);
+
+                filesArray.forEach(function (file) {
+                    if (checkFileFormat(file)) {
+                        uploadImage(file, file.name);
+                        return;
+                    }
+                    console.error('Unsupported file format', file);
+                    finish();
                 });
             };
 
@@ -2871,28 +2972,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var x2tImportImages = function (images, callback) {
-            if (!APP.FMImages) {
-                var fmConfigImages = {
-                    noHandlers: true,
-                    noStore: true,
-                    body: $('body'),
-                    onUploaded: function (ev, data) {
-                        if (!ev.callback) { return; }
-                        debug("Image uploaded at " + data.url);
-                        var parsed = Hash.parsePadUrl(data.url);
-                        if (parsed.type === 'file') {
-                            var secret = Hash.getSecrets('file', parsed.hash, data.password);
-                            var fileHost = privateData.fileHost || privateData.origin;
-                            var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
-                            var key = Hash.encodeBase64(secret.keys.cryptKey);
-                            debug("Final src: " + src);
-                            ev.mediasSources[ev.name] = { name : ev.name, src : src, key : key };
-                        }
-                        ev.callback();
-                    }
-                };
-                APP.FMImages = common.createFileManager(fmConfigImages);
-            }
+            if (!APP.FMImages) { initializeImageUpload(); }
 
             // Import Images
             debug("Import Images");

@@ -164,6 +164,7 @@ define(req, function(AppConfig, Default, Language) {
     Messages.admin_logoType_error = 'The logo image file type is not allowed'; // XXX
     Messages.settings_profileShare = 'Share profile';
     Messages.copy = 'Copy';
+    Messages.oo_blockURLImageDrop = 'Dragging images from a browser is not supported.'; // XXX
 
     return Messages;
 
