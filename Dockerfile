@@ -26,7 +26,7 @@ FROM node:lts-alpine
 RUN addgroup -S cryptpad -g 4001 && adduser -S cryptpad -G cryptpad --uid 4001 -h /cryptpad
 
 # Install curl for healthcheck
-# Install git, rdfind and unzip for install-onlyoffice.sh
+# Install git, rdfind and unzip for install-office.sh
 RUN apk add --no-cache ca-certificates git rdfind unzip bash curl
 
 # Copy cryptpad with installed modules
