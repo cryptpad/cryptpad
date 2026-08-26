@@ -98,7 +98,7 @@ main() {
                 rm -rf "$OO_DIR/v8/web-apps/apps/spreadsheeteditor/main/resources/help"
                 rm -rf "$OO_DIR/v8/web-apps/apps/common/main/resources/help/"
                 ;;
-            v9)  install_version v9 v9.3.2+1 15f6e488706d7171969a17fa5564382ecc85c3b7b379074c69ead51b40f90d031652651a5702ded07e310865ad1ff59c3a5260250adfa584131b287108a8483b ;;
+            v9)  install_version v9 v9.3.2+2 7a8b4d32b000454ac304088ba042cb6fc2007e90282b7b51bf85365e4405a33b64f7f29f5aa88628fb4b94fa1e68077c56897116b2098c8b56ec34dcdcc356df ;;
             x2t) install_x2t v9.3.0+0 e82fbf21fcdcff2cbaca5b9a49c3a3d6bc5f5f02ba9b704a7384ceb91e17e979bf7659aaf59f677edf319fde91dd847b419e018f58f38eb1df6ab433a6cd207c ;;
             *)
                 echo "Unknown version: $version"
@@ -182,8 +182,8 @@ ask_for_license() {
     ensure_command_available curl
 
     (
-        echo -e "Please review the license of OnlyOffice:\n\n"
-        curl https://raw.githubusercontent.com/ONLYOFFICE/web-apps/master/LICENSE.txt 2>/dev/null
+        echo -e "Please review the license of Euro-Office and press 'q' to continue:\n\n"
+        curl https://raw.githubusercontent.com/Euro-Office/web-apps/refs/heads/main/LICENSE.txt 2>/dev/null
     ) | less
 
     read -rp "Do you accept the license? (Y/N): " confirm &&
@@ -194,16 +194,16 @@ ask_for_license() {
 
 show_help() {
     cat <<EOF
-install-onlyoffice installs or upgrades OnlyOffice.
+install-office installs or upgrades Euro-Office.
 
 OPTIONS:
     -h, --help
             Show this help.
 
     -a, --accept-license
-            Accept the license of OnlyOffice and do not ask when running this
+            Accept the license of Euro-Office and do not ask when running this
             script. Read and accept this before using this option:
-            https://github.com/ONLYOFFICE/web-apps/blob/master/LICENSE.txt
+            https://github.com/Euro-Office/web-apps/raw/refs/heads/main/LICENSE.txt
 
     -t, --trust-repository
             Automatically configure the cloned onlyoffice-builds repository
@@ -211,7 +211,7 @@ OPTIONS:
             https://git-scm.com/docs/git-config/#Documentation/git-config.txt-safedirectory
 
     --check
-            Do not install OnlyOffice, only check if the existing installation
+            Do not install Euro-Office, only check if the existing installation
             is up to date. Exits 0 if it is up to date, nonzero otherwise.
 
     --rdfind
@@ -230,7 +230,7 @@ ensure_oo_is_downloaded() {
     ensure_command_available git
 
     if ! [ -d "$BUILDS_DIR" ]; then
-        echo "Downloading OnlyOffice..."
+        echo "Downloading Office..."
         git clone --bare https://github.com/cryptpad/onlyoffice-builds.git "$BUILDS_DIR"
     fi
     if [ ${TRUST_REPOSITORY+x} ] || [ "${PROPS[trust_repository]:-no}" == yes ]; then
