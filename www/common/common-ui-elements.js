@@ -2822,26 +2822,38 @@ define([
             if (!val || val === 'none') { return Messages.autostore_hide; }
             return privateData.teams?.[val]?.name || val;
         };
+        var getTeamAvatar = function (val) {
+            if (val === '-1') {
+                return h('span.cp-creation-team-avatar', Icons.get('drive'));
+            }
+            if (!val || val === 'none') {
+                return h('span.cp-creation-team-avatar', Icons.get('close'));
+            }
+            var data = privateData.teams?.[val];
+            var avatar = h('span.cp-creation-team-avatar.cp-avatar');
+            if (data) {
+                common.displayAvatar($(avatar), data.avatar, data.name);
+            }
+            return avatar;
+        };
         var teamOptions = [{
             tag: 'a',
             attributes: { 'data-value': '-1' },
-            content: [h('span.cp-creation-team-avatar', Icons.get('drive')), h('span.cp-creation-team-name', Messages.settings_cat_drive)]
+            content: [getTeamAvatar('-1'), h('span.cp-creation-team-name', Messages.settings_cat_drive)]
         }];
         Object.keys(privateData.teams || {}).forEach(function (id) {
             var data = privateData.teams[id];
             if (!data) { return; }
-            var avatar = h('span.cp-creation-team-avatar.cp-avatar');
-            common.displayAvatar($(avatar), data.avatar, data.name);
             teamOptions.push({
                 tag: 'a',
                 attributes: { 'data-value': id },
-                content: [avatar, h('span.cp-creation-team-name', data.name)]
+                content: [getTeamAvatar(id), h('span.cp-creation-team-name', data.name)]
             });
         });
         teamOptions.push({
             tag: 'a',
             attributes: { 'data-value': 'none' },
-            content: [h('span.cp-creation-team-avatar', Icons.get('close')), h('span.cp-creation-team-name', Messages.autostore_hide)]
+            content: [getTeamAvatar('none'), h('span.cp-creation-team-name', Messages.autostore_hide)]
         });
         var $teamSelect = UIElements.createDropdown({
             text: getTeamLabel(teamValue),
@@ -2853,16 +2865,19 @@ define([
             common: common
         });
         var $teamBtn = $teamSelect.find('button').addClass('btn');
-        var setTeamTitle = function (label) {
+        var setTeamButton = function (val) {
+            var label = getTeamLabel(val);
             $teamBtn[0]?._tippy?.destroy();
-            $teamBtn.attr('title', label).find('.cp-dropdown-button-title').removeAttr('title');
+            $teamBtn.attr('title', label);
+            $teamBtn.find('.cp-dropdown-button-title').empty().append([
+                getTeamAvatar(val),
+                h('span.cp-creation-team-name', label)
+            ]).removeAttr('title');
         };
-        setTeamTitle(getTeamLabel(teamValue));
+        setTeamButton(teamValue);
         $teamSelect.onChange.reg(function (text, value) {
             teamValue = value == null ? 'none' : String(value);
-            var label = getTeamLabel(teamValue);
-            $teamBtn.find('.cp-dropdown-button-title').text(label);
-            setTeamTitle(label);
+            setTeamButton(teamValue);
         });
         team = h('div.cp-creation-teams', [
             h('span.cp-creation-store-label', Messages.team_pcsSelectLabel),

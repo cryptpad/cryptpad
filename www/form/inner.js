@@ -4921,7 +4921,7 @@ define([
                         rows: 2,
                         'aria-label': Messages.form_guestPublicTitle
                     });
-                    var content = h('div', [
+                    var content = h('div.cp-form-guest-share-modal', [
                         h('h4', Messages.form_guestPublicTitle),
                         h('p', Messages.form_guestPublicBody),
                         linkInput
@@ -4929,8 +4929,13 @@ define([
                     var frame;
                     var modal = UI.dialog.customModal(content, {
                         buttons: [{
+                            className: 'cancel',
+                            name: Messages.cancel,
+                            onClick: function () {},
+                            keys: [27]
+                        }, {
                             className: 'primary',
-                            name: Messages.share_linkCopy,
+                            name: Messages.form_geturl,
                             iconClass: 'copy',
                             onClick: function () {
                                 Clipboard.copy(viewUrl, function (copyErr) {
@@ -4966,7 +4971,7 @@ define([
                             rows: 2,
                             'aria-label': Messages.form_guestAuthorTitle
                         });
-                        var content = h('div', [
+                        var content = h('div.cp-form-guest-share-modal', [
                             h('h4', Messages.form_guestAuthorTitle),
                             h('p', Messages.form_guestEditLinkDefinition),
                             h('p', bodyMsg),
@@ -4974,8 +4979,13 @@ define([
                         ]);
                         var modal = UI.dialog.customModal(content, {
                             buttons: [{
+                                className: 'cancel',
+                                name: Messages.cancel,
+                                onClick: function () {},
+                                keys: [27]
+                            }, {
                                 className: 'secondary',
-                                name: Messages.share_linkCopy,
+                                name: Messages.form_guestAuthorCopy,
                                 iconClass: 'copy',
                                 onClick: function () {
                                     Clipboard.copy(editUrl, function (copyErr) {

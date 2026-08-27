@@ -163,6 +163,7 @@ define(req, function(AppConfig, Default, Language) {
     Messages.form_guestAuthorBody = "This author link is currently not stored anywhere since you are not logged in. To avoid loosing access in future please save this link now:";
     Messages.form_guestAuthorBodyStored = "This author link is currently only stored on this device, please save it  to avoid loosing access to your form.";
     Messages.form_guestAuthorCopied = "Author link copied";
+    Messages.form_guestAuthorCopy = "Copy author link";
     Messages.form_guestAuthorContinuePublic = "Continue to public link";
     Messages.form_guestPublicTitle = "Copy your public link";
     Messages.form_guestPublicBody = "Share this link with participants so they can fill out your form.";

@@ -268,55 +268,64 @@
                 .cp-creation-help {
                     flex: none;
                 }
+                .cp-creation-team-avatar {
+                    .avatar_main(20px);
+                    flex: none;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    svg, .lucide {
+                        margin: 0;
+                    }
+                }
+                .cp-creation-team-name {
+                    flex: 1 1 0;
+                    min-width: 0;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    text-align: left;
+                }
                 .cp-dropdown-container {
                     flex: 1 1 0;
                     width: 0;
                     min-width: 0;
-                    display: block;
                     button.btn {
                         width: 100%;
-                        max-width: 100%;
-                        box-sizing: border-box;
                         justify-content: flex-start;
-                        text-align: left;
                         overflow: hidden;
+                        color: @cp_creation-fg;
+                        background: @cp_forms-bg;
+                        border: 1px solid @cp_forms-border;
+                        text-transform: none;
                         .cp-dropdown-button-title {
                             flex: 1 1 0;
                             min-width: 0;
+                            display: flex;
+                            align-items: center;
+                            justify-content: flex-start;
+                            gap: 0.5rem;
                             overflow: hidden;
-                            text-overflow: ellipsis;
-                            white-space: nowrap;
                             text-align: left;
                         }
                     }
                     .cp-dropdown-content {
                         left: 0;
                         right: 0;
-                        width: auto;
+                        width: 100%;
                         min-width: 0;
                         max-width: 100%;
+                        box-sizing: border-box;
                         overflow-x: hidden;
-                        li[role="menuitem"] > a {
-                            display: flex;
-                            align-items: center;
-                            gap: 0.5rem;
+                        li[role="menuitem"] {
                             overflow: hidden;
-                            .cp-creation-team-avatar {
-                                .avatar_main(20px);
-                                flex: none;
-                                display: inline-flex;
+                            > a {
+                                display: flex;
                                 align-items: center;
-                                justify-content: center;
-                                svg, .lucide {
-                                    margin: 0;
-                                }
-                            }
-                            .cp-creation-team-name {
-                                flex: 1 1 0;
+                                gap: 0.5rem;
                                 min-width: 0;
+                                max-width: 100%;
                                 overflow: hidden;
-                                text-overflow: ellipsis;
-                                white-space: nowrap;
                             }
                         }
                     }
