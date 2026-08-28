@@ -76,6 +76,7 @@ define([
 
     UI.removeModals = function () {
         $('div.alertify').remove();
+        restoreModalFocus();
     };
 
     var listenForKeys = UI.listenForKeys = function (yes, no, el) {
@@ -123,6 +124,16 @@ define([
     };
 
     var dialog = UI.dialog = {};
+    var savedModalFocus = null;
+    var restoreModalFocus = function () {
+        if (!savedModalFocus) { return; }
+        if (savedModalFocus.nodeName === "IFRAME") {
+            $(savedModalFocus.contentWindow).focus();
+        } else {
+            $(savedModalFocus).focus();
+        }
+        savedModalFocus = null;
+    };
 
     var merge = function (a, b) {
         var c = {};
@@ -221,10 +232,14 @@ define([
         dialogContent.setAttribute('aria-modal', 'true');
 
         var $frame = $(frame);
+        $frame.on('mousedown', function () {
+            savedModalFocus = document.activeElement;
+        });
         frame.closeModal = function (cb) {
             frame.closeModal = function () {}; // Prevent further calls
             $frame.fadeOut(150, function () {
                 $frame.detach();
+                restoreModalFocus();
                 if (typeof(cb) === "function") { cb(); }
             });
         };
@@ -1470,6 +1485,11 @@ define([
 
         var $popup = $(popup);
 
+        var savedFocus;
+        $popup.on('mousedown', function () {
+            savedFocus = document.activeElement;
+        });
+
         if (opts.big) {
             $popup.addClass('cp-corner-big');
         }
@@ -1485,6 +1505,13 @@ define([
         };
         var deletePopup = function () {
             $popup.remove();
+            if (savedFocus) {
+                if (savedFocus.nodeName === "IFRAME") {
+                    $(savedFocus.contentWindow).focus();
+                } else {
+                    $(savedFocus).focus();
+                }
+            }
             if (!corner.queue.length) {
                 // Make sure no other popup is displayed in the next 5s
                 setTimeout(function () {
