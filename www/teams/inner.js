@@ -429,10 +429,16 @@ define([
             ]);
             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
             console.log('Trimming team history', APP.team, size);
+            const removeModalsTimeout = setTimeout(() => {
+                UI.removeModals();
+                Feedback.send(`TRIM_HISTORY_TIMEOUT=${channels.map(obj => obj?.channel).join('|')}`, true);
+                UI.warn(Messages.trimHistory_error);
+            }, 120000);
             APP.history.execCommand('TRIM_HISTORY', {
                 channels: channels
             }, function(obj) {
                 if (obj && obj.error) { console.error(obj.error); }
+                clearTimeout(removeModalsTimeout);
                 UI.removeModals();
             });
         });
