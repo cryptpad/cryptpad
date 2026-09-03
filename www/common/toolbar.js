@@ -66,6 +66,24 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
         return 'cp-toolbar-uid-' + String(Math.random()).substring(2);
     };
 
+    (function () {
+    var $probe = $('<div>', {
+        style: 'position:fixed;top:0;left:0;background:black;color:lime;' +
+               'z-index:2147483647;font:11px monospace;padding:4px;pointer-events:none;white-space:pre;'
+    }).appendTo('body');
+    setInterval(function () {
+        var a = document.activeElement;
+        $probe.text(
+    'active:' + (document.activeElement && document.activeElement.nodeName) +
+    ' | lastClick:' + (lastClickTarget ? lastClickTarget.tagName + (lastClickTarget.id?'#'+lastClickTarget.id:'') + (lastClickTarget.className? '.'+String(lastClickTarget.className).split(' ').join('.') : '') : 'none')
+);
+    }, 150);
+    var lastClickTarget = null;
+document.addEventListener('click', function (e) {
+    lastClickTarget = e.target;
+}, true);
+})();
+
     var createRealtimeToolbar = function (config) {
         if (!config.$container) { return; }
         var $container = config.$container;
@@ -488,6 +506,15 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
             hide();
         });
         */
+        let focus;
+        $button.on('mousedown', function (e) {
+            focus = document.activeElement;
+
+            if (focus && focus.nodeName === 'IFRAME') {
+                e.preventDefault();
+            }
+        });
+
         $button.click(function () {
             var visible = $content.is(':visible');
             if (visible) { hide(); }
@@ -495,6 +522,14 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
             visible = !visible;
             Common.setAttribute(['toolbar', 'userlist-drawer'], visible);
             Feedback.send(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
+
+            if (focus.nodeName === "IFRAME") {
+                console.log(focus, focus.contentWindow, focus.contentWindow.document)
+                $(focus.contentWindow).focus();
+                console.log(document.activeElement);
+            } else {
+                $(focus).focus();
+            }
         });
         show();
         Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
@@ -582,7 +617,6 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
             Icons.get('chat'),
             h('span.cp-button-name', Messages.chatButton)
         ])).appendTo($container);
-
         toolbar.$bottomR.prepend($container);
 
         if (config.$contentContainer) {
@@ -617,12 +651,21 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
             hide(true);
         });
         */
+       let focus;
+        $button.on('mousedown', function () {
+            focus = document.activeElement;
+        });
         $button.click(function () {
             var visible = $content.is(':visible');
             if (visible) { hide(true); }
             else { show(); }
             visible = !visible;
             Common.setAttribute(['toolbar', 'chat-drawer'], visible);
+            if (focus.nodeName === "IFRAME") {
+                $(focus.contentWindow).focus();
+            } else {
+                $(focus).focus();
+            }
         });
         show();
         Common.getAttribute(['toolbar', 'chat-drawer'], function (err, val) {

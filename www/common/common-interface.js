@@ -127,6 +127,7 @@ define([
     var savedModalFocus = null;
     var restoreModalFocus = function () {
         if (!savedModalFocus) { return; }
+        console.log("modalfocus", savedModalFocus.nodeName, savedModalFocus.contentWindow)
         if (savedModalFocus.nodeName === "IFRAME") {
             $(savedModalFocus.contentWindow).focus();
         } else {
@@ -1506,6 +1507,7 @@ define([
         var deletePopup = function () {
             $popup.remove();
             if (savedFocus) {
+                console.log("savedfocus", savedFocus.nodeName, savedFocus.contentWindow)
                 if (savedFocus.nodeName === "IFRAME") {
                     $(savedFocus.contentWindow).focus();
                 } else {
