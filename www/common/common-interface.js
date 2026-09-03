@@ -127,7 +127,6 @@ define([
     var savedModalFocus = null;
     var restoreModalFocus = function () {
         if (!savedModalFocus) { return; }
-        console.log("modalfocus", savedModalFocus.nodeName, savedModalFocus.contentWindow)
         if (savedModalFocus.nodeName === "IFRAME") {
             $(savedModalFocus.contentWindow).focus();
         } else {

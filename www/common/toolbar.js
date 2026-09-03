@@ -66,24 +66,6 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
         return 'cp-toolbar-uid-' + String(Math.random()).substring(2);
     };
 
-    (function () {
-    var $probe = $('<div>', {
-        style: 'position:fixed;top:0;left:0;background:black;color:lime;' +
-               'z-index:2147483647;font:11px monospace;padding:4px;pointer-events:none;white-space:pre;'
-    }).appendTo('body');
-    setInterval(function () {
-        var a = document.activeElement;
-        $probe.text(
-    'active:' + (document.activeElement && document.activeElement.nodeName) +
-    ' | lastClick:' + (lastClickTarget ? lastClickTarget.tagName + (lastClickTarget.id?'#'+lastClickTarget.id:'') + (lastClickTarget.className? '.'+String(lastClickTarget.className).split(' ').join('.') : '') : 'none')
-);
-    }, 150);
-    var lastClickTarget = null;
-document.addEventListener('click', function (e) {
-    lastClickTarget = e.target;
-}, true);
-})();
-
     var createRealtimeToolbar = function (config) {
         if (!config.$container) { return; }
         var $container = config.$container;
@@ -506,11 +488,8 @@ document.addEventListener('click', function (e) {
             hide();
         });
         */
-        let focus;
         $button.on('mousedown', function (e) {
-            focus = document.activeElement;
-
-            if (focus && focus.nodeName === 'IFRAME') {
+            if (document.activeElement && document.activeElement.nodeName === 'IFRAME') {
                 e.preventDefault();
             }
         });
@@ -522,14 +501,6 @@ document.addEventListener('click', function (e) {
             visible = !visible;
             Common.setAttribute(['toolbar', 'userlist-drawer'], visible);
             Feedback.send(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
-
-            if (focus.nodeName === "IFRAME") {
-                console.log(focus, focus.contentWindow, focus.contentWindow.document)
-                $(focus.contentWindow).focus();
-                console.log(document.activeElement);
-            } else {
-                $(focus).focus();
-            }
         });
         show();
         Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
@@ -557,11 +528,6 @@ document.addEventListener('click', function (e) {
         toolbar.$bottomR.prepend($button);
         $(notif).hide();
 
-        let focus;
-        $button.on('mousedown', function () {
-            focus = document.activeElement;
-        });
-
         $button.click(function () {
             toolbar.$top.toggleClass('toolbar-hidden');
             var hidden = toolbar.$top.hasClass('toolbar-hidden');
@@ -578,14 +544,6 @@ document.addEventListener('click', function (e) {
             });
 
             if (!hidden) { $(notif).hide(); }
-
-            // Fix focus
-            $button.focus();
-            if (focus.nodeName === "IFRAME") {
-                $(focus.contentWindow).focus();
-            } else {
-                $(focus).focus();
-            }
         });
     };
 
@@ -651,9 +609,10 @@ document.addEventListener('click', function (e) {
             hide(true);
         });
         */
-       let focus;
-        $button.on('mousedown', function () {
-            focus = document.activeElement;
+        $button.on('mousedown', function (e) {
+            if (document.activeElement && document.activeElement.nodeName === 'IFRAME') {
+                e.preventDefault();
+            }
         });
         $button.click(function () {
             var visible = $content.is(':visible');
@@ -661,11 +620,6 @@ document.addEventListener('click', function (e) {
             else { show(); }
             visible = !visible;
             Common.setAttribute(['toolbar', 'chat-drawer'], visible);
-            if (focus.nodeName === "IFRAME") {
-                $(focus.contentWindow).focus();
-            } else {
-                $(focus).focus();
-            }
         });
         show();
         Common.getAttribute(['toolbar', 'chat-drawer'], function (err, val) {
