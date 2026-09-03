@@ -163,7 +163,6 @@ define([
                 //window.frames[0].editor.setViewModeDisconnect(true);
             } catch (e) {}
             */
-           console.log("1", readOnly)
             if (!state && (!readOnly || force)) {
                 $('#cp-app-oo-editor').append(h('div#cp-app-oo-offline'));
             }
@@ -975,8 +974,6 @@ define([
         };
 
         var openVersionHash = function (version) {
-                       console.log("2", readOnly)
-
             readOnly = true;
             const hashes = content.hashes || {};
             const sortedCp = sortCpIndex(hashes);
@@ -1855,8 +1852,6 @@ define([
                             send({ type: "message" });
                             break;
                         case "saveChanges":
-                                       console.log("3", readOnly)
-
                             if (readOnly) {
                                 return;
                             }
@@ -2071,8 +2066,6 @@ define([
                         '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
                         'div.btn-users.dropdown-toggle { display: none; !important }';
             if (readOnly) {
-                           console.log("5", readOnly)
-
                 css += '#toolbar { display: none !important; }';
                 //css += '#app-title { display: none !important; }'; // OnlyOffice logo + doc title
                 //css += '#file-menu-panel { top: 28px !important; }'; // Position of the "File" menu
@@ -2130,8 +2123,6 @@ define([
                 var onDocUnlock = function () {
                     // Migration required but read-only: continue...
                     if (readOnly) {
-                                   console.log("6", readOnly)
-
                         setEditable(true);
                         try { getEditor().asc_setRestriction(true); } catch (e) {}
                     } else {
@@ -2156,8 +2147,6 @@ define([
                 onDocUnlock();
                 return;
             }
-                       console.log("7", readOnly)
-
             if (lock || readOnly) {
                 try { getEditor().asc_setRestriction(true); } catch (e) {}
                 //getEditor().setViewModeDisconnect(); // can't be used anymore, display an OO error popup
@@ -2243,8 +2232,6 @@ define([
                     getEditor().asc_setRestriction(true);
                 } catch (e) {}
             }
-                       console.log("8", readOnly)
-
             if (lock && !readOnly) { // Lock = !history && migrate
                 onMigrateRdy.fire();
             }
@@ -3049,8 +3036,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
         APP.onLocal = config.onLocal = function () {
             if (initializing) { return; }
-                       console.log("9", readOnly)
-
             if (readOnly) { return; }
             if (APP.history) { return; }
 
@@ -3190,8 +3175,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 return void sframeChan.event('EV_OOIFRAME_DONE', '');
             }
             content = json.content;
-                       console.log("10", readOnly)
-
             readOnly = true;
             var version = (!content.version || content.version === 1) ? 'v1/' :
                           (content.version <= 3 ? 'v2b/' : OOCurrentVersion.currentVersion + '/');
@@ -3213,8 +3196,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         config.onInit = function (info) {
             var privateData = metadataMgr.getPrivateData();
             metadataMgr.setDegraded(false); // FIXME degraded moded unsupported (no cursor channel)
-                       console.log("11", readOnly)
-
             readOnly = privateData.readOnly;
 
             Title = common.createTitle({});
@@ -3545,7 +3526,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
         var firstReady = true;
         config.onReady = function (info) { 
-            console.log("pierdol sie")
             if (APP.realtime !== info.realtime) {
                 APP.realtime = info.realtime;
             }
@@ -3615,8 +3595,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
                 APP.migrate = true;
                 // Registedred ~~users~~ editors can start the migration
-                           console.log("12", readOnly)
-
                 if (common.isLoggedIn() && !readOnly) {
                     content.migration = true;
                     APP.onLocal();
@@ -3627,8 +3605,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     } else {
                         $('#cp-app-oo-editor').prepend(msg);
                     }
-                               console.log("13", readOnly)
-
                     readOnly = true;
                 }
             }
@@ -3658,8 +3634,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
-                           console.log("14", readOnly)
-
                 return void setEditable(!readOnly);
             }
             firstReady = false;
@@ -3679,8 +3653,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var m = metadataMgr.getChannelMembers().filter(function (str) {
                     return str.length === 32;
                 }).length;
-                           console.log("15", readOnly)
-
                 if ((m - v) === 1 && !readOnly && common.isLoggedIn()) {
                     var needCp = ooChannel.queue.length > CHECKPOINT_INTERVAL;
                     APP.initCheckpoint = needCp;
@@ -3688,8 +3660,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
 
                 common.openPadChat(APP.onLocal);
-           console.log("16", readOnly)
-
                 if (!readOnly) {
                     var cursors = {};
                     common.openCursorChannel(APP.onLocal);
@@ -3738,8 +3708,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     const { blob, file } = cpObj;
                     startOO(blob, file);
                     setEditable(!readOnly);
-                               console.log("17", readOnly)
-
                     UI.removeLoadingScreen();
                 };
 

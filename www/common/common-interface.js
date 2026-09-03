@@ -74,6 +74,17 @@ define([
         return $('button.ok').last();
     };
 
+    var savedModalFocus = null;
+    var restoreModalFocus = function () {
+        if (!savedModalFocus) { return; }
+        if (savedModalFocus.nodeName === "IFRAME") {
+            $(savedModalFocus.contentWindow).focus();
+        } else {
+            $(savedModalFocus).focus();
+        }
+        savedModalFocus = null;
+    };
+
     UI.removeModals = function () {
         $('div.alertify').remove();
         restoreModalFocus();
@@ -124,16 +135,6 @@ define([
     };
 
     var dialog = UI.dialog = {};
-    var savedModalFocus = null;
-    var restoreModalFocus = function () {
-        if (!savedModalFocus) { return; }
-        if (savedModalFocus.nodeName === "IFRAME") {
-            $(savedModalFocus.contentWindow).focus();
-        } else {
-            $(savedModalFocus).focus();
-        }
-        savedModalFocus = null;
-    };
 
     var merge = function (a, b) {
         var c = {};
@@ -1506,7 +1507,6 @@ define([
         var deletePopup = function () {
             $popup.remove();
             if (savedFocus) {
-                console.log("savedfocus", savedFocus.nodeName, savedFocus.contentWindow)
                 if (savedFocus.nodeName === "IFRAME") {
                     $(savedFocus.contentWindow).focus();
                 } else {
