@@ -3528,12 +3528,21 @@ define([
             e.preventDefault();
             common.openURL('/settings/');
         });
+        
+        $(hide).on('mousedown', function (e) {
+            e.preventDefault();
+        });
 
         $(hide).click(function () {
             delete autoStoreModal[priv.channel];
             $('.cp-toolbar-storeindrive').show();
             modal.delete();
         });
+
+        $(store).on('mousedown', function (e) {
+            e.preventDefault();
+        });
+
         var waitingForStoringCb = false;
         $(store).click(function () {
             if (waitingForStoringCb) { return; }
