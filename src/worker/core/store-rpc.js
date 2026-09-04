@@ -59,8 +59,6 @@ const factory = AStore => {
             SEND_FRIEND_REQUEST: Store.sendFriendRequest,
             // Team invitation
             ANON_GET_PREVIEW_CONTENT: Store.anonGetPreviewContent,
-            // OnlyOffice
-            OO_COMMAND: Store.onlyoffice.execCommand,
             // Mailbox
             MAILBOX_COMMAND: Store.mailbox.execCommand,
             // Universal

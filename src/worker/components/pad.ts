@@ -462,7 +462,6 @@ const alwaysOnline = (ctx, chanId) => {
 const dropChannel = (ctx, chanId) => {
     const store = ctx.store;
     store.messenger?.leavePad?.(chanId);
-    store.onlyoffice?.leavePad?.(chanId);
     Object.keys(store.modules).forEach(key => {
         store.modules[key]?.leavePad?.(chanId);
     });

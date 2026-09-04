@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 const factory = (Feedback) => {
-    var OO = {};
+    var SP = {};
 
     var getHistory = function (ctx, client, cb) {
         var c = ctx.clients[client];
@@ -29,22 +29,35 @@ const factory = (Feedback) => {
         var c = ctx.clients[client];
         var chan = ctx.channels[channel];
 
+        const onError = (err) => {
+            // Callback all connecting clients
+            ctx.channels[channel].clients.forEach(c => {
+                ctx.client[c]?.cb(err);
+            });
+        };
+        const onReady = () => {
+            // Callback all connecting clients
+            ctx.channels[channel].clients.forEach(c => {
+                ctx.client[c]?.cb({ clients: chan.clients });
+            });
+        };
+
         if (!c) { // new tab
             c = ctx.clients[client] = {
-                channel: channel,
+                cb: Util.once(cb),
+                channel
             };
         } else if (c?.channel !== channel) { // new channel on existing tab
             // Remove client from existing chan
             // and disconnect from chan if needed
+            c.cb({ error: 'EINVAL' }); // cancel previous attempt
             ctx.removeClient(client, true);
             c = ctx.clients[client] = {
-                channel: channel,
+                cb: Util.once(cb),
+                channel
             };
         } else { // same channel existing tab
-            setTimeout(() => {
-                ctx.emit('READY', chan.clients, [client]);
-            });
-            return void cb();
+            return void cb({ clients: chan.clients });
         }
 
         if (chan) {
@@ -54,12 +67,12 @@ const factory = (Feedback) => {
             if (!c.id) { c.id = chan.wc.myID + '-' + client; }
 
             getHistory(ctx, client, function () {
-                ctx.emit('READY', chan.clients, [client]);
+                cb({ clients: chan.clients });
             });
 
             // ==> And push the new tab to the list
             chan.clients.push(client);
-            return void cb();
+            return;
         }
 
         var txid = Math.floor(Math.random() * 1000000);
@@ -115,7 +128,6 @@ const factory = (Feedback) => {
                 chan.clients = [client];
                 chan.lastCpHash = obj.lastCpHash;
                 first = false;
-                cb();
             }
 
             var hk = network.historyKeeper;
@@ -164,10 +176,9 @@ const factory = (Feedback) => {
                 }
                 return;
             }
-            // End of history: emit READY
+            // End of history: callback as ready
             if (parsed.state && parsed.state === 1 && parsed.channel) {
-                ctx.emit('READY', chan.clients, chan.clients);
-                return;
+                return void onReady();
             }
             if (parsed.error && parsed.channel) {
                 if (parsed.error === "EDELETED" && parsed.message) {
@@ -175,7 +186,7 @@ const factory = (Feedback) => {
                     // document read-only
                     chan.wc?.leave();
                     Feedback.send('RTCHANNEL_DELETED', true);
-                    return ctx.emit('ERROR', { error: 'EDELETED', reason: parsed.message }, chan.clients);
+                    return onError({ error: 'EDELETED', reason: parsed.message });
                 }
                 if (parsed.error === "EUNKNOWN") {
                     let hk = network.historyKeeper;
@@ -183,8 +194,7 @@ const factory = (Feedback) => {
                     network.sendto(hk, JSON.stringify(msg));
                     return;
                 }
-                ctx.emit('READY', chan.clients, chan.clients);
-                return;
+                return void onReady();
             }
 
             // If there is a txid, make sure it's ours or abort
@@ -301,11 +311,11 @@ const factory = (Feedback) => {
 
     var leaveChannel = function (ctx, padChan) {
         // Leave channel and prevent reconnect when we leave a pad
-        Object.keys(ctx.channels).some(function (ooChan) {
-            var channel = ctx.channels[ooChan];
+        Object.keys(ctx.channels).some(function (rtChan) {
+            var channel = ctx.channels[rtChan];
             if (channel.padChan !== padChan) { return; }
             if (channel.wc) { channel.wc.leave(); }
-            delete ctx.channels[ooChan];
+            delete ctx.channels[rtChan];
             return true;
         });
     };
@@ -339,22 +349,22 @@ const factory = (Feedback) => {
 
 
 
-    OO.init = function (store, emit) {
-        var oo = {};
+    SP.init = function (cfg, waitFor, emit) {
+        var sp = {};
         var ctx = {
-            store: store,
+            store: cfg.store,
             emit: emit,
             channels: {},
             clients: {}
         };
 
-        oo.removeClient = ctx.removeClient = function (clientId, newChan) {
+        sp.removeClient = ctx.removeClient = function (clientId, newChan) {
             removeClient(ctx, clientId, newChan);
         };
-        oo.leavePad = function (padChan) {
+        sp.leavePad = function (padChan) {
             leaveChannel(ctx, padChan);
         };
-        oo.execCommand = function (clientId, obj, cb) {
+        sp.execCommand = function (clientId, obj, cb) {
             var cmd = obj.cmd;
             var data = obj.data;
             if (cmd === 'SEND_MESSAGE') {
@@ -371,10 +381,10 @@ const factory = (Feedback) => {
             }
         };
 
-        return oo;
+        return sp;
     };
 
-    return OO;
+    return SP;
 };
 
 module.exports = factory(

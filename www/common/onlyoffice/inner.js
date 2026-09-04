@@ -19,6 +19,7 @@ define([
     '/support/ui.js',
     '/components/chainpad/chainpad.dist.js',
     '/file/file-crypto.js',
+    '/common/inner/rtchannel.js',
     '/common/onlyoffice/history.js',
     '/common/onlyoffice/oocell_base.js',
     '/common/onlyoffice/oodoc_base.js',
@@ -49,6 +50,7 @@ define([
     Support,
     ChainPad,
     FileCrypto,
+    RtChannel,
     History,
     EmptyCell,
     EmptyDoc,
@@ -81,6 +83,7 @@ define([
     var stringify =  Util.sortify;
     var toolbar;
     var cursor;
+    const onRTCEvent = Util.mkEvent();
 
     var andThen = function (common) {
         var Title;
@@ -98,6 +101,7 @@ define([
             mediasSources: {},
             version: privateData.ooForceVersion ? Number(privateData.ooForceVersion) : OOCurrentVersion.currentVersionNumber,
         };
+        APP.rtcTools.setContent(content);
         content.originalVersion = content.version;
         var oldHashes = {};
         var oldIds = {};
@@ -255,80 +259,6 @@ define([
             });
         };
 
-        var sortCpIndex = History.sortCpIndex;
-
-        const getOriginalVersion = () => {
-            const hashes = content.hashes || {};
-            const allIdx = sortCpIndex(hashes);
-            let version;
-            // Find the first checkpoint with a version.
-            // If this version is smaller than content.version, use it
-            // as original version (Math.min below)
-            allIdx.some((id) => {
-                const v = hashes[id]?.version;
-                if (v) {
-                    version = v;
-                    return true;
-                }
-            });
-            if (version) { version = Math.min(version, content.version || 1); }
-            return version || content.version || 1;
-        };
-
-        const addLinkedCheckpoint = (cpData, cb) => {
-            let parsed = Hash.parsePadUrl(cpData.file);
-            let secret = Hash.getSecrets('file', parsed.hash);
-            APP.linkedModule.execCommand('ADD_LINKED_DATA', {
-                content: {
-                    type: 'checkpoints',
-                    data: {
-                        rtChannel: cpData.rtChannel,
-                        blob: secret.channel
-                    }
-                }
-            }, (obj) => {
-                if (obj?.error) { console.error(obj.error); }
-                const last = obj?.[0]?.checkpoints?.pop();
-                if (last?.blob === secret.channel && last?.time) {
-                    cpData.time = last.time;
-                    APP.onLocal();
-                }
-                cb();
-            });
-        };
-        const checkLinkedDocs = () => {
-            const value = {
-                checkpoints: []
-            };
-            // Get last 10 cps
-            let hashes = content.hashes || {}; // checkpoints
-            let sortedCp = sortCpIndex(hashes).slice(-10);
-            sortedCp.forEach(cpIdx => {
-                const cpData = hashes[cpIdx];
-                let parsed = Hash.parsePadUrl(cpData.file);
-                let secret = Hash.getSecrets('file', parsed.hash);
-                if (!secret.channel) { return; }
-                value.checkpoints.push({
-                    blob: secret.channel,
-                    rtChannel: cpData.rtChannel || content.channel
-                });
-            });
-            // If < 10, add initial channel
-            if (sortedCp.length < 10 && content.channel) {
-                value.checkpoints.unshift({
-                    blob: 0,
-                    rtChannel: content.channel
-                });
-            }
-            APP.linkedModule.execCommand('CHECK_CURRENT_DOC', {
-                // channel & signKey added in outer
-                expectedJSON: value
-            }, (obj) => {
-                if (obj?.error) { console.error(obj.error); }
-            });
-        };
-
-
         var getFileType = function () {
             var priv = common.getMetadataMgr().getPrivateData();
             var type = priv.ooType;
@@ -366,71 +296,24 @@ define([
 
         var now = function () { return +new Date(); };
 
-        const getLastCpId = (old) => {
-            const hashes = old ? oldHashes : content.hashes;
-            if (!hashes || !Object.keys(hashes).length) { return 0; }
-            const allIdx = sortCpIndex(hashes);
-            return allIdx[allIdx.length - 1];
-        };
-        var getLastCp = function (old, i) {
-            var hashes = old ? oldHashes : content.hashes;
-            if (!hashes || !Object.keys(hashes).length) { return {}; }
-            i = i || 0;
-            var idx = sortCpIndex(hashes);
-            var lastIndex = idx[idx.length - 1 - i];
-            if (typeof(lastIndex) === "undefined" || !hashes[lastIndex]) {
-                return {};
-            }
-            var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
-            return last;
-        };
-        var deleteLastCp = function (i) {
-            var hashes = content.hashes;
-            if (!hashes || !Object.keys(hashes).length) { return {}; }
-            i = i || 0;
-            var idx = sortCpIndex(hashes);
-            var lastIndex = idx[idx.length - 1 - i];
-            if (typeof(lastIndex) === "undefined" || !hashes[lastIndex]) {
-                return;
-            }
-            delete hashes[lastIndex];
-            APP.onLocal();
-            APP.realtime.onSettle(function () {
-                UI.log(Messages.saved);
-            });
-        };
+        var sortCpIndex = History.sortCpIndex;
 
-        var rtChannel = {
-            ready: false,
-            readyCb: undefined,
-            sendCmd: function (data, cb) {
-                if (APP.history) { return; }
-                sframeChan.query('Q_OO_COMMAND', data, cb);
-            },
-            getHistory: function (cb) {
-                rtChannel.sendCmd({
-                    cmd: 'GET_HISTORY',
-                    data: {}
-                }, function () {
-                    APP.onHistorySynced = cb;
-                });
-            },
-            sendMsg: function (msg, cp, cb) {
-                evOnPatch.fire();
-                rtChannel.sendCmd({
-                    cmd: 'SEND_MESSAGE',
-                    data: {
-                        msg: msg,
-                        isCp: cp
-                    }
-                }, function (err, h) {
-                    if (!err) {
-                        evOnSync.fire();
-                        evIntegrationSave.fire();
-                    }
-                    cb(err, h);
-                });
-            },
+        const getOriginalVersion = () => {
+            const hashes = content.hashes || {};
+            const allIdx = sortCpIndex(hashes);
+            let version;
+            // Find the first checkpoint with a version.
+            // If this version is smaller than content.version, use it
+            // as original version (Math.min below)
+            allIdx.some((id) => {
+                const v = hashes[id]?.version;
+                if (v) {
+                    version = v;
+                    return true;
+                }
+            });
+            if (version) { version = Math.min(version, content.version || 1); }
+            return version || content.version || 1;
         };
 
         var ooChannel = {
@@ -510,6 +393,47 @@ define([
                 h('span', Messages.oo_isLocked)
             ]))
         };
+
+        const {
+            addLinkedCheckpoint, checkLinkedDocs,
+            getLastCpId, getLastCp, deleteLastCp, openRtChannel,
+            onRTCLeave, onRTCMessage, onRTCHistorySynced,
+            rtChannel,
+        } = APP.rtcTools;
+
+        const sendRTCMessage = (msg, cp, cb) => {
+            evOnPatch.fire();
+            rtChannel.sendMsg(msg, cp, (err, h) => {
+                if (!err) {
+                    evOnSync.fire();
+                    evIntegrationSave.fire();
+                }
+                cb(err, h);
+            });
+        };
+
+        onRTCLeave.reg(removeClient);
+        onRTCHistorySynced.reg(data => {
+            if (typeof(APP.onHistorySynced) !== "function") { return; }
+            APP.onHistorySynced();
+            delete APP.onHistorySynced;
+        });
+        onRTCMessage.reg(data => {
+            if (APP.history) {
+                ooChannel.historyLastHash = data.hash;
+                ooChannel.currentIndex++;
+                return;
+            }
+            if (ooChannel.ready) {
+                ooChannel.send(data.msg);
+                ooChannel.lastHash = data.hash;
+                ooChannel.cpIndex++;
+                common.notify();
+            } else {
+                ooChannel.queue.push(data);
+            }
+        });
+
 
         var onUploaded = function (ev, data, err) {
             if (!ev && err) {
@@ -615,131 +539,6 @@ define([
             });
         };
 
-        /*
-        const sendDebugSupportTicket = (message) => {
-            const title = "[Automatic] Office document locked";
-
-            APP.supportModule.execCommand('MAKE_TICKET', {
-                channel: Hash.createChannelId(),
-                title,
-                ticket: APP.support.getDebuggingData({
-                    title,
-                    message
-                })
-            }, () => {});
-        };
-        const onRtChannelError = (err, channel) => {
-            const wasReadOnly = readOnly;
-            readOnly = true;
-            offline = true;
-
-            const message = JSON.stringify({
-                error: err?.error,
-                reason: err?.reason,
-                channel: privateData.channel,
-                rtChannel: channel
-            }, 0, 2);
-
-            let txt = Messages.oo_rtChannelMissing;
-            let value;
-            let f = UI.confirm;
-            let cb = (yes) => {
-                if (!yes) { return; }
-
-                // Set flag if support has already been contacted
-                content.missingRtChannel = +new Date();
-                readOnly = wasReadOnly;
-                APP.onLocal();
-                readOnly = true;
-
-                sendDebugSupportTicket(message);
-            };
-
-            let btnText = content.missingRtChannel ? Messages.sent : Messages.support_formButton;
-            let opts = {
-                ok: [
-                    Icons.get('send'),
-                    h('span', btnText)
-                ],
-                cancel: Messages.filePicker_close
-            };
-
-            if (content.missingRtChannel) {
-                value = h('strong', Messages._getKey('oo_rtChannelMissingDate', [
-                    new Date(content.missingRtChannel).toLocaleDateString()
-                ]));
-                setTimeout(() => {
-                    const $b = UI.findOKButton();
-                    $b.attr('disabled', 'disabled');
-                });
-            }
-
-            if (!ApiConfig.supportMailboxKey) {
-                txt = Messages.oo_rtChannelMissingNoSupport;
-                value = UI.getPreCopy(message);
-                f = UI.alert;
-                opts = undefined;
-                cb = undefined;
-            }
-
-            let div = h('div', [
-                h('p', txt),
-                value
-            ]);
-            f(div, cb, opts);
-        };*/
-
-        var openRtChannel = function (cpData, cb) {
-            const channel = cpData?.rtChannel || content.channel;
-            const lastCpHash = cpData?.hash;
-            sframeChan.query('Q_OO_OPENCHANNEL', {
-                channel, lastCpHash
-            }, function (err, obj) {
-                if (obj?.error) { console.error(obj.error); }
-// XXX an error loading a checkpoint was ignored, causing a sheet
-// to load incorrectly. There's a risk of a new checkpoint being created
-// with the resulting (incorrect) state. Errors like this should be reported
-// to the user so they realize something is wrong.
-            });
-            sframeChan.on('EV_OO_EVENT', function (obj) {
-                switch (obj.ev) {
-                    case 'ERROR':
-                        //onRtChannelError(obj.data, channel);
-                        cb();
-                        break;
-                    case 'READY':
-                        checkClients(obj.data);
-                        cb();
-                        break;
-                    case 'LEAVE':
-                        removeClient(obj.data);
-                        break;
-                    case 'MESSAGE':
-                        if (APP.history) {
-                            ooChannel.historyLastHash = obj.data.hash;
-                            ooChannel.currentIndex++;
-                            return;
-                        }
-                        if (ooChannel.ready) {
-                            ooChannel.send(obj.data.msg);
-                            ooChannel.lastHash = obj.data.hash;
-                            ooChannel.cpIndex++;
-                            common.notify();
-                        } else {
-                            ooChannel.queue.push(obj.data);
-                        }
-                        break;
-                    case 'HISTORY_SYNCED':
-                        if (typeof(APP.onHistorySynced) !== "function") { return; }
-                        APP.onHistorySynced();
-                        delete APP.onHistorySynced;
-                        break;
-
-                }
-            });
-        };
-
-
         var fmConfig = {
             noHandlers: true,
             noStore: true,
@@ -792,7 +591,8 @@ define([
                 return void startOO(blob, type, true);
             }
 
-            openRtChannel(cpData, Util.once(() => {
+            openRtChannel(cpData, Util.once((err, data) => {
+                if (!err) { checkClients(data); }
                 startOO(blob, type, true);
             }));
         };
@@ -1434,7 +1234,7 @@ define([
 
             // Send the changes
             content.locks = content.locks || {};
-            rtChannel.sendMsg({
+            sendRTCMessage({
                 type: "saveChanges",
                 changes: parseChanges(changes, obj.type === "cp_theme"),
                 changesIndex: ooChannel.cpIndex || 0,
@@ -1548,7 +1348,7 @@ define([
             };
 
             // Send the patch
-            rtChannel.sendMsg(msg, null, function (err, hash) {
+            sendRTCMessage(msg, null, function (err, hash) {
                 if (err) {
                     return void console.error(err);
                 }
@@ -2159,7 +1959,7 @@ define([
                 if (APP.unsavedChanges) {
                     var unsaved = APP.unsavedChanges;
                     delete APP.unsavedChanges;
-                    rtChannel.sendMsg(unsaved, null, function (err, hash) {
+                    sendRTCMessage(unsaved, null, function (err, hash) {
                         if (err) { return void UI.alert(Messages.oo_lostEdits); }
                         // This is supposed to be a "send" function to tell our OO
                         // to unlock the cell. We use this to know that the patch was
@@ -3075,7 +2875,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var file = getFileType();
             if (!noCp) {
-                var lastCp = getLastCp(false);
+                var lastCp = getLastCp();
                 // If the last checkpoint is empty, load the "initial" doc instead
                 if (!lastCp?.file) {
                     return void loadDocument(true, useNewDefault, cb);
@@ -3145,7 +2945,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // Extract the channel id from the source href
                     return src.slice(src.lastIndexOf('/') + 1);
                 }).filter(Boolean);
-                sframeChan.query('EV_OO_PIN_IMAGES', toPin);
+                sframeChan.query('EV_RTC_PIN_IMAGES', toPin);
             }
         };
 
@@ -3320,6 +3120,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 return void sframeChan.event('EV_OOIFRAME_DONE', '');
             }
             content = json.content;
+            APP.rtcTools.setContent(content);
             readOnly = true;
             if (!content.version || content.version <= 7) {
                 return void sframeChan.event('EV_OOIFRAME_DONE', {
@@ -3456,8 +3257,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     // Fill the queue and then load the last CP
 
                     rtChannel.getHistory(function () {
-                        var lastCp = getLastCp();
-                        loadCheckpoint(lastCp, true);
+                        APP.onHistorySynced = () => {
+                            var lastCp = getLastCp();
+                            loadCheckpoint(lastCp, true);
+                        };
                     });
                 };
 
@@ -3491,7 +3294,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     APP.realtime.onSettle(cb);
                 };
                 var loadSnapshot = function (hash) {
-                    sframeChan.event('EV_OO_OPENVERSION', {
+                    sframeChan.event('EV_RTC_OPENVERSION', {
                         hash: hash
                     });
                 };
@@ -3704,6 +3507,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     throw new Error(errorText);
                 }
                 content = hjson.content || content;
+                APP.rtcTools.setContent(content);
 
                 // Support old checkpoints
                 var newLatest = getLastCp();
@@ -3797,7 +3601,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var useNewDefault = content.version && content.version >= 2;
 
             loadDocument(newDoc, useNewDefault, (cpObj, cpData) => {
-            openRtChannel(cpData, Util.once(function () {
+            openRtChannel(cpData, Util.once(function (err, data) {
+                if (!err) { checkClients(data); }
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
@@ -4104,6 +3909,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             //var integrationSave = content.integrationSave;
 
             content = json.content;
+            APP.rtcTools.setContent(content);
 
             if (APP.history) { return; }
 
@@ -4125,7 +3931,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             var editor = getEditor();
             if (content.hashes) {
-                var oldLastCp = getLastCpId(true);
+                var oldLastCp = getLastCpId(oldHashes);
                 var newLastCp = getLastCpId();
                 if (newLastCp > oldLastCp) {
                     ooChannel.queue = [];
@@ -4215,6 +4021,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (waitFor) {
+            APP.rtcTools = RtChannel.init(APP, common);
+        }).nThen(function (waitFor) {
+            // XXX
             common.getSframeChannel().on('EV_OO_TEMPLATE', function (data) {
                 APP.startWithTemplate = data;
             });
@@ -4222,9 +4031,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 //noTemplates: true
             });
         }).nThen(function (/*waitFor*/) {
-            APP.supportModule = common.makeUniversal('support');
-            APP.support = Support.create(common, false);
-            APP.linkedModule = common.makeUniversal('linked-doc');
             andThen(common);
         });
     };

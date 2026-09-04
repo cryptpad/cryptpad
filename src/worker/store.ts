@@ -42,7 +42,7 @@ import * as Mailbox from './modules/mailbox.js';
 import * as Cursor from './modules/cursor.js';
 import * as Support from './modules/support.js';
 import * as Integration from './modules/integration.js';
-import * as OnlyOffice from './modules/onlyoffice.js';
+import * as RtChannel from './modules/rtchannel.js';
 import * as Profile from './modules/profile.js';
 import * as Team from './modules/team.js';
 import * as Messenger from './modules/messenger.js';

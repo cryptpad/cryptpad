@@ -955,6 +955,7 @@ define([
                 });
 
                 Cryptpad.universal.onEvent.reg(function (data) {
+                    if (data?.type === 'rtchannel') { return; }
                     sframeChan.event('EV_UNIVERSAL_EVENT', data);
                 });
                 sframeChan.on('Q_UNIVERSAL_COMMAND', function (content, cb) {
@@ -2427,6 +2428,9 @@ define([
                 if (burnAfterReading) {
                     nThen(w => {
                         Cryptpad.padRpc.onReadyEvent.reg(w());
+                        // XXX XXX XXX
+                        // XXX XXX XXX
+                        // XXX XXX XXX
                         if (isOO) { sframeChan.on('EV_OO_DOC_READY', w()); }
                     }).nThen(() => {
                         Cryptpad.burnPad({

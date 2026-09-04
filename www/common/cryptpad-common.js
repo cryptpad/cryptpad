@@ -1307,13 +1307,6 @@ define([
         postMessage("ANON_GET_PREVIEW_CONTENT", data, cb);
     };
 
-    // Onlyoffice
-    var onlyoffice = common.onlyoffice = {};
-    onlyoffice.execCommand = function (data, cb) {
-        postMessage("OO_COMMAND", data, cb);
-    };
-    onlyoffice.onEvent = Util.mkEvent();
-
     // Mailbox
     var mailbox = common.mailbox = {};
     mailbox.execCommand = function (data, cb) {
@@ -2536,8 +2529,6 @@ define([
                 common.onNetworkReconnect.fire(data);
             });
         },
-        // OnlyOffice
-        OO_EVENT: common.onlyoffice.onEvent.fire,
         // Mailbox
         MAILBOX_EVENT: common.mailbox.onEvent.fire,
         // Universal

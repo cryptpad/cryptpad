@@ -6,7 +6,7 @@ const factory = (UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
                 Realtime, Messaging, Pinpad, Rpc, Cryptget, Cache,
                 SF, AccountTS, DriveTS, PadTS, Form, Cursor,
-                Support, Integration, OnlyOffice,
+                Support, Integration, RtChannel,
                 Mailbox, Profile, Team, Messenger, History,
                 Calendar, BadgeTS, LinkedTS, Block, NetConfig,
                 Crypto, ChainPad, CpNetflux, Listmap,
@@ -1590,14 +1590,6 @@ const factory = (UserObject, ProxyManager,
             });
         };
 
-        // OnlyOffice
-        Store.onlyoffice = {
-            execCommand: function (clientId, data, cb) {
-                if (!store.onlyoffice) { return void cb({error: 'OnlyOffice is disabled'}); }
-                store.onlyoffice.execCommand(clientId, data, cb);
-            }
-        };
-
         // Mailbox
         Store.mailbox = {
             execCommand: function (clientId, data, cb) {
@@ -2230,18 +2222,6 @@ const factory = (UserObject, ProxyManager,
             Store.pad?.removeClient?.(clientId);
         };
 
-        var loadOnlyOffice = function () {
-            if (store.onlyoffice) { return; }
-            store.onlyoffice = OnlyOffice.init(store, function (ev, data, clients) {
-                clients.forEach(function (cId) {
-                    postMessage(cId, 'OO_EVENT', {
-                        ev: ev,
-                        data: data
-                    });
-                });
-            });
-        };
-
         var loadMailbox = function (waitFor) {
             store.mailbox = Mailbox.init({
                 Store: Store,
@@ -2432,7 +2412,7 @@ const factory = (UserObject, ProxyManager,
             loadUniversal(History, 'history', waitFor);
             loadUniversal(Badge, 'badge', waitFor);
             loadUniversal(LinkedDoc, 'linked-doc', waitFor);
-            loadOnlyOffice();
+            loadUniversal(RtChannel, 'rtchannel', waitFor);
             if (store) {
                 store.messenger = store.modules['messenger'];
             }
@@ -3123,7 +3103,7 @@ module.exports = factory(
     require('./modules/cursor'),
     require('./modules/support'),
     require('./modules/integration'),
-    require('./modules/onlyoffice'),
+    require('./modules/rtchannel'),
     require('./modules/mailbox'),
     require('./modules/profile'),
     require('./modules/team'),
