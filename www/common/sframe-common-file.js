@@ -388,12 +388,17 @@ define([
             var $content = $(content);
 
                     // Display expiration form when checkbox checked
-                    console.log("kurwa1", $(content).find('#cp-creation-expire'))
+                    console.log("hello1", $(content).find('#cp-creation-expire'))
         $content.find('#cp-creation-expire').on('change', function () {
-            console.log("kurwa2", )
+            console.log("hello2", )
             if ($(this).is(':checked')) {
+                console.log("1", $content.find('.cp-creation-expire-picker:not(.active)'))
                 $content.find('.cp-creation-expire-picker:not(.active)').addClass('active');
+                console.log("2", $content.find('.cp-creation-expire-picker:not(.active)'))
+                console.log("3", $content.find('.cp-creation-expire:not(.active)'))
                 $content.find('.cp-creation-expire:not(.active)').addClass('active');
+                                console.log("4", $content.find('.cp-creation-expire:not(.active)'))
+
                 $content.find('#cp-creation-expire-val').focus();
                 return;
             }
