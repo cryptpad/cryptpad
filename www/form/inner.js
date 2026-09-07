@@ -276,7 +276,7 @@ define([
                     },
                     content: Messages['form_poll_'+t]
                 };
-            }); 
+            });
             var dropdownConfig = {
                 text: '', // Button initial text
                 options: options, // Entries displayed in the menu
@@ -320,7 +320,7 @@ define([
                         dateFormat: dateFormat,
                         defaultDate: val ? new Date(val) : undefined
                     });
-                } 
+                }
 
             // if this element was active before the remote change, restore cursor
             var setCursor = function () {
@@ -549,7 +549,7 @@ define([
                         $(el).find('input').focus();
 
                         return;
-                    } 
+                    }
                     $(add).click();
                     return;
                 } else {
@@ -565,12 +565,12 @@ define([
                                 $(element).find('input').focus();
                             } else {
                                 $container.find('input')[i].value = selectedDates[i].toLocaleDateString();
-                            } 
+                            }
                         }
                     } else if ($container.find('input')[0]) {
                         $container.find('input')[0].value = '';
-                    }   
-                } 
+                    }
+                }
 
                 $container.find('input').each(function (i, input) {
                     if (input._flatpickr) {
@@ -1199,7 +1199,7 @@ define([
                             toggleRow,
                             block
                         ]);
-                        
+
                         return [
                             outerWrapper,
                             cancelBlock
@@ -1892,10 +1892,10 @@ define([
                         });
                         return res;
                     },
-                    reset: function () { 
+                    reset: function () {
                         $(tag).find('input').each(function (i, input) {
                             var $i = $(input);
-                            if (Util.isChecked($i)) { 
+                            if (Util.isChecked($i)) {
                                 $i.prop('checked', false);
                             }
                         });
@@ -2028,10 +2028,10 @@ define([
                         });
                         return res;
                     },
-                    reset: function () { 
+                    reset: function () {
                         $(tag).find('input').each(function (i, input) {
                             var $i = $(input);
-                            if (Util.isChecked($i)) { 
+                            if (Util.isChecked($i)) {
                                 $i.prop('checked', false);
                             }
                         });
@@ -2262,7 +2262,7 @@ define([
                     reset: function () {
                         $(tag).find('input').each(function (i, input) {
                             var $i = $(input);
-                            if (Util.isChecked($i)) { 
+                            if (Util.isChecked($i)) {
                                 $i.prop('checked', false);
                             }
                         });
@@ -2416,7 +2416,7 @@ define([
                         lines.forEach(checkDisabled);
                         $(tag).find('input').each(function (i, input) {
                             var $i = $(input);
-                            if (Util.isChecked($i)) { 
+                            if (Util.isChecked($i)) {
                                 $i.prop('checked', false);
                             }
                         });
@@ -2762,7 +2762,7 @@ define([
                     tag: tag,
                     isEmpty: function () {
                         var v = this.getValue();
-                        if (!v || !v.values) { return true; }      
+                        if (!v || !v.values) { return true; }
                         // Poll is considered empty if user hasn't interacted with it
                         return !hasInteracted;
                     },
@@ -3356,7 +3356,9 @@ define([
         $(logo).click(function () {
             APP.framework._.sfCommon.gotoURL('/');
         });
-        var footer = h('div.cp-form-view-footer', [logo]);
+        var content = UI.setHTML(h('div.cp-form-view-footer-text'), Messages.form_footerInfo);
+        content.insertBefore(Icons.get('lock', {'class': 'cp-form-footer-icon', 'aria-hidden': true}), content.firstChild);
+        var footer = h('div.cp-form-view-footer', [content, logo]);
         return footer;
     };
 
@@ -3432,7 +3434,7 @@ define([
         });
         sorted.forEach(function (uid) {
             var answer = answers[uid];
-            
+
             var viewOnly = content.answers.cantEdit || APP.isClosed;
 
             var action = h(viewOnly ? 'button.btn.btn-secondary' : 'button.btn.btn-primary', [
@@ -4317,7 +4319,7 @@ define([
                                     };
                             });
                         }
-                        
+
                         content.form[_uid] = {
                             q: content.form[uid].q,
                             opts: opts,
@@ -4520,7 +4522,7 @@ define([
                         });
                     });
 
-                    
+
                     var shownContent = [];
                     var shownPages = [];
                     pgcontent.forEach(function(page) {
@@ -4537,7 +4539,7 @@ define([
                 };
 
                 var pageContainer = h('div.cp-form-page-container');
-                
+
                 var $page = $(pageContainer);
                 _content.push(pageContainer);
                 var refreshPage = APP.refreshPage = function (current, direction) {
@@ -4595,7 +4597,7 @@ define([
                         var shownContent = checkPages[0];
                         var shownPages = checkPages[1];
                         $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
-                        
+
                     });
 
                     if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) { $(right).css('visibility', 'hidden'); }
@@ -5148,7 +5150,7 @@ define([
             var endDateStr = h('div.cp-form-status');
             var $endDate = $(endDateContainer);
             var $endDateStr = $(endDateStr);
-        
+
             var refreshEndDate = function () {
                 $endDate.empty();
 
@@ -5387,7 +5389,7 @@ define([
                     if (state) {
                         $container.removeClass('cp-no-drag');
                     } else {
-                        $container.addClass('cp-no-drag');  
+                        $container.addClass('cp-no-drag');
                     }
                 };
             };
@@ -5787,7 +5789,7 @@ define([
             ]);
             var editButtons = h('div.cp-form-edit-buttons-container', [ preview, edit, del ]);
 
-            var toggleRow = h('div.cp-markdown-toggle-row'); 
+            var toggleRow = h('div.cp-markdown-toggle-row');
             var markdownWrapper = h('div.cp-form-markdown-editor-wrapper', t);
             var editDiv, previewDiv;
             var div = h('div.cp-form-block.editable.nodrag.cp-form-submit-message', [
