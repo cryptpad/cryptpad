@@ -791,6 +791,7 @@ define([
             message = dialog.message(msg);
         }
 
+        input.setAttribute('aria-label', message.textContent || message.innerText);
         var ok = dialog.okButton(opt.ok);
         var cancel = dialog.cancelButton(opt.cancel);
         var frame = dialog.frame([
