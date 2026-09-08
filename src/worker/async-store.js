@@ -1317,10 +1317,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             var list = {};
             var types = query.types;
             var where = query.where;
-            var filter = query.filter || {};
+            var filter = query.filter || {};
             var isFiltered = function (type, data) {
                 var filtered;
-                var fType = filter.fileType || [];
+                var fType = filter.fileType || [];
                 if (type === 'file' && fType.length) {
                     if (!data.fileType) { return true; }
                     filtered = !fType.some(function (t) {
@@ -1349,6 +1349,22 @@ const factory = (Sortify, UserObject, ProxyManager,
                 });
             });
             cb(list);
+        };
+
+        // Get all teams where a given pad is stored
+        Store.getPadTeams = function (userId, data, cb) {
+            var channel = data && data.channel;
+            if (!channel) { return void cb({error: 'EINVAL'}); }
+
+            var teamIds = [];
+            getAllStores().forEach(function (s) {
+                if (!s.id) { return; } // Skip our own drive, we only want teams here
+                var chans = s.manager.findChannel(channel, true);
+                if (chans && chans.length) {
+                    teamIds.push(s.id);
+                }
+            });
+            cb(teamIds);
         };
 
         // Get the first pad we can find in any of our drives and return its file data
