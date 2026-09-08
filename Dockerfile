@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Multistage build to reduce image size and increase security
-FROM node:lts-alpine AS build
+FROM node:lts-slim AS build
 
 # Create folder for CryptPad
 RUN mkdir /cryptpad
@@ -14,20 +14,25 @@ COPY . /cryptpad
 
 RUN sed -i "s@//httpAddress: 'localhost'@httpAddress: '0.0.0.0'@" /cryptpad/config/config.example.js
 RUN sed -i "s@installMethod: 'unspecified'@installMethod: 'docker'@" /cryptpad/config/config.example.js
+RUN sed -i 's@host: "localhost"@host: "0.0.0.0"@' /cryptpad/config/infra.example.js
 
 # Install dependencies
 RUN npm install --production \
     && npm run install:components
 
 # Create actual CryptPad image
-FROM node:lts-alpine
+FROM node:lts-slim
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Create user and group for CryptPad so it does not run as root
-RUN addgroup -S cryptpad -g 4001 && adduser -S cryptpad -G cryptpad --uid 4001 -h /cryptpad
+RUN groupadd cryptpad -g 4001 && useradd cryptpad -u 4001 -g 4001 -d /cryptpad
 
 # Install curl for healthcheck
 # Install git, rdfind and unzip for install-office.sh
-RUN apk add --no-cache ca-certificates git rdfind unzip bash curl
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    curl ca-certificates git rdfind unzip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy cryptpad with installed modules
 COPY --from=build --chown=cryptpad /cryptpad /cryptpad
@@ -55,7 +60,7 @@ ENTRYPOINT ["/bin/bash", "/cryptpad/docker-entrypoint.sh"]
 HEALTHCHECK --interval=1m CMD curl -f http://localhost:3000/ || exit 1
 
 # Ports
-EXPOSE 3000 3003
+EXPOSE 3000
 
 # Run cryptpad on startup
 CMD ["npm", "start"]
