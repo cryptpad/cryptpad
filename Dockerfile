@@ -30,7 +30,7 @@ RUN groupadd cryptpad -g 4001 && useradd cryptpad -u 4001 -g 4001 -d /cryptpad
 # Install curl for healthcheck
 # Install git, rdfind and unzip for install-onlyoffice.sh
 RUN apt-get update && apt-get install --no-install-recommends -y \
-    curl ca-certificates git rdfind unzip && \
+    bash curl ca-certificates git rdfind unzip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
