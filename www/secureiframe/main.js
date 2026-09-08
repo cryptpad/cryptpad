@@ -162,11 +162,6 @@ define([
                     });
                 });
 
-
-                sframeChan.on('Q_GET_PAD_TEAMS', function (types, cb) {
-                    Cryptpad.getPadTeams(types, cb);
-                });
-
                 sframeChan.on('EV_SECURE_ACTION', function (data) {
                     config.onAction(data);
                 });
