@@ -15,12 +15,13 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/pages.js',
+    '/common/common-feedback.js',
     '/components/nthen/index.js',
     '/common/media-tag.js',
     '/common/common-icons.js',
 
     '/components/file-saver/FileSaver.min.js',
-], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages, Pages, nThen, MT, Icons) {
+], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages, Pages, Feedback, nThen, MT, Icons) {
     var module = {};
 
     var blobToArrayBuffer = function (blob, cb) {
@@ -434,8 +435,8 @@ define([
                 var newExt = newExtIdx !== -1 ? newName.slice(newExtIdx) : "";
                 if (newExt !== ext) { newName += ext; }
 
-                            var expireVal = 0;
-            if($('#cp-creation-expire').is(':checked')) {
+            var expireVal = 0;
+            if ($('#cp-creation-expire').is(':checked')) {
                 var unit = 0;
                 switch ($('#cp-creation-expire-unit').val()) {
                     case "hour" : unit = 3600;           break;
@@ -443,15 +444,18 @@ define([
                     case "month": unit = 3600 * 24 * 30; break;
                     default: unit = 0;
                 }
-                expireVal = (Math.min(Number($('#cp-creation-expire-val').val()), 100) || 0) * unit;
+                var seconds = (Math.min(Number($('#cp-creation-expire-val').val()), 100) || 0) * unit;
+                if (seconds) {
+                    expireVal = (+new Date()) + (seconds * 1000); 
+                }
             }
 
-                        common.setAttribute(['general', 'creation', 'expire'], val.expire, function (e) {
+            common.setAttribute(['general', 'creation', 'expire'], expireVal, function (e) {
                 if (e) { return void console.error(e); }
             });
 
-            if (val.expire) {
-                Feedback.send('EXPIRING_PAD-'+val.expire);
+            if (expireVal) {
+                Feedback.send('EXPIRING_PAD-'+expireVal);
             }
 
                 cb({
