@@ -157,6 +157,7 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.form_footerInfo = "This form and your answers are protected with end-to-end encryption<br>Only the form author can read the data<br>To learn more and create your own forms <a href='https://cryptpad.org/apps/form/' target='_blank'>visit the CryptPad website</a>"; // XXX
     return Messages;
 
 });
