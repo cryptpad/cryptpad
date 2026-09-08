@@ -45,6 +45,7 @@ const factory = AStore => {
             LIST_ALL_TAGS: Store.listAllTags,
             GET_TEMPLATES: Store.getTemplates,
             GET_SECURE_FILES_LIST: Store.getSecureFilesList,
+            GET_PAD_TEAMS: Store.getPadTeams,
             GET_PAD_DATA: Store.getPadData,
             GET_PAD_DATA_FROM_CHANNEL: Store.getPadDataFromChannel,
             GET_STRONGER_HASH: Store.getStrongerHash,
