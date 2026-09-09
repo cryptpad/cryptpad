@@ -30,8 +30,8 @@ fi
 
 cd $CPAD_HOME
 
-if [ "$CPAD_INSTALL_ONLYOFFICE" == "yes" ]; then
-	./install-onlyoffice.sh --accept-license --trust-repository
+if [ "$CPAD_INSTALL_ONLYOFFICE" == "yes" ] || [ "$CPAD_INSTALL_OFFICE" == "yes" ]; then
+	./install-office.sh --accept-license --trust-repository
 fi
 
 npm run build

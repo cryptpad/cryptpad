@@ -4,6 +4,12 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# TODO next release
+
+## Upgrade notes
+
+`./install-onlyoffice.sh` is now called `/install-office.sh`. Make sure to use the new name in the future.
+
 # 🌷🩹 Spring fix release (2026.5.1)
 
 This release contains the following fixes:
