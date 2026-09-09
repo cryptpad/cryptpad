@@ -4,31 +4,32 @@
 
 ( function() {
 
+    const mediaTagCss = (
+        'media-tag{' +
+            'display:inline-block;' +
+            'border-style: solid;' +
+            'border-color: black;' +
+            'border-width: 0;' +
+        '}' +
+        'media-tag.selected{' +
+            'border: 1px solid black;' +
+        '}' +
+        'media-tag iframe{' +
+            'border: 6px solid #eee;' +
+        '}' +
+        'media-tag img{' +
+            'vertical-align: top;' +
+        '}' +
+        'media-tag *{' +
+            'width:100%; height:100%;' +
+        '}');
+
     CKEDITOR.plugins.add( 'mediatag', {
         requires: 'dialog,widget',
         //icons: 'image',
         //hidpi: true,
         onLoad: function () {
-
-            CKEDITOR.addCss(
-            'media-tag{' +
-                'display:inline-block;' +
-                'border-style: solid;' +
-                'border-color: black;' +
-                'border-width: 0;' +
-            '}' +
-            'media-tag.selected{' +
-                'border: 1px solid black;' +
-            '}' +
-            'media-tag iframe{' +
-                'border: 6px solid #eee;' +
-            '}' +
-            'media-tag img{' +
-                'vertical-align: top;' +
-            '}' +
-            'media-tag *{' +
-                'width:100%; height:100%;' +
-            '}');
+            CKEDITOR.addCss(mediaTagCss);
         },
         init: function( editor ) {
             var pluginName = 'mediatag';
@@ -130,6 +131,16 @@
                     }
                 });
             }
+
+            // Add CSS style to print preview, so media like images are sized the same
+            // as their enclosing `media-tag` elements, in other words sized correctly.
+            // Inspired by https://github.com/ckeditor/ckeditor4/blob/c7e59ec199298b6b23f4aa7a7668f18572385bac/plugins/mathjax/plugin.js#L136-L141
+            editor.on( 'contentPreview', function( evt ) {
+                evt.data.dataValue = evt.data.dataValue.replace(
+                    /<\/head>/,
+                    '<style>'+mediaTagCss+'<\/style><\/head>'
+                );
+            } );
 
         },
     } );
