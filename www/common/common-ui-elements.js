@@ -1717,6 +1717,9 @@ define([
             'role': 'menu',
             'tabindex': '-1'
         });
+        if (config.smallContent) {
+            $innerblock.addClass('cp-small');
+        }
         var $outerblock = $(h('div.cp-dropdown-menu-container', $innerblock[0]));
         let $parentMenu = config.isSubmenuOf;
         $container.$menu = $innerblock;

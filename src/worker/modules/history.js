@@ -85,13 +85,33 @@ const factory = (Util, Hash, UserObject, nThen) => {
         return team.rpc;
     };
 
-    var getHistoryData = function (ctx, channel, lastKnownHash, teamId, _cb) {
+/*
+    Before (old cp still active or checking from drive)
+
+      - for each channel, call getHistoryData
+        - get file total size
+        - get required history size (data to preserve)
+        - get metadata size (to preserver)
+        - compute removable history size
+
+    After
+
+      - only one channel
+        - call getHistorySize from lib/commands/linked.js
+        - call getTotalSize from lib/commands/linked.js
+
+
+
+
+*/
+
+    var getHistoryData = function (ctx, channel, lastKnownHash, teamId, linked, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var edPublic = getEdPublic(ctx, teamId);
         var Store = ctx.Store;
 
         var total = 0;
-        var history = 0;
+        var dataSize = 0;
         var metadata = 0;
         var hash;
         nThen(function (waitFor) {
@@ -110,27 +130,42 @@ const factory = (Util, Hash, UserObject, nThen) => {
                 total = obj.size;
             }));
             // Pad
-            Store.getHistory(null, {
-                channel: channel,
-                lastKnownHash: lastKnownHash
-            }, waitFor(function (obj) {
-                if (obj && obj.error) {
-                    waitFor.abort();
-                    return void cb(obj);
-                }
-                if (!Array.isArray(obj)) {
-                    waitFor.abort();
-                    return void cb({error: 'EINVAL'});
-                }
+            if (linked) {
+                Store.anonRpcMsg('', {
+                    msg: 'GET_HISTORY_SIZE',
+                    data: { channel }
+                }, waitFor(obj => {
+                    if (obj?.error) {
+                        waitFor.abort();
+                        return void cb(obj);
+                    }
+                    let value = obj[0];
+                    dataSize = value?.size || 0;
+                    hash = value?.hash;
+                }));
+            } else {
+                Store.getHistory(null, {
+                    channel: channel,
+                    lastKnownHash: lastKnownHash
+                }, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        waitFor.abort();
+                        return void cb(obj);
+                    }
+                    if (!Array.isArray(obj)) {
+                        waitFor.abort();
+                        return void cb({error: 'EINVAL'});
+                    }
 
-                if (!obj.length) { return; }
+                    if (!obj.length) { return; }
 
-                hash = obj[0].hash;
-                var messages = obj.map(function(data) {
-                    return data.msg;
-                });
-                history = messages.join('\n').length;
-            }), true);
+                    hash = obj[0].hash;
+                    var messages = obj.map(function(data) {
+                        return data.msg;
+                    });
+                    dataSize = messages.join('\n').length;
+                }), true);
+            }
             // Metadata
             Store.pad.getMetadata(null, {
                 channel: channel
@@ -146,7 +181,8 @@ const factory = (Util, Hash, UserObject, nThen) => {
             }));
         }).nThen(function () {
             cb({
-                size: (total - metadata - history),
+                total,
+                size: (total - metadata - dataSize),
                 hash: hash
             });
         });
@@ -154,7 +190,10 @@ const factory = (Util, Hash, UserObject, nThen) => {
     };
 
     commands.GET_HISTORY_SIZE = function (ctx, data, cId, cb) {
-        if (!ctx.store.loggedIn || !ctx.store.rpc) { return void cb({ error: 'INSUFFICIENT_PERMISSIONS' }); }
+        if (!ctx.store.loggedIn || !ctx.store.rpc || !ctx.store.anon_rpc) {
+            return void cb({ error: 'INSUFFICIENT_PERMISSIONS' });
+        }
+
         var channels = data.channels;
         if (!Array.isArray(channels)) { return void cb({ error: 'EINVAL' }); }
 
@@ -168,6 +207,7 @@ const factory = (Util, Hash, UserObject, nThen) => {
         }
 
         var size = 0;
+        var total = 0;
         var res = [];
         nThen(function (waitFor) {
             channels.forEach(function (chan) {
@@ -177,12 +217,13 @@ const factory = (Util, Hash, UserObject, nThen) => {
                     channel = chan.channel;
                     lastKnownHash = chan.lastKnownHash;
                 }
-                getHistoryData(ctx, channel, lastKnownHash, data.teamId, waitFor(function (obj) {
+                getHistoryData(ctx, channel, lastKnownHash, data.teamId, data.linked, waitFor(function (obj) {
                     if (obj && obj.error) {
                         warning.push(obj.error);
                         return;
                     }
                     size += obj.size;
+                    total += obj.total;
                     if (!obj.hash) { return; }
                     res.push({
                         channel: channel,
@@ -194,11 +235,13 @@ const factory = (Util, Hash, UserObject, nThen) => {
             cb({
                 warning: warning.length ? warning : undefined,
                 channels: res,
-                size: size
+                size: size, // history size
+                total // total size
             });
         });
     };
 
+    // XXX
     commands.TRIM_HISTORY = function (ctx, data, cId, cb) {
         if (!ctx.store.loggedIn || !ctx.store.rpc) { return void cb({ error: 'INSUFFICIENT_PERMISSIONS' }); }
         var channels = data.channels;

@@ -29,6 +29,7 @@ export interface Module<T> {
     init: (config: ModuleConfig, cb: Callback, emit: Callback) => T
 }
 
+export type Command = (ctx: any, data: any, clientId: string, cb: Callback) => void;
 
 export type AccountConfig = {
     anonHash: string,
