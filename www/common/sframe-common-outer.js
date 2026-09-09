@@ -1618,6 +1618,10 @@ define([
                         cb();
                     });
                 });
+
+                sframeChan.on('Q_GET_PAD_TEAMS', function (types, cb) {
+                    Cryptpad.getPadTeams(types, cb);
+                });
             };
             addCommonRpc(sframeChan, isSafe);
 

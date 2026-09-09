@@ -184,7 +184,7 @@ define([
 
             el = h('div.cp-usergrid-user'+(data.selected?'.cp-selected':'')+(config.large?'.large':''), {
                 'data-ed': data.edPublic,
-                'data-teamid': data.teamId,
+                'data-teamid': data.id,
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
                 'data-order': i,

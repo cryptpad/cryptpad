@@ -3001,13 +3001,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }
         };
 
+        const loadHistoryCp = function(cp, keepQueue) {
+            APP.history = true;
+            APP.stopHistory = false;
+            loadCheckpoint(cp, keepQueue);
+        };
+
         var loadTemplate = function (href, password, parsed) {
-            var loadHistoryCp = function (cp, keepQueue) {
-                APP.history = true;
-                APP.stopHistory = false;
-                loadCheckpoint(cp, keepQueue);
-            };
- 
             APP.history = true;
             APP.template = true;
             var editor = getEditor();
@@ -3316,7 +3316,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     var histConfig = {
                         onPatch: onPatch,
                         onPatchBack: onPatchBack,
-                        docType: docType,
+                        docType: () => APP.ooconfig.documentType,
                         loadCp: loadCheckpoint,
                         loadHistoryCp: loadHistoryCp, 
                         onCheckpoint: onCheckpoint,

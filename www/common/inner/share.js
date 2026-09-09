@@ -82,13 +82,32 @@ define([
         }
 
         if (Object.keys(teams).length) {
-            var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
-                common: common,
-                noFilter: true,
-                large: true,
-                data: teams
-            }, refreshButtons);
-            $div.append(teamsList.div);
+            common.getPadTeams({channel: config.channel}, function (err, teamIds) {
+                if (err) { console.error(err); }
+                teamIds = teamIds || [];
+
+                var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
+                    common: common,
+                    noFilter: true,
+                    large: true,
+                    data: teams
+                }, refreshButtons);
+
+                teamsList.icons.forEach(function (icon) {
+                    var inTeam = teamIds.some(function (id) {
+                        return String(id) === icon.getAttribute('data-teamid');
+                    });
+                    if (inTeam) {
+                        $(icon).addClass('cp-disabled');
+                        $(icon).on('click', function (e) {
+                            e.preventDefault();
+                            return false;
+                        });
+                    }
+                });
+
+                $div.append(teamsList.div);
+            });
         }
 
         var shareButton = {
