@@ -748,11 +748,13 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
         }).appendTo($hoverable);
         var $pencilIcon = $('<span>', {
             'class': 'cp-toolbar-title-edit',
-            'title': Messages.clickToEdit
+            'title': Messages.clickToEdit,
+            'aria-label': Messages.clickToEdit
         });
         var $saveIcon = $('<span>', {
             'class': 'cp-toolbar-title-save',
-            'title': Messages.saveTitle
+            'title': Messages.saveTitle,
+            'aria-label': Messages.saveTitle
         }).hide();
         if (config.readOnly === 1) {
             $hoverable.append($('<span>', {'class': 'cp-toolbar-title-readonly'})
