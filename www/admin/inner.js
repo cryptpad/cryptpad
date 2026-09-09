@@ -147,14 +147,11 @@ define([
                     'active-pads',
                     'open-files',
                     'registered',
-                    'disk-usage',
                 ]
             },
             'performance' : { // Msg.admin_cat_performance
                 icon : 'performance',
                 content : [
-                    'refresh-performance',
-                    'performance-profiling',
                     'enable-disk-measurements',
                     'bytes-written',
                 ]
@@ -2985,53 +2982,6 @@ define([
             cb(pre);
         });
 
-        // Msg.admin_diskUsageHint, .admin_diskUsageTitle, .admin_diskUsageButton
-        sidebar.addItem('disk-usage', function(cb){
-            var button = blocks.button('primary', 'report', Messages.admin_diskUsageButton);
-            var $button = $(button);
-            var called = false;
-            var nav = blocks.nav([button]);
-            var content = blocks.table([], []);
-            var form = blocks.form([
-                content
-            ], nav);
-
-            Util.onClickEnter($button, function() {
-                UI.confirm(Messages.admin_diskUsageWarning, function (yes) {
-                    if (!yes) { return; }
-                    $button.hide();
-                    if (called) { return; }
-                    called = true;
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'DISK_USAGE',
-                    }, function (e, data) {
-                        if (e) { return void console.error(e); }
-                        var obj = data[0];
-                        Object.keys(obj).forEach(function (key) {
-                            var val = obj[key];
-                            var unit = Util.magnitudeOfBytes(val);
-                            if (unit === 'GB') {
-                                obj[key] = Util.bytesToGigabytes(val) + ' GB';
-                            } else if (unit === 'MB') {
-                                obj[key] = Util.bytesToMegabytes(val) + ' MB';
-                            } else {
-                                obj[key] = Util.bytesToKilobytes(val) + ' KB';
-                            }
-                        });
-                        let attr = {'class': 'cp-strong'};
-                        let entries = Object.keys(obj).map(function (k) {
-                            return [
-                                {attr, content: (k === 'total' ? k : '/' + k)},
-                                obj[k]
-                            ];
-                        });
-                        content.updateContent(entries);
-                    });
-                });
-            });
-            cb(form);
-        });
-
         let onRefreshSupportEvt = Util.mkEvent();
         let refreshSupport = () => {
             let moderators, supportKey;
@@ -3835,67 +3785,6 @@ define([
             cb(form);
 
         });
-
-        var onRefreshPerformance = Util.mkEvent();
-
-        sidebar.addItem('refresh-performance', function(cb){
-            var btn = blocks.button('primary', 'refresh', Messages.oo_refresh);
-            Util.onClickEnter($(btn), function () {
-                onRefreshPerformance.fire();
-            });
-            cb(btn);
-        }, {
-            noTitle: true,
-            noHint: true
-        });
-
-        // Msg.admin_performanceProfilingHint, .admin_performanceProfilingTitle
-        sidebar.addItem('performance-profiling', function(cb){
-            var header = [
-                Messages.admin_performanceKeyHeading,
-                Messages.admin_performanceTimeHeading,
-                Messages.admin_performancePercentHeading
-            ];
-
-            var table = blocks.table(header, []);
-            table.setAttribute('id', 'cp-admin-table');
-            let div = blocks.block([table]);
-            div.setAttribute('id', 'cp-admin-table-container');
-
-            const onRefresh = function () {
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'GET_WORKER_PROFILES',
-                }, function (e, data) {
-                    if (e || data.error) {
-                        UI.warn(Messages.error);
-                        console.error(e, data);
-                        return;
-                    }
-
-                    var o = data[0];
-                    var sorted = Object.keys(o).sort(function (a, b) {
-                        if (o[b] - o[a] <= 0) { return -1; }
-                        return 1;
-                    });
-
-                    var total = 0;
-                    sorted.forEach(function (key) { total += o[key]; });
-
-                    const newRows = sorted.map(function (key) {
-                        var percent = Math.floor((o[key] / total) * 1000) / 10;
-                        return [key, o[key], percent + '%'];
-                    });
-
-                    table.updateContent(newRows);
-                });
-            };
-
-            onRefresh();
-            onRefreshPerformance.reg(onRefresh);
-
-            cb(div);
-        });
-
 
         // Msg.admin_enableDiskMeasurementsTitle.admin_enableDiskMeasurementsHint
         sidebar.addCheckboxItem({
