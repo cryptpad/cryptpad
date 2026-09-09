@@ -249,8 +249,9 @@ define([
             var content = h('div.alertify-tabs-content', tab.content);
             var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), h('span.tab-title-text',{id: 'cp-tab-' + tab.title.toLowerCase(), 'aria-hidden':"true"}, tab.title));
             $(title).attr('tabindex', '0');
+            $(title).attr('aria-labelledby', 'cp-tab-' + tab.title.toLowerCase());
             if (tab.icon) {
-                var icon = Icons.get(tab.icon, {'aria-labelledby': 'cp-tab-' + tab.title.toLowerCase()});
+                var icon = Icons.get(tab.icon);
                 $(title).prepend(' ').prepend(icon);
             }
 
