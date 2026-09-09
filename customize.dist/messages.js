@@ -157,6 +157,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.creation_expireValue = "Expiration time";
+    Messages.creation_expireUnit = "Expiration time unit"; // both used for the "number" and "time unit" dropdowns on pad creation page
     return Messages;
 
 });
