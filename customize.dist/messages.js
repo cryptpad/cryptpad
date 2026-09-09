@@ -157,6 +157,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.oo_blockURLImageDrop = 'Dragging images from a browser is not supported.'; // XXX
+
     return Messages;
 
 });
