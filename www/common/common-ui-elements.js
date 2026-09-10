@@ -2816,7 +2816,7 @@ define([
         // * -1 ==> store in the user drive, and the user will be the owner
         // * undefined ==> ask (CryptDrive / team / don't store); default CryptDrive
         var team;
-        var teamValue = privateData.storeInTeam != null ? String(privateData.storeInTeam) : '-1';
+        var teamValue = privateData.storeInTeam !== null ? String(privateData.storeInTeam) : '-1';
         var getTeamLabel = function (val) {
             if (val === '-1') { return Messages.settings_cat_drive; }
             if (!val || val === 'none') { return Messages.autostore_hide; }
@@ -2876,7 +2876,7 @@ define([
         };
         setTeamButton(teamValue);
         $teamSelect.onChange.reg(function (text, value) {
-            teamValue = value == null ? 'none' : String(value);
+            teamValue = value === null ? 'none' : String(value);
             setTeamButton(teamValue);
         });
         team = h('div.cp-creation-teams', [
