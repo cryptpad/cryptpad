@@ -32,7 +32,7 @@ const _getMetadata: Callback = (ctx, clientId, data, _cb) => {
     if (!data.channel) {
         return void cb({ error: 'ENOTFOUND'});
     }
-    if (data.channel.length !== 32) {
+    if (![32,48].includes(data.channel.length)) {
         return void cb({ error: 'EINVAL'});
     }
     if (!Hash.isValidChannel(data.channel)) {

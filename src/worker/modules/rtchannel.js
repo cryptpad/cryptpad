@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-const factory = (Feedback) => {
+const factory = (Feedback, Util) => {
     var SP = {};
 
     var getHistory = function (ctx, client, cb) {
@@ -32,13 +32,13 @@ const factory = (Feedback) => {
         const onError = (err) => {
             // Callback all connecting clients
             ctx.channels[channel].clients.forEach(c => {
-                ctx.client[c]?.cb(err);
+                ctx.clients[c]?.cb(err);
             });
         };
         const onReady = () => {
             // Callback all connecting clients
             ctx.channels[channel].clients.forEach(c => {
-                ctx.client[c]?.cb({ clients: chan.clients });
+                ctx.clients[c]?.cb({ clients: chan.clients });
             });
         };
 
@@ -388,5 +388,6 @@ const factory = (Feedback) => {
 };
 
 module.exports = factory(
-    require('../../common/common-feedback')
+    require('../../common/common-feedback'),
+    require('../../common/common-util')
 );

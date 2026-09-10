@@ -64,7 +64,8 @@ define([
     var Nacl = window.nacl;
     var APP = window.APP = {
         $: $,
-        urlArgs: Util.find(ApiConfig, ['requireConf', 'urlArgs'])
+        urlArgs: Util.find(ApiConfig, ['requireConf', 'urlArgs']),
+        currentVersion: OOCurrentVersion.currentVersionNumber
     };
 
     var CHECKPOINT_INTERVAL = 100;
@@ -130,9 +131,7 @@ define([
             return content.mediasSources;
         };
 
-        var getId = function () {
-            return metadataMgr.getNetfluxId() + '-' + privateData.clientId;
-        };
+        var getId = APP.rtcTools.getId;
 
         var getWindow = function () {
             return window.frames && window.frames[0];
@@ -167,31 +166,21 @@ define([
             }
         };
 
-        var deleteOffline = function () {
-            var ids = content.ids;
-            var users = Object.keys(metadataMgr.getMetadata().users);
-            Object.keys(ids).forEach(function (id) {
-                var nId = id.slice(0,32);
-                if (users.indexOf(nId) === -1) {
-                    delete ids[id];
-                }
-            });
-            APP.onLocal();
-        };
+        const {
+            addLinkedCheckpoint, checkLinkedDocs,
+            getLastCpId, getLastCp, deleteLastCp, openRtChannel,
+            onRTCMessage, onRTCHistorySynced,
+            rtChannel, onChainpadReady,
+            onCpUploaded, onCpUploadError, uploadCheckpoint,
+            restoreLastCp, checkCheckpoint,
+            deleteOffline, isUserOnline, setIds,
+            removeClient, onClientRemoved
+        } = APP.rtcTools;
 
         var isRegisteredUserOnline = function () {
             var users = metadataMgr.getMetadata().users || {};
             return Object.keys(users).some(function (id) {
                 return users[id] && users[id].curvePublic;
-            });
-        };
-        var isUserOnline = function (ooid) {
-            // Remove ids for users that have left the channel
-            deleteOffline();
-            var ids = content.ids;
-            // Check if the provided id is in the ID list
-            return Object.keys(ids).some(function (id) {
-                return ooid === ids[id].ooid;
             });
         };
 
@@ -204,60 +193,25 @@ define([
         };
 
         var setMyId = function () {
-            deleteOffline(); // Remove ids for users that have left the channel
-            const ids = content.ids;
-            if (!myOOId) {
-                myOOId = Util.createRandomInteger();
-                // f: function used in .some(f) but defined outside of the while
-                var f = function (id) {
-                    return ids[id].ooid === myOOId;
-                };
-                while (Object.keys(ids).some(f)) {
-                    myOOId = Util.createRandomInteger();
-                }
-            }
+            if (!myIndex) { myIndex = getNextUserIndex(); }
 
-            const myId = getId();
-            if (!myIndex) {
-                myIndex = getNextUserIndex();
-            }
-
-            ids[myId] = {
-                ooid: myOOId,
+            myOOId = setIds({
                 index: myIndex,
                 netflux: metadataMgr.getNetfluxId()
-            };
+            });
 
             if (!myUniqueOOId) {
                 myUniqueOOId = String(myOOId) + myIndex;
             }
 
-            oldIds = structuredClone(ids);
+            oldIds = structuredClone(content.ids);
+        };
+
+        onClientRemoved.reg((tabId) => {
+            if (!content?.locks?.[tabId]) { return; }
+            delete content.locks[tabId];
             APP.onLocal();
-        };
-
-        // Another tab from our worker has left: remove its id from the list
-        var removeClient = function (obj) {
-            var tabId = metadataMgr.getNetfluxId() + '-' + obj.id;
-            if (content.ids[tabId]) {
-                delete content.ids[tabId];
-                if (content.locks) { delete content.locks[tabId]; }
-                APP.onLocal();
-            }
-        };
-
-        // Make sure a former tab on the same worker doesn't have remaining locks
-        var checkClients = function (clients) {
-            if (!clients) { return; }
-            Object.keys(content.ids).forEach(function (id) {
-                var tabId = Number(id.slice(33)); // remove the netflux ID and the "-"
-                if (clients.indexOf(tabId) === -1) {
-                    removeClient({
-                        id: tabId
-                    });
-                }
-            });
-        };
+        });
 
         var getFileType = function () {
             var priv = common.getMetadataMgr().getPrivateData();
@@ -394,13 +348,6 @@ define([
             ]))
         };
 
-        const {
-            addLinkedCheckpoint, checkLinkedDocs,
-            getLastCpId, getLastCp, deleteLastCp, openRtChannel,
-            onRTCLeave, onRTCMessage, onRTCHistorySynced,
-            rtChannel,
-        } = APP.rtcTools;
-
         const sendRTCMessage = (msg, cp, cb) => {
             evOnPatch.fire();
             rtChannel.sendMsg(msg, cp, (err, h) => {
@@ -412,7 +359,6 @@ define([
             });
         };
 
-        onRTCLeave.reg(removeClient);
         onRTCHistorySynced.reg(data => {
             if (typeof(APP.onHistorySynced) !== "function") { return; }
             APP.onHistorySynced();
@@ -434,48 +380,24 @@ define([
             }
         });
 
+        // XXX XXX XXX XXX
+        onCpUploaded.reg(() => {
+            // If this is a migration, set the new version
+            oldHashes = JSON.parse(JSON.stringify(content.hashes));
 
-        var onUploaded = function (ev, data, err) {
-            if (!ev && err) {
-                console.error(err);
-                return void UI.warn(Messages.error);
+            if (APP.migrate) {
+                delete content.migration;
+                content.version = OOCurrentVersion.currentVersionNumber;
             }
-            if (ev.newTemplate) {
-                if (err) {
-                    console.error(err);
-                    return void UI.warn(Messages.error);
-                }
-                var _content = ev.newTemplate;
-                _content.hashes = {};
-                _content.hashes[1] = {
-                    file: data.url,
-                    rtChannel: Hash.createChannelId(),
-                    version: OOCurrentVersion.currentVersionNumber
-                };
-                _content.version = OOCurrentVersion.currentVersionNumber;
-                _content.channel = Hash.createChannelId(); // XXX XXX to remove?
-                // XXX XXX
-                _content.ids = {};
-                sframeChan.query('Q_SAVE_AS_TEMPLATE', {
-                    toSave: JSON.stringify({
-                        content: _content,
-                        metadata: {
-                            title: '',
-                            defaultTitle: ev.title
-                        }
-                    }),
-                    title: ev.title
-                }, function () {
-                    UI.alert(Messages.templateSaved);
-                    Feedback.send('OO_TEMPLATE_CREATED');
-                });
-                return;
-            }
+        });
+        onCpUploadError.reg((err) => {
+            // Upload error
+            console.error(err);
+            return void UI.warn(Messages.error);
 
-            content.saveLock = undefined;
+            /*
             if (err) {
                 console.error(err);
-                if (content.saveLock === myOOId) { delete content.saveLock; } // Unlock checkpoints
                 if (APP.migrateModal) {
                     try { getEditor().asc_setRestriction(true); } catch (e) {}
                     setEditable(true);
@@ -498,60 +420,8 @@ define([
                 }
                 return void UI.alert(Messages.oo_saveError);
             }
-            // Get the last cp idx
-            var all = sortCpIndex(content.hashes || {});
-            var current = all[all.length - 1] || 0;
-
-            var i = current + 1;
-            var cpData = content.hashes[i] = {
-                file: data.url,
-                rtChannel: Hash.createChannelId(),
-                version: OOCurrentVersion.currentVersionNumber
-            };
-            oldHashes = JSON.parse(JSON.stringify(content.hashes));
-            content.locks = {};
-            content.ids = {};
-            // If this is a migration, set the new version
-            if (APP.migrate) {
-                delete content.migration;
-                content.version = OOCurrentVersion.currentVersionNumber;
-            }
-            APP.onLocal();
-            APP.realtime.onSettle(function () {
-                UI.log(Messages.saved);
-
-                // Add the checkpoint data to the linked documents
-                addLinkedCheckpoint(cpData, function () {
-                    APP.realtime.onSettle(function () {
-                        if (APP.migrate) {
-                            UI.removeModals();
-                            UI.alert(Messages.oo_sheetMigration_complete, function () {
-                                common.gotoURL();
-                            });
-                            return;
-                        }
-                        if (ev.callback) {
-                            return void ev.callback(cpData);
-                        }
-                    });
-                });
-
-            });
-        };
-
-        var fmConfig = {
-            noHandlers: true,
-            noStore: true,
-            body: $('body'),
-            onUploaded: function (ev, data) {
-                if (!data?.url) { return; }
-                onUploaded(ev, data);
-            },
-            onError: function (err) {
-                onUploaded(null, null, err);
-            }
-        };
-        APP.FM = common.createFileManager(fmConfig);
+            */
+        });
 
         var resetData = function (blob, type, cpData) {
             // If a read-only refresh popup was planned, abort it
@@ -591,8 +461,7 @@ define([
                 return void startOO(blob, type, true);
             }
 
-            openRtChannel(cpData, Util.once((err, data) => {
-                if (!err) { checkClients(data); }
+            openRtChannel(cpData, Util.once(() => {
                 startOO(blob, type, true);
             }));
         };
@@ -625,14 +494,18 @@ define([
             ooChannel.ready = false;
             ooChannel.queue = [];
             data.callback = function (cpData) {
+                if (APP.migrate) {
+                    UI.removeModals();
+                    UI.alert(Messages.oo_sheetMigration_complete, function () {
+                        common.gotoURL();
+                    });
+                    return;
+                }
                 if (APP.template) { APP.template = false; }
                 resetData(blob, file, cpData);
             };
 
-            // XXX
-            const privateData = metadataMgr.getPrivateData();
-            blob.linked = privateData.channel;
-            APP.FM.handleFile(blob, data);
+            uploadCheckpoint(blob, data, true);
         };
 
         var noLogin = false;
@@ -675,32 +548,6 @@ define([
                     saveToServer();
                 });
             }
-        };
-        var restoreLastCp = function () {
-            content.saveLock = myOOId;
-            APP.onLocal();
-            APP.realtime.onSettle(function () {
-                onUploaded({}, {
-                    url: getLastCp().file,
-                });
-            });
-        };
-        // Add a timeout to check if a checkpoint was correctly saved by the locking user
-        // and "unlock the sheet" or "make a checkpoint" if needed
-        var cpTo;
-        var checkCheckpoint = function () {
-            clearTimeout(cpTo);
-            var saved = stringify(content.hashes);
-            var locked = content.saveLock;
-            var to = 20000 + (Math.random() * 20000);
-            cpTo = setTimeout(function () {
-                // If no checkpoint was added and the same user still has the lock
-                // then make a checkpoint if needed (cp interval)
-                if (stringify(content.hashes) === saved && locked === content.saveLock) {
-                    content.saveLock = undefined;
-                    makeCheckpoint();
-                }
-            }, to);
         };
 
         var loadInitDocument = function (type, useNewDefault) {
@@ -857,7 +704,7 @@ define([
 
         const findUserByOOId = function(ooId) {
             return Object.values(content.ids)
-                  .find((user) => user.ooid === ooId);
+                  .find((user) => user.lockId === ooId);
         };
 
         const getMyOOIndex = function() {
@@ -885,8 +732,8 @@ define([
                        (users[nId] || {}).name || Messages.anonymous;
 
                 return {
-                    id: String(user.ooid) + user.index,
-                    idOriginal: String(user.ooid),
+                    id: String(user.lockId) + user.index,
+                    idOriginal: String(user.lockId),
                     username,
                     indexUser: user.index,
                     connectionId: user.netflux || Hash.createChannelId(),
@@ -2231,7 +2078,7 @@ define([
                 var hex;
                 Object.keys(content.ids || {}).some(function (k) {
                     var u = content.ids[k];
-                    if (Number(u.ooid) === Number(userId)) {
+                    if (Number(u.lockId) === Number(userId)) {
                         var md = common.getMetadataMgr().getMetadataLazy();
                         if (md && md.users && md.users[u.netflux]) {
                             hex = md.users[u.netflux].color;
@@ -2832,7 +2679,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var data = {
                 callback: uploadedCallback
             };
-            APP.FM.handleFile(blob, data);
+            uploadCheckpoint(blob, data, true);
         };
 
         var importXLSXFile = async function(content, filename, ext) {
@@ -3369,7 +3216,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                                 newTemplate: newContent,
                                 title: title
                             };
-                            APP.FM.handleFile(blob, data);
+                            uploadCheckpoint(blob, data, false);
                         }
                     };
                     let $templateButton = common.createButton('template', true, templateObj);
@@ -3394,7 +3241,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     hiddenReadOnly: true
                 }).click(function () {
                     if (initializing) { return void console.error('initializing'); }
-                    restoreLastCp();
+                    restoreLastCp(myOOId);
                 }).attr('title', 'Restore last checkpoint').appendTo(toolbar.$bottomM);
             }
 
@@ -3529,6 +3376,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 Title.updateTitle(Title.defaultTitle);
             }
 
+            // Call rtChannel module's "onChainpadReady
+            onChainpadReady();
+
             if (!content.channel && !Object.keys(content.hashes).length) {
                 content.channel = Hash.createChannelId();
                 content.ctime ||= +new Date();
@@ -3538,6 +3388,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             APP.startNew = isNew;
 
+            if (!content.ids) { content.ids = {}; }
+            if (!content.version) {
+                content.version = OOCurrentVersion.currentVersionNumber;
+            }
             if (!content.originalVersion) {
                 content.originalVersion = getOriginalVersion();
             }
@@ -3602,7 +3456,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             loadDocument(newDoc, useNewDefault, (cpObj, cpData) => {
             openRtChannel(cpData, Util.once(function (err, data) {
-                if (!err) { checkClients(data); }
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
