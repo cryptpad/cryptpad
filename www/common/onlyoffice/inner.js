@@ -704,6 +704,7 @@ define([
 // with the resulting (incorrect) state. Errors like this should be reported
 // to the user so they realize something is wrong.
             });
+        // XXX when history is opened and closed additional handlers are registered again and again
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
                     case 'ERROR':
