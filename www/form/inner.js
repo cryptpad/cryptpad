@@ -17,7 +17,6 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
-    '/common/clipboard.js',
     '/common/inner/common-mediatag.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
@@ -66,7 +65,6 @@ define([
     Hash,
     UI,
     UIElements,
-    Clipboard,
     MT,
     h,
     Messages,
@@ -4913,106 +4911,21 @@ define([
                 if (!APP.isEditor) { return false; }
                 return true;
             };
-            var showGuestPublicLinkModal = function () {
-                sframeChan.query('Q_GET_VIEW_URL', null, function (urlErr, viewUrl) {
-                    if (urlErr || !viewUrl) { return; }
-                    var linkInput = UI.dialog.selectableArea(viewUrl, {
-                        id: 'cp-form-guest-public-link',
-                        rows: 2,
-                        'aria-label': Messages.form_guestPublicTitle
-                    });
-                    var content = h('div.cp-form-guest-share-modal', [
-                        h('h4', Messages.form_guestPublicTitle),
-                        h('p', Messages.form_guestPublicBody),
-                        linkInput
-                    ]);
-                    var frame;
-                    var modal = UI.dialog.customModal(content, {
-                        buttons: [{
-                            className: 'cancel',
-                            name: Messages.cancel,
-                            onClick: function () {},
-                            keys: [27]
-                        }, {
-                            className: 'primary',
-                            name: Messages.form_geturl,
-                            iconClass: 'copy',
-                            onClick: function () {
-                                Clipboard.copy(viewUrl, function (copyErr) {
-                                    if (!copyErr) {
-                                        UI.log(Messages.shareSuccess);
-                                        frame.closeModal();
-                                    } else {
-                                        UI.warn(Messages.error);
-                                    }
-                                });
-                                return true;
-                            },
-                            keys: [13]
-                        }]
-                    });
-                    frame = UI.openCustomModal(modal);
-                });
-            };
-            var warnGuestAuthorThen = function (then, opt) {
-                opt = opt || {};
-                if (!shouldWarnGuestAuthor()) { return void then(); }
-
+            var warnGuestAuthorThen = function (next) {
+                if (!shouldWarnGuestAuthor()) { return void next(); }
                 framework._.sfCommon.isPadStored(function (err, stored) {
-                    sframeChan.query('Q_GET_EDIT_URL', null, function (urlErr, editUrl) {
-                        if (urlErr || !editUrl) { return void then(); }
-
-                        var bodyMsg = Messages.form_guestAuthorBody;
-                        if (stored) {
-                            bodyMsg = Messages.form_guestAuthorBodyStored;
-                        }
-                        var linkInput = UI.dialog.selectableArea(editUrl, {
-                            id: 'cp-form-guest-author-link',
-                            rows: 2,
-                            'aria-label': Messages.form_guestAuthorTitle
-                        });
-                        var content = h('div.cp-form-guest-share-modal', [
-                            h('h4', Messages.form_guestAuthorTitle),
-                            h('p', Messages.form_guestEditLinkDefinition),
-                            h('p', bodyMsg),
-                            linkInput
-                        ]);
-                        var modal = UI.dialog.customModal(content, {
-                            buttons: [{
-                                className: 'cancel',
-                                name: Messages.cancel,
-                                onClick: function () {},
-                                keys: [27]
-                            }, {
-                                className: 'secondary',
-                                name: Messages.form_guestAuthorCopy,
-                                iconClass: 'copy',
-                                onClick: function () {
-                                    Clipboard.copy(editUrl, function (copyErr) {
-                                        if (!copyErr) { UI.log(Messages.form_guestAuthorCopied); }
-                                        else { UI.warn(Messages.error); }
-                                    });
-                                    return true;
-                                },
-                                keys: []
-                            }, {
-                                className: 'primary',
-                                name: opt.publicLinkFlow ? Messages.form_guestAuthorContinuePublic : Messages.continue,
-                                onClick: function () {
-                                    then();
-                                },
-                                keys: [13]
-                            }]
-                        });
-                        UI.openCustomModal(modal);
+                    sframeChan.event('EV_FORM_GUEST_SHARE_OPEN', {
+                        next: next,
+                        stored: Boolean(stored)
                     });
                 });
             };
 
             $(previewBtn).click(function () {
-                warnGuestAuthorThen(function () {
-                    sframeChan.event('EV_OPEN_VIEW_URL');
-                });
+                if (!shouldWarnGuestAuthor()) {
+                    return void sframeChan.event('EV_OPEN_VIEW_URL');
+                }
+                warnGuestAuthorThen('preview');
             });
             $(participantBtn).click(function () {
                 if (!shouldWarnGuestAuthor()) {
@@ -5022,7 +4935,7 @@ define([
                     });
                     return;
                 }
-                warnGuestAuthorThen(showGuestPublicLinkModal, { publicLinkFlow: true });
+                warnGuestAuthorThen('public');
             });
 
             // Private / public status

@@ -46,6 +46,123 @@ define([
         };
 
         var create = {};
+        create['formGuestShare'] = function (data) {
+            data = data || {};
+            require(['/common/clipboard.js'], function (Clipboard) {
+                var priv = metadataMgr.getPrivateData();
+                var hashes = priv.hashes || {};
+                var origin = priv.origin || '';
+                var editUrl = hashes.editHash ?
+                    (origin + Hash.hashToHref(hashes.editHash, 'form')) : '';
+                var viewUrl = hashes.viewHash ?
+                    (origin + Hash.hashToHref(hashes.viewHash, 'form')) : '';
+
+                var showPublic = function () {
+                    if (!viewUrl) { return void hideIframe(); }
+                    var frame;
+                    var modal = UI.dialog.customModal(h('div.cp-form-guest-share-modal', [
+                        h('h4', Messages.form_guestPublicTitle),
+                        h('p', Messages.form_guestPublicBody),
+                        UI.dialog.selectableArea(viewUrl, {
+                            id: 'cp-form-guest-public-link',
+                            rows: 2
+                        })
+                    ]), {
+                        onClose: function () {
+                            if (displayed === frame) { hideIframe(); }
+                        },
+                        buttons: [{
+                            className: 'cancel',
+                            name: Messages.cancel,
+                            onClick: function () {},
+                            keys: [27]
+                        }, {
+                            className: 'primary',
+                            name: Messages.form_geturl,
+                            iconClass: 'copy',
+                            onClick: function () {
+                                Clipboard.copy(viewUrl, function (err) {
+                                    if (err) { return void UI.warn(Messages.error); }
+                                    UI.log(Messages.shareSuccess);
+                                    hideIframe();
+                                });
+                                return true;
+                            },
+                            keys: [13]
+                        }]
+                    });
+                    frame = UI.openCustomModal(modal);
+                    displayed = frame;
+                };
+
+                var showAuthor = function () {
+                    if (!editUrl) {
+                        if (data.next === 'public') { return void showPublic(); }
+                        if (data.next === 'preview') {
+                            sframeChan.event('EV_SECURE_ACTION', { action: 'openView' });
+                        }
+                        return void hideIframe();
+                    }
+                    var frame;
+                    var stay;
+                    var modal = UI.dialog.customModal(h('div.cp-form-guest-share-modal', [
+                        h('h4', Messages.form_guestAuthorTitle),
+                        h('p', Messages.form_guestEditLinkDefinition),
+                        h('p', data.stored ?
+                            Messages.form_guestAuthorBodyStored : Messages.form_guestAuthorBody),
+                        UI.dialog.selectableArea(editUrl, {
+                            id: 'cp-form-guest-author-link',
+                            rows: 2
+                        })
+                    ]), {
+                        onClose: function () {
+                            if (stay || displayed !== frame) { return; }
+                            hideIframe();
+                        },
+                        buttons: [{
+                            className: 'cancel',
+                            name: Messages.cancel,
+                            onClick: function () {},
+                            keys: [27]
+                        }, {
+                            className: 'secondary',
+                            name: Messages.form_guestAuthorCopy,
+                            iconClass: 'copy',
+                            onClick: function () {
+                                Clipboard.copy(editUrl, function (err) {
+                                    if (err) { return void UI.warn(Messages.error); }
+                                    UI.log(Messages.form_guestAuthorCopied);
+                                });
+                                return true;
+                            },
+                            keys: []
+                        }, {
+                            className: 'primary',
+                            name: data.next === 'public' ?
+                                Messages.form_guestAuthorContinuePublic : Messages.continue,
+                            onClick: function () {
+                                if (data.next === 'public') {
+                                    stay = true;
+                                    if (frame && frame.closeModal) {
+                                        frame.closeModal(showPublic);
+                                    } else {
+                                        showPublic();
+                                    }
+                                    return true;
+                                }
+                                if (data.next === 'preview') {
+                                    sframeChan.event('EV_SECURE_ACTION', { action: 'openView' });
+                                }
+                            },
+                            keys: [13]
+                        }]
+                    });
+                    frame = UI.openCustomModal(modal);
+                    displayed = frame;
+                };
+                showAuthor();
+            });
+        };
 
         // Share modal
         create['share'] = function (data) {
