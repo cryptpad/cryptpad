@@ -1179,6 +1179,11 @@ define([
                     openURL(url);
                 });
                 sframeChan.on('EV_OPEN_URL', openURL);
+                sframeChan.on('EV_OPEN_VIEW_URL', function () {
+                    if (!hashes || !hashes.viewHash) { return; }
+                    var a = window.open(Utils.Hash.hashToHref(hashes.viewHash, 'form'));
+                    if (!a) { _sframeChan.event('EV_POPUP_BLOCKED'); }
+                });
 
                 sframeChan.on('Q_GET_PAD_METADATA', function (data, cb) {
                     if (!data || !data.channel) {
@@ -1769,7 +1774,9 @@ define([
             });
 
             sframeChan.on('Q_SAVE_AS_TEMPLATE', function (data, cb) {
-                data.teamId = Cryptpad.initialTeam;
+                if (Cryptpad.initialTeam) {
+                    data.teamId = Cryptpad.initialTeam;
+                }
                 Cryptpad.saveAsTemplate(Cryptget.put, data, cb);
             });
 
@@ -2292,12 +2299,8 @@ define([
                     });
                 });
             });
-            sframeChan.on('EV_OPEN_VIEW_URL', function () {
-                var url = Utils.Hash.hashToHref(hashes.viewHash, 'form');
-                var a = window.open(url);
-                if (!a) {
-                    sframeChan.event('EV_POPUP_BLOCKED');
-                }
+            sframeChan.on('EV_FORM_GUEST_SHARE_OPEN', function (data) {
+                initSecureModal('formGuestShare', data || {});
             });
 
             Handler.formCommandHandlers(sframeChan, Utils, nThen, Cryptpad);
@@ -2550,8 +2553,12 @@ define([
 
                 if (cfg.integration) { rtConfig.metadata.selfdestruct = true; }
 
-                if (data.team) {
+                if (data.team === false) {
+                    Cryptpad.initialTeam = false;
+                } else if (data.team) {
                     Cryptpad.initialTeam = data.team.id;
+                } else {
+                    delete Cryptpad.initialTeam;
                 }
                 if (data.owned && data.team && data.team.edPublic) {
                     rtConfig.metadata.owners = [data.team.edPublic];

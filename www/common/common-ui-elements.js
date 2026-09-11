@@ -2814,55 +2814,79 @@ define([
         }
 
         // Team pad
-        var team;
-        // FIXME: broken wen cache is enabled
-        var teamExists = privateData.teams && Object.keys(privateData.teams).length;
-        var teamValue;
         // storeInTeam can be
         // * a team ID ==> store in the team drive, and the team will be the owner
         // * -1 ==> store in the user drive, and the user will be the owner
-        // * undefined ==> ask
-        if (teamExists) {
-            var teams = Object.keys(privateData.teams).map(function (id) {
-                var data = privateData.teams[id];
-                var avatar = h('span.cp-creation-team-avatar.cp-avatar');
-                // We assume that teams always have a non-empty name, so we don't need a UID
-                common.displayAvatar($(avatar), data.avatar, data.name);
-                return h('div.cp-creation-team', {
-                    'data-id': id,
-                    title: data.name,
-                },[
-                    avatar,
-                    h('span.cp-creation-team-name', data.name)
-                ]);
-            });
-            teams.unshift(h('div.cp-creation-team', {
-                'data-id': '-1',
-                title: Messages.settings_cat_drive
-            }, [
-                h('span.cp-creation-team-avatar', Icons.get('drive')),
-                h('span.cp-creation-team-name', Messages.settings_cat_drive)
-            ]));
-            team = h('div.cp-creation-teams', [
-                Messages.team_pcsSelectLabel,
-                h('div.cp-creation-teams-grid', teams),
-                createHelper('#', Messages.team_pcsSelectHelp)
-            ]);
-            var $team = $(team);
-            $team.find('.cp-creation-team').click(function () {
-                if ($(this).hasClass('cp-selected')) {
-                    teamValue = undefined;
-                    return void $(this).removeClass('cp-selected');
-                }
-                $team.find('.cp-creation-team').removeClass('cp-selected');
-                $(this).addClass('cp-selected');
-                teamValue = $(this).attr('data-id');
-            });
-            if (privateData.storeInTeam) {
-                $team.find('[data-id="'+privateData.storeInTeam+'"]').addClass('cp-selected');
-                teamValue = privateData.storeInTeam;
+        // * undefined ==> ask (CryptDrive / team / don't store); default CryptDrive
+        var team;
+        var teamValue = typeof(privateData.storeInTeam) === "undefined" ? '-1' : String(privateData.storeInTeam);
+        var getTeamLabel = function (val) {
+            if (val === '-1') { return Messages.settings_cat_drive; }
+            if (!val || val === 'none') { return Messages.autostore_hide; }
+            return privateData.teams?.[val]?.name || val;
+        };
+        var getTeamAvatar = function (val) {
+            if (val === '-1') {
+                return h('span.cp-creation-team-avatar', Icons.get('drive'));
             }
-        }
+            if (!val || val === 'none') {
+                return h('span.cp-creation-team-avatar', Icons.get('close'));
+            }
+            var data = privateData.teams?.[val];
+            var avatar = h('span.cp-creation-team-avatar.cp-avatar');
+            if (data) {
+                common.displayAvatar($(avatar), data.avatar, data.name);
+            }
+            return avatar;
+        };
+        var teamOptions = [{
+            tag: 'a',
+            attributes: { 'data-value': '-1' },
+            content: [getTeamAvatar('-1'), h('span.cp-creation-team-name', getTeamLabel('-1'))]
+        }];
+        Object.keys(privateData.teams || {}).forEach(function (id) {
+            var data = privateData.teams[id];
+            if (!data) { return; }
+            teamOptions.push({
+                tag: 'a',
+                attributes: { 'data-value': id },
+                content: [getTeamAvatar(id), h('span.cp-creation-team-name', data.name)]
+            });
+        });
+        teamOptions.push({
+            tag: 'a',
+            attributes: { 'data-value': 'none' },
+            content: [getTeamAvatar('none'), h('span.cp-creation-team-name', getTeamLabel('none'))]
+        });
+        var $teamSelect = UIElements.createDropdown({
+            text: getTeamLabel(teamValue),
+            options: teamOptions,
+            isSelect: true,
+            caretDown: true,
+            initialValue: teamValue,
+            buttonTitle: getTeamLabel(teamValue),
+            common: common
+        });
+        var $teamBtn = $teamSelect.find('button').addClass('btn');
+        var setTeamButton = function (val) {
+            var label = getTeamLabel(val);
+            $teamBtn[0]?._tippy?.destroy();
+            $teamBtn.attr('title', label);
+            $teamBtn.find('.cp-dropdown-button-title').empty().append([
+                getTeamAvatar(val),
+                h('span.cp-creation-team-name', label)
+            ]);
+        };
+        setTeamButton(teamValue);
+        $teamSelect.onChange.reg(function (text, value) {
+            teamValue = typeof(value) === "undefined" ? 'none' : String(value);
+            setTeamButton(teamValue);
+        });
+        team = h('div.cp-creation-teams', [
+            h('span.cp-creation-store-label', Messages.team_pcsSelectLabel),
+            $teamSelect[0],
+            // createHelper('#', Messages.team_pcsSelectHelp) - commented until the documentation is updated
+        ]);
 
 
         // Owned pads
@@ -3145,9 +3169,16 @@ define([
             var templateContent = $template.data('content') || undefined;
             // Team
             var team;
-            if (teamValue) {
-                team = privateData.teams[teamValue] || {};
-                team.id = Number(teamValue);
+            if (teamValue === 'none') {
+                team = false;
+            } else if (teamValue === '-1') {
+                team = { id: -1 };
+            } else if (teamValue) {
+                var selectedTeam = privateData.teams[teamValue] || {};
+                team = {
+                    id: Number(teamValue),
+                    edPublic: selectedTeam.edPublic
+                };
             }
 
             return {
