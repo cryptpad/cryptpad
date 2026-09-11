@@ -1881,5 +1881,6 @@
     "diagram_modesOptionLabel": "Changer le thème pour {0}, réactualise l'application",
     "diagram_sketchTheme": "Croquis",
     "diagram_simpleTheme": "Simple",
-    "diagram_classicTheme": "Classique"
+    "diagram_classicTheme": "Classique",
+    "sent_chatMessage": "{0} vous a envoyé un message"
 }
