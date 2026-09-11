@@ -4912,7 +4912,6 @@ define([
                 return true;
             };
             var warnGuestAuthorThen = function (next) {
-                if (!shouldWarnGuestAuthor()) { return void next(); }
                 framework._.sfCommon.isPadStored(function (err, stored) {
                     sframeChan.event('EV_FORM_GUEST_SHARE_OPEN', {
                         next: next,

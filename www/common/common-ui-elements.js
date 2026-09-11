@@ -2816,7 +2816,7 @@ define([
         // * -1 ==> store in the user drive, and the user will be the owner
         // * undefined ==> ask (CryptDrive / team / don't store); default CryptDrive
         var team;
-        var teamValue = privateData.storeInTeam !== null ? String(privateData.storeInTeam) : '-1';
+        var teamValue = typeof(privateData.storeInTeam) === "undefined" ? '-1' : String(privateData.storeInTeam);
         var getTeamLabel = function (val) {
             if (val === '-1') { return Messages.settings_cat_drive; }
             if (!val || val === 'none') { return Messages.autostore_hide; }
@@ -2839,7 +2839,7 @@ define([
         var teamOptions = [{
             tag: 'a',
             attributes: { 'data-value': '-1' },
-            content: [getTeamAvatar('-1'), h('span.cp-creation-team-name', Messages.settings_cat_drive)]
+            content: [getTeamAvatar('-1'), h('span.cp-creation-team-name', getTeamLabel('-1'))]
         }];
         Object.keys(privateData.teams || {}).forEach(function (id) {
             var data = privateData.teams[id];
@@ -2853,7 +2853,7 @@ define([
         teamOptions.push({
             tag: 'a',
             attributes: { 'data-value': 'none' },
-            content: [getTeamAvatar('none'), h('span.cp-creation-team-name', Messages.autostore_hide)]
+            content: [getTeamAvatar('none'), h('span.cp-creation-team-name', getTeamLabel('none'))]
         });
         var $teamSelect = UIElements.createDropdown({
             text: getTeamLabel(teamValue),
@@ -2872,11 +2872,11 @@ define([
             $teamBtn.find('.cp-dropdown-button-title').empty().append([
                 getTeamAvatar(val),
                 h('span.cp-creation-team-name', label)
-            ]).removeAttr('title');
+            ]);
         };
         setTeamButton(teamValue);
         $teamSelect.onChange.reg(function (text, value) {
-            teamValue = value === null ? 'none' : String(value);
+            teamValue = typeof(value) === "undefined" ? 'none' : String(value);
             setTeamButton(teamValue);
         });
         team = h('div.cp-creation-teams', [
@@ -3166,9 +3166,16 @@ define([
             var templateContent = $template.data('content') || undefined;
             // Team
             var team;
-            if (teamValue && teamValue !== 'none') {
-                team = privateData.teams[teamValue] || {};
-                team.id = Number(teamValue);
+            if (teamValue === 'none') {
+                team = false;
+            } else if (teamValue === '-1') {
+                team = { id: -1 };
+            } else if (teamValue) {
+                var selectedTeam = privateData.teams[teamValue] || {};
+                team = {
+                    id: Number(teamValue),
+                    edPublic: selectedTeam.edPublic
+                };
             }
 
             return {

@@ -99,7 +99,7 @@ define([
                     if (!editUrl) {
                         if (data.next === 'public') { return void showPublic(); }
                         if (data.next === 'preview') {
-                            sframeChan.event('EV_SECURE_ACTION', { action: 'openView' });
+                            sframeChan.event('EV_OPEN_VIEW_URL');
                         }
                         return void hideIframe();
                     }
@@ -151,7 +151,7 @@ define([
                                     return true;
                                 }
                                 if (data.next === 'preview') {
-                                    sframeChan.event('EV_SECURE_ACTION', { action: 'openView' });
+                                    sframeChan.event('EV_OPEN_VIEW_URL');
                                 }
                             },
                             keys: [13]
