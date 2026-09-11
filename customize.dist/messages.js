@@ -157,6 +157,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.admin_logoType_error = 'The logo image file type is not allowed'; // XXX
+
     return Messages;
 
 });
