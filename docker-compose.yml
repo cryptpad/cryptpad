@@ -14,7 +14,7 @@ services:
       - CPAD_CONF=/cryptpad/config/config.js
 
       # Read and accept the license before uncommenting the following line:
-      # https://github.com/ONLYOFFICE/web-apps/blob/master/LICENSE.txt
+      # https://github.com/ONLYOFFICE/web-apps/blob/master/LICENSE
       # - CPAD_INSTALL_ONLYOFFICE=yes
 
     volumes:
