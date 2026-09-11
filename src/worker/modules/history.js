@@ -161,9 +161,18 @@ const factory = (Util, Hash, UserObject, nThen) => {
 
                     hash = obj[0].hash;
                     var messages = obj.map(function(data) {
-                        return data.msg;
+                        try {
+                            // Remove txid from received messages
+                            let parsed = JSON.parse(data.msg);
+                            parsed[0] = 0;
+                            return JSON.stringify(parsed);
+                        } catch (e) {
+                            // Invalid message in history: should not happen
+                            return data.msg;
+                        }
                     });
-                    dataSize = messages.join('\n').length;
+                    // +1 is there for the last new line
+                    dataSize = messages.join('\n').length + 1;
                 }), true);
             }
             // Metadata
@@ -172,7 +181,8 @@ const factory = (Util, Hash, UserObject, nThen) => {
             }, waitFor(function (obj) {
                 if (obj && obj.error) { return; }
                 if (!obj || typeof(obj) !== "object") { return; }
-                metadata = JSON.stringify(obj).length;
+                // +1 is there for the last new line
+                metadata = JSON.stringify(obj).length + 1;
                 if (!obj || !Array.isArray(obj.owners) ||
                     obj.owners.indexOf(edPublic) === -1) {
                     waitFor.abort();
