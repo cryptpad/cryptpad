@@ -157,6 +157,9 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    // XXX
+    Messages.settings_profileShare = 'Share profile';
+    Messages.copy = 'Copy';
     return Messages;
 
 });
