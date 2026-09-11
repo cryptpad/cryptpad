@@ -17,7 +17,6 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
-    '/common/clipboard.js',
     '/common/inner/common-mediatag.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
@@ -66,7 +65,6 @@ define([
     Hash,
     UI,
     UIElements,
-    Clipboard,
     MT,
     h,
     Messages,
@@ -4908,14 +4906,35 @@ define([
                 Messages.form_geturl
             ]);
             var preview = h('div.cp-forms-results-participant', [previewBtn, participantBtn]);
+            var shouldWarnGuestAuthor = function () {
+                if (framework._.sfCommon.isLoggedIn()) { return false; }
+                if (!APP.isEditor) { return false; }
+                return true;
+            };
+            var warnGuestAuthorThen = function (next) {
+                framework._.sfCommon.isPadStored(function (err, stored) {
+                    sframeChan.event('EV_FORM_GUEST_SHARE_OPEN', {
+                        next: next,
+                        stored: Boolean(stored)
+                    });
+                });
+            };
+
             $(previewBtn).click(function () {
-                sframeChan.event('EV_OPEN_VIEW_URL');
+                if (!shouldWarnGuestAuthor()) {
+                    return void sframeChan.event('EV_OPEN_VIEW_URL');
+                }
+                warnGuestAuthorThen('preview');
             });
             $(participantBtn).click(function () {
-                sframeChan.query('Q_COPY_VIEW_URL', null, function (err, success) {
-                    if (success) { return void UI.log(Messages.shareSuccess); }
-                    UI.warn(Messages.error);
-                });
+                if (!shouldWarnGuestAuthor()) {
+                    sframeChan.query('Q_COPY_VIEW_URL', null, function (err, success) {
+                        if (success) { return void UI.log(Messages.shareSuccess); }
+                        UI.warn(Messages.error);
+                    });
+                    return;
+                }
+                warnGuestAuthorThen('public');
             });
 
             // Private / public status
