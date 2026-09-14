@@ -1151,6 +1151,13 @@ define([
         data.href = parsed.getUrl({present: parsed.present});
 
         if (typeof (data.title) !== "string") { return cb('Missing title'); }
+        if (common.initialTeam === false) {
+            if (!data.forceSave) {
+                common.autoStore.onStoreRequest.fire({});
+                return void cb(null, { notStored: true });
+            }
+            delete common.initialTeam;
+        }
 
         if (common.initialTeam) {
             // If the value is -1, it means the user drive was selected from the pad creation screen
