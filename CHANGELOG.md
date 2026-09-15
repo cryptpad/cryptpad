@@ -8,7 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 ## Upgrade notes
 
-`./install-onlyoffice.sh` is now called `/install-office.sh`. Make sure to use the new name in the future.
+- `./install-onlyoffice.sh` is now called `/install-office.sh`. Make sure to use the new name in the future.
+- The CryptPad Docker now uses an additional volume to store the config files. If you are already using our image, you need to merge our changes into your docker-compose.yml and create an additional directory:
+
+```bash
+mkdir config
+sudo chown -R 4001:4001 config
+```
 
 # 🌷🩹 Spring fix release (2026.5.1)
 

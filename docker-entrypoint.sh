@@ -34,6 +34,4 @@ if [ "$CPAD_INSTALL_ONLYOFFICE" == "yes" ] || [ "$CPAD_INSTALL_OFFICE" == "yes" 
 	./install-office.sh --accept-license --trust-repository
 fi
 
-npm run build
-
 exec "$@"

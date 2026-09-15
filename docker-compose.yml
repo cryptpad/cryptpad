@@ -7,6 +7,7 @@ services:
   cryptpad:
     image: "cryptpad/cryptpad:latest"
     hostname: cryptpad
+    read_only: true
 
     environment:
       - CPAD_MAIN_DOMAIN=https://your-main-domain.com
@@ -21,6 +22,7 @@ services:
       - ./data/blob:/cryptpad/blob
       - ./data/block:/cryptpad/block
       - ./customize:/cryptpad/customize
+      - ./config:/cryptpad/config
       - ./data/data:/cryptpad/data
       - ./data/files:/cryptpad/datastore
       - ./onlyoffice-dist:/cryptpad/www/common/onlyoffice/dist

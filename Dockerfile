@@ -47,6 +47,8 @@ WORKDIR /cryptpad
 # Create directories
 RUN mkdir blob block customize data datastore
 
+RUN npm run build
+
 # Volumes for data persistence
 VOLUME /cryptpad/blob
 VOLUME /cryptpad/block
