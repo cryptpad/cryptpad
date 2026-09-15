@@ -1878,5 +1878,6 @@
     "crowdfunding_popup_text2": "In alternativa, puoi iscriverti a questa istanza.",
     "diagram_modesOptionLabel": "Cambiare il tema con {0} riavvierà l'applicazione",
     "oo_rtChannelMissing": "Si è verificato un errore durante il caricamento del tuo documento. Al momento è solo disponibile la versione di sola lettura per evitare la corruzione o la perdita di dati. Clicca sul pulsante qui sotto per inviare  le informazioni pertinenti alla squadra di assistenza.",
-    "oo_rtChannelMissingNoSupport": "Si è verificato un errore durante il caricamento del tuo documento. Al momento è solo disponibile la versione di sola lettura per evitare la corruzione o la perdita di dati. Invia le seguenti informazioni all'amministratore/trice della tua istanza."
+    "oo_rtChannelMissingNoSupport": "Si è verificato un errore durante il caricamento del tuo documento. Al momento è solo disponibile la versione di sola lettura per evitare la corruzione o la perdita di dati. Invia le seguenti informazioni all'amministratore/trice della tua istanza.",
+    "help_close_button": "Chiudi la notifica di aiuto"
 }
