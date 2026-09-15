@@ -1102,7 +1102,7 @@
     "contacts_info4": "Varje deltagare kan rensa chatthistoriken permanent",
     "settings_deleteButton": "Radera ditt konto",
     "contacts_removeHistoryTitle": "Rensa chatthistoriken",
-    "contacts_confirmRemoveHistory": "Är du säker på att du vill ta bort din chatthistorik permanent? Data kan inte återställas",
+    "contacts_confirmRemoveHistory": "Är du säker på att du vill ta bort din chatthistorik? Data kan inte återställas.",
     "settings_deleteModal": "Dela följande information med din CryptPad-administratör för att få dina uppgifter borttagna från deras server.",
     "fm_emptyTrashDialog": "Är du säker på att du vill tömma papperskorgen?",
     "settings_logoutEverywhereTitle": "Stäng fjärrsessioner",

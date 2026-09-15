@@ -1881,5 +1881,6 @@
     "diagram_modesOptionLabel": "将主题更改为 {0}，应用将刷新",
     "diagram_sketchTheme": "草图",
     "diagram_simpleTheme": "简洁",
-    "diagram_classicTheme": "经典"
+    "diagram_classicTheme": "经典",
+    "sent_chatMessage": "{0} 给您发了一条消息"
 }

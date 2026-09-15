@@ -273,7 +273,7 @@
     "upload_title": "Subir archivo",
     "contacts_typeHere": "Escribe un mensaje aquí...",
     "contacts_removeHistoryTitle": "Borrar el historial de chat",
-    "contacts_confirmRemoveHistory": "¿Estás seguro de que quieres borrar el historial de forma permanente? No se podrán recuparar los datos.",
+    "contacts_confirmRemoveHistory": "¿Estás seguro de que quieres borrar el historial? No se podrán recuparar los datos.",
     "contacts_removeHistoryServerError": "Hubo un error al borrar el historial. Inténtalo de nuevo más tarde.",
     "todo_title": "CryptTodo",
     "todo_markAsCompleteTitle": "Marcar esta tarea como completa",

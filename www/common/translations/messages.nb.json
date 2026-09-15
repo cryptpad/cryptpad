@@ -202,7 +202,7 @@
     "contacts_info3": "Dobbeltklikk for å vise profilen deres",
     "contacts_info4": "Alle deltagere kan slette sludringshistorikkk for godt",
     "contacts_removeHistoryTitle": "Tøm sludringshistorikk",
-    "contacts_confirmRemoveHistory": "Er du sikker på at du vil fjerne chatteloggen permanent? Data kan ikke gjenopprettes",
+    "contacts_confirmRemoveHistory": "Er du sikker på at du vil fjerne chatteloggen? Data kan ikke gjenopprettes.",
     "contacts_removeHistoryServerError": "Det var en feil mens fjerning chatloggen. Prøv på nytt senere",
     "contacts_fetchHistory": "Hent eldre historikk",
     "contacts_rooms": "Rom",
