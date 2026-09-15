@@ -374,7 +374,7 @@ const factory = (UserObject, ProxyManager,
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
             if (data.owned) {
                 // Owned file
-                s.rpc.ownedUploadComplete(data.id, function (err, res) {
+                s.rpc.ownedUploadComplete({id: data.id, expire: data.expire}, function (err, res) {
                     if (err) { return void cb({error:err}); }
                     cb(res);
                 });
