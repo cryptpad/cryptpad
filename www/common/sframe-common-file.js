@@ -541,6 +541,7 @@ define([
             var name = file.name;
             var password;
             var owned = true;
+            var expire;
             var forceSave;
             var finish = function (abort) {
                 if (!abort) {
@@ -556,6 +557,7 @@ define([
                         password: password,
                         owned: owned,
                         forceSave: forceSave,
+                        expire: expire,
                         dropEvent: e
                     });
                 }
@@ -588,6 +590,7 @@ define([
                         owned = obj.owned;
                         forceSave = obj.forceSave;
                         alt = obj.alt;
+                        expire = obj.expire;
                         finish();
                     }, preview);
                 }

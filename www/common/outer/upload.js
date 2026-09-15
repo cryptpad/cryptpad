@@ -20,6 +20,7 @@ define([
         var u8 = data.u8;
         var metadata = data.metadata;
         var key = data.key;
+        var expire = data.expire; 
 
         var onError = data.onError || function () {};
         var onPending = data.onPending || function () {};
@@ -103,7 +104,7 @@ define([
             }
 
             // if not box then done
-            common.uploadComplete(teamId, id, owned, function (e) {
+            common.uploadComplete(teamId, id, owned, expire, function (e) {
                 if (e) { return void console.error(e); }
                 var uri = ['', 'blob', id.slice(0,2), id].join('/');
                 console.log("encrypted blob is now available as %s", uri);
@@ -169,6 +170,7 @@ define([
 
         var owned = file.owned;
         var teamId = file.teamId;
+        var expire = file.expire;
 
         // if it exists, path contains the new pad location in the drive
         var path = file.path;
@@ -213,6 +215,7 @@ define([
                 key: key,
                 id: id,
                 owned: owned,
+                expire: expire,
                 onError: onError,
                 onPending: onPending,
                 updateProgress: updateProgress,
