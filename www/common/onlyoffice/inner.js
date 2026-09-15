@@ -520,6 +520,12 @@ define([
 
             if (!needCp) { return; }
 
+            APP.rtcTools.makeCheckpoint(force, proceed => {
+                if (!proceed) { return; }
+                saveToServer();
+            });
+
+            /* XXX allow temp rpc
             if (!locked || !isUserOnline(locked) || force) {
                 if (!common.isLoggedIn() && !isRegisteredUserOnline() && !noLogin) {
                     var login = h('button.cp-corner-primary', Messages.login_login);
@@ -548,6 +554,7 @@ define([
                     saveToServer();
                 });
             }
+            */
         };
 
         var loadInitDocument = function (type, useNewDefault) {

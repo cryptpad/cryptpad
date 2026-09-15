@@ -361,14 +361,17 @@ define([
         };
 
         // XXX XXX XXX XXX XXX
-        const makeCheckpoint = (force) => {
+        const makeCheckpoint = (force, cb) => {
             let lock = content.saveLock && isUserOnline(content.saveLock);
-            if (lock && !force) { return; }
+            if (lock && !force) { return void cb(false); }
             // XXX !loggedIn ==> allow temp rpc?
+            if (!common.isLoggedIn()) { return void cb(false); }
+
             content.saveLock = myLockId;
             APP.onLocal();
             APP.realtime.onSettle(function () {
-                saveToServer(); // XXX managed by the app because we need to get the content, filetype, special cases, ooChannel, migrate, etc.
+                cb(true);
+                //saveToServer(); // XXX managed by the app because we need to get the content, filetype, special cases, ooChannel, migrate, etc.
             });
         };
 
@@ -473,6 +476,7 @@ define([
         tools.uploadCheckpoint = uploadCheckpoint;
         tools.restoreLastCp = restoreLastCp;
         tools.checkCheckpoint = checkCheckpoint;
+        tools.makeCheckpoint = makeCheckpoint;
 
         // RtChannel
         tools.openRtChannel = openRtChannel;
