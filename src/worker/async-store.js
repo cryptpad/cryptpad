@@ -380,7 +380,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                 return;
             }
             // Normal upload
-            s.rpc.uploadComplete(data.id, function (err, res) {
+            s.rpc.uploadComplete({id: data.id, expire: data.expire}, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);
             });
