@@ -32,6 +32,12 @@ You can find `Dockerfile`, `docker-compose.yml` and `docker-entrypoint.sh` files
 
 Previously, Docker images were community maintained, had their own repository and weren't official supported. We changed that with v5.4.0 during July 2023. Thanks to @promasu for all the work on the community images.
 
+### Setup using Easypanel
+
+[Easypanel](https://easypanel.io) is a self-hosted Docker deployment platform. It has a one-click Easypanel template for CryptPad, which runs the Docker image above with persistent volumes for `blob`, `block`, `customize`, `data` and `datastore`.
+
+[![Deploy on Easypanel](https://easypanel.io/img/deploy-on-easypanel-40.svg)](https://easypanel.io/templates/cryptpad)
+
 # Privacy / Security
 
 CryptPad offers a variety of collaborative tools that encrypt your data in your browser
