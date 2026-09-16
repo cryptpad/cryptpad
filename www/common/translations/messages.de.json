@@ -1883,10 +1883,15 @@
     "diagram_simpleTheme": "Einfach",
     "diagram_classicTheme": "Klassisch",
     "sent_chatMessage": "{0} hat dir eine Nachricht gesendet",
-    "kanban_quickView": "Karteninhalt maximieren",
-    "kanban_fullView": "Karteninhalt anzeigen",
+    "kanban_quickView": "Nur Kartentitel anzeigen",
+    "kanban_fullView": "Vollständigen Karteninhalt anzeigen",
     "settings_profileShare": "Profil teilen",
     "form_footerInfo": "Dieses Formular und deine Antworten sind durch Ende-zu-Ende-Verschlüsselung geschützt.<br>Nur der Autor des Formulars kann auf die Daten zugreifen.<br>Um mehr zu erfahren und eigene Formulare zu erstellen, <a href='https://cryptpad.org/apps/form/' target='_blank'>besuche die CryptPad-Website</a>.",
     "admin_logoType_error": "Der Dateityp der Logo-Datei ist nicht erlaubt",
-    "oo_blockURLImageDrop": "Das Ziehen von Bildern aus einem Browser wird nicht unterstützt."
+    "oo_blockURLImageDrop": "Das Ziehen von Bildern aus einem Browser wird nicht unterstützt.",
+    "copy": "Kopieren",
+    "form_guestAuthorTitle": "Speichere deinen Autorenlink vor dem Teilen",
+    "form_guestAuthorCopied": "Autorenlink kopiert",
+    "form_guestAuthorCopy": "Autorenlink kopieren",
+    "form_guestEditLinkDefinition": "Der Autorenlink dieses Formulars ist der private Link, über den Fragen bearbeitet und Antworten angezeigt werden können."
 }
