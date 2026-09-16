@@ -1898,5 +1898,7 @@
     "form_guestAuthorCopy": "Copier le lien d'auteur·ice",
     "form_guestAuthorContinuePublic": "Continuer vers le lien public",
     "form_guestPublicTitle": "Copier votre lien public",
-    "form_guestPublicBody": "Partagez ce lien avec les participant·es pour qu'iels puissent remplir votre formulaire."
+    "form_guestPublicBody": "Partagez ce lien avec les participant·es pour qu'iels puissent remplir votre formulaire.",
+    "creation_expireValue": "Délai de destruction",
+    "creation_expireUnit": "Unité de temps du délai de destruction"
 }
