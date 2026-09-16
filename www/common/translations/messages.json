@@ -1898,5 +1898,7 @@
     "form_guestAuthorCopy": "Copy author link",
     "form_guestAuthorContinuePublic": "Continue to public link",
     "form_guestPublicTitle": "Copy your public link",
-    "form_guestPublicBody": "Share this link with participants so they can fill out your form."
+    "form_guestPublicBody": "Share this link with participants so they can fill out your form.",
+    "creation_expireValue": "Destruction time",
+    "creation_expireUnit": "Destruction time unit"
 }
