@@ -71,6 +71,7 @@ var factory = function (Util) {
             text: "Save",
             textDl: "Load attachment"
         },
+        deletedMessage: undefined,
         Plugins: {
             /**
              * @param {object}   metadataObject {name,  metadatatype, owners} containing metadata of the file
@@ -144,7 +145,9 @@ var factory = function (Util) {
                 });
                 cb(void 0, btn);
             }
+            
         }
+        
     };
 
     var makeProgressBar = function (cfg, mediaObject) {
@@ -724,7 +727,13 @@ var factory = function (Util) {
         };
 
         var error = function (err) {
-            mediaObject.tag.innerHTML = '<img style="width: 100px; height: 100px;" src="/images/broken.png">';
+            var is404 = typeof(err) === 'string' && /XHR_ERROR 404/.test(err);
+                console.log('DEBUG', { err: err, is404: is404, deletedMessage: config.deletedMessage });
+            if (is404 && config.deletedMessage) {
+                mediaObject.tag.innerHTML = '<div class="cp-mediatag-deleted">' + fixHTML(config.deletedMessage) + '</div>';
+            } else {
+                mediaObject.tag.innerHTML = '<img style="width: 100px; height: 100px;" src="/images/broken.png">';
+            }
             emit('error', err);
         };
 

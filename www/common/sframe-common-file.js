@@ -342,7 +342,7 @@ define([
             var manualStore = createManualStore();
 
             // Life time
-            var expire = h('div.cp-creation-expire', [
+            var expire = h('div.cp-creation-expire-upload', [
                 UI.createCheckbox('cp-creation-expire', Messages.creation_expiration, false, {
                     labelAlt: Messages.creation_expiresIn
                 }),
@@ -388,24 +388,17 @@ define([
             ]);
             var $content = $(content);
 
-                    // Display expiration form when checkbox checked
-                    console.log("hello1", $(content).find('#cp-creation-expire'))
-        $content.find('#cp-creation-expire').on('change', function () {
-            console.log("hello2", )
-            if ($(this).is(':checked')) {
-                console.log("1", $content.find('.cp-creation-expire-picker:not(.active)'))
-                $content.find('.cp-creation-expire-picker:not(.active)').addClass('active');
-                console.log("2", $content.find('.cp-creation-expire-picker:not(.active)'))
-                console.log("3", $content.find('.cp-creation-expire:not(.active)'))
-                $content.find('.cp-creation-expire:not(.active)').addClass('active');
-                                console.log("4", $content.find('.cp-creation-expire:not(.active)'))
-
-                $content.find('#cp-creation-expire-val').focus();
-                return;
-            }
-            $content.find('.cp-creation-expire-picker').removeClass('active');
-            $content.find('.cp-creation-expire').removeClass('active');
-        });
+            // Display expiration form when checkbox checked
+            $content.find('#cp-creation-expire').on('change', function () {
+                if ($(this).is(':checked')) {
+                    $content.find('.cp-creation-expire-picker:not(.active)').addClass('active');
+                    $content.find('.cp-creation-expire:not(.active)').addClass('active');
+                    $content.find('#cp-creation-expire-val').focus();
+                    return;
+                }
+                $content.find('.cp-creation-expire-picker').removeClass('active');
+                $content.find('.cp-creation-expire').removeClass('active');
+            });
 
             $content.find('#cp-upload-owned').on('change', function () {
                 var val = Util.isChecked($(content).find('#cp-upload-owned'));
