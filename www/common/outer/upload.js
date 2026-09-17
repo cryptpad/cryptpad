@@ -109,6 +109,10 @@ define([
                 var uri = ['', 'blob', id.slice(0,2), id].join('/');
                 console.log("encrypted blob is now available as %s", uri);
 
+                if (expire) {
+                    // Don't cache locally
+                    return void cb();
+                }
                 var box_u8 = Util.uint8ArrayJoin(encryptedArr);
                 Cache.setBlobCache(id, box_u8, function (err) {
                     if (err) { console.warn(err); }
