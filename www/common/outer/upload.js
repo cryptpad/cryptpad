@@ -240,6 +240,7 @@ define([
                     password: password,
                     channel: id,
                     owners: metadata.owners,
+                    expire: expire,
                     forceSave: forceSave
                 };
                 common.setPadTitle(data, function (err) {
