@@ -12,10 +12,6 @@ WORKDIR /cryptpad
 # Copy CryptPad source code to the container
 COPY . /cryptpad
 
-RUN sed -i "s@//httpAddress: 'localhost'@httpAddress: '0.0.0.0'@" /cryptpad/config/config.example.js
-RUN sed -i "s@installMethod: 'unspecified'@installMethod: 'docker'@" /cryptpad/config/config.example.js
-RUN sed -i 's@host: "localhost"@host: "0.0.0.0"@' /cryptpad/config/infra.example.js
-
 # Install dependencies
 RUN npm install --production \
     && npm run install:components

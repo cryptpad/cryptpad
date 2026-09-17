@@ -5,14 +5,15 @@
 ---
 services:
   cryptpad:
-    image: "cryptpad/cryptpad:latest"
+    image: "cryptpad/cryptpad:local-latest"
     hostname: cryptpad
     read_only: true
 
     environment:
       - CPAD_MAIN_DOMAIN=https://your-main-domain.com
       - CPAD_SANDBOX_DOMAIN=https://your-sandbox-domain.com
-      - CPAD_CONF=/cryptpad/config/config.js
+      - CPAD_CONF=/cryptpad/config/config.docker.js
+      - CPAD_CONF_INFRA=/cryptpad/config/infra.docker.js
 
       # Read and accept the license before uncommenting the following line:
       # https://github.com/Euro-Office/web-apps/raw/refs/heads/main/LICENSE.txt
@@ -22,7 +23,6 @@ services:
       - ./data/blob:/cryptpad/blob
       - ./data/block:/cryptpad/block
       - ./customize:/cryptpad/customize
-      - ./config:/cryptpad/config
       - ./data/data:/cryptpad/data
       - ./data/files:/cryptpad/datastore
       - ./onlyoffice-dist:/cryptpad/www/common/onlyoffice/dist
