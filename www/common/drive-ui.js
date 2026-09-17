@@ -2365,9 +2365,11 @@ define([
                 var $password = $passwordIcon.clone().appendTo($state);
                 $password.attr('title', Messages.fm_passwordProtected || '');
             }
+            console.log("hello!", data)
             if (data.expire) {
                 var $expire = $expirableIcon.clone().appendTo($state);
                 $expire.attr('title', Messages._getKey('fm_expirablePad', [new Date(data.expire).toLocaleString()]));
+                console.log("hi", $state)
             }
             _addOwnership($element, $state, data);
 

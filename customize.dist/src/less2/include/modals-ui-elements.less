@@ -339,16 +339,16 @@
             }
         }
     }
-    .cp-creation-expire {
-        // background-color: red;
+    .cp-creation-expire-upload {
         display: flex;
         .cp-creation-expire-picker {
+            visibility: hidden;
             text-align: center;
-            .cp-creation-expire-val {
-                        background-color: red;
-
-                width: 10% !important;
-                height: 26px;
+            display: flex;
+            margin-left: 5%;
+            align-items: center;
+            #cp-creation-expire-val {
+                height: 100% !important;
                 margin: 0 5px;
                 padding: 0 0 0 3px;
                 &:focus-visible {
@@ -358,19 +358,13 @@
             }
             select {
                 border-radius: @variables_radius;
-                margin: 0.2rem;
                 &:focus-visible {
                     outline: @variables_focus_style;
                     border-radius: @variables_radius;
                 }
             }
-        }
-        &.active {
-            label {
-                flex: none;
-            }
-            .cp-creation-slider {
-                flex: 1;
+            &.active {
+                visibility: visible;  
             }
         }
     }
