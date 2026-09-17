@@ -4631,7 +4631,7 @@ define([
                     // _displayDirectory(path, force);
                     // cb();
                 }
-                if (opt?.sf) {
+                if (opt?.sf && APP.loggedIn) { // anonymous drives don’t store shared folders
                     path = ['sf', String(APP.newSharedFolder), 'root'];
 
                 }
