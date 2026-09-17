@@ -982,7 +982,7 @@ define([
             }
 
             if (MT.MediaTag) {
-                MT.MediaTag.setDefaultConfig('deletedMessage', Messages.dph_default);
+                MT.MediaTag.setDefaultConfig('deletedMessage', Messages.expiredError);
             }
 
             if (MT.MediaTag && ctx.cache) {
