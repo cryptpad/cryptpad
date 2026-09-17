@@ -145,9 +145,7 @@ var factory = function (Util) {
                 });
                 cb(void 0, btn);
             }
-            
         }
-        
     };
 
     var makeProgressBar = function (cfg, mediaObject) {
