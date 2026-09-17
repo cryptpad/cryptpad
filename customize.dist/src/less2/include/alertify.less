@@ -382,14 +382,15 @@
 
             nav {
                 padding: @alertify_padding-base;
-                text-align: right;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                align-items: center;
+                gap: @alertify_padding-base;
                 button, div.cp-button-confirm {
-                    margin: 0px !important;
-                    &:not(:first-child):not(.left) {
-                        margin-left: @alertify_padding-base !important;
-                      }
+                    margin: 0 !important;
                     &.left {
-                        float: left;
+                        margin-right: auto !important;
                     }
                 }
                 div.cp-button-confirm {
@@ -398,10 +399,7 @@
             }
             @media screen and (max-width: @browser_media-medium-screen) {
                 .cp-crowdfunding-modal nav {
-                    display: flex;
-                    flex-wrap: wrap;
                     justify-content: center;
-                    gap: 0.5rem;
                 }
             }
         }
