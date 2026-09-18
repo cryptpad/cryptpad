@@ -958,14 +958,20 @@
             div.cp-toolbar-account {
                 &> span {
                     font-weight: bold;
+                    display: block;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    line-height: 1.3;
                     span {
                         font-weight: normal;
                     }
                 }
                 min-width: 160px;
+                max-width: 250px;
+                box-sizing: border-box;
                 padding: 5px;
                 margin: 0;
-                white-space: normal;
                 text-align: left;
                 color: @cryptpad_text_col;
                 font-size: 14px;
