@@ -2905,9 +2905,12 @@ define([
                     type: "number",
                     min: 1,
                     max: 100,
-                    value: 3
+                    value: 3,
+                    'aria-label': Messages.creation_expireValue
                 }),
-                h('select#cp-creation-expire-unit', [
+                h('select#cp-creation-expire-unit', {
+                    'aria-label': Messages.creation_expireUnit
+                }, [
                     h('option', { value: 'hour' }, Messages.creation_expireHours),
                     h('option', { value: 'day' }, Messages.creation_expireDays),
                     h('option', {

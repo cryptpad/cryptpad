@@ -81,7 +81,7 @@ define([
 
         var $uname = $('#name').focus();
 
-        var $passwd = $('#password')
+        var $passwd = $('#password');
 
         //var test;
         $('#userForm').on('submit', function (e) {
