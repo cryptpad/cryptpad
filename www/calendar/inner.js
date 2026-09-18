@@ -2200,6 +2200,7 @@ APP.recurrenceRule = {
             var $container = $el.closest('.tui-full-calendar-floating-layer');
             $container.addClass('cp-calendar-popup-flex');
             $container.css('display', 'flex').mousedown(function (e) {
+                e.stopPropagation();
                 if ($(e.target).is('.cp-calendar-popup-flex')) {
                     $el.find('.tui-full-calendar-popup-close').click();
                 }
