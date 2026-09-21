@@ -1316,6 +1316,30 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
 
         if (teamData.channel !== data.channel || teamData.password !== data.password) { return void cb(false); }
 
+        // Team not ready yet: try again onReady
+        if (!team && Array.isArray(onReady)) {
+            onReady.push({
+                cb: function () {
+                    changeMyRights(ctx, teamId, state, data, cb);
+                }
+            });
+            return;
+        }
+
+        // Team and roster are ready/synced
+        // Check my current role
+        const roster = team.roster;
+        const members = roster.getState()?.members || {};
+        const myCurvePublic = ctx.store?.proxy?.curvePublic;
+        const myRole = members[myCurvePublic]?.role;
+
+        if (!myRole) { return void cb(false); }
+
+        // Removed edit access: make sure I'm a viewer
+        if (!state && myRole !== "VIEWER") { return void cb(false); }
+        // Added edit access: make sure I'm not a viewer
+        if (state && myRole === "VIEWER") { return void cb(false); }
+
         // Update our proxy
         if (state) {
             teamData.hash = data.hash;
@@ -1327,15 +1351,6 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
             delete teamData.keys.chat.edit;
         }
 
-        // Team not ready yet: try again onReady
-        if (!team && Array.isArray(onReady)) {
-            onReady.push({
-                cb: function () {
-                    changeMyRights(ctx, teamId, state, data, cb);
-                }
-            });
-            return;
-        }
 
         // No team and not initialized at all...
         if (!team) { return void cb(false); }
@@ -1417,24 +1432,26 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 return;
             }
 
-            // Viewer to editor
-            if (user.role === "VIEWER" && data.data.role !== "VIEWER") {
-                changeEditRights(ctx, teamId, user, true, function (obj) {
-                    return void cb(obj);
-                });
-            }
-
-            // Editor to viewer
-            if (user.role !== "VIEWER" && data.data.role === "VIEWER") {
-                changeEditRights(ctx, teamId, user, false, function (obj) {
-                    return void cb(obj);
-                });
-            }
-
+            // Update the roster and send the notification to the user
             var obj = {};
-            obj[data.curvePublic] = data.data;
+            let newUser = obj[data.curvePublic] = data.data;
             team.roster.describe(obj, function (err) {
                 if (err) { return void cb({error: err}); }
+
+                // Viewer to editor
+                if (user.role === "VIEWER" && newUser.role !== "VIEWER") {
+                    changeEditRights(ctx, teamId, user, true, (obj) => {
+                        return void cb(obj);
+                    });
+                }
+
+                // Editor to viewer
+                if (user.role !== "VIEWER" && newUser.role === "VIEWER") {
+                    changeEditRights(ctx, teamId, user, false, (obj) => {
+                        return void cb(obj);
+                    });
+                }
+
                 cb();
             });
         });
