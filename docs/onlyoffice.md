@@ -59,3 +59,24 @@ const ooconfig = {
 ```
 
 OnlyOffice's own loader fetches that `blob:` URL and feeds the bytes into `sdkjs`.
+
+## Collaboration model: checkpoints + a private OO channel
+
+CryptPad doesn't let ChainPad synchronize the OOXML binary directly. The pad's main
+ChainPad channel (the same CRDT-based sync CryptPad uses for every pad type - see
+[ARCHITECTURE.md](./ARCHITECTURE.md)) only carries a small JSON metadata object
+(`content` in `inner.js`): checkpoint hashes, object-id/lock bookkeeping, save/migration
+flags, and the id of a *second*, separate realtime channel used for the
+actual document edits. ChainPad's CRDT merge keeps that metadata object consistent across
+clients even when several of them touch it concurrently.
+
+That second channel (`ooChannel`) is a plain relay channel, not ChainPad/CRDT-backed -
+OnlyOffice already does its own operational-transform conflict resolution on its change
+format, so CryptPad just needs to broadcast messages in order, not merge them. Instead:
+
+- Individual edits are captured as OnlyOffice's own collaborative change format and relayed
+  over `ooChannel`, separate from the pad's main ChainPad channel.
+- Periodically (based on `CHECKPOINT_INTERVAL` / `FORCE_CHECKPOINT_INTERVAL` in `inner.js`),
+  one client serializes the *entire* current document to a binary blob and uploads it as a **checkpoint**
+  (`saveToServer` / `makeCheckpoint`). This bounds how much incremental
+  history every client has to replay to catch up.
