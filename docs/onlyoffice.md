@@ -13,7 +13,7 @@ connects it to CryptPad's own end-to-end encrypted realtime sync layer.
 
 The OnlyOffice source used is a CryptPad-maintained fork,
 [`cryptpad/onlyoffice-editor`](https://github.com/cryptpad/onlyoffice-editor). It isn't
-vendored as source in this repo - `install-onlyoffice.sh` downloads prebuilt dist bundles
+vendored as source in this repo - `install-office.sh` downloads prebuilt dist bundles
 into `www/common/onlyoffice/dist/v<version>/` (`sdkjs`, `web-apps`, dictionaries, etc.).
 CryptPad's own glue code lives in `www/common/onlyoffice/` (`main.js`, `inner.js`,
 `history.js`, ...).
@@ -114,7 +114,7 @@ this client uploads its own checkpoint.
 | Version history UI                                               | `www/common/onlyoffice/history.js`                                     |
 | OnlyOffice dist bundles (downloaded, not source-controlled here) | `www/common/onlyoffice/dist/v<version>/`                               |
 | Fork of OnlyOffice actually built into the dist bundles          | [At the time of writing] https://github.com/cryptpad/onlyoffice-editor |
-| Installer that fetches/pins OnlyOffice versions                  | `install-onlyoffice.sh`                                                |
+| Installer that fetches/pins OnlyOffice versions                  | `install-office.sh`                                                |
 
 ## Useful miscellaneous info for newcomers
 
