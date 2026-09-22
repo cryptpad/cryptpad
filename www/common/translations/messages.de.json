@@ -1893,5 +1893,12 @@
     "form_guestAuthorTitle": "Speichere deinen Autorenlink vor dem Teilen",
     "form_guestAuthorCopied": "Autorenlink kopiert",
     "form_guestAuthorCopy": "Autorenlink kopieren",
-    "form_guestEditLinkDefinition": "Der Autorenlink dieses Formulars ist der private Link, über den Fragen bearbeitet und Antworten angezeigt werden können."
+    "form_guestEditLinkDefinition": "Der Autorenlink dieses Formulars ist der private Link, über den Fragen bearbeitet und Antworten angezeigt werden können.",
+    "form_guestPublicBody": "Teile diesen Link mit Teilnehmern, damit diese dein Formular ausfüllen können.",
+    "creation_expireUnit": "Einheit der Zerstörungszeit",
+    "creation_expireValue": "Zerstörungszeit",
+    "form_guestAuthorBodyStored": "Dieser Autorenlink ist derzeit nur auf diesem Gerät gespeichert. Bitte speichere ihn, um den Zugriff auf dein Formular nicht zu verlieren.",
+    "form_guestAuthorBody": "Dieser Autorenlink ist derzeit nirgendwo gespeichert, da du nicht angemeldet bist. Um zu vermeiden, dass du den Zugriff verlierst, speichere diesen Link bitte jetzt:",
+    "form_guestAuthorContinuePublic": "Weiter zum öffentlichen Link",
+    "form_guestPublicTitle": "Deinen öffentlichen Link kopieren"
 }
