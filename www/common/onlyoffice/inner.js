@@ -2,6 +2,9 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+/**
+ * For information on how this file integrates with OnlyOffice, please refer to onlyoffice.md
+ */
 define([
     'jquery',
     '/common/toolbar.js',
