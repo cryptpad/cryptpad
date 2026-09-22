@@ -183,7 +183,7 @@ This is easily solved by sorting the attributes into a deterministic order.
 We used [JSON.sortify](https://github.com/ThomasR/JSON.sortify) to define a canonical form when serializing our HyperJSON.
 Since everything else but the maps in the HyperJSON structure is already deterministic, this provides a simple way to prevent one cause of browser fights.
 
-### filtering local elements
+### Filtering local elements
 
 Depending on your interface, you may find that there are other elements or attributes which may only have a valid meaning in certain environments.
 We have encountered [Bogus BRs](https://bugzilla.mozilla.org/show_bug.cgi?id=911201), which some browsers insert for the purpose of making empty P tags selectable in contentEditable elements.
@@ -247,5 +247,6 @@ When the final user leaves the realtime collaborative session, the history is de
 
 A session could still have difficulty with very large chains, however, in practice sessions rarely last long enough for it to become a noticeable problem.
 
+## OnlyOffice
 
-## Conclusion
+To understand how CryptPad manages the document/spreadsheet/presentation editor, please refer to [onlyoffice.md](./onlyoffice.md)
