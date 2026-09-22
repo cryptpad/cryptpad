@@ -37,3 +37,25 @@ Instantiation example:
 ```js
 APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
 ```
+
+## Getting document bytes into OnlyOffice
+
+Because CryptPad is end-to-end encrypted, OnlyOffice can't be pointed at a normal server URL
+to fetch the file - the server never sees plaintext. Instead, `inner.js` decrypts the
+document client-side into a `Blob`, turns it into an object URL, and hands that to
+OnlyOffice as `document.url`. Snippet from method `createOOConfig` in `inner.js`:
+
+```js
+const url = URL.createObjectURL(blob);
+//...
+const ooconfig = {
+    document: {
+        fileType: file.type,   // always 'xlsx' / 'docx' / 'pptx' for CryptPad
+        url: url,
+        ...
+    },
+    ...
+};
+```
+
+OnlyOffice's own loader fetches that `blob:` URL and feeds the bytes into `sdkjs`.
