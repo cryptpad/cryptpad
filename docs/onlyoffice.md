@@ -64,8 +64,8 @@ OnlyOffice's own loader fetches that `blob:` URL and feeds the bytes into `sdkjs
 
 CryptPad doesn't let ChainPad synchronize the OOXML binary directly. The pad's main
 ChainPad channel (the same CRDT-based sync CryptPad uses for every pad type - see
-[ARCHITECTURE.md](./ARCHITECTURE.md)) only carries a small JSON metadata object
-(`content` in `inner.js`): checkpoint hashes, object-id/lock bookkeeping, save/migration
+[ARCHITECTURE.md](./ARCHITECTURE.md)) only carries a small JSON metadata object (`content` in `inner.js`): checkpoint
+hashes, object-id/lock bookkeeping, save/migration
 flags, and the id of a *second*, separate realtime channel used for the
 actual document edits. ChainPad's CRDT merge keeps that metadata object consistent across
 clients even when several of them touch it concurrently.
@@ -80,3 +80,50 @@ format, so CryptPad just needs to broadcast messages in order, not merge them. I
   one client serializes the *entire* current document to a binary blob and uploads it as a **checkpoint**
   (`saveToServer` / `makeCheckpoint`). This bounds how much incremental
   history every client has to replay to catch up.
+
+## Reloading the editor
+
+"Reloading OnlyOffice" doesn't mean refreshing the page - it means **tearing down and
+recreating the whole embedded (onlyoffice) editor instance**. This is `resetData(blob, type)`
+in `inner.js`:
+
+```js
+var resetData = function (blob, type) {
+// ...
+    if (APP.docEditor) {
+        APP.docEditor.destroyEditor();
+    }
+    // kill the old OO instance
+    $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
+// ...
+    startOO(blob, type, true);  // fresh ooconfig, new blob: URL, new DocsAPI.DocEditor
+};
+```
+
+This runs whenever a client needs to jump onto a new checkpoint - most commonly when
+another collaborator creates one (`config.onRemote` notices a newer checkpoint hash and
+calls `checkNewCheckpoint()` -> `loadLastDocument()` -> `resetData()`), and also right after
+this client uploads its own checkpoint.
+
+## Where to look for what
+
+| Concern                                                          | File                                                                   |
+|------------------------------------------------------------------|------------------------------------------------------------------------|
+| Bootstrapping the outer CryptPad page, RPC wiring                | `www/common/onlyoffice/main.js`                                        |
+| Editor lifecycle, checkpoints, realtime bridge (`ooChannel`)     | `www/common/onlyoffice/inner.js`                                       |
+| Version history UI                                               | `www/common/onlyoffice/history.js`                                     |
+| OnlyOffice dist bundles (downloaded, not source-controlled here) | `www/common/onlyoffice/dist/v<version>/`                               |
+| Fork of OnlyOffice actually built into the dist bundles          | [At the time of writing] https://github.com/cryptpad/onlyoffice-editor |
+| Installer that fetches/pins OnlyOffice versions                  | `install-onlyoffice.sh`                                                |
+
+## Useful miscellaneous info for newcomers
+
+- Don't expect to find OnlyOffice's editor source in this repo - only the built dist and
+  CryptPad's glue code are here. Debugging it means going to the fork repo.
+- Because every client independently reloads its own editor instance when a new checkpoint
+  arrives, there is an inherent window during which different clients are running *different* editor
+  instances (some still on the old checkpoint, some already on the new
+  one) before they converge. Bugs that depend on that race are rare and hard to reproduce
+  locally.
+- The "document" ChainPad ultimately stores is periodic full-document checkpoints plus a
+  trimmed tail of incremental OnlyOffice changes on `ooChannel`. It **does not store** a live OOXML diff.
