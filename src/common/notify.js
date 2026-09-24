@@ -17,10 +17,10 @@ const factory = (ApiConfig = {}) => {
     var app = window.location && window.location.pathname.slice(1, -1); // remove "/" at the beginnin and the end
     var suffix = apps.indexOf(app) !== -1 ? '-'+app : '';
 
-    var DEFAULT_MAIN = '/customize/favicon/main-favicon' + suffix + '.png?' + ApiConfig.requireConf.urlArgs;
-    var DEFAULT_ALT = '/customize/favicon/alt-favicon' + suffix + '.png?' + ApiConfig.requireConf.urlArgs;
-    var DEFAULT_MAIN_ICO = '/customize/favicon/main-favicon' + suffix + '.ico?' + ApiConfig.requireConf.urlArgs;
-    var DEFAULT_ALT_ICO = '/customize/favicon/alt-favicon' + suffix + '.ico?' + ApiConfig.requireConf.urlArgs;
+    var DEFAULT_MAIN = '/customize/favicon/main-favicon' + suffix + '.svg?' + ApiConfig.requireConf.urlArgs;
+    var DEFAULT_ALT = '/customize/favicon/alt-favicon' + suffix + '.svg?' + ApiConfig.requireConf.urlArgs;
+    var DEFAULT_MAIN_ICO = '/customize/favicon/main-favicon' + suffix + '.svg?' + ApiConfig.requireConf.urlArgs;
+    var DEFAULT_ALT_ICO = '/customize/favicon/alt-favicon' + suffix + '.svg?' + ApiConfig.requireConf.urlArgs;
 
     var document = window.document;
 
