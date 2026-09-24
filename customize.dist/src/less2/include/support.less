@@ -81,6 +81,7 @@
             max-width: 90%;
             margin: 5px auto;
             border-radius: @variables_radius;
+            gap: @sidebar_base-margin;
             .cp-support-ticket-header {
                 display: flex;
                 align-items: flex-start;
@@ -100,10 +101,9 @@
                         &:empty {
                             display: none !important;
                         }
-                        margin-top: @sidebar_base-margin;
                         width: 100%;
                         span {
-                            margin-bottom: 0.3rem;
+                            margin-bottom: 0;
                         }
                     }
                 }
@@ -132,14 +132,6 @@
                 }
                 .cp-support-list-actions {
                     display: none;
-                }
-            }
-            &:not(.cp-not-loaded) {
-                .cp-support-ticket-header {
-                    margin-bottom: @ticket-padding;
-                }
-                .cp-support-ticket-tags {
-                    margin-bottom: @ticket-padding;
                 }
             }
             .cp-support-ispremium {
@@ -204,14 +196,14 @@
             .cp-support-list-actions {
                 display: flex;
                 gap: @variables_icon_margin;
-                order: 3;
-                margin-top: 5px;
                 .cp-support-hide {
                     display: none;
                 }
             }
-            .cp-support-form-container {
-                order: 2;
+            .cp-support-ticket-messages {
+                &:empty {
+                    display: none;
+                }
             }
             &.cp-support-list-closed {
                 .cp-support-list-actions {

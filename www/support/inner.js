@@ -150,7 +150,11 @@ define([
                 });
 
                 $list.empty();
-                obj.tickets.forEach((data) => {
+                // sorted by creation time, most recent ticket first
+                const sortTickets = (a, b) => {
+                    return b.time - a.time;
+                };
+                obj.tickets.sort(sortTickets).forEach((data) => {
                     var messages = data.messages;
                     var first = messages[0];
                     first.id = data.id;
@@ -160,20 +164,22 @@ define([
                         form: activeForms[data.id],
                         onClose, onReply, onDelete
                     });
+                    console.error(new Date(data.time).toLocaleString());
                     $list.append(ticket);
                     let $ticket = $(ticket);
+                    const $msgs = $ticket.find('.cp-support-ticket-messages');
                     messages.forEach(msg => {
                         if (msg.close) {
                             $ticket.addClass('cp-support-list-closed');
-                            return $ticket.append(APP.support.makeCloseMessage(msg));
+                            return $msgs.prepend(APP.support.makeCloseMessage(msg));
                         }
                         if (msg.legacy && msg.messages) {
                             msg.messages.forEach(c => {
-                                $ticket.append(APP.support.makeMessage(c));
+                                $msgs.prepend(APP.support.makeMessage(c));
                             });
                             return;
                         }
-                        $ticket.append(APP.support.makeMessage(msg));
+                        $msgs.prepend(APP.support.makeMessage(msg));
                     });
 
                 });

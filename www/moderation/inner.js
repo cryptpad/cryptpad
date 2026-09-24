@@ -77,6 +77,7 @@ define([
                     return void UI.warn(Messages.error);
                 }
                 var $ticket = $(ticket);
+                const $msgs = $ticket.find('.cp-support-ticket-messages');
                 obj.forEach(function (msg) {
                     // Only add notifications channel if this is coming from the other user
                     if (!data.notifications && msg.sender.drive) {
@@ -84,15 +85,15 @@ define([
                     }
                     if (msg.close) {
                         $ticket.addClass('cp-support-list-closed');
-                        return $ticket.append(APP.support.makeCloseMessage(msg));
+                        return $msgs.prepend(APP.support.makeCloseMessage(msg));
                     }
                     if (msg.legacy && msg.messages) {
                         msg.messages.forEach(c => {
-                            $ticket.append(APP.support.makeMessage(c));
+                            $msgs.prepend(APP.support.makeMessage(c));
                         });
                         return;
                     }
-                    $ticket.append(APP.support.makeMessage(msg));
+                    $msgs.prepend(APP.support.makeMessage(msg));
                 });
                 done(true);
             });

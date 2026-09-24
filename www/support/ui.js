@@ -523,6 +523,7 @@ define([
         let isPremium = content.premium ? '.cp-support-ispremium' : '';
         let title = content.title + ` (#${linkId})`;
         var name = Util.fixHTML(content.author) || Messages.anonymous;
+        const msgContainer = h('div.cp-support-ticket-messages');
         ticket = h(`div.cp-support-list-ticket${adminClasses}`, {
             'data-link-id': linkId,
             'data-id': id
@@ -537,7 +538,8 @@ define([
                 adminActions,
             ]),
             tagsContainer,
-            actions
+            actions,
+            msgContainer,
         ]);
         ticket.open = adminOpen;
 
@@ -583,7 +585,7 @@ define([
                 onReply(ticket, id, content, newForm);
             });
             $(newForm).attr('data-id', id);
-            $ticket.append(newForm);
+            $ticket.find('.cp-support-list-actions').after(newForm);
         };
         if (form) { addForm(); }
         Util.onClickEnter($(answer), addForm);
