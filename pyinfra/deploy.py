@@ -1,21 +1,27 @@
 from pyinfra.operations import apt, server, git
 
-# Declare end state: the vim package should be installed.
-# On every run pyinfra checks the host and only runs apt if vim is missing.
-apt.packages(
-    name = "Ensure the apt packages are installed",
-    packages = ["git"],
-    update = True,
-    _sudo = True,
-)
 
 git.repo(
   src = "https://github.com/cryptpad/cryptpad.git",
-  dest = "cryptpad",
+  dest = "Desktop/Temp/cryptpad",
   branch = "staging",
 )
 
-# server.shell(
-#     name="Update CryptPad dependencies",
-#     commands=["lxd init --auto"],
-# )
+
+# Run shell commands ######################################
+
+server.shell(
+    name="Update CryptPad dependencies",
+    commands=[
+      "npm ci --allow-git=all", 
+      "npm run install:components",
+      "cp config/config.example.js config/config.js"],
+    _chdir = host.data.get("installPath")
+)
+
+server.shell(
+    name="Update OnlyOffice",
+    commands=[
+      "./install-office.sh -a",],
+    _chdir = host.data.get("installPath")
+)
