@@ -16,6 +16,8 @@ define([
     '/common/common-icons.js',
 ], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages, Pages, Icons) {
 
+    const onBatchChange = Util.mkEvent();
+
     var getDebuggingData = function (ctx, data) {
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
@@ -161,7 +163,7 @@ define([
     };
 
     var makeForm = function (ctx, opts, cb) {
-        let { oldData, recorded, title, hideNotice } = opts || {};
+        let { oldData, recorded, title, hideNotice, hideCancel } = opts || {};
         var button;
         cb = cb && Util.once(cb);
 
@@ -170,7 +172,7 @@ define([
             $(button).click(cb);
         }
 
-        var cancel = title ? h('button.btn.btn-secondary.cp-support-reply-cancel', Messages.cancel)
+        var cancel = (title && !hideCancel) ? h('button.btn.btn-secondary.cp-support-reply-cancel', Messages.cancel)
                         : undefined;
 
         var category = h('input.cp-support-form-category', {
@@ -379,8 +381,11 @@ define([
         return form;
     };
 
+    var getLinkId = (id) => {
+        return Util.hexToBase64(id).slice(0,10);
+    };
     var makeTicket = function (ctx, opts) {
-        let { id, content, form, recorded,
+        let { id, content, form, recorded, batch,
               onShow, onHide, onClose, onReply, onMove, onDelete, onTag } = opts;
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
@@ -394,7 +399,7 @@ define([
             _actions = [remove]; // XXX update key to "Delete permanently" ?
         }
 
-        let linkId =  Util.hexToBase64(id).slice(0,10);
+        let linkId = getLinkId(id);
         var actions = h('div.cp-support-list-actions', _actions);
 
         var adminActions;
@@ -517,7 +522,22 @@ define([
                 });
             }
 
-            adminActions = h('span.cp-support-title-buttons', [ url, move, tag, show ]);
+            const box = UI.createCheckbox(`cp-support-batch-${id}`, '', ctx.batches.has(id));
+            const $cbox = $(box).click(e => {
+                e.stopPropagation();
+            });
+            if (batch) { ctx.batches.add(id); }
+            let $checkbox = $cbox.find('input').on('change', () => {
+                const val = $checkbox.is(':checked');
+                if (val) {
+                    ctx.batches.add(id);
+                } else {
+                    ctx.batches.delete(id);
+                }
+                onBatchChange.fire(ctx.batches);
+            });
+
+            adminActions = h('span.cp-support-title-buttons', [ box, url, move, tag, show ]);
         }
 
         let isPremium = content.premium ? '.cp-support-ispremium' : '';
@@ -712,6 +732,7 @@ define([
             pinUsage: pinUsage || false,
             teamsUsage: teamsUsage || false,
             moderatorKeys: Array.isArray(ApiConfig.moderatorKeys)?  ApiConfig.moderatorKeys.slice(): [],
+            batches: new Set()
         };
 
         ctx.supportModule = common.makeUniversal('support');
@@ -752,6 +773,13 @@ define([
         ui.getDebuggingData = function (data) {
             return getDebuggingData(ctx, data);
         };
+        ui.resetBatch = function () {
+            ctx.batches = new Set();
+            onBatchChange.fire(ctx.batches);
+        };
+        ui.getLinkId = getLinkId;
+
+        ui.onBatchChange = onBatchChange.reg;
 
         return ui;
     };

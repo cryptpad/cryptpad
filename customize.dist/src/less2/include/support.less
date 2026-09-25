@@ -110,7 +110,15 @@
                 .cp-support-title-buttons {
                     margin-left: 1em;
                     display: inline-flex;
+                    align-items: center;
                     gap: @variables_icon_margin;
+                    label.cp-checkmark {
+                        margin: 0;
+                        padding: 0;
+                        .cp-checkmark-mark {
+                            margin: 0;
+                        }
+                    }
                     svg {
                         margin: 0;
                     }
@@ -220,6 +228,9 @@
                 }
             }
         }
+    }
+    .cp-support-batch-empty {
+        font-style: italic;
     }
 }
 

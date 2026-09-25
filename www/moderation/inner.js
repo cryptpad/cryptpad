@@ -392,6 +392,14 @@ define([
                     'pending-list',
                 ]
             },
+            'batch': {
+                icon: 'users',
+                content: [
+                    'batch-list',
+                    'batch-close',
+                    'batch-send'
+                ]
+            },
             'closed': { // Msg.support_cat_closed
                 icon: 'history-moderation',
                 content: [
@@ -833,6 +841,163 @@ define([
             let div = blocks.form([userData, form], nav);
             cb(div);
         });
+
+        sidebar.addItem('batch-list', cb => {
+            let list = blocks.block([blocks.block([
+                blocks.inline(Messages.support_emptyBatch, 'cp-support-batch-empty')
+            ])], 'cp-support-batch-list');
+            APP.batchList = $(list);
+            let content = blocks.block([list]);
+            cb(content);
+        }, { noHint: true });
+
+        const replyBatch = (handler, cb) => {
+            if (!Array.isArray(APP.currentBatch) || !APP.currentBatch.length) {
+                return void cb(false);
+            }
+            let n = nThen;
+            APP.currentBatch.forEach(data => {
+                n = n(waitFor => {
+                    APP.module.execCommand('LOAD_TICKET_ADMIN', {
+                        channel: data.id,
+                        curvePublic: data.authorKey,
+                        supportKey: data.supportKey
+                    }, waitFor(function (obj) {
+                        if (!obj.length) { return; }
+                        // Get user notifications channel
+                        let notifications;
+                        obj.some(msg => {
+                            // reject admin messages
+                            if (!msg?.sender?.drive) { return; }
+                            notifications = msg?.sender?.notifications;
+                            return notifications;
+                        });
+                        // Call the handler
+                        handler(data, notifications, waitFor());
+                    }));
+                }).nThen;
+            });
+            n(() => {
+                cb(true);
+            });
+        };
+
+        sidebar.addItem('batch-close', cb => {
+            let b = blocks.activeButton('danger', 'close', Messages.support_closeTickets, (cb) => {
+                const handler = (data, notifications, cb) => {
+                    APP.module.execCommand('CLOSE_TICKET_ADMIN', {
+                        channel: data.id,
+                        curvePublic: data.authorKey,
+                        notifChannel: notifications,
+                        supportKey: data.supportKey,
+                        ticket: APP.support.getDebuggingData({
+                            close: true
+                        })
+                    }, function (obj) {
+                        if (obj?.error) {
+                            console.error(obj?.error, data);
+                            UI.warn(Messages.error);
+                        }
+                        cb();
+                    });
+                };
+
+                // XXX Add confirm alert?
+
+                replyBatch(handler, success => {
+                    if (!success) { return void cb(false); }
+                    cb(true);
+                    APP.support.resetBatch();
+                    refreshAll();
+                });
+            });
+            $(b).prop('disabled', 'disabled');
+            let content = blocks.block([b]);
+            cb(content);
+        }, { noHint: true });
+
+        sidebar.addItem('batch-send', cb => {
+            let formContainer = blocks.block([]);
+            const makeForm = () => {
+                let form = APP.support.makeForm({
+                    title: Messages.supportPage,
+                    hideCancel: true
+                }, () => {
+                    const formData = APP.support.getFormData(form);
+
+                    const handler = (data, notifications, cb) => {
+                        APP.module.execCommand('REPLY_TICKET_ADMIN', {
+                            channel: data.id,
+                            curvePublic: data.authorKey,
+                            notifChannel: notifications,
+                            supportKey: data.supportKey,
+                            ticket: formData
+                        }, function (obj) {
+                            if (obj?.error) {
+                                console.error(obj?.error, data);
+                            }
+                            cb();
+                        });
+                    };
+
+                    // XXX Add confirm alert?
+                    replyBatch(handler, success => {
+                        makeForm();
+                        // XXX handle error
+                        if (!success) { return UI.warn(Messages.error); }
+                        //APP.support.resetBatch(); // XXX ??
+                        APP.refreshBatch?.();
+                        refreshAll();
+                    });
+                });
+                formContainer.innerHTML = '';
+                formContainer.appendChild(form);
+            };
+            makeForm();
+            $(formContainer).find('button').prop('disabled', 'disabled');
+            let content = blocks.block([formContainer]);
+            cb(content);
+        }, { noHint: true });
+
+        APP.support.onBatchChange(batch => {
+            let selected = Array.from(batch);
+            let $btns = $('[data-item="batch-close"],[data-item="batch-send"]').find('button');
+            const show = (tickets) => {
+                APP.currentBatch = tickets;
+                tickets.forEach(t => {
+                    let linkId = APP.support.getLinkId(t.id);
+                    let block = blocks.block([
+                        blocks.inline(t.title),
+                        blocks.inline(` (#${linkId})`),
+                        blocks.inline(' - '),
+                        blocks.inline(new Date(t.time).toLocaleString())
+                    ], 'cp-support-batch-item');
+                    APP.batchList.append(block);
+                });
+                if (!tickets.length) {
+                    APP.batchList.append(blocks.block([
+                        blocks.inline(Messages.support_emptyBatch, 'cp-support-batch-empty')
+                    ]));
+                    return;
+                }
+                $btns.prop('disabled', false);
+            };
+            // refresh view for selected batch
+            APP.refreshBatch = () => {
+                APP.batchList.empty();
+                $btns.prop('disabled', 'disabled');
+                APP.module.execCommand('LIST_TICKETS_ADMIN', {
+                    type: 'active'
+                }, (tickets) => {
+                    show(selected.map(id => {
+                        tickets[id].id = id;
+                        return tickets[id];
+                    }).filter(Boolean));
+                });
+            };
+            APP.refreshBatch();
+        });
+
 
         // Msg.support_legacyHint.support_legacyTitle
         sidebar.addItem('legacy', cb => {
