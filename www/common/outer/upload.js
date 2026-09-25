@@ -21,7 +21,11 @@ define([
         var metadata = data.metadata;
         var key = data.key;
         var linked = data.linked;
+<<<<<<< HEAD
         var expire = data.expire; 
+=======
+        var expire = data.expire;
+>>>>>>> 9d2c40ea0 (update)
 
         var onError = data.onError || function () {};
         var onPending = data.onPending || function () {};
