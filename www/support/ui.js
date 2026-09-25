@@ -615,6 +615,21 @@ define([
         return ticket;
     };
 
+    const urlRegex = /(https?:\/\/[^\s]+?)(?=[.,?!;:]?(?:\s|$))/g;
+    const fixURLs = (ctx, div, fromAdmin) => {
+        let newText = div.textContent.replace(urlRegex, (url) => {
+            return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+        });
+        div.innerHTML = newText;
+        $(div).find('a').click(e => {
+            e.stopPropagation();
+            if (ctx.isAdmin && !fromAdmin && e?.target?.href) {
+                e.preventDefault();
+                ctx.common.openUnsafeURL(e?.target?.href);
+            }
+        });
+    };
+
     var makeMessage = function (ctx, content) {
         var common = ctx.common;
         var isAdmin = ctx.isAdmin;
@@ -683,12 +698,14 @@ define([
             });
             $collapse.click(function () {
                 $pre.text(displayed);
+                fixURLs(ctx, pre, fromAdmin);
                 $collapse.hide();
                 $expand.show();
             });
             more = h('div', [expand, collapse]);
         }
         $pre.text(displayed);
+        fixURLs(ctx, pre, fromAdmin);
 
         var adminClass = (fromAdmin? '.cp-support-fromadmin': '');
         var premiumClass = (ctx.isAdmin && fromPremium && !fromAdmin? '.cp-support-frompremium': '');
