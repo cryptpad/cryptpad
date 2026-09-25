@@ -54,6 +54,32 @@ define([
         REFRESH_TAGS: Util.mkEvent()
     };
 
+    const solveAdminIds = (common, all, cb) => {
+        let n = nThen;
+        const moderators = {};
+        Object.keys(all).forEach(k => {
+            const data = all[k];
+            const ed = data.edPublic;
+            data.adminId = Hash.hashChannelList([ed]).slice(0,24);
+            moderators[data.adminId] = data;
+            if (!data.profile) { return; }
+            n = n(waitFor => {
+                common.getPad({
+                    hash: data.profile,
+                    opts: {}
+                }, waitFor((err, val) => {
+                    const profile = Util.tryParse(val);
+                    if (err || !profile) { return; }
+                    data.name = profile.name;
+                    data.avatar = profile.avatar;
+                }));
+            }).nThen;
+        });
+        n(() => {
+            APP.moderators = moderators;
+            cb();
+        });
+    };
 
     var andThen = function (common, $container, linkedTicket) {
         const sidebar = Sidebar.create(common, 'support', $container);
@@ -83,6 +109,15 @@ define([
                     if (!data.notifications && msg.sender.drive) {
                         data.notifications = Util.find(msg, ['sender', 'notifications']);
                     }
+
+                    // Translate adminId
+                    let id = msg?.sender?.adminId;
+                    if (id && APP.moderators[id]) {
+                        let mod = APP.moderators[id];
+                        msg.sender.adminName = mod.name;
+                        msg.sender.edPublic = mod.edPublic;
+                    }
+
                     if (msg.close) {
                         $ticket.addClass('cp-support-list-closed');
                         return $msgs.prepend(APP.support.makeCloseMessage(msg));
@@ -1204,7 +1239,12 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
             active = active.split('-')[0];
         }
 
-        andThen(common, APP.$container, linkedTicket);
+        APP.module.execCommand('GET_MODERATORS', {}, obj => {
+            const all = (Array.isArray(obj) && obj[0]) || {};
+            solveAdminIds(common, all, () => {
+                andThen(common, APP.$container, linkedTicket);
+            });
+        });
         UI.removeLoadingScreen();
 
     });

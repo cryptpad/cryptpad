@@ -35,10 +35,11 @@ define([
         };
 
         if (ctx.isAdmin && ctx.anonymous) {
+            let adminId = Hash.hashChannelList([ privateData.edPublic ]).slice(0,24);
             data.sender = {
                 name: Messages.support_team,
-                accountName: 'support'
-                // XXX send edPublic? or keep it private
+                accountName: 'support',
+                adminId
             };
         }
 
