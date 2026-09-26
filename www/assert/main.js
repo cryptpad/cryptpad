@@ -19,10 +19,11 @@ define([
     '/assert/assertions.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
+    '/form/export.js',
 
     '/components/tweetnacl/nacl-fast.min.js',
     'less!/customize/src/less2/pages/page-assert.less',
-], function ($, Hyperjson, Sortify, Drive, /*Test,*/ Hash, Util, Thumb, Wire, Flat, MediaTag, Block, ApiConfig, Assertions, h, Messages) {
+], function ($, Hyperjson, Sortify, Drive, /*Test,*/ Hash, Util, Thumb, Wire, Flat, MediaTag, Block, ApiConfig, Assertions, h, Messages, Export) {
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;
     var Nacl = window.nacl;
@@ -103,7 +104,6 @@ define([
     ].forEach(function (orig) {
         strungJSON(orig);
     });
-
     HTML_list.forEach(function (sel) {
         var el = $(sel)[0];
 
@@ -507,6 +507,62 @@ define([
         // check for equality
         cb(dom.outerHTML === bodyText);
     });
+
+    // ---------------------------
+    // BEGIN TESTS FOR ISSUE #2214
+    // ---------------------------
+
+    var exportFormTypes = { input: {} };
+
+    var exportFormContent = {
+        form: {
+            age: { type: 'input', q: 'Age', opts: { type: 'number' } },
+            score: { type: 'input', q: 'Score', opts: { type: 'number' } },
+            name: { type: 'input', q: 'Name', opts: { type: 'text' } }
+        }
+    };
+    var exportFormOrder = ['age', 'score', 'name'];
+
+    var exportFormAnswers = {
+        curve1: {
+            user1: {
+                time: 1700000000000,
+                msg: {
+                    age: '42',
+                    score: '0',
+                    name: 'Bob'
+                }
+            }
+        }
+    };
+
+    assert(function (cb) {
+        var rows = Export.results(exportFormContent, exportFormAnswers, exportFormTypes, exportFormOrder, 'array');
+        var dataRow = rows[1];
+        return cb(typeof dataRow[2] === 'number' && dataRow[2] === 42);
+    }, '[Export test] "array" format casts numeric "input" answers to real JS numbers');
+
+    assert(function (cb) {
+        var rows = Export.results(exportFormContent, exportFormAnswers, exportFormTypes, exportFormOrder, 'array');
+        var dataRow = rows[1];
+        return cb(typeof dataRow[3] === 'number' && dataRow[3] === 0);
+    }, '[Export test] "array" format keeps a numeric zero answer as the number 0, not an empty cell');
+
+    assert(function (cb) {
+        var rows = Export.results(exportFormContent, exportFormAnswers, exportFormTypes, exportFormOrder, 'array');
+        var dataRow = rows[1];
+        return cb(typeof dataRow[4] === 'string' && dataRow[4] === 'Bob');
+    }, '[Export test] "array" format leaves non-numeric "input" answers as strings');
+
+    assert(function (cb) {
+        var csv = Export.results(exportFormContent, exportFormAnswers, exportFormTypes, exportFormOrder);
+        var fields = csv.split('\n')[1].split(',');
+        return cb(fields[2] === '42' && fields[3] === '0' && fields[4] === 'Bob');
+    }, '[Export test] CSV format (default) still renders numeric answers as text, unaffected by the fix');
+
+    // ---------------------------
+    // END TESTS FOR ISSUE #2214
+    // ---------------------------
 
     assert.run(function (state) {
         var errors = state.errors;
