@@ -275,3 +275,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Makefile
+./Makefile
