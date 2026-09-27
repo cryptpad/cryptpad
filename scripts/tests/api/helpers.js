@@ -5,15 +5,33 @@
 // Helpers for the tests of the store in NodeJS (www/common/store-interface.js).
 //
 // The store runs from the worker bundle: run "npm run api" after changing
-// src/worker. Tests that need a server run against a running instance, by
-// default the dev server (CRYPTPAD_URL, default http://localhost:3000), and
-// are skipped when there is none.
+// src/worker. Tests that need a server run against a running instance with
+// the seed data of the end-to-end test suite
+// (https://github.com/cryptpad/e2e-test-suite), by default the dev server,
+// and are skipped when there is none. Environment variables:
+//   CRYPTPAD_URL                  instance (default http://localhost:3000)
+//   CRYPTPAD_TEST_USER/_PASSWORD  account with documents at the root of its
+//                                 drive (default test-user / password)
+//   CRYPTPAD_TEST_TOTP_USER/_PASSWORD  account on which the tests enable and
+//                                 then disable 2FA (default test-user3 / password)
+// Don't run them at the same time as the end-to-end suite, which uses the same
+// accounts.
 
 const Fs = require('node:fs');
 const Path = require('node:path');
+const OTPAuth = require('otpauth');
 
 const ROOT = Path.join(__dirname, '../../..');
 const ORIGIN = (process.env.CRYPTPAD_URL || 'http://localhost:3000').replace(/\/$/, '');
+
+const USER = {
+    uname: process.env.CRYPTPAD_TEST_USER || 'test-user',
+    passwd: process.env.CRYPTPAD_TEST_PASSWORD || 'password'
+};
+const TOTP_USER = {
+    uname: process.env.CRYPTPAD_TEST_TOTP_USER || 'test-user3',
+    passwd: process.env.CRYPTPAD_TEST_TOTP_PASSWORD || 'password'
+};
 
 // /api/config and /api/broadcast are AMD modules returning an object literal
 const getApi = async file => {
@@ -55,21 +73,39 @@ const getConfig = async ({ offline } = {}) => ({
     Messages: require(Path.join(ROOT, 'src/messages'))
 });
 
-// The store is a single instance per process: each test file (run in its
-// own process by node --test) can start it only once
+// The store is a single instance per process and holds a single account:
+// each test file (run in its own process by node --test) can start it and
+// log in only once
 const startStore = async opts => {
     const Store = require(Path.join(ROOT, 'www/common/store-interface'));
     const { api } = await Store(await getConfig(opts));
     return api;
 };
 
+// LoginCore with the instance's configuration
+const getLoginCore = async () => {
+    const LoginCore = require(Path.join(ROOT, 'src/common/login-core'));
+    const { AppConfig, ApiConfig } = await getConfig();
+    LoginCore.setCustomize({ AppConfig, ApiConfig });
+    return LoginCore;
+};
+
 // Call a callback-style API function; reject if it doesn't answer in time
-const call = (f, data, timeout = 5000) => new Promise((resolve, reject) => {
+// (logging in and loading a drive can take a while)
+const call = (f, data, timeout = 60000) => new Promise((resolve, reject) => {
     const t = setTimeout(() => reject(new Error('NO_ANSWER')), timeout);
     f(data, res => {
         clearTimeout(t);
         resolve(res);
     });
 });
+const getUserHash = (LoginCore, config) => new Promise(resolve => {
+    LoginCore.getUserHash(config, (err, res) => resolve({ err, res }));
+});
 
-module.exports = { ROOT, ORIGIN, noBundle, noServer, getConfig, startStore, call };
+const totp = secret => new OTPAuth.TOTP({ secret }).generate();
+
+module.exports = {
+    ROOT, ORIGIN, USER, TOTP_USER,
+    noBundle, noServer, getConfig, startStore, getLoginCore, call, getUserHash, totp
+};

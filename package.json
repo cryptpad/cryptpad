@@ -74,6 +74,7 @@
     "eslint": "^10.0.0",
     "eslint-plugin-compat": "^6.0.1",
     "globals": "^17.3.0",
+    "otpauth": "^9.5.1",
     "rollup": "^4.24.0",
     "stylelint": "^16.26.1",
     "stylelint-config-standard-less": "^3.0.1",
