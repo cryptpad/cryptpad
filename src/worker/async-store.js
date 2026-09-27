@@ -2679,7 +2679,7 @@ const factory = (UserObject, ProxyManager,
             const MAX_PING = 30000;
             const MAX_FAILED_PING = 2;
 
-            setInterval(function () {
+            const pingInterval = setInterval(function () {
                 var clients = [];
                 const channels = Store.pad.getChannels();
                 Object.keys(channels).forEach(function (chanId) {
@@ -2706,6 +2706,8 @@ const factory = (UserObject, ProxyManager,
                     ping();
                 });
             }, PING_INTERVAL);
+            // In NodeJS, don't keep the process alive only for this timer
+            pingInterval?.unref?.();
             return account;
         };
         const loadDrive = (clientId, data, cacheCb, cb) => {

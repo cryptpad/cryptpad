@@ -13,6 +13,8 @@ const factory = AStore => {
             CONNECT: Store.init,
             DISCONNECT: Store.disconnect,
             PING: function (cId, data, cb) { cb(); },
+            // Wait until the pending changes to a drive are stored on the server
+            SYNC: function (cId, data, cb) { Store.onSync(data?.teamId, cb); },
             CACHE_DISABLE: Store.disableCache,
             // RPC
             GET_PIN_LIMIT: Store.getPinLimit,

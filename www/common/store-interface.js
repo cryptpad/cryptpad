@@ -15,10 +15,16 @@ const factory = function (Channel, NodeWS) {
     const commands = {
         account: {
             load: 'CONNECT',
-            disconnect: 'DISCONNECT'
+            disconnect: 'DISCONNECT',
+            sync: 'SYNC',
+            get: 'GET'
         },
         drive: {
-            migrateAnon: 'MIGRATE_ANON_DRIVE'
+            migrateAnon: 'MIGRATE_ANON_DRIVE',
+            exists: 'HAS_DRIVE',
+            get: 'GET_DRIVE',
+            getSharedFolder: 'GET_SHARED_FOLDER',
+            getPadData: 'GET_PAD_DATA'
         },
         pad: {
             join: 'JOIN_PAD',
@@ -193,6 +199,40 @@ const factory = function (Channel, NodeWS) {
             globalThis.WebSocket = NodeWS.WebSocket;
 
             makeApi(postMsg, msgEv, api => {
+                // Log in with a username and password and load the user's drive:
+                // api.account.login({ uname, passwd, onOTP, session }, cb)
+                // onOTP(cb, info) is only needed for accounts with two-factor
+                // authentication, see LoginCore.getUserHash. The result has a
+                // `session` token for such accounts: pass it to the next login
+                // to skip the code while the session is valid.
+                const LoginCore = require('../../src/common/login-core');
+                LoginCore.setCustomize({ AppConfig, ApiConfig });
+                api.account.login = (credentials, cb) => {
+                    LoginCore.getUserHash(credentials, (err, res) => {
+                        if (err) { return void cb({ error: err }); }
+                        api.account.load({
+                            userHash: res.userHash,
+                            driveEvents: false
+                        }, loaded => {
+                            if (loaded?.error) { return void cb(loaded); }
+                            cb(Object.assign({}, loaded, {
+                                session: res.auth_token?.bearer
+                            }));
+                        });
+                    });
+                };
+                // Wait for pending changes to be stored, then disconnect:
+                // api.account.close(data, cb) like the other commands, or
+                // api.account.close(cb)
+                // The realtime objects of the drive keep timers running, so
+                // scripts should exit the process after closing.
+                api.account.close = (data, cb) => {
+                    if (typeof(data) === 'function') { cb = data; }
+                    cb = typeof(cb) === 'function' ? cb : () => {};
+                    api.account.sync({}, () => {
+                        api.account.disconnect({}, cb);
+                    });
+                };
                 resolve({api});
             });
         };
