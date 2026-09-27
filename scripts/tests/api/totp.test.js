@@ -114,7 +114,9 @@ describe('NodeJS API: two-factor authentication', async () => {
 
     test('logs in through api.account.login and returns the session', async () => {
         api = await H.startStore();
-        login = await H.call(api.account.login, { ...account, onOTP: cb => cb(code()) });
+        // Authenticator apps show codes as "123 456"
+        const spaced = () => code().replace(/^(\d{3})/, '$1 ');
+        login = await H.call(api.account.login, { ...account, onOTP: cb => cb(spaced()) });
         assert.equal(login.error, undefined);
         assert.equal(login.loggedIn, true);
         assert.equal(typeof(login.session), 'string');

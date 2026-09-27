@@ -45,6 +45,12 @@ describe('NodeJS API: login and drive', async () => {
             assert.equal(err, 'NO_SUCH_USER');
         });
 
+        it('ignores a session for an account without two-factor authentication', async () => {
+            const { err, res } = await H.getUserHash(LoginCore, { ...H.USER, session: 'unused' });
+            assert.equal(err, undefined);
+            assert.equal(res.auth_token, undefined);
+        });
+
         it('treats usernames as lowercase', async () => {
             const { err, res } = await H.getUserHash(LoginCore, {
                 ...H.USER, uname: H.USER.uname.toUpperCase()
@@ -55,13 +61,28 @@ describe('NodeJS API: login and drive', async () => {
     });
 
     describe('api.account and api.drive', { skip }, () => {
-        it('logs in and loads the drive', async () => {
+        it('refuses a second login while one is running', async () => {
+            // The first login fails (wrong password), the second is refused
+            const [first, second] = await Promise.all([
+                H.call(api.account.login, { ...H.USER, passwd: H.USER.passwd + 'x' }),
+                H.call(api.account.login, H.USER)
+            ]);
+            assert.equal(first.error, 'NO_SUCH_USER');
+            assert.equal(second.error, 'ALREADY_LOGGED_IN');
+        });
+
+        it('logs in and loads the drive after a failed login', async () => {
             login = await H.call(api.account.login, H.USER);
             assert.equal(login.error, undefined);
             assert.equal(login.loggedIn, true);
             assert.equal(typeof(login.edPublic), 'string');
             // Only accounts with two-factor authentication get a session
             assert.equal(login.session, undefined);
+        });
+
+        it('refuses to log in again in the same process', async () => {
+            const again = await H.call(api.account.login, H.USER);
+            assert.equal(again.error, 'ALREADY_LOGGED_IN');
         });
 
         it('reads values of the user object', async () => {

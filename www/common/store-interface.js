@@ -207,14 +207,29 @@ const factory = function (Channel, NodeWS) {
                 // to skip the code while the session is valid.
                 const LoginCore = require('../../src/common/login-core');
                 LoginCore.setCustomize({ AppConfig, ApiConfig });
-                api.account.login = (credentials, cb) => {
+                // The store holds a single account: log in only once
+                let loginState; // undefined, 'pending' or 'done'
+                api.account.login = (credentials, _cb) => {
+                    const cb = typeof(_cb) === 'function' ? _cb : () => {};
+                    if (loginState) { return void cb({ error: 'ALREADY_LOGGED_IN' }); }
+                    loginState = 'pending';
+                    const fail = error => {
+                        loginState = undefined;
+                        cb({ error });
+                    };
                     LoginCore.getUserHash(credentials, (err, res) => {
-                        if (err) { return void cb({ error: err }); }
+                        if (err) { return void fail(err); }
                         api.account.load({
                             userHash: res.userHash,
                             driveEvents: false
                         }, loaded => {
-                            if (loaded?.error) { return void cb(loaded); }
+                            if (loaded?.error) { return void fail(loaded.error); }
+                            // The store was already connected (to another
+                            // account or anonymously) by account.load
+                            if (loaded?.state === 'ALREADY_INIT') {
+                                return void fail('ALREADY_LOGGED_IN');
+                            }
+                            loginState = 'done';
                             cb(Object.assign({}, loaded, {
                                 session: res.auth_token?.bearer
                             }));
