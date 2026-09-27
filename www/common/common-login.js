@@ -18,66 +18,19 @@ define([
     '/common/outer/login-block.js',
     '/common/common-hash.js',
     '/common/outer/http-command.js',
+    '/common/login-core.js',
 
     '/components/tweetnacl/nacl-fast.min.js',
     '/components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function (Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants,
-            Feedback, LocalStore, Messages, nThen, Block, Hash, ServerCommand) {
+            Feedback, LocalStore, Messages, nThen, Block, Hash, ServerCommand, LoginCore) {
     var Nacl = window.nacl;
 
     var Exports = {
-        requiredBytes: 192,
+        requiredBytes: LoginCore.requiredBytes,
     };
 
-    var allocateBytes = Exports.allocateBytes = function (bytes) {
-        var dispense = Cred.dispenser(bytes);
-
-        var opt = {};
-
-        // dispense 18 bytes of entropy for your encryption key
-        var encryptionSeed = dispense(18);
-        // 16 bytes for a deterministic channel key
-        var channelSeed = dispense(16);
-        // 32 bytes for a curve key
-        var curveSeed = dispense(32);
-
-        var curvePair = Nacl.box.keyPair.fromSecretKey(new Uint8Array(curveSeed));
-        opt.curvePrivate = Util.encodeBase64(curvePair.secretKey);
-        opt.curvePublic = Util.encodeBase64(curvePair.publicKey);
-
-        // 32 more for a signing key
-        var edSeed = opt.edSeed = dispense(32);
-
-        // 64 more bytes to seed an additional signing key
-        var blockKeys = opt.blockKeys = Block.genkeys(new Uint8Array(dispense(64)));
-        opt.blockHash = Block.getBlockHash(blockKeys);
-
-        // derive a private key from the ed seed
-        var signingKeypair = Nacl.sign.keyPair.fromSeed(new Uint8Array(edSeed));
-
-        opt.edPrivate = Util.encodeBase64(signingKeypair.secretKey);
-        opt.edPublic = Util.encodeBase64(signingKeypair.publicKey);
-
-        var keys = opt.keys = Crypto.createEditCryptor(null, encryptionSeed);
-
-        // 24 bytes of base64
-        keys.editKeyStr = keys.editKeyStr.replace(/\//g, '-');
-
-        // 32 bytes of hex
-        var channelHex = opt.channelHex = Util.uint8ArrayToHex(channelSeed);
-
-        // should never happen
-        if (channelHex.length !== 32) { throw new Error('invalid channel id'); }
-
-        var channel64 = Util.hexToBase64(channelHex);
-
-        // we still generate a v1 hash because this function needs to deterministically
-        // derive the same values as it always has. New accounts will generate their own
-        // userHash values
-        opt.userHash = '/1/edit/' + [channel64, opt.keys.editKeyStr].join('/') + '/';
-
-        return opt;
-    };
+    var allocateBytes = Exports.allocateBytes = LoginCore.allocateBytes;
 
     var loginOptionsFromBlock = Exports.loginOptionsFromBlock = function (blockInfo) {
         var opt = {};
