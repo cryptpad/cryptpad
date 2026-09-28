@@ -49,6 +49,19 @@ describe('NodeJS API: content, files and export', async () => {
             assert.ok(JSON.parse(res.content).metadata);
         });
 
+        it('reads a document through a safe link', async () => {
+            const [, data] = findDoc('kanban');
+            const channel = Hash.getSecrets('kanban', Hash.parsePadUrl(data.href).hash).channel;
+            const safe = await H.call(api.drive.getPadContent, { href: `/kanban/#/3/kanban/edit/${channel}/` });
+            const direct = await H.call(api.drive.getPadContent, { href: data.href });
+            assert.equal(safe.error, undefined);
+            assert.equal(safe.content, direct.content);
+            const unknown = await H.call(api.drive.getPadContent, {
+                href: `/kanban/#/3/kanban/edit/${Hash.createChannelId()}/`
+            });
+            assert.equal(unknown.error, 'ENOENT');
+        });
+
         it('rejects unknown ids, invalid links and files', async () => {
             assert.equal((await H.call(api.drive.getPadContent, { id: 1 })).error, 'ENOENT');
             assert.equal((await H.call(api.drive.getPadContent, { href: 'nonsense' })).error, 'EINVAL');
@@ -110,11 +123,16 @@ describe('NodeJS API: content, files and export', async () => {
             const dir = Path.join(tmp, 'export');
             const res = await H.call(api.drive.exportTo, { dir });
             assert.equal(res.error, undefined);
-            assert.deepEqual(res.errors, []);
-            const expected = Object.keys(drive.filesData).length;
-            assert.equal(res.documents + res.files + res.links, expected);
+            // Documents deleted on the server (e.g. by the end-to-end tests)
+            // are reported, not exported
+            assert.deepEqual(res.errors.filter(e => e.error !== 'EDELETED'), []);
+            const exported = res.documents + res.files + res.links;
+            // Documents in the folder tree (not in the trash)
+            const count = folder => Object.values(folder).reduce((n, v) =>
+                n + (v && typeof(v) === 'object' ? count(v) : (drive.filesData[v] ? 1 : 0)), 0);
+            assert.equal(exported + res.errors.length, count(drive.root));
             const names = Fs.readdirSync(dir);
-            assert.equal(names.length, expected);
+            assert.equal(names.length, exported);
             // Code as text with the extension of its language, other documents as JSON
             assert.ok(names.includes('test code.md'), names.join(', '));
             // Rich text is stored as an array (hyperjson)

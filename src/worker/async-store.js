@@ -1401,10 +1401,30 @@ const factory = (UserObject, ProxyManager,
                 href = padData.href || padData.roHref;
                 password = padData.password;
             }
-            const parsed = typeof(href) === 'string' && Hash.parsePadUrl(href);
+            let parsed = typeof(href) === 'string' && Hash.parsePadUrl(href);
             if (!parsed?.hash) { return { error: 'EINVAL' }; }
             // Uploaded files are not collaborative documents
             if (parsed.hashData?.type !== 'pad') { return { error: 'NOT_A_PAD' }; }
+            // "Safe links" only contain the channel: find the keys in the drives
+            if (parsed.hashData.version === 3) {
+                const wantEdit = parsed.hashData.mode === 'edit';
+                let found, viewOnly;
+                getAllStores().some(s => {
+                    const pads = s.manager?.findChannel(parsed.hashData.channel);
+                    return Array.isArray(pads) && pads.some(pad => {
+                        const d = pad?.data;
+                        if (!d) { return; }
+                        if (d.href && (wantEdit || !d.roHref)) { found = d; return true; }
+                        if (d.roHref && !wantEdit) { found = d; return true; }
+                        viewOnly = viewOnly || d;
+                    });
+                });
+                found = found || viewOnly;
+                if (!found) { return { error: 'ENOENT' }; }
+                href = (wantEdit && found.href) || found.roHref || found.href;
+                password = found.password;
+                parsed = Hash.parsePadUrl(href);
+            }
             return { parsed, password };
         };
 
