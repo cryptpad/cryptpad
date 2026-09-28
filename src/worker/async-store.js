@@ -3103,10 +3103,12 @@ const factory = (UserObject, ProxyManager,
             });
         });
 
-        Store.disconnect = function () {
-            if (globalThis.accountDeletion) { return; }
-            if (!store.network) { return; }
+        Store.disconnect = function (clientId, data, cb) {
+            cb = typeof(cb) === "function" ? cb : () => {};
+            if (globalThis.accountDeletion) { return void cb(); }
+            if (!store.network) { return void cb(); }
             store.network.disconnect();
+            cb();
         };
         return Store;
     };

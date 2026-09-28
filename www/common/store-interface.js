@@ -14,7 +14,8 @@ const factory = function (Channel, NodeWS) {
 
     const commands = {
         account: {
-            load: 'CONNECT'
+            load: 'CONNECT',
+            disconnect: 'DISCONNECT'
         },
         drive: {
             migrateAnon: 'MIGRATE_ANON_DRIVE'

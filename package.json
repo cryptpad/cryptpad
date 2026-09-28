@@ -108,7 +108,8 @@
     "build": "node scripts/build.js",
     "clear": "node scripts/clear.js",
     "installtoken": "node scripts/install.js",
-    "api": "rollup -c"
+    "api": "rollup -c",
+    "test:api": "node --test --test-force-exit --test-concurrency=1 \"scripts/tests/api/*.test.js\""
   },
   "browserslist": [
     "> 0.5%, last 2 versions, Firefox ESR, not dead, not op_mini all"
