@@ -42,8 +42,11 @@ const factory = (nThen, Util, ApiConfig = {}, Nacl) => {
                 //return void response.json().then(result => { CB(void 0, result); });
             }
 
-            response.json().then().then(result => {
+            // The body of an error may not be JSON (e.g. from a proxy)
+            response.json().then(result => {
                 CB(response.status, result);
+            }, () => {
+                CB(response.status);
             });
             //CB(response.status, response);
         }).catch(error => {
@@ -65,7 +68,7 @@ const factory = (nThen, Util, ApiConfig = {}, Nacl) => {
                     console.error(err);
                     // there might be more info here
                     if (data) { console.error(data); }
-                    return void cb(err);
+                    return void cb(err, data);
                 }
 
                 // if the requested action is valid, it responds with a txid and a nonce
