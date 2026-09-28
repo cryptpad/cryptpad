@@ -56,13 +56,17 @@ const factory = (SRpc, Channel, Util) => {
                 if (q === 'JOIN_PAD') { return; }
                 if (q === 'SEND_PAD_MSG') { return; }
                 if (q === 'STOPWORKER') { return; }
-                chan.on(q, function (data, cb) {
+                chan.on(q, function (data, _cb) {
+                    // Answer with an error if the query throws, so that the
+                    // caller doesn't wait forever
+                    const cb = Util.once(_cb);
                     try {
                         Rpc.queries[q](clientId, data, cb);
                     } catch (e) {
                         console.error('Error in webworker when executing query ' + q);
                         console.error(e);
                         //console.log(data);
+                        cb({ error: 'EXCEPTION', message: e?.message });
                     }
                     if (q === "DISCONNECT") {
                         onClose();

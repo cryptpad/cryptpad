@@ -14,4 +14,11 @@ test('store queries answer', { skip: noBundle() }, async t => {
     await t.test('DISCONNECT answers without a network', async () => {
         assert.equal(await call(api.account.disconnect), undefined);
     });
+
+    await t.test('a query that throws answers with an error', async () => {
+        // LEAVE_PAD reads data.channel
+        const res = await call(api.pad.leave, undefined);
+        assert.equal(res.error, 'EXCEPTION');
+        assert.match(res.message, /channel/);
+    });
 });
