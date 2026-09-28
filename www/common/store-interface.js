@@ -24,7 +24,19 @@ const factory = function (Channel, NodeWS) {
             exists: 'HAS_DRIVE',
             get: 'GET_DRIVE',
             getSharedFolder: 'GET_SHARED_FOLDER',
-            getPadData: 'GET_PAD_DATA'
+            getPadData: 'GET_PAD_DATA',
+            getPadContent: 'GET_PAD_CONTENT',
+            setPadContent: 'SET_PAD_CONTENT',
+            getPadDataFromChannel: 'GET_PAD_DATA_FROM_CHANNEL',
+            getFileSize: 'GET_FILE_SIZE'
+        },
+        upload: {
+            status: 'UPLOAD_STATUS',
+            complete: 'UPLOAD_COMPLETE',
+            cancel: 'UPLOAD_CANCEL'
+        },
+        universal: {
+            execCommand: 'UNIVERSAL_COMMAND'
         },
         pad: {
             join: 'JOIN_PAD',
@@ -199,55 +211,8 @@ const factory = function (Channel, NodeWS) {
             globalThis.WebSocket = NodeWS.WebSocket;
 
             makeApi(postMsg, msgEv, api => {
-                // Log in with a username and password and load the user's drive:
-                // api.account.login({ uname, passwd, onOTP, session }, cb)
-                // onOTP(cb, info) is only needed for accounts with two-factor
-                // authentication, see LoginCore.getUserHash. The result has a
-                // `session` token for such accounts: pass it to the next login
-                // to skip the code while the session is valid.
-                const LoginCore = require('../../src/common/login-core');
-                LoginCore.setCustomize({ AppConfig, ApiConfig });
-                // The store holds a single account: log in only once
-                let loginState; // undefined, 'pending' or 'done'
-                api.account.login = (credentials, _cb) => {
-                    const cb = typeof(_cb) === 'function' ? _cb : () => {};
-                    if (loginState) { return void cb({ error: 'ALREADY_LOGGED_IN' }); }
-                    loginState = 'pending';
-                    const fail = error => {
-                        loginState = undefined;
-                        cb({ error });
-                    };
-                    LoginCore.getUserHash(credentials, (err, res) => {
-                        if (err) { return void fail(err); }
-                        api.account.load({
-                            userHash: res.userHash,
-                            driveEvents: false
-                        }, loaded => {
-                            if (loaded?.error) { return void fail(loaded.error); }
-                            // The store was already connected (to another
-                            // account or anonymously) by account.load
-                            if (loaded?.state === 'ALREADY_INIT') {
-                                return void fail('ALREADY_LOGGED_IN');
-                            }
-                            loginState = 'done';
-                            cb(Object.assign({}, loaded, {
-                                session: res.auth_token?.bearer
-                            }));
-                        });
-                    });
-                };
-                // Wait for pending changes to be stored, then disconnect:
-                // api.account.close(data, cb) like the other commands, or
-                // api.account.close(cb)
-                // The realtime objects of the drive keep timers running, so
-                // scripts should exit the process after closing.
-                api.account.close = (data, cb) => {
-                    if (typeof(data) === 'function') { cb = data; }
-                    cb = typeof(cb) === 'function' ? cb : () => {};
-                    api.account.sync({}, () => {
-                        api.account.disconnect({}, cb);
-                    });
-                };
+                // NodeJS-only commands: login, files, export and import
+                require('../../src/node/api').extend(api, { AppConfig, ApiConfig });
                 resolve({api});
             });
         };

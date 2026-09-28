@@ -1382,6 +1382,62 @@ const factory = (UserObject, ProxyManager,
             cb(res);
         };
 
+        // Find a collaborative document from its id in a drive or its href
+        // (and password): { parsed, password } or { error }
+        const findPad = data => {
+            data = data || {};
+            let href = data.href;
+            let password = data.password;
+            if (!href && data.id !== undefined) {
+                let padData;
+                getAllStores().some(s => {
+                    const d = s.userObject.getFileData(data.id);
+                    if (!d || (!d.href && !d.roHref)) { return; }
+                    padData = d;
+                    return true;
+                });
+                if (!padData) { return { error: 'ENOENT' }; }
+                // Prefer the edit link: it can read and write
+                href = padData.href || padData.roHref;
+                password = padData.password;
+            }
+            const parsed = typeof(href) === 'string' && Hash.parsePadUrl(href);
+            if (!parsed?.hash) { return { error: 'EINVAL' }; }
+            // Uploaded files are not collaborative documents
+            if (parsed.hashData?.type !== 'pad') { return { error: 'NOT_A_PAD' }; }
+            return { parsed, password };
+        };
+
+        // Content of a collaborative document, from its id in a drive or its
+        // href (and password): { content } (a string) or { error }
+        Store.getPadContent = function (clientId, data, cb) {
+            const pad = findPad(data);
+            if (pad.error) { return void cb(pad); }
+            Cryptget.get(pad.parsed.hash, (err, content) => {
+                if (err) { return void cb({ error: err }); }
+                cb({ content: content || '' });
+            }, {
+                network: store.network,
+                password: pad.password
+            });
+        };
+
+        // Replace the content of a collaborative document (a string), from its
+        // id in a drive or its edit href (and password): {} or { error }
+        Store.setPadContent = function (clientId, data, cb) {
+            const pad = findPad(data);
+            if (pad.error) { return void cb(pad); }
+            if (pad.parsed.hashData.mode !== 'edit') { return void cb({ error: 'READ_ONLY' }); }
+            if (typeof(data.content) !== 'string') { return void cb({ error: 'EINVAL' }); }
+            Cryptget.put(pad.parsed.hash, data.content, (err) => {
+                if (err) { return void cb({ error: err?.message || err }); }
+                cb({});
+            }, {
+                network: store.network,
+                password: pad.password
+            });
+        };
+
         Store.getPadDataFromChannel = function (clientId, obj, cb) {
             var channel = obj.channel;
             var edit = obj.edit;

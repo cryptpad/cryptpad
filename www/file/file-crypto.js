@@ -2,11 +2,8 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([
-    '/common/common-util.js',
-    '/components/tweetnacl/nacl-fast.min.js',
-], function (Util) {
-    var Nacl = window.nacl;
+(() => {
+const factory = function (Util, Nacl) {
     //var PARANOIA = true;
 
     var plainChunkLength = 128 * 1024;
@@ -97,7 +94,7 @@ define([
         try {
             res.metadata = JSON.parse(Util.encodeUTF8(metaChunk));
         } catch (e) {
-            return window.setTimeout(function () {
+            return setTimeout(function () {
                 done('E_METADATA_DECRYPTION');
             });
         }
@@ -225,4 +222,19 @@ define([
         joinChunks: joinChunks,
         computeEncryptedSize: computeEncryptedSize,
     };
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory(
+        require('../../src/common/common-util'),
+        require('tweetnacl/nacl-fast')
+    );
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([
+        '/common/common-util.js',
+        '/components/tweetnacl/nacl-fast.min.js',
+    ], function (Util) {
+        return factory(Util, window.nacl);
+    });
+}
+})();
