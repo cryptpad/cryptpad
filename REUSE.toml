@@ -242,3 +242,46 @@ path = "customize.dist/lucide.js"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Cole Bemis 2013-2023 as part of Feather, Lucide Contributors 2025"
 SPDX-License-Identifier = "ISC OR MIT"
+
+[[annotations]]
+path = "customize.dist/favicon/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "customize.dist/fonts/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "customize.dist/images/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "customize.dist/*.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "customize.dist/*.ico"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "customize.dist/*.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "www/common/translations/**, www/common.translations/archive/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
