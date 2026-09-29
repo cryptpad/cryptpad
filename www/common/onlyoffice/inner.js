@@ -1723,14 +1723,10 @@ define([
                         var images = _obj.data || [];
                         if (!Array.isArray(images)) { return; }
                         var urls = [];
-                        nThen(function (waitFor) {
+                        nThen(function () {
                             images.forEach(function (name) {
                                 if (/^data\:image/.test(name)) {
-                                    Util.fetch(name, waitFor(function (err, u8) {
-                                        if (err) { return; }
-                                        var b = new Blob([u8]);
-                                        urls.push(URL.createObjectURL(b));
-                                    }));
+                                    urls.push({ path: name, url: name });
                                     return;
                                 }
                                 var data = _mediasSources[name];
@@ -1941,14 +1937,10 @@ define([
                                 var images = _obj.data || [];
                                 if (!Array.isArray(images)) { return; }
                                 var urls = [];
-                                nThen(function (waitFor) {
+                                nThen(function () {
                                     images.forEach(function (name) {
                                         if (/^data\:image/.test(name)) {
-                                            Util.fetch(name, waitFor(function (err, u8) {
-                                                if (err) { return; }
-                                                var b = new Blob([u8]);
-                                                urls.push(URL.createObjectURL(b));
-                                            }));
+                                            urls.push({ path: name, url: name });
                                             return;
                                         }
                                         var data = _mediasSources[name];
