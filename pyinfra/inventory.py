@@ -4,13 +4,11 @@ my_host = [
     #    "branch": "main",
     #    "ssh_hostname": "phoenix.cryptpad.fr",
     #    "ssh_user": "wginolas",
-    #    "ssh_port": 11235,
     # }),
     ("phoenix.cryptpad.fr", {
+       "ssh_user": "cryptpad",
+
        "installPath": "cryptpad-diagrams",
        "branch": "main",
-       "ssh_hostname": "phoenix.cryptpad.fr",
-       "ssh_user": "cryptpad",
-       "ssh_port": 11235,
     }),
 ]
