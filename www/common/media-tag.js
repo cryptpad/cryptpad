@@ -71,7 +71,6 @@ var factory = function (Util) {
             text: "Save",
             textDl: "Load attachment"
         },
-        deletedMessage: undefined,
         Plugins: {
             /**
              * @param {object}   metadataObject {name,  metadatatype, owners} containing metadata of the file
@@ -247,6 +246,23 @@ var factory = function (Util) {
         config.Cache.setBlobCache(id, u8, cb);
     };
 
+    var getValidBlobCache = function (cacheKey, src, cb) {
+        getBlobCache(cacheKey, function (err, u8) {
+            if (err || !u8) { return void cb(); }
+            var xhr = new XMLHttpRequest();
+            xhr.open('HEAD', src);
+            if (sendCredentials) { xhr.withCredentials = true; }
+            xhr.onerror = function () { cb(null, u8); };
+            xhr.onload = function () {
+                if (this.status !== 404 && this.status !== 410) { return void cb(null, u8); }
+                config.Cache.removeBlobCache(cacheKey, function () {
+                    cb('XHR_ERROR ' + xhr.status);
+                });
+            };
+            xhr.send();
+        });
+    };
+
     var headRequest = function (src, cb) {
         var xhr = new XMLHttpRequest();
         xhr.open("HEAD", src);
@@ -331,8 +347,9 @@ var factory = function (Util) {
 
         if (!cacheKey) { return void fetch(); }
 
-        getBlobCache(cacheKey, function (err, u8) {
-            if (err || !u8) { return void fetch(); }
+        getValidBlobCache(cacheKey, src, function (err, u8) {
+            if (err) { return void cb(err); }
+            if (!u8) { return void fetch(); }
             cb(null, u8);
         });
 
@@ -726,7 +743,6 @@ var factory = function (Util) {
 
         var error = function (err) {
             var is404 = typeof(err) === 'string' && /XHR_ERROR 404/.test(err);
-                console.log('DEBUG', { err: err, is404: is404, deletedMessage: config.deletedMessage });
             if (is404 && config.deletedMessage) {
                 mediaObject.tag.innerHTML = '<div class="cp-mediatag-deleted">' + fixHTML(config.deletedMessage) + '</div>';
             } else {

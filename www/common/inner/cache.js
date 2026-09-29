@@ -24,11 +24,20 @@ define([
                 cb(e);
             }, { raw: true });
         };
+        var removeBlobCache = function (id, cb) {
+            sframeChan.query('Q_REMOVE_BLOB_CACHE', {
+                id: id
+            }, function (err, data) {
+                var e = err || (data && data.error) || undefined;
+                cb(e);
+            }, { raw: true });
+        };
 
 
         return {
             getBlobCache: getBlobCache,
-            setBlobCache: setBlobCache
+            setBlobCache: setBlobCache,
+            removeBlobCache: removeBlobCache
         };
     };
 

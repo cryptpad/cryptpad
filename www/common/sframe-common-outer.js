@@ -1018,6 +1018,14 @@ define([
                         cb();
                     });
                 });
+                sframeChan.on('Q_REMOVE_BLOB_CACHE', function (data, cb) {
+                    if (!Utils.Cache) { return void cb({error: 'NOCACHE'}); }
+                    if (!data || typeof(data.id) !== "string") { return void cb({error: 'EINVAL'}); }
+                    Utils.Cache.clearChannel(data.id, function (err) {
+                        if (err) { return void cb({error: err}); }
+                        cb();
+                    });
+                });
 
                 sframeChan.on('Q_GET_ATTRIBUTE', function (data, cb) {
                     Cryptpad.getAttribute(data.key, function (e, data) {
