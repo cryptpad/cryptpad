@@ -416,6 +416,9 @@ define([
                 });
             },
             sendMsg: function (msg, cp, cb) {
+                // Don't send message if we're loading a template
+                if (APP.template) { return void cb(); }
+
                 evOnPatch.fire();
                 rtChannel.sendCmd({
                     cmd: 'SEND_MESSAGE',
