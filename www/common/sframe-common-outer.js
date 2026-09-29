@@ -1464,7 +1464,7 @@ define([
                     Cryptpad.getFullHistory({
                         debug: data?.debug,
                         full: data?.full,
-                        channel: data.channel || nSecret.channel,
+                        channel: nSecret.channel,
                         validateKey: nSecret.keys.validateKey
                     }, function (encryptedMsgs) {
                         var nt = nThen;
