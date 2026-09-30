@@ -954,39 +954,48 @@ define([
         sidebar.addItem('batch-send', cb => {
             let formContainer = blocks.block([]);
             const makeForm = () => {
-                let form = APP.support.makeForm({
-                    title: Messages.supportPage,
-                    hideCancel: true
-                }, () => {
-                    const formData = APP.support.getFormData(form);
+                APP.module.execCommand('GET_RECORDED', {}, (obj) => {
+                    let form = APP.support.makeForm({
+                        recorded: {
+                            all: obj?.messages || []
+                        },
+                        title: Messages.supportPage,
+                        hideCancel: true
+                    }, () => {
+                        const formData = APP.support.getFormData(form);
 
-                    const handler = (data, notifications, cb) => {
-                        APP.module.execCommand('REPLY_TICKET_ADMIN', {
-                            channel: data.id,
-                            curvePublic: data.authorKey,
-                            notifChannel: notifications,
-                            supportKey: data.supportKey,
-                            ticket: formData
-                        }, function (obj) {
-                            if (obj?.error) {
-                                console.error(obj?.error, data);
+                        const handler = (data, notifications, cb) => {
+                            APP.module.execCommand('REPLY_TICKET_ADMIN', {
+                                channel: data.id,
+                                curvePublic: data.authorKey,
+                                notifChannel: notifications,
+                                supportKey: data.supportKey,
+                                ticket: formData
+                            }, function (obj) {
+                                if (obj?.error) {
+                                    console.error(obj?.error, data);
+                                }
+                                cb();
+                            });
+                        };
+
+                        // XXX Add confirm alert?
+                        replyBatch(handler, success => {
+                            makeForm();
+                            if (!success) {
+                                return UI.warn(Messages.error);
                             }
-                            cb();
+                            APP.refreshBatch?.();
+                            refreshAll();
                         });
-                    };
-
-                    // XXX Add confirm alert?
-                    replyBatch(handler, success => {
-                        makeForm();
-                        // XXX handle error
-                        if (!success) { return UI.warn(Messages.error); }
-                        //APP.support.resetBatch(); // XXX ??
-                        APP.refreshBatch?.();
-                        refreshAll();
                     });
+                    formContainer.innerHTML = '';
+                    formContainer.appendChild(form);
+                    setTimeout(() => { // match setTimeout from updateRecorded in ui.js
+                        $(form).find('button').prop('disabled', 'disabled');
+                    });
+                    APP.refreshBatch?.();
                 });
-                formContainer.innerHTML = '';
-                formContainer.appendChild(form);
             };
             makeForm();
             $(formContainer).find('button').prop('disabled', 'disabled');
