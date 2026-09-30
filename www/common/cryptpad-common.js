@@ -628,8 +628,8 @@ define([
         });
     };
 
-    common.uploadComplete = function (teamId, id, owned, cb) {
-        postMessage("UPLOAD_COMPLETE", {teamId: teamId, id: id, owned: owned}, function (obj) {
+    common.uploadComplete = function (teamId, id, owned, expire, cb) {
+        postMessage("UPLOAD_COMPLETE", {teamId: teamId, id: id, owned: owned, expire: expire}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });

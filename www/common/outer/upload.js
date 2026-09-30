@@ -21,6 +21,8 @@ define([
         var metadata = data.metadata;
         var key = data.key;
         var linked = data.linked;
+        var expire = data.expire; 
+        
 
         var onError = data.onError || function () {};
         var onPending = data.onPending || function () {};
@@ -104,11 +106,15 @@ define([
             }
 
             // if not box then done
-            common.uploadComplete(teamId, id, owned, function (e) {
+            common.uploadComplete(teamId, id, owned, expire, function (e) {
                 if (e) { return void console.error(e); }
                 var uri = ['', 'blob', id.slice(0,2), id].join('/');
                 console.log("encrypted blob is now available as %s", uri);
 
+                if (expire) {
+                    // Don't cache locally
+                    return void cb();
+                }
                 var box_u8 = Util.uint8ArrayJoin(encryptedArr);
                 Cache.setBlobCache(id, box_u8, function (err) {
                     if (err) { console.warn(err); }
@@ -173,6 +179,7 @@ define([
 
         var owned = file.owned;
         var teamId = file.teamId;
+        var expire = file.expire;
 
         // if it exists, path contains the new pad location in the drive
         var path = file.path;
@@ -218,6 +225,7 @@ define([
                 key: key,
                 id: id,
                 owned: owned,
+                expire: expire,
                 onError: onError,
                 onPending: onPending,
                 updateProgress: updateProgress,
@@ -233,6 +241,7 @@ define([
                     password: password,
                     channel: id,
                     owners: metadata.owners,
+                    expire: expire,
                     forceSave: forceSave
                 };
                 common.setPadTitle(data, function (err) {

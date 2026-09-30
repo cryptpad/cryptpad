@@ -339,6 +339,35 @@
             }
         }
     }
+    .cp-creation-expire-upload {
+        display: flex;
+        .cp-creation-expire-picker {
+            visibility: hidden;
+            text-align: center;
+            display: flex;
+            margin-left: 5%;
+            align-items: center;
+            #cp-creation-expire-val {
+                height: 100% !important;
+                margin: 0 5px;
+                padding: 0 0 0 3px;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
+            }
+            select {
+                border-radius: @variables_radius;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
+            }
+            &.active {
+                visibility: visible;  
+            }
+        }
+    }
     #cp-upload-preview-container {
         max-width: 100%;
         max-height: 300px;

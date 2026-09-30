@@ -401,10 +401,13 @@ define([
                 });
                 $inner.append(tag);
                 setTimeout(function () {
-                    MediaTag(tag).on('error', function () {
+                    MediaTag(tag).on('error', function (data) {
                         locked = false;
                         $spinner.hide();
-                        UI.log(Messages.error);
+                        var is404 = typeof(data) === 'string' && /XHR_ERROR 404/.test(data);
+                        if (!is404) {
+                            UI.log(Messages.error);
+                        }
                     }).on('progress', function () {
                         $spinner.hide();
                         locked = true;

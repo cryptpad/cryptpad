@@ -981,6 +981,10 @@ define([
                 MT.MediaTag.setDefaultConfig('maxDownloadSize', maxMtSize);
             }
 
+            if (MT.MediaTag) {
+                MT.MediaTag.setDefaultConfig('deletedMessage', Messages.expiredError);
+            }
+
             if (MT.MediaTag && ctx.cache) {
                 MT.MediaTag.setDefaultConfig('Cache', ctx.cache);
             }
