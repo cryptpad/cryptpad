@@ -224,7 +224,7 @@ define([
                             console.error(obj && obj.error);
                             return void UI.warn(Messages.error);
                         }
-                        $(ticket).find('.cp-support-form-container').removeAttr('data-id');
+                        $(ticket).find('.cp-support-form-container').remove();
                         refresh($container, type);
                     });
                 };
