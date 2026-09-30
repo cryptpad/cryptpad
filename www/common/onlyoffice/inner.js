@@ -704,7 +704,9 @@ define([
 // with the resulting (incorrect) state. Errors like this should be reported
 // to the user so they realize something is wrong.
             });
-            sframeChan.on('EV_OO_EVENT', function (obj) {
+
+            APP.ooEventHandler?.stop?.();
+            APP.ooEventHandler = sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
                     case 'ERROR':
                         //onRtChannelError(obj.data, channel);
