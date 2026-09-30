@@ -919,7 +919,11 @@ define([
         };
 
         sidebar.addItem('batch-close', cb => {
-            let b = blocks.activeButton('danger', 'close', Messages.support_closeTickets, (cb) => {
+            let b = blocks.button('danger', 'close', Messages.support_closeTickets);
+            UI.confirmButton(b, {
+                multiple: true,
+                classes: 'btn-danger'
+            }, function() {
                 const handler = (data, notifications, cb) => {
                     APP.module.execCommand('CLOSE_TICKET_ADMIN', {
                         channel: data.id,
@@ -938,15 +942,13 @@ define([
                     });
                 };
 
-                // XXX Add confirm alert?
-
                 replyBatch(handler, success => {
-                    if (!success) { return void cb(false); }
-                    cb(true);
+                    if (!success) { return; }
                     APP.support.resetBatch();
                     refreshAll();
                 });
             });
+
             $(b).prop('disabled', 'disabled');
             let content = blocks.block([b]);
             cb(content);
