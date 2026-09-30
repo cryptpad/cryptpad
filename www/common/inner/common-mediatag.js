@@ -324,24 +324,24 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
 
-        var left, right;
-
         var modal = UI.createModal({
             id: 'cp-mediatag-preview-modal',
             $body: $('body')
         });
         modal.show();
         var $modal = modal.$modal.focus();
+        var leftControl = h('div.cp-mediatag-control', Icons.get('chevron-left'));
+        var rightControl = h('div.cp-mediatag-control', Icons.get('chevron-right'));
         var $container = $modal.find('.cp-modal').append([
-            h('div.cp-mediatag-control', left = Icons.get('chevron-left')),
+            leftControl,
             h('div.cp-mediatag-container', [
                 h('div.cp-loading-spinner-container', h('span.cp-spinner')),
             ]),
-            h('div.cp-mediatag-control', right = Icons.get('chevron-right')),
+            rightControl,
         ]);
         var $close = $modal.find('.cp-modal-close');
-        var $left = $(left);
-        var $right = $(right);
+        var $left = $(leftControl);
+        var $right = $(rightControl);
         var $inner = $container.find('.cp-mediatag-container');
 
         var $spinner = $container.find('.cp-loading-spinner-container');
