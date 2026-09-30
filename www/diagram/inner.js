@@ -240,23 +240,27 @@ define([
         };
 
         var mkModeButton = function (framework) {
-            var modes = [Messages.diagram_sketchTheme, Messages.diagram_simpleTheme, Messages.diagram_classicTheme];
+            var modes = [
+                {id: 'sketch', label: Messages.diagram_sketchTheme},
+                {id: 'simple', label: Messages.diagram_simpleTheme},
+                {id: 'classic', label: Messages.diagram_classicTheme},
+            ];
             var types = [];
 
             modes.forEach(function(mode){
                 types.push({
                     tag: 'a',
                     attributes: {
-                        'data-value': mode,
-                        'aria-label': Messages._getKey('diagram_modesOptionLabel', [mode]),
+                        'data-value': mode.id,
+                        'aria-label': Messages._getKey('diagram_modesOptionLabel', [mode.label]),
                     },
-                    content: mode,
+                    content: mode.label,
                     action: function () {
-                        var $self = $('a[data-value="' + mode + '"]');
-                        parameters.set('ui', mode);
+                        var $self = $('a[data-value="' + mode.id + '"]');
+                        parameters.set('ui', mode.id);
                         drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
                         + parameters;
-                        setTheme(mode, function() {
+                        setTheme(mode.id, function() {
                             $('.cp-dropdown-content').find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
                             $self.addClass('cp-dropdown-element-active');
                             $self.closest('li').focus();
