@@ -127,7 +127,6 @@ define([
                     if (!id) { return; }
                     activeForms[id] = el;
                 });
-                $container.empty();
                 var col1 = h('div.cp-support-column', h('h1', [
                     h('span', Messages.admin_support_premium),
                     h('span.cp-support-count'),
@@ -160,7 +159,6 @@ define([
                     // Only one column
                     col1 = col2 = col3 = col6 = col5;
                 }
-                $container.append([col1, col2, col3, col6]);
 
                 const onShow = function (ticket, channel, data, done) {
                     onShowTicket(ticket, channel, data, (success) => {
@@ -190,8 +188,7 @@ define([
                             console.error(obj && obj.error);
                             return void UI.warn(Messages.error);
                         }
-                        $(ticket).find('.cp-support-list-message').remove();
-                        $(ticket).find('.cp-support-form-container').remove();
+                        $(ticket).find('.cp-support-form-container').removeAttr('data-id');
                         refresh($container, type);
                     });
                 };
@@ -311,6 +308,10 @@ define([
                 // Wait for all open tickets to be loaded before calling back
                 // otherwise we may have a wrong scroll position
                 n(() => {
+                    var $rightside = sidebar.$rightside;
+                    var s = $rightside.scrollTop();
+                    $container.empty().append([col1, col2, col3, col6]);
+                    $rightside.scrollTop(s);
                     cb();
                 });
             });
