@@ -99,7 +99,7 @@ main() {
                 rm -rf "$OO_DIR/v8/web-apps/apps/common/main/resources/help/"
                 ;;
             v9)  install_version v9 v9.3.2+3 181978176e443b9ff9cce127e6aa9668a4ee8e81473cb0c0c4cf0d83dea9b6636c730d40e704ebe8fdf313498a3106bafe5c4021ae937b269d05a07b7be6bbb4 ;;
-            x2t) install_x2t v9.3.2+2 9e5eda173958b0bb6cc110d9356724e8ac11737949d20d49f25f879f9217ffe8d65828cc50122380d1c9633998ba87d5858c86cc23d47fe90c3a3ba43ef82af8 ;;
+            x2t) install_x2t v9.3.2+3 ed0579097a0269877d6622b28b1e2718e1f9f4e8ac99301f5f13f5f052b3db24db789deab8c654044db588be103c139be74f83a0ca066dee1789522241c1af6e ;;
             *)
                 echo "Unknown version: $version"
                 exit 1
