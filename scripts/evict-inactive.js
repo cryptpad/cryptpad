@@ -11,7 +11,7 @@ var Quota = require("../lib/commands/quota");
 var Environment = require("../lib/env");
 var Decrees = require("../lib/decrees");
 
-var config = require("../lib/load-config");
+const { config } = require("../lib/load-config");
 
 var Env = Environment.create(config);
 
@@ -76,10 +76,7 @@ var prepareEnv = function (Env, cb) {
 
         // load the logging module so that you have a record of which
         // files were archived or deleted at what time
-        var Logger = require("../lib/log");
-        Logger.create(config, w(function (_) {
-            Env.Log = _;
-        }));
+        Env.Log = require('../lib/log')(config, "evict-inactive");
 
         config.getSession = function () {};
         BlobStore.create(config, w(function (err, _) {
