@@ -43,7 +43,7 @@ Pins.load(function (err) {
 */
     console.log(stats);
 }, {
-    pinPath: require("../../lib/load-config").config.pinPath,
+    pinPath: require("../../lib/load-config").config?.pinPath,
     handler: handler,
 });
 
