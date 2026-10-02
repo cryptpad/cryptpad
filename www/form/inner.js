@@ -4324,7 +4324,7 @@ define([
                             type: type,
                         };
 
-                        arr.splice(idx, 0, _uid);
+                        arr.splice(idx + 1, 0, _uid);
                         framework.localChange();
                         updateForm(framework, content, true);
                     });
