@@ -6,7 +6,7 @@ var nThen = require("nthen");
 var Tasks = require("../../lib/storage/tasks");
 var Logger = require("../../lib/log");
 
-var config = require("../../lib/load-config");
+const { config } = require("../../lib/load-config");
 
 // this isn't strictly necessary for what we want to do
 // but the API requires it, and I don't feel like changing that

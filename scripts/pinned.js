@@ -78,6 +78,6 @@ if (!module.parent) {
             console.log(x + ' ' + JSON.stringify(data[x]));
         });
     }, {
-        pinPath: require("../lib/load-config").pinPath
+        pinPath: require("../lib/load-config").config.pinPath
     });
 }
