@@ -877,7 +877,7 @@ define([
             if (!opts.noExpiration) {
                 var expire = Messages.creation_expireFalse;
                 if (data.expire && typeof (data.expire) === "number") {
-                    expire = new Date(data.expire).toLocaleString();
+                    expire = new Date(data.expire).toLocaleString(loc, { timeZone: "UTC" });
                 }
                 $d.append(h('div.cp-app-prop', [
                     Messages.creation_expiration,

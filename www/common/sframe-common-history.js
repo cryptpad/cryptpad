@@ -386,7 +386,7 @@ define([
             // we can consider we have only states.length - 1 versions
             var time = states[idx].time;
             if (time) {
-                $time.text(new Date(time).toLocaleString());
+                $time.text(new Date(time).toLocaleString(loc, { timeZone: "UTC" }));
             } else { $time.text(''); }
 
             if (config.debug) {

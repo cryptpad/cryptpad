@@ -490,7 +490,7 @@ define([
                         avatar,
                         h('span.cp-comment-metadata', [
                             h('span.cp-comment-author', name),
-                            h('span.cp-comment-time', date.toLocaleString())
+                            h('span.cp-comment-time', date.toLocaleString(loc, { timeZone: "UTC" }))
                         ]),
                         edit
                     ]),

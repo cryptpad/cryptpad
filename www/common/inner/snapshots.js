@@ -77,7 +77,7 @@ define([
             var content = [
                 h('span.cp-toolbar-snapshots-info', [
                     Icons.get('snapshot'),
-                    h('span.cp-toolbar-snapshots-title', data.title + ' - ' + new Date(data.time).toLocaleString()),
+                    h('span.cp-toolbar-snapshots-title', data.title + ' - ' + new Date(data.time).toLocaleString(loc, { timeZone: "UTC" })),
                 ]),
                 actions
             ];

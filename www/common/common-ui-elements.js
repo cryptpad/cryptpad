@@ -28,6 +28,9 @@ define([
     var UIElements = {};
     var urlArgs = Config.requireConf.urlArgs;
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '')
+    var loc = new Intl.Locale(lang).maximize(); 
+
     UIElements.getSvgLogo = function () {
         var svg = (function(){/*
 <svg width="45" height="50" version="1.1" viewBox="0 0 11.906 13.229" xmlns="http://www.w3.org/2000/svg">
@@ -4400,7 +4403,7 @@ define([
                     Icons.get('snapshot'),
                     h('span.cp-snapshot-title', [
                         h('span', s.title),
-                        h('span.cp-snapshot-time', new Date(s.time).toLocaleString())
+                        h('span.cp-snapshot-time', new Date(s.time).toLocaleString(loc, { timeZone: "UTC" }))
                     ]),
                     h('span.cp-snapshot-buttons', [
                         readOnly ? undefined : deleteButton,

@@ -17,6 +17,9 @@ define([
     'tui-date-picker'
 ], function($, h, Hash, UI, UIElements, Util, Constants, Marked, Messages, Pages, Icons, DatePicker) {
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '')
+    var loc = new Intl.Locale(lang).maximize();
+
     var handlers = {};
 
     var renderer = new Marked.Renderer();
@@ -641,7 +644,7 @@ define([
 
             // Missed events
             if (start < now && missed) {
-                return Messages._getKey('reminder_missed', [title, startDate.toLocaleString()]);
+                return Messages._getKey('reminder_missed', [title, startDate.toLocaleString(loc, { timeZone: "UTC" })]);
             }
             // Starting now
             if (start < now && wasRefresh) {
@@ -653,14 +656,14 @@ define([
             }
             // In progress, normal event
             if (start < now) {
-                return Messages._getKey('reminder_inProgress', [title, startDate.toLocaleString()]);
+                return Messages._getKey('reminder_inProgress', [title, startDate.toLocaleString(loc, { timeZone: "UTC" })]);
             }
 
             // Not started yet
 
             // No precise time for allDay events
             if (msg.isAllDay) {
-                return Messages._getKey('reminder_date', [title, startDate.toLocaleDateString()]);
+                return Messages._getKey('reminder_date', [title, startDate.toLocaleDateString(loc, { timeZone: "UTC" })]);
             }
 
             // In less than an hour: show countdown in minutes
@@ -672,7 +675,7 @@ define([
 
             // Not today: show full date
             if (nowDateStr !== startDate.toLocaleDateString()) {
-                return Messages._getKey('reminder_date', [title, startDate.toLocaleString()]);
+                return Messages._getKey('reminder_date', [title, startDate.toLocaleString(loc, { timeZone: "UTC" })]);
             }
 
             // Today: show time

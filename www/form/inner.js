@@ -3235,7 +3235,7 @@ define([
                 var uid = curveUid.split('|')[1];
                 var curve = curveUid.split('|')[0];
                 var answer = obj.msg;
-                var date = new Date(obj.time).toLocaleString();
+                var date = new Date(obj.time).toLocaleString(loc, { timeZone: "UTC" });
                 var text, warning, badge;
                 if (!answer._userdata || (!answer._userdata.name && !answer._userdata.curvePublic)) {
                     text = Messages._getKey('form_answerAnonymous', [date]);
@@ -3459,7 +3459,7 @@ define([
                 }
             });
 
-            var date = new Date(answer._time).toLocaleString();
+            var date = new Date(answer._time).toLocaleString(loc, { timeZone: "UTC" });
 
             var del;
             var canDelete = !viewOnly && content.answers.version >= 2;
@@ -4769,7 +4769,7 @@ define([
         if (APP.hasAnswered && lastTime) {
             $container.prepend(h('div.alert.alert-info',
                 Messages._getKey('form_alreadyAnswered', [
-                    new Date(lastTime).toLocaleString()])));
+                    new Date(lastTime).toLocaleString(loc, { timeZone: "UTC" })])));
         }
 
         if (APP.isClosed || (APP.hasAnswered && content.answers.cantEdit)) {
@@ -5174,7 +5174,7 @@ define([
                 $endDate.empty();
 
                 var endDate = content.answers.endDate;
-                var date = new Date(endDate).toLocaleString();
+                var date = new Date(endDate).toLocaleString(loc, { timeZone: "UTC" });
                 var now = +new Date();
                 var text = Messages.form_isOpen;
                 var buttonTxt = Messages.form_setEnd;
@@ -5568,7 +5568,9 @@ define([
             var _endDate = content.answers.endDate;
             if (_endDate === endDate && !force) { return; }
             endDate = _endDate;
-            var date = new Date(endDate).toLocaleString();
+            const lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '')
+            const loc = new Intl.Locale(lang).maximize();            
+            var date = new Date(endDate).toLocaleString(loc, { timeZone: "UTC" });
             var text = Messages._getKey('form_isClosed', [date]);
             if (endDate > +new Date()) {
                 text = Messages._getKey('form_willClose', [date]);

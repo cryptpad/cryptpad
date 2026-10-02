@@ -483,7 +483,7 @@ define([
             sframeChan.on('EV_VERSION_TIME', function (time) {
                 if (!versionHashEl) { return; }
                 var vTime = time;
-                var vTimeStr = vTime ? new Date(vTime).toLocaleString()
+                var vTimeStr = vTime ? new Date(vTime).toLocaleString(loc, { timeZone: "UTC" })
                                      : 'v' + privateDat.isHistoryVersion;
                 var vTxt = Messages._getKey('infobar_versionHash',  [vTimeStr]);
                 versionHashEl.innerText = vTxt;

@@ -531,7 +531,7 @@ define([
                 h('div.cp-support-header-data', [
                     h('span.cp-support-ticket-title', title),
                     ctx.isAdmin ? UI.setHTML(h(`span${isPremium}`), Messages._getKey('support_from', [name])) : '',
-                    h('span', new Date(content.time).toLocaleString()),
+                    h('span', new Date(content.time).toLocaleString(loc, { timeZone: "UTC" })),
                     tagsList
                 ]),
                 adminActions,
@@ -673,7 +673,7 @@ define([
         return h('div.cp-support-list-message' + adminClass + premiumClass, {}, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
                 UI.setHTML(h('span'), Messages._getKey('support_from', [name])),
-                h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
+                h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString(loc, { timeZone: "UTC" }) : '')
             ]),
             pre,
             more,
@@ -696,7 +696,7 @@ define([
         return h('div.cp-support-list-message' + adminClass, {}, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
                 UI.setHTML(h('span'), Messages._getKey('support_from', [name])),
-                h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
+                h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString(loc, { timeZone: "UTC" }) : '')
             ]),
             h('pre.cp-support-message-content', Messages.support_closed)
         ]);

@@ -114,7 +114,7 @@ define([
                     && !data.content.msg.content.teamName) { return; } // FIXME find a way to display this notifications wihtout knowing the team name
                 var el = common.mailbox.createElement(data);
                 var time = new Date(data.content.time);
-                $(el).find(".cp-notification-content").append(h("span.notification-time", time.toLocaleString()));
+                $(el).find(".cp-notification-content").append(h("span.notification-time", time.toLocaleString(loc, { timeZone: "UTC" })));
                 $(el).addClass("cp-app-notification-archived");
                 $(el).attr('tabindex', -1);
                 if (isDataUnread) {

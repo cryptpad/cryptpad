@@ -1004,7 +1004,7 @@ define([
 
                 if (!privateData.embed) {
                     var vTime = (messages[minor - 1] || currentCp)?.time;
-                    var vTimeStr = vTime ? new Date(vTime).toLocaleString()
+                    var vTimeStr = vTime ? new Date(vTime).toLocaleString(loc, { timeZone: "UTC" })
                                          : 'v' + privateData.ooVersionHash;
                     var vTxt = Messages._getKey('infobar_versionHash', [vTimeStr]);
 

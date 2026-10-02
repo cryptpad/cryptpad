@@ -687,7 +687,7 @@ define([
             }
             $('<span>', {
                 'class': 'cp-app-poll-comments-list-data-time'
-            }).appendTo($data).text(new Date(c.time).toLocaleString());
+            }).appendTo($data).text(new Date(c.time).toLocaleString(loc, { timeZone: "UTC" }));
 
             // Message
             var $msg = $('<div>', { 'class': 'cp-app-poll-comments-list-msg' }).appendTo($c);

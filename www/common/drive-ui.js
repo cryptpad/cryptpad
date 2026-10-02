@@ -148,6 +148,9 @@ define([
     };
     var log = config.log = UI.log;
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '')
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var localStore = window.cryptpadStore;
     APP.store = {};
 
@@ -2367,7 +2370,7 @@ define([
             }
             if (data.expire) {
                 var $expire = $expirableIcon.clone().appendTo($state);
-                $expire.attr('title', Messages._getKey('fm_expirablePad', [new Date(data.expire).toLocaleString()]));
+                $expire.attr('title', Messages._getKey('fm_expirablePad', [new Date(data.expire).toLocaleString(loc, { timeZone: "UTC" })]));
             }
             _addOwnership($element, $state, data);
 
