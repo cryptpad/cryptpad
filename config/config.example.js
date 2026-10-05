@@ -26,17 +26,17 @@ module.exports = {
      * ===================== */
 
     /* Session expiration for 2FA */
-    //otpSessionExpiration: 7*24, // hours
+    otpSessionExpiration: undefined, // default: 7*24, in hours
 
     /* Enforce multifactor authentication*/
-    //enforceMFA: false,
+    enforceMFA: undefined, // default: false
 
     /* =====================
      *       Privacy
      * ===================== */
 
     /* Log IPs, requires at log level to be "info" or below */
-    //logIP: false,
+    logIP: undefined, // default: false,
 
     /* =====================
      *     Administration
@@ -53,26 +53,26 @@ module.exports = {
      * ===================== */
 
     /* Delay before a document is considered inactive */
-    //inactiveTime: 90, // days
+    inactiveTime: undefined, //default: 90. In days
 
 
     /* Delay before archive deletion */
-    //archiveRetentionTime: 15,
+    archiveRetentionTime: undefined, // default: 15
 
 
     /* Delay before a registered account is considered inactive */
-    //accountRetentionTime: 365,
+    accountRetentionTime: undefined, // default: 365
 
 
     /* Let CryptPad server automatically remove inactive data */
-    //disableIntegratedEviction: true,
+    disableIntegratedEviction: undefined, // default: false
 
     /* Max upload size in bytes */
-    //maxUploadSize: 20 * 1024 * 1024,
+    maxUploadSize: undefined, // default: 20 * 1024 * 1024
 
 
     /* Max upload size for premium accounts (requires accounts plugin) */
-    //premiumUploadSize: 100 * 1024 * 1024,
+    premiumUploadSize: undefined, // default: same as maxUploadSize, in Bytes
 
     /* =====================
      *   DATABASE VOLUMES
