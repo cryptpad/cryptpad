@@ -55,21 +55,17 @@ module.exports = {
     /* Delay before a document is considered inactive */
     inactiveTime: undefined, //default: 90. In days
 
-
     /* Delay before archive deletion */
     archiveRetentionTime: undefined, // default: 15
 
-
     /* Delay before a registered account is considered inactive */
     accountRetentionTime: undefined, // default: 365
-
 
     /* Let CryptPad server automatically remove inactive data */
     disableIntegratedEviction: undefined, // default: false
 
     /* Max upload size in bytes */
     maxUploadSize: undefined, // default: 20 * 1024 * 1024
-
 
     /* Max upload size for premium accounts (requires accounts plugin) */
     premiumUploadSize: undefined, // default: same as maxUploadSize, in Bytes
@@ -96,11 +92,14 @@ module.exports = {
      *  This may be useful for debugging
      */
     logToStdout: false,
+
     /* Set the level of verbosity of logs.
      * From the less important logs to most important:
      * 'silly', 'verbose', 'debug', 'feedback', 'info', 'warn', 'error'
      */
+
     logLevel: 'info',
+
     /* Enable server-side feedbacks. Default: false */
     logFeedback: false,
 
