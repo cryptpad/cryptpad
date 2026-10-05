@@ -1296,9 +1296,7 @@ define([
         };
         
         var handleLock = function (obj, send) {
-            if (APP.history) { return; }
-
-            if (content.saveLock) {
+            if (content.saveLock && !APP.history) {
                 if (!isLockedModal.modal) {
                     isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
                 }
@@ -1314,6 +1312,17 @@ define([
                 user: myUniqueOOId,
                 block: b
             };
+
+            if (APP.history) {
+                let locks = {};
+                if (b) { locks[b] = msg; }
+                send({
+                    type: "getLock",
+                    locks
+                });
+                return;
+            }
+
 
             var editor = getEditor();
             if (type === "presentation" && (APP.themeChanged || APP.themeRemote) && b &&
