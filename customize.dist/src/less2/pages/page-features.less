@@ -12,6 +12,7 @@
 
     .cp-features-register {
         text-align: center;
+        align-content: center;
         padding: 20px;
     }
     .cp-features-register-button {
@@ -31,6 +32,51 @@
         }
     }
     .cp-features-web {
+        min-height: 0 !important;
+        height: auto;
+        .cp-regis-user {
+            display: flex;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .cp-small-feature {
+            align-self: flex-start;
+            height: 250px;
+
+            .card {
+                height: 100%;
+                min-height: 0;
+                padding: 15px;
+                justify-content: center;
+            }
+
+            .feature-icon {
+                align-self: center;
+
+                svg {
+                    width: 2rem;
+                    height: 2rem;
+                    margin: 0;
+                }
+            }
+
+            .feature-title {
+                margin: 0 0 8px;
+            }
+
+            .feature-content {
+                margin: 0;
+            }
+        }
+    }
+
+    .cp-features-web {
         .card {
             .cp-shadow();
             border: none;
@@ -41,6 +87,15 @@
                 padding: 20px;
                 border-radius: @infopages-radius @infopages-radius 0 0;
             }
+            .feature-title {
+                font-size: 1.5em;
+                text-align: center;
+            }
+
+            .feature-content {
+                margin: 1rem;
+            }
+
             .card-body, .title-card {
                 display: flex;
                 justify-content: center;
@@ -51,6 +106,12 @@
                     margin: 0;
                 }
                 &.cp-pricing {
+                    svg {
+                        height: 8rem;
+                        width: 8rem;
+                        stroke-width: 1.2;
+                        margin: 0;
+                    }
                     div {
                         font-size: 1.2em;
                         color: @cp_static-link;

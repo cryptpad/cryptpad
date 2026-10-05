@@ -122,10 +122,120 @@ define([
                 ]),
             ]);
 
-        var availableFeatures = [
-            anonymousFeatures,
-            registeredFeatures,
+        var featureCard = function (feature) {
+            return h('div.col-12.col-sm-4.cp-regis-user', [
+                h('div.card', [
+                    h('div.title-card', [
+                        h('h3.text-center', feature.title)
+                    ]),
+                    h('div.card-body.cp-pricing', [
+                        h('div', Icons.get(feature.icon))
+                    ]),
+                    h('div.feature-title', feature.subtitle),
+                    h('div.text-center.feature-content', feature.content),
+                    h('div.card-body', [
+                        h('div.cp-features-register', [
+                            h('a.cp-features-register-button', {
+                                href: feature.href || '/register/'
+                            }, Icons.get('documentation'), 'Learn more')
+                        ])
+                    ])
+                ])
+            ]);
+        };
+
+        var infoCard = function (info) {
+            return h('div.col-12.col-md-6.col-lg-3.cp-regis-user.cp-small-feature', [
+                h('div.card', [
+                    h('div.feature-icon', Icons.get(info.icon)),
+                    h('div.feature-title', info.title),
+                    h('div.text-center.feature-content', info.content)
+                ])
+            ]);
+        };
+
+        var featureList = [
+            {
+                title: 'Code',
+                icon: 'code',
+                subtitle: 'An encrypted markdown code editor',
+                content: 'In addition to the basic lightweight syntax, CryptPad supports diagrams with Mermaid.js, mindmaps with Markmap, and mathematical equations with Mathjax.'
+            },
+            {
+                title: 'Diagram',
+                icon: 'diagram',
+                subtitle: 'Versatile diagramming options',
+                content: 'CryptPad Diagram is the collaboration diagram tool for secure mind-mapping, flowcharts, whiteboard, and more.'
+            },
+            {
+                title: 'Forms',
+                icon: 'form',
+                subtitle: 'Customizable and responsive design',
+                content: 'The privacy-first Google Forms alternative to create and share surveys, without sharing your data with unwanted third-parties.'
+            },
+            {
+                title: 'Kanban',
+                icon: 'kanban',
+                subtitle: 'Drag-and-drop interface',
+                content: 'A secure and customizable kanban board app for organizing tasks, ideas, and workflows, all end-to-end encrypted and hosted in EU.'
+            },
+            {
+                title: 'Presentation',
+                icon: 'presentation',
+                subtitle: 'Presentations made with familiar tools',
+                content: "Format slides with text, images, shapes, and transitions. This presentation editor gives you the functionality you'd expect, without the surveillance."
+            },
+            {
+                title: 'Sheet',
+                icon: 'sheet',
+                subtitle: 'Flexible file support',
+                content: "Import .xlsx, .ods, or .csv. Export .xlsx, .pdf, or .html. Sheets delivers the same experience as popular spreadsheets. If you've used Excel or Google Sheets, CryptPad's interface will feel instantly natural."
+            },
+            {
+                title: 'Word',
+                icon: 'doc',
+                subtitle: 'Comprehensive editing tools',
+                content: 'CryptPad Document is a privacy-first Microsoft Word and Google Docs alternative that allows you to create and collaborate in real time.'
+            },
+            {
+                title: 'Markdown slides',
+                icon: 'slide',
+                subtitle: 'Code-driven presentations',
+                content: 'Create sleek, fast presentations using simple Markdown syntax with instant side-by-side preview.'
+            },
+            {
+                title: 'Richtext',
+                icon: 'pad',
+                subtitle: 'Quick and collaborative text editing',
+                content: 'A lightweight and straightforward rich-text pad for quick notes, documentation, and real-time collaborative writing.'
+            }
         ];
+
+        var infoList = [
+            {
+                icon: 'lock',
+                title: 'Private by design',
+                content: 'Work in a suite designed for privacy-first collaboration.'
+            },
+            {
+                icon: 'teams',
+                title: 'Real-time collaboration',
+                content: 'Keep the team in the same document, board or plan.'
+            },
+            {
+                icon: 'folder',
+                title: 'One connected workspace',
+                content: 'Move naturally between creation, planning and storage.'
+            },
+            {
+                icon: 'limit',
+                title: 'Fine-grained control',
+                content: 'Choose who can access, view and contribute to your work.'
+            }
+        ];
+
+        var availableFeatures = featureList.map(featureCard);
+        var info = infoList.map(infoCard);
 
         // Msg.features_premium
         // Msg.features_pricing
@@ -143,8 +253,9 @@ define([
             Pages.infopageTopbar(),
             h('div.container.cp-container',[
                 h('div.row.cp-page-title',[
-                    h('div.col-12.text-center', h('h1', Msg.features_title)),
+                    h('div.col-12.text-center', h('h1', "One private workspace. Everything connected.")),
                 ]),
+                h('div.row.cp-container.cp-features-web.justify-content-sm-center', info),
                 h('div.row.cp-container.cp-features-web.justify-content-sm-center', availableFeatures),
             ]),
             Pages.infopageFooter()
