@@ -198,29 +198,35 @@ define([
             }
         });
 
-         var loadDiagram = function () {
-            checkDefaultTheme(function(theme) {
-                var defaultTheme = theme;
-                parameters.set('ui', defaultTheme);
-            });
+        var loadDiagram = function() {
+            if (!framework.isIntegrated()) {
+                checkDefaultTheme(function(theme) {
+                    var defaultTheme = theme;
+                    parameters.set('ui', defaultTheme);
+                });
+            }
             var isReadOnly = framework.isReadOnly() ? 0 : 1;
             parameters.set('chrome', isReadOnly);
             drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
-            + parameters;
+                + parameters;
         };
 
         // starting the CryptPad framework
         framework.start();
 
-        //wait for metadata to update before checking the theme and loading Drawio UI
-        var metadataMgr = framework._.sfCommon.getMetadataMgr();
-        var onChange = function () {
-            var privateData = metadataMgr.getPrivateData();
-            if (!privateData.settings.toolbar) { return; }
+        if (framework.isIntegrated()) {
             loadDiagram();
-            metadataMgr.off('change', onChange);
-        };
-        metadataMgr.onChange(onChange);
+        } else {
+            //wait for metadata to update before checking the theme and loading Drawio UI
+            var metadataMgr = framework._.sfCommon.getMetadataMgr();
+            var onChange = function() {
+                var privateData = metadataMgr.getPrivateData();
+                if (!privateData.settings.toolbar) { return; }
+                loadDiagram();
+                metadataMgr.off('change', onChange);
+            };
+            metadataMgr.onChange(onChange);
+        }
 
         window.addEventListener("message", (event) => {
             if (event.source === drawioFrame.contentWindow) {
