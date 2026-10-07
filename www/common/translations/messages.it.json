@@ -1879,5 +1879,8 @@
     "diagram_modesOptionLabel": "Cambiare il tema con {0} riavvierà l'applicazione",
     "oo_rtChannelMissing": "Si è verificato un errore durante il caricamento del tuo documento. Al momento è solo disponibile la versione di sola lettura per evitare la corruzione o la perdita di dati. Clicca sul pulsante qui sotto per inviare  le informazioni pertinenti alla squadra di assistenza.",
     "oo_rtChannelMissingNoSupport": "Si è verificato un errore durante il caricamento del tuo documento. Al momento è solo disponibile la versione di sola lettura per evitare la corruzione o la perdita di dati. Invia le seguenti informazioni all'amministratore/trice della tua istanza.",
-    "help_close_button": "Chiudi la notifica di aiuto"
+    "help_close_button": "Chiudi la notifica di aiuto",
+    "sent_chatMessage": "{0} ti ha inviato un messaggio",
+    "copy": "Copia",
+    "form_footerInfo": "Questo modulo e le tue risposte sono protette con la crittografia end-to-end<br>Solo l'autore o l'autrice del modulo può leggere i dati<br>Per saperne di più e creare i tuoi moduli <a href='https://cryptpad.org/apps/form/' target='_blank'>visita il sito web di CryptPad</a>"
 }
