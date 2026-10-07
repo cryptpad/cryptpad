@@ -1474,15 +1474,24 @@ define([
                             nt = nt(function (waitFor) {
                                 // The 3rd parameter "true" means we're going to skip signature validation.
                                 // We don't need it since the message is already validated serverside by hk
+                                let decryptedMsg;
+                                try {
+                                    let m = typeof(_msg) === "object" ? _msg.msg : _msg;
+                                    decryptedMsg = crypto.decrypt(m, true, true);
+                                } catch (e) {
+                                    console.error(e);
+                                    return;
+                                }
+
                                 if (typeof(_msg) === "object") {
                                     decryptedMsgs.push({
                                         author: _msg.author,
                                         serverHash: _msg.serverHash,
                                         time: _msg.time,
-                                        msg: crypto.decrypt(_msg.msg, true, true)
+                                        msg: decryptedMsg
                                     });
                                 } else {
-                                    decryptedMsgs.push(crypto.decrypt(_msg, true, true));
+                                    decryptedMsgs.push(decryptedMsg);
                                 }
                                 setTimeout(waitFor(function () {
                                     sframeChan.event('EV_FULL_HISTORY_STATUS', (i+1)/total);

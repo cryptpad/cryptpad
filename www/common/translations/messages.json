@@ -1900,5 +1900,11 @@
     "form_guestPublicTitle": "Copy your public link",
     "form_guestPublicBody": "Share this link with participants so they can fill out your form.",
     "creation_expireValue": "Destruction time",
-    "creation_expireUnit": "Destruction time unit"
+    "creation_expireUnit": "Destruction time unit",
+    "support_batchListTitle": "Batch list",
+    "support_batchCloseTitle": "Close selected tickets",
+    "support_closeTickets": "Close tickets",
+    "support_batchSendTitle": "Send message to selected tickets",
+    "support_emptyBatch": "No ticket selected",
+    "support_cat_batch": "Batch actions"
 }

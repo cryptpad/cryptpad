@@ -416,6 +416,9 @@ define([
                 });
             },
             sendMsg: function (msg, cp, cb) {
+                // Don't send message if we're loading a template
+                if (APP.template) { return void cb(); }
+
                 evOnPatch.fire();
                 rtChannel.sendCmd({
                     cmd: 'SEND_MESSAGE',
@@ -701,7 +704,9 @@ define([
 // with the resulting (incorrect) state. Errors like this should be reported
 // to the user so they realize something is wrong.
             });
-            sframeChan.on('EV_OO_EVENT', function (obj) {
+
+            APP.ooEventHandler?.stop?.();
+            APP.ooEventHandler = sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
                     case 'ERROR':
                         //onRtChannelError(obj.data, channel);
@@ -1291,9 +1296,7 @@ define([
         };
         
         var handleLock = function (obj, send) {
-            if (APP.history) { return; }
-
-            if (content.saveLock) {
+            if (content.saveLock && !APP.history) {
                 if (!isLockedModal.modal) {
                     isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
                 }
@@ -1309,6 +1312,17 @@ define([
                 user: myUniqueOOId,
                 block: b
             };
+
+            if (APP.history) {
+                let locks = {};
+                if (b) { locks[b] = msg; }
+                send({
+                    type: "getLock",
+                    locks
+                });
+                return;
+            }
+
 
             var editor = getEditor();
             if (type === "presentation" && (APP.themeChanged || APP.themeRemote) && b &&
@@ -1491,6 +1505,7 @@ define([
         var makePatch = APP.makePatch = function (arr) {
             var w = getWindow();
             if (!w) { return; }
+            try {
             // Define OO classes
             var AscCommonExcel = w.AscCommonExcel;
             var CellValueData = AscCommonExcel.UndoRedoData_CellValueData;
@@ -1501,7 +1516,7 @@ define([
             var UndoRedoData_CellSimpleData = AscCommonExcel.UndoRedoData_CellSimpleData;
             var editor = getEditor();
 
-            var Id = editor.GetSheet(0).worksheet.Id;
+            var Id = editor?.asc_getWorksheetId?.(0) || editor?.GetSheet?.(0).worksheet.Id;
             //History.Create_NewPoint();
             var patches = [];
             arr.forEach(function (arr2, i) {
@@ -1526,8 +1541,9 @@ define([
             });
             var oMemory = new w.AscCommon.CMemory();
             var aRes = [];
+            const wb = editor?.wbModel || editor.GetSheet(0).worksheet;
             patches.forEach(function (item) {
-                editor.GetSheet(0).worksheet.workbook._SerializeHistory(oMemory, item, aRes);
+                wb._SerializeHistory(oMemory, item, aRes);
             });
 
             // Make the patch
@@ -1557,6 +1573,8 @@ define([
                 ooChannel.lastHash = hash;
                 ooChannel.cpIndex++;
             });
+
+            } catch (e) { console.error(e); }
         };
 
         const send = ooChannel.send = function (obj, force) {
