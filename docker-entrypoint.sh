@@ -13,10 +13,7 @@ set -e
 
 CPAD_HOME="/cryptpad"
 
-cp "$CPAD_HOME"/config.local/config.example.js "$CPAD_HOME"/config/config.example.js
-cp "$CPAD_HOME"/config.local/infra.example.js "$CPAD_HOME"/config/infra.example.js
-
-if [ ! -f "$/cryptpad/config/config.js" ]; then
+if [ ! -f "/cryptpad/config/config.js" ]; then
     echo -e "\n\
          #################################################################### \n\
          Warning: No config file provided for cryptpad \n\
@@ -24,10 +21,10 @@ if [ ! -f "$/cryptpad/config/config.js" ]; then
          by providing a file with your settings \n\
          #################################################################### \n"
 
-    cp "$CPAD_HOME"/config/config.example.js "$CPAD_HOME"/config/config.js
+    cp "$CPAD_HOME"/config.local/config.example.js "$CPAD_HOME"/config/config.js
 fi
 
-if [ ! -f "$/cryptpad/config/infra.js" ]; then
+if [ ! -f "/cryptpad/config/infra.js" ]; then
     echo -e "\n\
          #################################################################### \n\
          Warning: No infra config file provided for cryptpad \n\
@@ -35,7 +32,7 @@ if [ ! -f "$/cryptpad/config/infra.js" ]; then
          by providing a file with your settings \n\
          #################################################################### \n"
 
-    cp "$CPAD_HOME"/config/infra.example.js "$CPAD_HOME"/config/infra.js
+    cp "$CPAD_HOME"/config.local/infra.example.js "$CPAD_HOME"/config/infra.js
 fi
 
 cd $CPAD_HOME
