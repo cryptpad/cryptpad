@@ -508,6 +508,7 @@ define([
                 var $el = $(el);
                 var ed = $el.attr('data-ed');
                 if (!ed) { return; }
+                var name = UI.getDisplayName($el.find('.cp-usergrid-user-name').text());
                 nThen(function (waitFor) {
                     /*
                     var msg = Messages.allow_removeConfirm;
@@ -535,7 +536,7 @@ define([
                                                                           : Messages.error;
                             return void UI.warn(text);
                         }
-                        UI.log(Messages.saved);
+                        UI.log(name ? Messages._getKey('access_removalConfirmation', [name]) : Messages.saved);
                     }));
                 });
             };
@@ -721,7 +722,7 @@ define([
                 var names = dataToAdd.map(function (d) {
                     return UI.getDisplayName(d.displayName || d.name);
                 }).filter(Boolean);
-                UI.log(names.length ? Messages._getKey('access_sharedWith', [names.join(', ')]) : Messages.saved);
+                UI.log(names.length ? Messages._getKey('access_confirmation', [names.join(', ')]) : Messages.saved);
             });
         });
         $(addBtn).on('keydown', function (event) {

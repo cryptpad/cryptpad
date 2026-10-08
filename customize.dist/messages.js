@@ -165,7 +165,9 @@ define(req, function(AppConfig, Default, Language) {
     Messages.support_cat_batch = "Batch actions";
 
     // XXX
-    Messages.access_sharedWith = "Successfully shared with {0}";
+    Messages.share_confirmation = "Successfully shared with {0}";
+    Messages.access_confirmation = "{0} now has access to this document";
+    Messages.access_removalConfirmation = "Removed access for {0}";
     return Messages;
 
 });

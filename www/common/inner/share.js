@@ -221,7 +221,7 @@ define([
                         if (displayName) { sharedNames.push(displayName); }
                     });
                     if (sharedNames.length) {
-                        UI.log(Messages._getKey('access_sharedWith', [sharedNames.join(', ')]));
+                        UI.log(Messages._getKey('share_confirmation', [sharedNames.join(', ')]));
                     }
 
                     UI.findCancelButton().click();
