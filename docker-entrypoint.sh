@@ -13,6 +13,9 @@ set -e
 
 CPAD_HOME="/cryptpad"
 
+cp "$CPAD_HOME"/config.local/config.example.js "$CPAD_HOME"/config/config.example.js
+cp "$CPAD_HOME"/config.local/infra.example.js "$CPAD_HOME"/config/infra.example.js
+
 if [ ! -f "$/cryptpad/config/config.js" ]; then
     echo -e "\n\
          #################################################################### \n\
