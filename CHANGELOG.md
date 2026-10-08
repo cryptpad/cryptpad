@@ -4,17 +4,128 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-# TODO next release
+
+# 🍂 Autumn Release (2026.9.0)
+
+## Goals
+
+This release contains a full rewrite of the CryptPad server that is more scalable and performant. This server is now released as its own [cryptpad-server package on npm](https://www.npmjs.com/package/cryptpad-server).
+
+Instance admins are highly encouraged to read the upgrade notes below as there are some changes introduced by the new server.
+
+In addition this release includes:  
+- "Linked documents" improving the data behind office documents to make them much more reliable.
+- Office apps upgrade: we now integrate [Euro Office](https://github.com/Euro-Office) 9.3 for all office applications 
+- Many other fixes and improvements
+
+## Features
+
+- New server for CryptPad [#2381](https://github.com/cryptpad/cryptpad/pull/2381) 
+- Euro-Office 9.3 [#2376](https://github.com/cryptpad/cryptpad/pull/2376)
+- Update SECURITY.md with our new security policy [#2343](https://github.com/cryptpad/cryptpad/pull/2343)
+
+## Improvements
+
+- Improve stability and performances on office apps [#2358](https://github.com/cryptpad/cryptpad/pull/2358)
+- Add OnlyOffice images via drag [#2351](https://github.com/cryptpad/cryptpad/pull/2351)
+- Improve sharing forms UX [#2349](https://github.com/cryptpad/cryptpad/pull/2349)
+- Enable form printing [#2350](https://github.com/cryptpad/cryptpad/pull/2350)
+- Improve performances when listing channels and blobs [#2341](https://github.com/cryptpad/cryptpad/pull/2341)
+- Add option to remove team avatar [#2324](https://github.com/cryptpad/cryptpad/pull/2324)
+- Add copy public key and share profile buttons to settings  [#2292](https://github.com/cryptpad/cryptpad/pull/2292)
+- Instance logo file type validation [#2277](https://github.com/cryptpad/cryptpad/pull/2277)
+- Add CryptPad promotion message to form footer for participants [#2290](https://github.com/cryptpad/cryptpad/pull/2290)
+- Helpdesk improvements [#2406](https://github.com/cryptpad/cryptpad/pull/2406) 
+
+## Fixes
+
+- Teams, drive
+  - Fix infinite wait on Team trim history upon failure [#2370](https://github.com/cryptpad/cryptpad/pull/2370)
+  - Fix drive context menu "New Link" opening a Rich Text document [#2345](https://github.com/cryptpad/cryptpad/pull/2345) 
+  - Fix file opening with share link when protected with access file [#2352](https://github.com/cryptpad/cryptpad/pull/2352) 
+  - Drive export issues [#2305](https://github.com/cryptpad/cryptpad/pull/2305)
+  - Correct navigation to shared folders [#2303](https://github.com/cryptpad/cryptpad/pull/2303)
+  - Remove option to add file already in team drive to team [#2335](https://github.com/cryptpad/cryptpad/pull/2335)
+- Accessibility
+  - Mark page title as heading  [#2367](https://github.com/cryptpad/cryptpad/pull/2367)
+  - Add aria-label to modal input  [#2366](https://github.com/cryptpad/cryptpad/pull/2366)
+  - Add labels to various elements [#2330](https://github.com/cryptpad/cryptpad/pull/2330)
+  - Kanban accessibility fixes [#2329](https://github.com/cryptpad/cryptpad/pull/2329)
+  - Titles keyboard navigation fix [#2323](https://github.com/cryptpad/cryptpad/pull/2323)
+- Rich Text
+  - Rich Text: Include media-tag CSS in print preview so images sized correctly [#2250](https://github.com/cryptpad/cryptpad/pull/2250) by @WebCoder49
+  - Fix missing dropdown for richtext text highlight/background on IOS [#2300](https://github.com/cryptpad/cryptpad/pull/2300) 
+- Forms
+  - Remove bottom margins from paragraphs in Form [#2244](https://github.com/cryptpad/cryptpad/pull/2244)
+  - Questions stay as 'required' when edited [#2307](https://github.com/cryptpad/cryptpad/pull/2307) 
+- Code app
+  - Enable printing code documents in embed mode [#2356](https://github.com/cryptpad/cryptpad/pull/2356)
+  - Fix #2304: Update UI for 'Present' mode [#2315](https://github.com/cryptpad/cryptpad/pull/2315) by @Fire-furo
+- Office apps
+  - Fix office apps spellcheck [#2318](https://github.com/cryptpad/cryptpad/pull/2318)
+  - Prevent .webp insertion in office apps [#2332](https://github.com/cryptpad/cryptpad/pull/2332)
+- Other Apps
+  - Fix Kanban markdown task lists after replacing checkboxes with lucide icons [#2295](https://github.com/cryptpad/cryptpad/pull/2295) 
+  - Set diagram UI theme to internal theme id, not localized theme label [#2389](https://github.com/cryptpad/cryptpad/pull/2389) by @xenofem
+- Misc
+  - Restoring a document removes “expire” value from metadata if expired [#2346](https://github.com/cryptpad/cryptpad/pull/2346) 
+  - Make contact page scrollable on small screens [#2322](https://github.com/cryptpad/cryptpad/pull/2322)
+  - Fix nav button wrapping on small screens for all alertify modals [#2388](https://github.com/cryptpad/cryptpad/pull/2388)
+  - Notification fixes [#2311](https://github.com/cryptpad/cryptpad/pull/2311)
+  - Fixed error propagation in integration mode [#2308](https://github.com/cryptpad/cryptpad/pull/2308) by @Max-7
+  - Fix dependencies with missing resolved in lockfile [#2296](https://github.com/cryptpad/cryptpad/pull/2296) by @eljamm
+  - fix: Enter in Login doesn't consistently submit the form [#2282](https://github.com/cryptpad/cryptpad/pull/2282) by @Tarantula471
+
+## Dependencies
+
+- Remove dependency to JSON.sortify [#2354](https://github.com/cryptpad/cryptpad/pull/2354)
 
 ## Upgrade notes
 
-- `./install-onlyoffice.sh` is now called `/install-office.sh`. Make sure to use the new name in the future.
-- The CryptPad Docker now uses an additional volume to store the config files. If you are already using our image, you need to merge our changes into your docker-compose.yml and create an additional directory:
+If you are upgrading from a version older than `2026.5.1` please read the upgrade notes of all versions between yours and `2026.9.0` to avoid configuration issues.
+
+This upgrade introduces a refactor of the [CryptPad server](https://github.com/cryptpad/server) with a different architecture from before, thus the upgrade instructions have extra steps compared to the usual “upgrade & restart”.
+
+To summarise for administrators, it will involve upgrading your reverse proxy configuration (there is no more two different port for the public http and the websocket connection). See [this folder](https://github.com/cryptpad/cryptpad/tree/main/docs) for more detailed information. Moreover, you will need to update any plugins you are using on your server to the latest version and if you have `cryptpad-sodium-plugin`, it is not required anymore as it is now the default behaviour (with fallback enabled if the host architecture does not support it).
+
+Please note there may be known errors when you run `npm install`:
+- EBADENGINE warnings: these are due to a dependency that requests NPM version 1. We're in the process of removing this dependency, in the meantime these warnings can safely be ignored.
+- 12 high vulnerabilities: these are all due to the same report about the braces dependency, used by multiple other dependencies. The fact that the report even constitutes a security issue is currently [being discussed and contested](https://github.com/github/advisory-database/pull/10132) and it is unclear wether a fix will be needed and issued. If a fix is issued we will make a point release ASAP, in the meantime we don't consider our exposure to this issue to warrant blocking the release since our code does not use the affected part of the braces library.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
 
 ```bash
-mkdir config
-sudo chown -R 4001:4001 config
+git fetch --depth 1 origin tag 2026.9.0
+git checkout 2026.9.0
+npm ci
+npm run install:components
+./install-office.sh
 ```
+
+3. Copy `config/infra.example.js` into `config/infra.js`
+4. The configuration file has been split in two. You can migrate your configuration to the new format or keep using your previous config.js file. Note that this migration may be required in the future. Move the following parameters (if relevant to you) from your `config/config.js` to `config/infra.js`, and remove `websocketPort` from `config.js` (if relevant):
+    - `httpUnsafeOrigin` → `public.origin`
+    - `httpSafeOrigin` → `public.sandboxOrigin`
+    - `httpAddress` → `public.httpHost`
+    - `httpPort` → `public.httpPort`
+    - `httpSafePort` → `public.httpSafePort`
+    - `externalWebsocketURL` → `public.externalWebsocketURL`
+    - `fileHost` → `public.fileHost`
+5. nginx: if you use the "advanced" config, update your reverse proxy configuration to use the port `public.httpPort` instead of `3003` to serve `/cryptpad_websocket` (or the previous value of `websocketPort` in `config.js`), see the [docs](https://github.com/cryptpad/cryptpad/tree/main/docs) folder for more information depending on your case.
+6. SSO Plugin: if in use upgrade to [version 1.0.0](https://github.com/cryptpad/sso/releases/tag/1.0.0) with `git`
+   - If you have the `cryptpad-sodium-plugin` it is no longer  required and you can remove it
+7. Restart your server
+8. Review your instance's checkup page to ensure that you are passing all tests
+
+## Contributors
+
+Community: @WebCoder49 @Fire-furo @Max-7 @eljamm @Tarantula471 @xenofem
+
+CryptPad team: @AAAMON @Chouhartem @dariiing @davidbenque @DianaXWiki @wginolas @yflory @zuzanna-maria
+
 
 # 🌷🩹 Spring fix release (2026.5.1)
 

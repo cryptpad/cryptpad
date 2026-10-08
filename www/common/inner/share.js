@@ -86,6 +86,10 @@ define([
                 if (err) { console.error(err); }
                 teamIds = teamIds || [];
 
+                Object.keys(teams).forEach(k => {
+                    (teams[k] || {}).teamId = teams[k].id;
+                });
+
                 var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
                     common: common,
                     noFilter: true,

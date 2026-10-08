@@ -184,7 +184,7 @@ define([
 
             el = h('div.cp-usergrid-user'+(data.selected?'.cp-selected':'')+(config.large?'.large':''), {
                 'data-ed': data.edPublic,
-                'data-teamid': data.id,
+                'data-teamid': data.teamId,
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
                 'data-order': i,
@@ -3432,6 +3432,7 @@ define([
         if (priv.app === 'drive') { return; }
         if (!priv.channel) { return; }
         if (priv.app === 'form' && priv.readOnly && !priv.form_auditorHash && !priv.form_auditorKey) { return; }
+        if (priv.integration) { return; }
 
         var todo = function () {
             crowdfundingState = true;

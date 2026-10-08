@@ -6,7 +6,7 @@ const nThen = require("nthen");
 const Pins = require("../lib/pins");
 const Assert = require("assert");
 
-const config = require("../lib/load-config");
+const { config } = require("../lib/load-config");
 
 var compare = function () {
     console.log(config);

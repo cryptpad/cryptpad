@@ -86,6 +86,22 @@ define([
                 return;
             }
 
+            // If we have a checkpoint as initial document (no startHash
+            // and no nextCp hash)
+            if (currentCp?.file && !currentCp?.hash) {
+                // Load all messages from mainRtChannel
+                sframeChan.query('Q_GET_FULL_HISTORY', {
+                    href, password, // get secret from other pad (template)
+                    channel: mainRtChannel,
+                    isDownload: downloadId,
+                    full: true
+                }, function (err, data) {
+                    if (err) { return void reject(err); }
+                    resolve(data);
+                });
+                return;
+            }
+
             reject('INVALID_CP');
         });
 
