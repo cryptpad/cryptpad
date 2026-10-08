@@ -20,7 +20,6 @@ services:
       - ./data/blob:/cryptpad/blob
       - ./data/block:/cryptpad/block
       - ./customize:/cryptpad/customize
-      - ./customize.dist:/cryptpad/customize.dist
       - ./data/data:/cryptpad/data
       - ./data/files:/cryptpad/datastore
       - ./onlyoffice-dist:/cryptpad/www/common/onlyoffice/dist
