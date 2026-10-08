@@ -7,6 +7,7 @@ services:
   cryptpad:
     image: "cryptpad/cryptpad:latest"
     hostname: cryptpad
+    read_only: true
 
     environment:
       - CPAD_MAIN_DOMAIN=https://your-main-domain.com
@@ -25,6 +26,8 @@ services:
       - ./onlyoffice-dist:/cryptpad/www/common/onlyoffice/dist
       - ./onlyoffice-conf:/cryptpad/onlyoffice-conf
       - ./config:/cryptpad/config
+      - type: tmpfs
+        target: /tmp
 
     ports:
       - "3000:3000"
