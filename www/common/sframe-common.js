@@ -861,6 +861,9 @@ define([
             UI.addTooltips();
 
             ctx.sframeChan.on("EV_PAD_NODATA", function () {
+                if (!funcs.isLoggedIn()) {
+                    return void UI.errorLoadingScreen(UIElements.loginErrorScreenContent(funcs));
+                }
                 var error = Pages.setHTML(h('span'), Messages.safeLinks_error);
                 var i = error.querySelector('i');
                 if (i) {
