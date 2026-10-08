@@ -5,7 +5,7 @@
 ---
 services:
   cryptpad:
-    image: "cryptpad/cryptpad:local-latest"
+    image: "cryptpad/cryptpad:latest"
     hostname: cryptpad
     read_only: true
 
