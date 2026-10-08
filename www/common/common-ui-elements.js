@@ -2136,7 +2136,6 @@ define([
                     ': ',
                     h('span', accountName),
                 ]));
-                userAdminContent.push(h('br'));
             }
             if (config.displayName && !AppConfig.disableProfile) {
                 // Hide "Display name:" in read only mode
