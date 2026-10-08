@@ -330,8 +330,16 @@ define([
         });
         modal.show();
         var $modal = modal.$modal.focus();
-        var leftControl = h('div.cp-mediatag-control', Icons.get('chevron-left'));
-        var rightControl = h('div.cp-mediatag-control', Icons.get('chevron-right'));
+        var leftControl = h('button.cp-mediatag-control', {
+            type: 'button',
+            title: Messages.page_previous,
+            'aria-label': Messages.page_previous
+        }, Icons.get('chevron-left'));
+        var rightControl = h('button.cp-mediatag-control', {
+            type: 'button',
+            title: Messages.page_next,
+            'aria-label': Messages.page_next
+        }, Icons.get('chevron-right'));
         var $container = $modal.find('.cp-modal').append([
             leftControl,
             h('div.cp-mediatag-container', [
