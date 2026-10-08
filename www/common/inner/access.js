@@ -718,7 +718,10 @@ define([
                     }));
                 }
             }).nThen(function () {
-                UI.log(Messages.saved);
+                var names = dataToAdd.map(function (d) {
+                    return UI.getDisplayName(d.displayName || d.name);
+                }).filter(Boolean);
+                UI.log(names.length ? Messages._getKey('access_sharedWith', [names.join(', ')]) : Messages.saved);
             });
         });
         $(addBtn).on('keydown', function (event) {

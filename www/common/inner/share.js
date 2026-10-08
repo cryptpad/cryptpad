@@ -142,11 +142,17 @@ define([
                     }
                 }).nThen(function () {
                     var $friends = $div.find('.cp-usergrid-user.cp-selected');
+                    var sharedNames = [];
                     $friends.each(function (i, el) {
                         var curve = $(el).attr('data-curve');
                         var ed = $(el).attr('data-ed');
                         var friend = curve && friends[curve];
                         var team = teams[ed];
+                        var displayName = UI.getDisplayName(
+                            (friend && (friend.displayName || friend.name)) ||
+                            (team && team.name) ||
+                            $(el).find('.cp-usergrid-user-name').text()
+                        );
                         // If the selected element is a friend or a team without edit right,
                         // send a notification
                         var mailbox = friend || ((team && team.viewer) ? team : undefined);
@@ -166,6 +172,7 @@ define([
                                     channel: mailbox.notifications,
                                     curvePublic: mailbox.curvePublic
                                 });
+                                if (displayName) { sharedNames.push(displayName); }
                                 if (config.static) {
                                     Feedback.send("LINK_SHARED_WITH_CONTACT");
                                 }
@@ -185,6 +192,7 @@ define([
                                     return void UI.warn(Messages.error);
                                 }
                             });
+                            if (displayName) { sharedNames.push(displayName); }
                             return;
                         }
                         if (config.static) {
@@ -196,10 +204,9 @@ define([
                                     href: href,
                                     path: ['root']
                                 }
-                            }, function () {
-                                UI.log(Messages.saved);
-                            });
+                            }, function () {});
                             Feedback.send("LINK_ADDED_TO_DRIVE");
+                            if (displayName) { sharedNames.push(displayName); }
                             return;
                         }
                         sframeChan.query('Q_STORE_IN_TEAM', {
@@ -211,7 +218,11 @@ define([
                         }, function (err) {
                             if (err) { return void console.error(err); }
                         });
+                        if (displayName) { sharedNames.push(displayName); }
                     });
+                    if (sharedNames.length) {
+                        UI.log(Messages._getKey('access_sharedWith', [sharedNames.join(', ')]));
+                    }
 
                     UI.findCancelButton().click();
 

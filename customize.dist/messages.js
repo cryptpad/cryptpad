@@ -164,6 +164,8 @@ define(req, function(AppConfig, Default, Language) {
     Messages.support_emptyBatch = "No ticket selected";
     Messages.support_cat_batch = "Batch actions";
 
+    // XXX
+    Messages.access_sharedWith = "Successfully shared with {0}";
     return Messages;
 
 });
