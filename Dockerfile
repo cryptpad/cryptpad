@@ -12,10 +12,7 @@ WORKDIR /cryptpad
 # Copy CryptPad source code to the container
 COPY . /cryptpad
 
-# Create config files to avoid logging warnings
 RUN sed -i "s@installMethod: 'unspecified'@installMethod: 'docker'@" /cryptpad/config/config.example.js
-RUN cp /cryptpad/config/config.example.js /cryptpad/config/config.js
-RUN cp /cryptpad/config/infra.example.js /cryptpad/config/infra.js
 
 # Install dependencies
 RUN npm install --production \
