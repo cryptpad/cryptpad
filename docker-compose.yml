@@ -11,7 +11,6 @@ services:
     environment:
       - CPAD_MAIN_DOMAIN=https://your-main-domain.com
       - CPAD_SANDBOX_DOMAIN=https://your-sandbox-domain.com
-      - CPAD_CONF=/cryptpad/config/config.js
 
       # Read and accept the license before uncommenting the following line:
       # https://github.com/Euro-Office/web-apps/raw/refs/heads/main/LICENSE.txt
@@ -21,10 +20,12 @@ services:
       - ./data/blob:/cryptpad/blob
       - ./data/block:/cryptpad/block
       - ./customize:/cryptpad/customize
+      - ./customize.dist:/cryptpad/customize.dist
       - ./data/data:/cryptpad/data
       - ./data/files:/cryptpad/datastore
       - ./onlyoffice-dist:/cryptpad/www/common/onlyoffice/dist
       - ./onlyoffice-conf:/cryptpad/onlyoffice-conf
+      - ./config:/cryptpad/config
 
     ports:
       - "3000:3000"
