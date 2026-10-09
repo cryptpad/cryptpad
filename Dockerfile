@@ -12,9 +12,9 @@ WORKDIR /cryptpad
 # Copy CryptPad source code to the container
 COPY . /cryptpad
 
-RUN sed -i "s@//httpAddress: 'localhost'@httpAddress: '0.0.0.0'@" /cryptpad/config/config.example.js
+# Prepare configuration
 RUN sed -i "s@installMethod: 'unspecified'@installMethod: 'docker'@" /cryptpad/config/config.example.js
-RUN sed -i 's@host: "localhost"@host: "0.0.0.0"@' /cryptpad/config/infra.example.js
+RUN mv /cryptpad/config /cryptpad/config.local
 
 # Install dependencies
 RUN npm install --production \
@@ -53,6 +53,7 @@ VOLUME /cryptpad/block
 VOLUME /cryptpad/customize
 VOLUME /cryptpad/data
 VOLUME /cryptpad/datastore
+VOLUME /cryptpad/config
 
 ENTRYPOINT ["/bin/bash", "/cryptpad/docker-entrypoint.sh"]
 
