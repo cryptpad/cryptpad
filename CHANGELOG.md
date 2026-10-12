@@ -21,8 +21,15 @@ In addition this release includes:
 ## Features
 
 - New server for CryptPad [#2381](https://github.com/cryptpad/cryptpad/pull/2381) 
-- Euro-Office 9.3 [#2376](https://github.com/cryptpad/cryptpad/pull/2376)
 - Update SECURITY.md with our new security policy [#2343](https://github.com/cryptpad/cryptpad/pull/2343)
+
+### Office applications
+
+- Euro-Office 9.3 [#2376](https://github.com/cryptpad/cryptpad/pull/2376)
+
+This release replaces our Office applications based on OnlyOffice editors with compatible Office applications based on the EuroOffice editors.
+
+The CryptPad Office applications are now based on [Euro-Office](https://github.com/Euro-Office) which is itself based on [OnlyOffice](https://github.com/ONLYOFFICE), for full licensing information please see our [source code repository](https://github.com/cryptpad/cryptpad/tree/main/www/common/onlyoffice/README.md)
 
 ## Improvements
 
