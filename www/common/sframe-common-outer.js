@@ -1452,6 +1452,7 @@ define([
                 // History
                 sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
                     let nSecret = secret;
+                    data ||= {};
                     if (data.isDownload && ooDownloadData[data.isDownload]) {
                         var ooData = ooDownloadData[data.isDownload];
                         delete ooDownloadData[data.isDownload];
