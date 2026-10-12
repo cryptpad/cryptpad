@@ -12,7 +12,6 @@ define([
     '/common/common-util.js',
     //'/common/common-hash.js',
     //'/common/hyperscript.js',
-    //'json.sortify',
     //'/customize/messages.js',
 ], function (
     $,
@@ -24,7 +23,6 @@ define([
     Util /*,
     Hash,
     h,
-    Sortify,
     Messages */)
 {
     var APP = window.APP = {};

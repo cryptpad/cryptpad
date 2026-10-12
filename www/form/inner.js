@@ -4,7 +4,6 @@
 
 define([
     'jquery',
-    'json.sortify',
     '/api/config',
     '/components/chainpad-crypto/crypto.js',
     '/common/sframe-app-framework.js',
@@ -17,7 +16,6 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
-    '/common/clipboard.js',
     '/common/inner/common-mediatag.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
@@ -53,7 +51,6 @@ define([
     'less!/form/app-form.less',
 ], function (
     $,
-    Sortify,
     ApiConfig,
     Crypto,
     Framework,
@@ -66,7 +63,6 @@ define([
     Hash,
     UI,
     UIElements,
-    Clipboard,
     MT,
     h,
     Messages,
@@ -127,6 +123,14 @@ define([
 
         return cancelBlock;
     };
+
+    window.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
+            e.preventDefault();
+            window.print();
+        }
+    });
+
     var editTextOptions = function (opts, setCursorGetter, cb) {
         var evOnSave = Util.mkEvent();
 
@@ -270,7 +274,7 @@ define([
                     },
                     content: Messages['form_poll_'+t]
                 };
-            }); 
+            });
             var dropdownConfig = {
                 text: '', // Button initial text
                 options: options, // Entries displayed in the menu
@@ -314,7 +318,7 @@ define([
                         dateFormat: dateFormat,
                         defaultDate: val ? new Date(val) : undefined
                     });
-                } 
+                }
 
             // if this element was active before the remote change, restore cursor
             var setCursor = function () {
@@ -543,7 +547,7 @@ define([
                         $(el).find('input').focus();
 
                         return;
-                    } 
+                    }
                     $(add).click();
                     return;
                 } else {
@@ -559,12 +563,12 @@ define([
                                 $(element).find('input').focus();
                             } else {
                                 $container.find('input')[i].value = selectedDates[i].toLocaleDateString();
-                            } 
+                            }
                         }
                     } else if ($container.find('input')[0]) {
                         $container.find('input')[0].value = '';
-                    }   
-                } 
+                    }
+                }
 
                 $container.find('input').each(function (i, input) {
                     if (input._flatpickr) {
@@ -668,7 +672,11 @@ define([
                     if (hasUid) { $(el).data('uid', uid); }
                 });
             }
+
             var res = { values: values };
+            if (v.required) {
+                res['required'] = true;
+            }
 
             // If multiline block, get items
             if (v.items) {
@@ -1189,7 +1197,7 @@ define([
                             toggleRow,
                             block
                         ]);
-                        
+
                         return [
                             outerWrapper,
                             cancelBlock
@@ -1882,10 +1890,10 @@ define([
                         });
                         return res;
                     },
-                    reset: function () { 
+                    reset: function () {
                         $(tag).find('input').each(function (i, input) {
                             var $i = $(input);
-                            if (Util.isChecked($i)) { 
+                            if (Util.isChecked($i)) {
                                 $i.prop('checked', false);
                             }
                         });
@@ -2018,10 +2026,10 @@ define([
                         });
                         return res;
                     },
-                    reset: function () { 
+                    reset: function () {
                         $(tag).find('input').each(function (i, input) {
                             var $i = $(input);
-                            if (Util.isChecked($i)) { 
+                            if (Util.isChecked($i)) {
                                 $i.prop('checked', false);
                             }
                         });
@@ -2252,7 +2260,7 @@ define([
                     reset: function () {
                         $(tag).find('input').each(function (i, input) {
                             var $i = $(input);
-                            if (Util.isChecked($i)) { 
+                            if (Util.isChecked($i)) {
                                 $i.prop('checked', false);
                             }
                         });
@@ -2406,7 +2414,7 @@ define([
                         lines.forEach(checkDisabled);
                         $(tag).find('input').each(function (i, input) {
                             var $i = $(input);
-                            if (Util.isChecked($i)) { 
+                            if (Util.isChecked($i)) {
                                 $i.prop('checked', false);
                             }
                         });
@@ -2752,7 +2760,7 @@ define([
                     tag: tag,
                     isEmpty: function () {
                         var v = this.getValue();
-                        if (!v || !v.values) { return true; }      
+                        if (!v || !v.values) { return true; }
                         // Poll is considered empty if user hasn't interacted with it
                         return !hasInteracted;
                     },
@@ -3346,7 +3354,9 @@ define([
         $(logo).click(function () {
             APP.framework._.sfCommon.gotoURL('/');
         });
-        var footer = h('div.cp-form-view-footer', [logo]);
+        var content = UI.setHTML(h('div.cp-form-view-footer-text'), Messages.form_footerInfo);
+        content.insertBefore(Icons.get('lock', {'class': 'cp-form-footer-icon', 'aria-hidden': true}), content.firstChild);
+        var footer = h('div.cp-form-view-footer', [content, logo]);
         return footer;
     };
 
@@ -3422,7 +3432,7 @@ define([
         });
         sorted.forEach(function (uid) {
             var answer = answers[uid];
-            
+
             var viewOnly = content.answers.cantEdit || APP.isClosed;
 
             var action = h(viewOnly ? 'button.btn.btn-secondary' : 'button.btn.btn-primary', [
@@ -3927,7 +3937,7 @@ define([
                     answers = Util.clone(results || {});
                     _answers = Util.clone(answers);
                 }
-                if (!answers || Sortify(_answers) !== Sortify(results)) {
+                if (!answers || Util.sortify(_answers) !== Util.sortify(results)) {
                     window.onbeforeunload = function () {
                         return true;
                     };
@@ -4307,7 +4317,7 @@ define([
                                     };
                             });
                         }
-                        
+
                         content.form[_uid] = {
                             q: content.form[uid].q,
                             opts: opts,
@@ -4510,7 +4520,7 @@ define([
                         });
                     });
 
-                    
+
                     var shownContent = [];
                     var shownPages = [];
                     pgcontent.forEach(function(page) {
@@ -4527,7 +4537,7 @@ define([
                 };
 
                 var pageContainer = h('div.cp-form-page-container');
-                
+
                 var $page = $(pageContainer);
                 _content.push(pageContainer);
                 var refreshPage = APP.refreshPage = function (current, direction) {
@@ -4585,7 +4595,7 @@ define([
                         var shownContent = checkPages[0];
                         var shownPages = checkPages[1];
                         $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
-                        
+
                     });
 
                     if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) { $(right).css('visibility', 'hidden'); }
@@ -4908,14 +4918,35 @@ define([
                 Messages.form_geturl
             ]);
             var preview = h('div.cp-forms-results-participant', [previewBtn, participantBtn]);
+            var shouldWarnGuestAuthor = function () {
+                if (framework._.sfCommon.isLoggedIn()) { return false; }
+                if (!APP.isEditor) { return false; }
+                return true;
+            };
+            var warnGuestAuthorThen = function (next) {
+                framework._.sfCommon.isPadStored(function (err, stored) {
+                    sframeChan.event('EV_FORM_GUEST_SHARE_OPEN', {
+                        next: next,
+                        stored: Boolean(stored)
+                    });
+                });
+            };
+
             $(previewBtn).click(function () {
-                sframeChan.event('EV_OPEN_VIEW_URL');
+                if (!shouldWarnGuestAuthor()) {
+                    return void sframeChan.event('EV_OPEN_VIEW_URL');
+                }
+                warnGuestAuthorThen('preview');
             });
             $(participantBtn).click(function () {
-                sframeChan.query('Q_COPY_VIEW_URL', null, function (err, success) {
-                    if (success) { return void UI.log(Messages.shareSuccess); }
-                    UI.warn(Messages.error);
-                });
+                if (!shouldWarnGuestAuthor()) {
+                    sframeChan.query('Q_COPY_VIEW_URL', null, function (err, success) {
+                        if (success) { return void UI.log(Messages.shareSuccess); }
+                        UI.warn(Messages.error);
+                    });
+                    return;
+                }
+                warnGuestAuthorThen('public');
             });
 
             // Private / public status
@@ -5138,7 +5169,7 @@ define([
             var endDateStr = h('div.cp-form-status');
             var $endDate = $(endDateContainer);
             var $endDateStr = $(endDateStr);
-        
+
             var refreshEndDate = function () {
                 $endDate.empty();
 
@@ -5377,7 +5408,7 @@ define([
                     if (state) {
                         $container.removeClass('cp-no-drag');
                     } else {
-                        $container.addClass('cp-no-drag');  
+                        $container.addClass('cp-no-drag');
                     }
                 };
             };
@@ -5777,7 +5808,7 @@ define([
             ]);
             var editButtons = h('div.cp-form-edit-buttons-container', [ preview, edit, del ]);
 
-            var toggleRow = h('div.cp-markdown-toggle-row'); 
+            var toggleRow = h('div.cp-markdown-toggle-row');
             var markdownWrapper = h('div.cp-form-markdown-editor-wrapper', t);
             var editDiv, previewDiv;
             var div = h('div.cp-form-block.editable.nodrag.cp-form-submit-message', [

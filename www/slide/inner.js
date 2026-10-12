@@ -4,7 +4,6 @@
 
 define([
     'jquery',
-    'json.sortify',
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/slide/slide.js',
@@ -51,7 +50,6 @@ define([
 
 ], function (
     $,
-    JSONSortify,
     nThen,
     SFCommon,
     Slide,
@@ -141,7 +139,7 @@ define([
     var mkSlideOptionsButton = function (framework, slideOptions) {
         var metadataMgr = framework._.cpNfInner.metadataMgr;
         var updateSlideOptions = function (newOpt) {
-            if (JSONSortify(newOpt) !== JSONSortify(slideOptions)) {
+            if (Util.sortify(newOpt) !== Util.sortify(slideOptions)) {
                 $.extend(true, slideOptions, newOpt);
                 // TODO: manage realtime + cursor in the "options" modal ??
                 Slide.updateOptions();

@@ -6,7 +6,6 @@ define([
     'jquery',
     '/api/config',
     '/common/toolbar.js',
-    'json.sortify',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-ui-elements.js',
@@ -31,7 +30,6 @@ define([
     $,
     ApiConfig,
     Toolbar,
-    JSONSortify,
     Util,
     Hash,
     UIElements,
@@ -64,9 +62,7 @@ define([
     };
     var onConnectEvt = Util.mkEvent(true);
 
-    var stringify = function (obj) {
-        return JSONSortify(obj);
-    };
+    var stringify = Util.sortify;
 
     var E_OVER_LIMIT = 'E_OVER_LIMIT';
 
@@ -498,6 +494,7 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
+                    'data-type': 'link',
                 },[
                     Icons.get('link'),
                     Messages.fm_link_new
@@ -1251,8 +1248,8 @@ define([
         var refreshDeprecated = function () {
             if (!APP.passwordModal) { return; }
             var deprecated = files.sharedFoldersTemp;
-            if (JSONSortify(deprecated) === APP.deprecatedSF) { return; }
-            APP.deprecatedSF = JSONSortify(deprecated);
+            if (Util.sortify(deprecated) === APP.deprecatedSF) { return; }
+            APP.deprecatedSF = Util.sortify(deprecated);
             if (typeof (deprecated) === "object" && Object.keys(deprecated).length) {
                 var nt = nThen;
                 Object.keys(deprecated).forEach(function (fId) {
@@ -1274,6 +1271,10 @@ define([
         var refresh = APP.refresh = function (cb, opt) {
             var type = APP.store[FILTER_BY];
             var path = type ? [FILTER, type, currentPath] : currentPath;
+            if (APP.newSharedFolder && priv.anonSFHref && opt) {
+                opt.sf = true;
+            }
+
             APP.displayDirectory(path, undefined, () => {
                 refreshDeprecated();
                 if (typeof(cb) === "function") { cb(); }
@@ -2763,6 +2764,7 @@ define([
             path.forEach(function (p, idx) {
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
                 if (skipNext) { skipNext = false; return; }
+                if ( idx > 0 && p === ROOT && path[0] === SHARED_FOLDER ) { return; }
                 if (APP.newSharedFolder && priv.isEmbed && p === ROOT && !idx) { return; }
                 var name = p;
 
@@ -4330,8 +4332,7 @@ define([
             var $folderHeader = getFolderListHeader(true);
             var $fileHeader = getFileListHeader(true);
             var path = currentPath.slice(1);
-            var root = Util.find(data, path);
-
+            var root = Util.find(data, path) || {};
             var realPath = [ROOT, SHARED_FOLDER].concat(path);
 
             if (manager.hasSubfolder(root)) { $list.append($folderHeader); }
@@ -4376,6 +4377,13 @@ define([
                 } else {
                     path = [ROOT];
                 }
+            } else if (APP.loggedIn && path[0] === 'sf') {
+
+                const key = Object.entries(proxy.drive.root).find(
+                ([, value]) => value === Number(APP.newSharedFolder)
+                )?.[0];
+
+                path = ['root', String(key), 'root'];
             }
 
             if (APP.loggedIn && path[0] === FILES_DATA) {
@@ -4622,6 +4630,10 @@ define([
                     //  Wait for shared folder metadata
                     // _displayDirectory(path, force);
                     // cb();
+                }
+                if (opt?.sf && APP.loggedIn) { // anonymous drives don’t store shared folders
+                    path = ['sf', String(APP.newSharedFolder), 'root'];
+
                 }
                 updateSharedFolders(sframeChan, manager, files, folders, function () {
                     _displayDirectory(path, force);
@@ -5291,7 +5303,6 @@ define([
                     var auditorHash;
                     if (parsed.hash && parsed.type === "form") {
                         var formData = Hash.getFormData(null, parsed.hash, data.password);
-                        console.log(formData);
                         if (formData) {
                             auditorHash = formData.form_auditorHash;
                         }

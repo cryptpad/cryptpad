@@ -10,6 +10,7 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/common-util.js',
+    '/common/clipboard.js',
     '/common/common-hash.js',
     '/common/inner/sidebar-layout.js',
     '/common/inner/badges.js',
@@ -45,6 +46,7 @@ define([
     UI,
     UIElements,
     Util,
+    Clipboard,
     Hash,
     Sidebar,
     Badges,
@@ -213,7 +215,19 @@ define([
             var $pubLabel = $('<label>', { 'class': 'cp-default-label', 'for': 'publicKey' })
                 .text(Messages.settings_publicSigningKey);
             var $pubInput = $('<input>', { 'type': 'text', 'value': userHref, 'id': 'publicKey' });
-            $key.append($pubLabel).append($pubInput);
+            var $copyButton = $(h('button.btn.btn-primary.cp-settings-publickey-copy', {
+                'type': 'button',
+                'aria-label': Messages.copy
+            }, [
+                Icons.get('copy'),
+                h('span.cp-button-name', Messages.copy)
+            ])).click(function () {
+                Clipboard.copy(userHref, function (err) {
+                    if (!err) { UI.log(Messages.genericCopySuccess); }
+                });
+            });
+            var $publicKeyRow = $('<div>', { 'class': 'cp-sidebarlayout-input-block cp-settings-publickey-row'}).append($pubInput).append($copyButton);
+            $key.append($pubLabel).append($publicKeyRow);
         }
 
 
@@ -1945,6 +1959,20 @@ define([
             }
             todo();
         });
+        const $shareButton = $(h('button.btn.btn-primary.cp-settings-profile-share', {
+            'aria-label': Messages.settings_profileShare,
+            title: Messages.settings_profileShare
+        }, [
+            Icons.get('share'),
+            h('span.cp-button-name', Messages.settings_profileShare)
+        ]));
+        $shareButton.click(function () {
+            var hash = common.getMetadataMgr().getUserData()?.profile;
+            var url = privateData.origin + '/profile/#' + hash;
+            Clipboard.copy(url, (err) => {
+                if (!err) { UI.log(Messages.shareSuccess); }
+            });
+        });
         const $upButton = common.createButton('upload', false, data);
         $upButton.removeClass('btn-primary').addClass('btn-secondary');
         $upButton.removeProp('title');
@@ -1955,7 +1983,8 @@ define([
         cb([
             h('label', Messages.settings_profileAvatarLabel),
             h('div.cp-settings-avatar-container', avatar),
-            $upButton[0]
+            $upButton[0],
+            $shareButton[0]
         ]);
     }, false, true);
     makeBlock('profile-description', function(cb) {

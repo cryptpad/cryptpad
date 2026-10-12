@@ -957,8 +957,12 @@ define([
                 Cryptpad.universal.onEvent.reg(function (data) {
                     sframeChan.event('EV_UNIVERSAL_EVENT', data);
                 });
-                sframeChan.on('Q_UNIVERSAL_COMMAND', function (data, cb) {
-                    Cryptpad.universal.execCommand(data, cb);
+                sframeChan.on('Q_UNIVERSAL_COMMAND', function (content, cb) {
+                    if (content?.type === 'linked-doc') {
+                        content.data.data.signKey64 = secret.keys?.signKey;
+                        content.data.data.channel = secret.channel;
+                    }
+                    Cryptpad.universal.execCommand(content, cb);
                 });
 
                 sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {
@@ -1175,6 +1179,11 @@ define([
                     openURL(url);
                 });
                 sframeChan.on('EV_OPEN_URL', openURL);
+                sframeChan.on('EV_OPEN_VIEW_URL', function () {
+                    if (!hashes || !hashes.viewHash) { return; }
+                    var a = window.open(Utils.Hash.hashToHref(hashes.viewHash, 'form'));
+                    if (!a) { _sframeChan.event('EV_POPUP_BLOCKED'); }
+                });
 
                 sframeChan.on('Q_GET_PAD_METADATA', function (data, cb) {
                     if (!data || !data.channel) {
@@ -1439,6 +1448,62 @@ define([
                         }
                     }, cb);
                 });
+
+                // History
+                sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
+                    let nSecret = secret;
+                    if (data.isDownload && ooDownloadData[data.isDownload]) {
+                        var ooData = ooDownloadData[data.isDownload];
+                        delete ooDownloadData[data.isDownload];
+                        nSecret = Utils.Hash.getSecrets('sheet', ooData.hash, ooData.password);
+                    } else if (data.href) {
+                        var _parsed = Utils.Hash.parsePadUrl(data.href);
+                        nSecret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, data.password);
+                    }
+                    var crypto = Crypto.createEncryptor(nSecret.keys);
+                    Cryptpad.getFullHistory({
+                        debug: data?.debug,
+                        full: data?.full,
+                        channel: data.channel || nSecret.channel,
+                        validateKey: nSecret.keys.validateKey
+                    }, function (encryptedMsgs) {
+                        var nt = nThen;
+                        var decryptedMsgs = [];
+                        var total = encryptedMsgs.length;
+                        encryptedMsgs.forEach(function (_msg, i) {
+                            nt = nt(function (waitFor) {
+                                // The 3rd parameter "true" means we're going to skip signature validation.
+                                // We don't need it since the message is already validated serverside by hk
+                                let decryptedMsg;
+                                try {
+                                    let m = typeof(_msg) === "object" ? _msg.msg : _msg;
+                                    decryptedMsg = crypto.decrypt(m, true, true);
+                                } catch (e) {
+                                    console.error(e);
+                                    return;
+                                }
+
+                                if (typeof(_msg) === "object") {
+                                    decryptedMsgs.push({
+                                        author: _msg.author,
+                                        serverHash: _msg.serverHash,
+                                        time: _msg.time,
+                                        msg: decryptedMsg
+                                    });
+                                } else {
+                                    decryptedMsgs.push(decryptedMsg);
+                                }
+                                setTimeout(waitFor(function () {
+                                    sframeChan.event('EV_FULL_HISTORY_STATUS', (i+1)/total);
+                                }));
+                            }).nThen;
+                        });
+                        nt(function () {
+                            cb(decryptedMsgs);
+                        });
+                    });
+                });
+
                 sframeChan.on('Q_GET_HISTORY_RANGE', function (data, cb) {
                     var nSecret = secret;
                     if (cfg.isDrive) {
@@ -1532,6 +1597,43 @@ define([
                             error: e
                         });
                     });
+                });
+
+                sframeChan.on('Q_TRIM_HISTORY', function (data, cb) {
+                    const { href } = data;
+                    const parsed = Utils.Hash.parsePadUrl(href);
+                    let type = parsed.type;
+                    if (['sheet', 'doc', 'presentation'].includes(type)) {
+                        type = 'common/onlyoffice';
+                    }
+                    const path = `/${type}/trim-history.js`;
+                    const cfg = {
+                        password: data.password
+                    };
+                    require([path], (Trimming) => {
+                        nThen(waitFor => {
+                            Cryptpad.getAccessKeys(waitFor((keys) => {
+                                cfg.accessKeys = keys;
+                            }));
+                        }).nThen(function () {
+                            Cryptget.get(parsed.hash, (err, val) => {
+                                if (err) { return void cb(); }
+                                const json = Utils.Util.tryParse(val);
+                                if (!json) { return void cb(); }
+                                const newJson = Trimming.trim(json);
+                                if (!newJson) { return void cb(); }
+                                Cryptget.put(parsed.hash, JSON.stringify(newJson), () => {
+                                    cb();
+                                }, cfg);
+                            }, cfg);
+                        });
+                    }, () => {
+                        cb();
+                    });
+                });
+
+                sframeChan.on('Q_GET_PAD_TEAMS', function (types, cb) {
+                    Cryptpad.getPadTeams(types, cb);
                 });
             };
             addCommonRpc(sframeChan, isSafe);
@@ -1681,7 +1783,9 @@ define([
             });
 
             sframeChan.on('Q_SAVE_AS_TEMPLATE', function (data, cb) {
-                data.teamId = Cryptpad.initialTeam;
+                if (Cryptpad.initialTeam) {
+                    data.teamId = Cryptpad.initialTeam;
+                }
                 Cryptpad.saveAsTemplate(Cryptget.put, data, cb);
             });
 
@@ -1708,42 +1812,6 @@ define([
 
             sframeChan.on('Q_ANON_GET_PREVIEW_CONTENT', function (data, cb) {
                 Cryptpad.anonGetPreviewContent(data, cb);
-            });
-
-            // History
-            sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
-                var crypto = Crypto.createEncryptor(secret.keys);
-                Cryptpad.getFullHistory({
-                    debug: data && data.debug,
-                    channel: secret.channel,
-                    validateKey: secret.keys.validateKey
-                }, function (encryptedMsgs) {
-                    var nt = nThen;
-                    var decryptedMsgs = [];
-                    var total = encryptedMsgs.length;
-                    encryptedMsgs.forEach(function (_msg, i) {
-                        nt = nt(function (waitFor) {
-                            // The 3rd parameter "true" means we're going to skip signature validation.
-                            // We don't need it since the message is already validated serverside by hk
-                            if (typeof(_msg) === "object") {
-                                decryptedMsgs.push({
-                                    author: _msg.author,
-                                    serverHash: _msg.serverHash,
-                                    time: _msg.time,
-                                    msg: crypto.decrypt(_msg.msg, true, true)
-                                });
-                            } else {
-                                decryptedMsgs.push(crypto.decrypt(_msg, true, true));
-                            }
-                            setTimeout(waitFor(function () {
-                                sframeChan.event('EV_FULL_HISTORY_STATUS', (i+1)/total);
-                            }));
-                        }).nThen;
-                    });
-                    nt(function () {
-                        cb(decryptedMsgs);
-                    });
-                });
             });
 
             // Store
@@ -1910,7 +1978,7 @@ define([
                     UnsafeObject.$iframe = $('<iframe>', {
                         id: 'sbox-unsafe-iframe',
                         allow: 'clipboard-write'
-                    }).appendTo($('body')).hide();
+                    }).appendTo($('body'));//.hide();
                     UnsafeObject.modal = UnsafeIframe.create(config);
                 }
                 UnsafeObject.modal.refresh(cfg, function (data) {
@@ -1922,21 +1990,24 @@ define([
             // OO iframe
             var OOIframeObject = {};
             var initOOIframe = function (cfg, cb) {
-                if (!OOIframeObject.$iframe) {
+                const app = cfg.type;
+                if (!OOIframeObject[app]?.$iframe) {
+                    const obj = OOIframeObject[app] ||= {};
                     var config = {};
+                    config.type = app;
                     config.addCommonRpc = addCommonRpc;
                     config.modules = {
                         Cryptpad: Cryptpad,
                         SFrameChannel: SFrameChannel,
                         Utils: Utils
                     };
-                    OOIframeObject.$iframe = $('<iframe>', {
-                        id: 'sbox-oo-iframe',
+                    obj.$iframe = $('<iframe>', {
+                        id: `sbox-oo-iframe-${app}`,
                         allow: 'clipboard-write'
-                    }).appendTo($('body')).hide();
-                    OOIframeObject.modal = OOIframe.create(config);
+                    }).appendTo($('body'));//.hide();
+                    obj.modal = OOIframe.create(config);
                 }
-                OOIframeObject.modal.refresh(cfg, function (data) {
+                OOIframeObject[app]?.modal?.refresh(cfg, function (data) {
                     cb(data);
                 });
             };
@@ -2049,7 +2120,7 @@ define([
                 nThen(function (waitFor) {
                     channels.forEach(function (chan) {
                         if (chan === "chainpad") { chan = secret.channel; }
-                        console.error(chan);
+                        if (!chan) { return; }
                         Utils.Cache.clearChannel(chan, waitFor());
                     });
                 }).nThen(cb);
@@ -2090,18 +2161,24 @@ define([
                     // so that we can disconnect the network
                     cgNetworkStatus[cgNetworkId] ||= [];
                     cgNetworkStatus[cgNetworkId].push(new Promise((res) => {
-                        Cryptget.get(data.hash, function (err, val) {
+                        try {
+                            Cryptget.get(data.hash, function (err, val) {
+                                res(network);
+                                cb({
+                                    error: err,
+                                    data: val
+                                });
+                            }, data.opts, function (progress) {
+                                sframeChan.event("EV_CRYPTGET_PROGRESS", {
+                                    hash: data.hash,
+                                    progress: progress,
+                                });
+                            });
+                        } catch (e) {
                             res(network);
-                            cb({
-                                error: err,
-                                data: val
-                            });
-                        }, data.opts, function (progress) {
-                            sframeChan.event("EV_CRYPTGET_PROGRESS", {
-                                hash: data.hash,
-                                progress: progress,
-                            });
-                        });
+                            console.error(data.hash, e, data);
+                            cb({error: 'EINVAL'});
+                        }
                     }));
                 };
 
@@ -2231,12 +2308,8 @@ define([
                     });
                 });
             });
-            sframeChan.on('EV_OPEN_VIEW_URL', function () {
-                var url = Utils.Hash.hashToHref(hashes.viewHash, 'form');
-                var a = window.open(url);
-                if (!a) {
-                    sframeChan.event('EV_POPUP_BLOCKED');
-                }
+            sframeChan.on('EV_FORM_GUEST_SHARE_OPEN', function (data) {
+                initSecureModal('formGuestShare', data || {});
             });
 
             Handler.formCommandHandlers(sframeChan, Utils, nThen, Cryptpad);
@@ -2266,7 +2339,7 @@ define([
                 sframeChan.on('Q_INTEGRATION_USERLIST_CHANGE', function (obj, cb) {
                     cfg?.integrationUtils?.onUserlistChange?.(obj, cb);
                 });
-                sframeChan.on('Q_INTEGRATION_ERROR', function (obj) {
+                sframeChan.on('EV_INTEGRATION_ERROR', function (obj) {
                     if (cfg.integrationUtils && cfg.integrationUtils.onError) {
                         cfg.integrationUtils.onError(obj);
                     }
@@ -2335,7 +2408,7 @@ define([
             // If our channel was deleted from all of our drives, sitch back to full hash
             // in the address bar
             Cryptpad.padRpc.onChannelDeleted.reg(function (channel) {
-                if (channel !== secret.channel) { return; }
+                if (channel !== secret.channel || currentPad.app === 'drive') { return; }
                 Cryptpad.setTabHref(currentPad.href);
             });
 
@@ -2368,7 +2441,10 @@ define([
                 };
 
                 if (burnAfterReading) {
-                    Cryptpad.padRpc.onReadyEvent.reg(function () {
+                    nThen(w => {
+                        Cryptpad.padRpc.onReadyEvent.reg(w());
+                        if (isOO) { sframeChan.on('EV_OO_DOC_READY', w()); }
+                    }).nThen(() => {
                         Cryptpad.burnPad({
                             password: password,
                             href: currentPad.href,
@@ -2486,8 +2562,12 @@ define([
 
                 if (cfg.integration) { rtConfig.metadata.selfdestruct = true; }
 
-                if (data.team) {
+                if (data.team === false) {
+                    Cryptpad.initialTeam = false;
+                } else if (data.team) {
                     Cryptpad.initialTeam = data.team.id;
+                } else {
+                    delete Cryptpad.initialTeam;
                 }
                 if (data.owned && data.team && data.team.edPublic) {
                     rtConfig.metadata.owners = [data.team.edPublic];

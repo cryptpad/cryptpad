@@ -38,74 +38,42 @@ define([
             obj.ooVersionHash = version;
             obj.ooForceVersion = localStorage.CryptPad_ooVersion || "";
         };
-        var channels = {};
+        const channels = {};
         var getPropChannels = function () {
             return channels;
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
+            Cryptpad.otherPadAttrs = channels;
+
             sframeChan.on('Q_OO_SAVE', function (data, cb) {
-                var chanId = Utils.Hash.hrefToHexChannelId(data.url);
-                Cryptpad.getPadAttribute('lastVersion', function (err, data) {
-                    if (!data) { return; }
-                    var oldChanId = Utils.Hash.hrefToHexChannelId(data);
-                    if (oldChanId !== chanId) { Cryptpad.unpinPads([oldChanId], function () {}); }
-                });
-
-                // If pad is stored, pin
-                Cryptpad.getPadAttribute('channel', function (err, data) {
-                    if (err || !data) { return; }
-                    Cryptpad.pinPads([chanId], function (e) {
-                        if (e) { return void cb(e); }
-                    });
-                });
-                Cryptpad.setPadAttribute('lastVersion', data.url, cb);
+                // Only called onReady when loading legacy checkpoints
+                channels.rtChannel = data.channel;
                 channels.lastVersion = data.url;
+                if (data.hash) { channels.lastCpHash = data.hash; }
                 Cryptpad.setPadAttribute('lastCpHash', data.hash, cb);
-                channels.lastCpHash = data.hash;
+                Cryptpad.setPadAttribute('lastVersion', data.url, cb);
             });
-            sframeChan.on('Q_OO_OPENCHANNEL', function (data, cb) {
-                const other = Cryptpad.otherPadAttrs = {
-                    rtChannel: data.channel
-                };
-                if (channels.lastVersion) {
-                    other.lastVersion = channels.lastVersion;
-                }
-                other.lastCpHash = channels.lastCpHash;
 
-                Cryptpad.getPadAttribute('rtChannel', function (err, res) {
-                    // If already stored, don't pin it again
-                    channels.rtChannel = data.channel;
-                    if (res && res === data.channel) { return; }
-                    Cryptpad.pinPads([data.channel], function () {
-                        Cryptpad.setPadAttribute('rtChannel', data.channel, function () {});
-                    });
-                });
-                var owners, expire;
-                nThen(function (waitFor) {
-                    if (Utils.rtConfig) {
-                        owners = Utils.Util.find(Utils.rtConfig, ['metadata', 'owners']);
-                        expire = Utils.Util.find(Utils.rtConfig, ['metadata', 'expire']);
-                        return;
+            sframeChan.on('Q_OO_OPENCHANNEL', function (data, cb) {
+                // If we don't have "channels" values, it means we're not
+                // loading an "old" checkpoint so we can clean attributes
+                if (!channels?.lastVersion) {
+                    channels.linked = true;
+                    Cryptpad.setPadAttribute('linked', true, () => {});
+                    Cryptpad.setPadAttribute('rtChannel', void 0, () => {});
+                    Cryptpad.setPadAttribute('lastVersion', void 0, () => {});
+                    Cryptpad.setPadAttribute('lastCpHash', void 0, () => {});
+                }
+
+                Cryptpad.onlyoffice.execCommand({
+                    cmd: 'OPEN_CHANNEL',
+                    data: {
+                        channel: data.channel,
+                        lastCpHash: data.lastCpHash,
+                        padChan: Utils.secret.channel, // metadata inherited from this pad
+                        validateKey: Utils.secret.keys.validateKey
                     }
-                    Cryptpad.getPadAttribute('owners', waitFor(function (err, res) {
-                        owners = res;
-                    }));
-                    Cryptpad.getPadAttribute('expire', waitFor(function (err, res) {
-                        expire = res;
-                    }));
-                }).nThen(function () {
-                    Cryptpad.onlyoffice.execCommand({
-                        cmd: 'OPEN_CHANNEL',
-                        data: {
-                            owners: owners,
-                            expire: expire,
-                            channel: data.channel,
-                            lastCpHash: data.lastCpHash,
-                            padChan: Utils.secret.channel,
-                            validateKey: Utils.secret.keys.validateKey
-                        }
-                    }, cb);
-                });
+                }, cb);
             });
             sframeChan.on('EV_OO_PIN_IMAGES', function (list) {
                 Cryptpad.getPadAttribute('ooImages', function (err, res) {
@@ -181,7 +149,7 @@ define([
             type: 'oo',
             addData: addData,
             addRpc: addRpc,
-            getPropChannels: getPropChannels,
+            getPropChannels: getPropChannels, // XXX TODO
             messaging: true,
             useCreationScreen: !isIntegration,
             noDrive: true,

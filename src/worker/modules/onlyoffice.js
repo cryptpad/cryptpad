@@ -27,15 +27,26 @@ const factory = (Feedback) => {
         var first = true;
 
         var c = ctx.clients[client];
-        if (!c) {
+        var chan = ctx.channels[channel];
+
+        if (!c) { // new tab
             c = ctx.clients[client] = {
                 channel: channel,
             };
-        } else {
+        } else if (c?.channel !== channel) { // new channel on existing tab
+            // Remove client from existing chan
+            // and disconnect from chan if needed
+            ctx.removeClient(client, true);
+            c = ctx.clients[client] = {
+                channel: channel,
+            };
+        } else { // same channel existing tab
+            setTimeout(() => {
+                ctx.emit('READY', chan.clients, [client]);
+            });
             return void cb();
         }
 
-        var chan = ctx.channels[channel];
         if (chan) {
             // This channel is already open in another tab
 
@@ -114,8 +125,7 @@ const factory = (Feedback) => {
                 metadata: {
                     //forcePlaceholder: true,
                     validateKey: obj.validateKey,
-                    owners: obj.owners,
-                    expire: obj.expire
+                    linked: obj.padChan
                 }
             };
             var msg = ['GET_HISTORY', wc.id, cfg];
@@ -209,25 +219,6 @@ const factory = (Feedback) => {
         });
     };
 
-    var updateHash = function (ctx, data, clientId, cb) {
-        var c = ctx.clients[clientId];
-        if (!c) { return void cb({ error: 'NOT_IN_CHANNEL' }); }
-        var chan = ctx.channels[c.channel];
-        if (!chan) { return void cb({ error: 'INVALID_CHANNEL' }); }
-        var hash = data;
-        var index = -1;
-        chan.history.some(function (msg, idx) {
-            if (msg.slice(0,64) === hash) {
-                index = idx + 1;
-                return true;
-            }
-        });
-        if (index !== -1) {
-            chan.history = chan.history.slice(index);
-        }
-        cb();
-    };
-
     var sendMessage = function (ctx, data, clientId, cb) {
         var c = ctx.clients[clientId];
         if (!c) { return void cb({ error: 'NOT_IN_CHANNEL' }); }
@@ -255,18 +246,40 @@ const factory = (Feedback) => {
         var channel = data.channel;
         var network = ctx.store.network;
 
+        var hk = network.historyKeeper;
+        const txid = Math.floor(Math.random() * 1000000);
+
         var onOpen = function (wc) {
-            var hk = network.historyKeeper;
+            const sendEncrypted = () => {
+                data.msgs.forEach(function (msg) {
+                    wc.bcast(msg);
+                });
+                wc.leave();
+                cb();
+            };
+
+            const onDirectMessage = (msg, sender) => {
+                // Ignore messages for others
+                if (sender !== hk) { return; }
+                try {
+                    const parsed = JSON.parse(msg);
+                    if (parsed?.txid !== txid) { return; }
+                    if (!parsed.channel) { return; }
+
+                    // Remove listener and send re-encrypted messages
+                    network.off('message', onDirectMessage);
+                    sendEncrypted();
+                } catch (e) { console.error(e); }
+            };
+
+            network.on('message', onDirectMessage);
+
             var cfg = {
+                txid: txid,
                 metadata: data.metadata
             };
             var msg = ['GET_HISTORY', wc.id, cfg];
             network.sendto(hk, JSON.stringify(msg));
-            data.msgs.forEach(function (msg) {
-                wc.bcast(msg);
-            });
-            wc.leave();
-            cb();
         };
 
         ctx.store.anon_rpc.send("IS_NEW_CHANNEL", channel, function (e, response) {
@@ -298,7 +311,7 @@ const factory = (Feedback) => {
     };
 
     // Remove the client from all its channels when a tab is closed
-    var removeClient = function (ctx, clientId) {
+    var removeClient = function (ctx, clientId, newChan) {
         var filter = function (c) {
             return c !== clientId;
         };
@@ -314,7 +327,7 @@ const factory = (Feedback) => {
             }
         }
 
-        if (ctx.clients[clientId]) {
+        if (ctx.clients[clientId] && !newChan) {
             var oldChannel = ctx.clients[clientId].channel;
             var oldChan = ctx.channels[oldChannel];
             if (oldChan) {
@@ -335,8 +348,8 @@ const factory = (Feedback) => {
             clients: {}
         };
 
-        oo.removeClient = function (clientId) {
-            removeClient(ctx, clientId);
+        oo.removeClient = ctx.removeClient = function (clientId, newChan) {
+            removeClient(ctx, clientId, newChan);
         };
         oo.leavePad = function (padChan) {
             leaveChannel(ctx, padChan);
@@ -346,9 +359,6 @@ const factory = (Feedback) => {
             var data = obj.data;
             if (cmd === 'SEND_MESSAGE') {
                 return void sendMessage(ctx, data, clientId, cb);
-            }
-            if (cmd === 'UPDATE_HASH') {
-                return void updateHash(ctx, data, clientId, cb);
             }
             if (cmd === 'OPEN_CHANNEL') {
                 return void openChannel(ctx, data, clientId, cb);

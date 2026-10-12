@@ -82,13 +82,36 @@ define([
         }
 
         if (Object.keys(teams).length) {
-            var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
-                common: common,
-                noFilter: true,
-                large: true,
-                data: teams
-            }, refreshButtons);
-            $div.append(teamsList.div);
+            common.getPadTeams({channel: config.channel}, function (err, teamIds) {
+                if (err) { console.error(err); }
+                teamIds = teamIds || [];
+
+                Object.keys(teams).forEach(k => {
+                    (teams[k] || {}).teamId = teams[k].id;
+                });
+
+                var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
+                    common: common,
+                    noFilter: true,
+                    large: true,
+                    data: teams
+                }, refreshButtons);
+
+                teamsList.icons.forEach(function (icon) {
+                    var inTeam = teamIds.some(function (id) {
+                        return String(id) === icon.getAttribute('data-teamid');
+                    });
+                    if (inTeam) {
+                        $(icon).addClass('cp-disabled');
+                        $(icon).on('click', function (e) {
+                            e.preventDefault();
+                            return false;
+                        });
+                    }
+                });
+
+                $div.append(teamsList.div);
+            });
         }
 
         var shareButton = {
@@ -380,7 +403,7 @@ define([
         if (opts.static) { linkContent = []; }
 
         linkContent.push(h('div.cp-spacer'));
-        linkContent.push(UI.dialog.selectableArea('', { id: 'cp-share-link-preview', tabindex: 0, rows:3}));
+        linkContent.push(UI.dialog.selectableArea('', { id: 'cp-share-link-preview', 'aria-label': Messages.share_linkCopy, tabindex: 0, rows:3}));
 
         // Show alert if the pad is password protected
         if (opts.hasPassword) {
@@ -542,7 +565,7 @@ define([
 
         var embedContent = [
             h('p', Messages.viewEmbedTag),
-            UI.dialog.selectableArea(opts.getEmbedValue(), { id: 'cp-embed-link-preview', tabindex: 0, rows: 3})
+            UI.dialog.selectableArea(opts.getEmbedValue(), { id: 'cp-embed-link-preview', 'aria-label': Messages.share_linkCopy, tabindex: 0, rows: 3})
         ];
 
         // Show alert if the pad is password protected

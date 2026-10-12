@@ -10,7 +10,6 @@ import * as ChainPad from 'chainpad';
 import * as Crypto from 'chainpad-crypto';
 import * as CpNetflux from 'chainpad-netflux';
 import nThen from 'nthen';
-import Sortify from 'json.sortify';
 // custom modules
 import * as NetConfig from '../../common/network-config.js';
 import * as Hash from '../../common/common-hash.js';
@@ -54,7 +53,7 @@ const _getMetadata: Callback = (ctx, clientId, data, _cb) => {
             const allData = s.manager.findChannel(data.channel, true);
             let changed = false;
             allData.forEach(obj => {
-                if (Sortify(obj.data.owners) !== Sortify(metadata.owners)) {
+                if (Util.sortify(obj.data.owners) !== Util.sortify(metadata.owners)) {
                     changed = true;
                 }
                 obj.data.owners = metadata.owners;

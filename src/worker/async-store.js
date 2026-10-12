@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-const factory = (Sortify, UserObject, ProxyManager,
+const factory = (UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
                 Realtime, Messaging, Pinpad, Rpc, Cryptget, Cache,
                 SF, AccountTS, DriveTS, PadTS, Form, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
-                Calendar, BadgeTS, Block, NetConfig,
+                Calendar, BadgeTS, LinkedTS, Block, NetConfig,
                 Crypto, ChainPad, CpNetflux, Listmap,
                 Netflux, nThen) => {
 
@@ -16,6 +16,7 @@ const factory = (Sortify, UserObject, ProxyManager,
     const Drive = DriveTS.Drive;
     const Pad = PadTS.Pad;
     const Badge = BadgeTS.Badge;
+    const LinkedDoc = LinkedTS.LinkedDoc;
     const window = globalThis;
     globalThis.nacl = globalThis.nacl || Crypto.Nacl;
 
@@ -392,7 +393,8 @@ const factory = (Sortify, UserObject, ProxyManager,
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
             s.rpc.uploadStatus({
                 id: data.id,
-                size: data.size
+                size: data.size,
+                linked: data.linked
             }, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);
@@ -736,7 +738,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             });
 
             if (['doc', 'sheet', 'presentation'].includes(parsed.type)) {
-                if (!pad.rtChannel) {
+                if (!pad.rtChannel && !pad.linked) {
                     return getRtChannelFromPad(pad, (err, rtChannel) => {
                         const key = 'ADDPAD_NO_RT_CHANNEL' ;
                         if (!err) {
@@ -928,9 +930,9 @@ const factory = (Sortify, UserObject, ProxyManager,
                 toSign.drive = store.driveChannel;
                 toSign.edPublic = edPublic;
                 var signKey = Util.decodeBase64(store.proxy.edPrivate);
-                var proof = Crypto.Nacl.sign.detached(Util.decodeUTF8(Sortify(toSign)), signKey);
+                var proof = Crypto.Nacl.sign.detached(Util.decodeUTF8(Util.sortify(toSign)), signKey);
 
-                var check = Crypto.Nacl.sign.detached.verify(Util.decodeUTF8(Sortify(toSign)),
+                var check = Crypto.Nacl.sign.detached.verify(Util.decodeUTF8(Util.sortify(toSign)),
                     proof,
                     Util.decodeBase64(edPublic));
 
@@ -939,7 +941,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                 var proofTxt = Util.encodeBase64(proof);
                 cb({
                     proof: proofTxt,
-                    toSign: JSON.parse(Sortify(toSign))
+                    toSign: JSON.parse(Util.sortify(toSign))
                 });
             });
         };
@@ -1317,10 +1319,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             var list = {};
             var types = query.types;
             var where = query.where;
-            var filter = query.filter || {};
+            var filter = query.filter || {};
             var isFiltered = function (type, data) {
                 var filtered;
-                var fType = filter.fileType || [];
+                var fType = filter.fileType || [];
                 if (type === 'file' && fType.length) {
                     if (!data.fileType) { return true; }
                     filtered = !fType.some(function (t) {
@@ -1349,6 +1351,22 @@ const factory = (Sortify, UserObject, ProxyManager,
                 });
             });
             cb(list);
+        };
+
+        // Get all teams where a given pad is stored
+        Store.getPadTeams = function (userId, data, cb) {
+            var channel = data && data.channel;
+            if (!channel) { return void cb({error: 'EINVAL'}); }
+
+            var teamIds = [];
+            getAllStores().forEach(function (s) {
+                if (!s.id) { return; } // Skip our own drive, we only want teams here
+                var chans = s.manager.findChannel(channel, true);
+                if (chans && chans.length) {
+                    teamIds.push(s.id);
+                }
+            });
+            cb(teamIds);
         };
 
         // Get the first pad we can find in any of our drives and return its file data
@@ -1785,6 +1803,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
             if (obj && obj.error) { return; }
             if (!obj.mailbox) { return; }
+            if (!store.loggedIn) { return; }
 
             // Decrypt the mailbox
             var crypto = Crypto.createEncryptor(secret.keys);
@@ -1891,7 +1910,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                 if (msg) {
                     msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
                     //var decryptedMsg = crypto.decrypt(msg, true);
-                    if (data.debug) {
+                    if (data.debug || data.full) {
                         msgs.push({
                             serverHash: msg.slice(0,64),
                             msg: msg,
@@ -2428,6 +2447,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             loadUniversal(Messenger, 'messenger', waitFor);
             loadUniversal(History, 'history', waitFor);
             loadUniversal(Badge, 'badge', waitFor);
+            loadUniversal(LinkedDoc, 'linked-doc', waitFor);
             loadOnlyOffice();
             if (store) {
                 store.messenger = store.modules['messenger'];
@@ -3050,6 +3070,8 @@ const factory = (Sortify, UserObject, ProxyManager,
                 data.requires = 'pad';
             }
 
+            store.loggedIn = typeof(data.userHash) !== "undefined";
+
             start(clientId, data, Util.once(obj => {
                 if (obj.error === 'GET_HK') {
                     return void callback({
@@ -3096,7 +3118,6 @@ const factory = (Sortify, UserObject, ProxyManager,
 };
 
 module.exports = factory(
-    require('json.sortify'),
     require('../common/user-object'),
     require('../common/proxy-manager'),
     require('./components/migrate-user-object'),
@@ -3126,6 +3147,7 @@ module.exports = factory(
     require('./modules/history'),
     require('./modules/calendar'),
     require('./modules/badge'), // .ts
+    require('./modules/linked'), // .ts
     require('../common/outer/login-block'),
     require('../common/network-config'),
     require('chainpad-crypto'),

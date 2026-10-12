@@ -54,6 +54,32 @@ define([
         REFRESH_TAGS: Util.mkEvent()
     };
 
+    const solveAdminIds = (common, all, cb) => {
+        let n = nThen;
+        const moderators = {};
+        Object.keys(all).forEach(k => {
+            const data = all[k];
+            const ed = data.edPublic;
+            data.adminId = Hash.hashChannelList([ed]).slice(0,24);
+            moderators[data.adminId] = data;
+            if (!data.profile) { return; }
+            n = n(waitFor => {
+                common.getPad({
+                    hash: data.profile,
+                    opts: {}
+                }, waitFor((err, val) => {
+                    const profile = Util.tryParse(val);
+                    if (err || !profile) { return; }
+                    data.name = profile.name;
+                    data.avatar = profile.avatar;
+                }));
+            }).nThen;
+        });
+        n(() => {
+            APP.moderators = moderators;
+            cb();
+        });
+    };
 
     var andThen = function (common, $container, linkedTicket) {
         const sidebar = Sidebar.create(common, 'support', $container);
@@ -77,22 +103,32 @@ define([
                     return void UI.warn(Messages.error);
                 }
                 var $ticket = $(ticket);
+                const $msgs = $ticket.find('.cp-support-ticket-messages');
                 obj.forEach(function (msg) {
                     // Only add notifications channel if this is coming from the other user
                     if (!data.notifications && msg.sender.drive) {
                         data.notifications = Util.find(msg, ['sender', 'notifications']);
                     }
+
+                    // Translate adminId
+                    let id = msg?.sender?.adminId;
+                    if (id && APP.moderators[id]) {
+                        let mod = APP.moderators[id];
+                        msg.sender.adminName = mod.name;
+                        msg.sender.edPublic = mod.edPublic;
+                    }
+
                     if (msg.close) {
                         $ticket.addClass('cp-support-list-closed');
-                        return $ticket.append(APP.support.makeCloseMessage(msg));
+                        return $msgs.prepend(APP.support.makeCloseMessage(msg));
                     }
                     if (msg.legacy && msg.messages) {
                         msg.messages.forEach(c => {
-                            $ticket.append(APP.support.makeMessage(c));
+                            $msgs.prepend(APP.support.makeMessage(c));
                         });
                         return;
                     }
-                    $ticket.append(APP.support.makeMessage(msg));
+                    $msgs.prepend(APP.support.makeMessage(msg));
                 });
                 done(true);
             });
@@ -127,7 +163,6 @@ define([
                     if (!id) { return; }
                     activeForms[id] = el;
                 });
-                $container.empty();
                 var col1 = h('div.cp-support-column', h('h1', [
                     h('span', Messages.admin_support_premium),
                     h('span.cp-support-count'),
@@ -160,7 +195,6 @@ define([
                     // Only one column
                     col1 = col2 = col3 = col6 = col5;
                 }
-                $container.append([col1, col2, col3, col6]);
 
                 const onShow = function (ticket, channel, data, done) {
                     onShowTicket(ticket, channel, data, (success) => {
@@ -190,7 +224,6 @@ define([
                             console.error(obj && obj.error);
                             return void UI.warn(Messages.error);
                         }
-                        $(ticket).find('.cp-support-list-message').remove();
                         $(ticket).find('.cp-support-form-container').remove();
                         refresh($container, type);
                     });
@@ -311,6 +344,10 @@ define([
                 // Wait for all open tickets to be loaded before calling back
                 // otherwise we may have a wrong scroll position
                 n(() => {
+                    var $rightside = sidebar.$rightside;
+                    var s = $rightside.scrollTop();
+                    $container.empty().append([col1, col2, col3, col6]);
+                    $rightside.scrollTop(s);
                     cb();
                 });
             });
@@ -389,6 +426,14 @@ define([
                     'filter',
                     'active-list',
                     'pending-list',
+                ]
+            },
+            'batch': {
+                icon: 'users',
+                content: [
+                    'batch-list',
+                    'batch-close',
+                    'batch-send'
                 ]
             },
             'closed': { // Msg.support_cat_closed
@@ -833,6 +878,174 @@ define([
             cb(div);
         });
 
+        sidebar.addItem('batch-list', cb => {
+            let list = blocks.block([blocks.block([
+                blocks.inline(Messages.support_emptyBatch, 'cp-support-batch-empty')
+            ])], 'cp-support-batch-list');
+            APP.batchList = $(list);
+            let content = blocks.block([list]);
+            cb(content);
+        }, { noHint: true });
+
+        const replyBatch = (handler, cb) => {
+            if (!Array.isArray(APP.currentBatch) || !APP.currentBatch.length) {
+                return void cb(false);
+            }
+            let n = nThen;
+            APP.currentBatch.forEach(data => {
+                n = n(waitFor => {
+                    APP.module.execCommand('LOAD_TICKET_ADMIN', {
+                        channel: data.id,
+                        curvePublic: data.authorKey,
+                        supportKey: data.supportKey
+                    }, waitFor(function (obj) {
+                        if (!obj.length) { return; }
+                        // Get user notifications channel
+                        let notifications;
+                        obj.some(msg => {
+                            // reject admin messages
+                            if (!msg?.sender?.drive) { return; }
+                            notifications = msg?.sender?.notifications;
+                            return notifications;
+                        });
+                        // Call the handler
+                        handler(data, notifications, waitFor());
+                    }));
+                }).nThen;
+            });
+            n(() => {
+                cb(true);
+            });
+        };
+
+        sidebar.addItem('batch-close', cb => {
+            let b = blocks.button('danger', 'close', Messages.support_closeTickets);
+            UI.confirmButton(b, {
+                multiple: true,
+                classes: 'btn-danger'
+            }, function() {
+                const handler = (data, notifications, cb) => {
+                    APP.module.execCommand('CLOSE_TICKET_ADMIN', {
+                        channel: data.id,
+                        curvePublic: data.authorKey,
+                        notifChannel: notifications,
+                        supportKey: data.supportKey,
+                        ticket: APP.support.getDebuggingData({
+                            close: true
+                        })
+                    }, function (obj) {
+                        if (obj?.error) {
+                            console.error(obj?.error, data);
+                            UI.warn(Messages.error);
+                        }
+                        cb();
+                    });
+                };
+
+                replyBatch(handler, success => {
+                    if (!success) { return; }
+                    APP.support.resetBatch();
+                    refreshAll();
+                });
+            });
+
+            $(b).prop('disabled', 'disabled');
+            let content = blocks.block([b]);
+            cb(content);
+        }, { noHint: true });
+
+        sidebar.addItem('batch-send', cb => {
+            let formContainer = blocks.block([]);
+            const makeForm = () => {
+                APP.module.execCommand('GET_RECORDED', {}, (obj) => {
+                    let form = APP.support.makeForm({
+                        recorded: {
+                            all: obj?.messages || []
+                        },
+                        title: Messages.supportPage,
+                        hideCancel: true
+                    }, () => {
+                        const formData = APP.support.getFormData(form);
+
+                        const handler = (data, notifications, cb) => {
+                            APP.module.execCommand('REPLY_TICKET_ADMIN', {
+                                channel: data.id,
+                                curvePublic: data.authorKey,
+                                notifChannel: notifications,
+                                supportKey: data.supportKey,
+                                ticket: formData
+                            }, function (obj) {
+                                if (obj?.error) {
+                                    console.error(obj?.error, data);
+                                }
+                                cb();
+                            });
+                        };
+
+                        // XXX Add confirm alert?
+                        replyBatch(handler, success => {
+                            makeForm();
+                            if (!success) {
+                                return UI.warn(Messages.error);
+                            }
+                            APP.refreshBatch?.();
+                            refreshAll();
+                        });
+                    });
+                    formContainer.innerHTML = '';
+                    formContainer.appendChild(form);
+                    setTimeout(() => { // match setTimeout from updateRecorded in ui.js
+                        $(form).find('button').prop('disabled', 'disabled');
+                    });
+                    APP.refreshBatch?.();
+                });
+            };
+            makeForm();
+            $(formContainer).find('button').prop('disabled', 'disabled');
+            let content = blocks.block([formContainer]);
+            cb(content);
+        }, { noHint: true });
+
+        APP.support.onBatchChange(batch => {
+            let selected = Array.from(batch);
+            let $btns = $('[data-item="batch-close"],[data-item="batch-send"]').find('button');
+            const show = (tickets) => {
+                APP.currentBatch = tickets;
+                tickets.forEach(t => {
+                    let linkId = APP.support.getLinkId(t.id);
+                    let block = blocks.block([
+                        blocks.inline(t.title),
+                        blocks.inline(` (#${linkId})`),
+                        blocks.inline(' - '),
+                        blocks.inline(new Date(t.time).toLocaleString())
+                    ], 'cp-support-batch-item');
+                    APP.batchList.append(block);
+                });
+                if (!tickets.length) {
+                    APP.batchList.append(blocks.block([
+                        blocks.inline(Messages.support_emptyBatch, 'cp-support-batch-empty')
+                    ]));
+                    return;
+                }
+                $btns.prop('disabled', false);
+            };
+            // refresh view for selected batch
+            APP.refreshBatch = () => {
+                APP.batchList.empty();
+                $btns.prop('disabled', 'disabled');
+                APP.module.execCommand('LIST_TICKETS_ADMIN', {
+                    type: 'active'
+                }, (tickets) => {
+                    show(selected.map(id => {
+                        tickets[id].id = id;
+                        return tickets[id];
+                    }).filter(Boolean));
+                });
+            };
+            APP.refreshBatch();
+        });
+
+
         // Msg.support_legacyHint.support_legacyTitle
         sidebar.addItem('legacy', cb => {
             if (!APP.privateKey) { return void cb(false); }
@@ -1038,7 +1251,12 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
             active = active.split('-')[0];
         }
 
-        andThen(common, APP.$container, linkedTicket);
+        APP.module.execCommand('GET_MODERATORS', {}, obj => {
+            const all = (Array.isArray(obj) && obj[0]) || {};
+            solveAdminIds(common, all, () => {
+                andThen(common, APP.$container, linkedTicket);
+            });
+        });
         UI.removeLoadingScreen();
 
     });

@@ -546,7 +546,20 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
                         entry.lastAdmin = ctx.moderatorKeys.indexOf(senderKey) !== -1;
                     }
                     */
+
+                    let admins = new Set();
+                    res.forEach(msg => {
+                        let adminId = msg?.sender?.adminId;
+                        // If admin non-anonymous, compute and add their id
+                        if (!adminId && !msg.sender.drive && msg.sender.edPublic) {
+                            adminId = Hash.hashChannelList([msg.sender.edPublic]).slice(0,24);
+                        }
+                        if (!adminId || adminId.length !== 24) { return; }
+                        admins.add(adminId);
+                    });
+                    entry.admins = Array.from(admins).sort();
                 }
+
                 cb(res);
             });
         });
@@ -1422,6 +1435,9 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
             }
             if (cmd === 'RESTORE_LEGACY') {
                 return void restoreLegacy(ctx, data, clientId, cb);
+            }
+            if (cmd === 'GET_MODERATORS') {
+                return void getModerators(ctx, data, clientId, cb);
             }
             // Admin commands
             if (cmd === 'GET_PRIVATE_KEY') {

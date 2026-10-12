@@ -116,10 +116,11 @@ define(['jquery'], function ($) {
                         if (that.onLoad) {
                             that.onLoad();
                         }
-                    }).contents().find('body').on('click dragstart mouseover mouseout', '.cke_button, a.cke_colormore, a.cke_colorbox, .cke_colorauto, .cke_combo_button, .cke_panel_listItem a, a.cke_menubutton', function (e) {
+                    }).contents().find('body').on('click touchend dragstart mouseover mouseout', '.cke_button, a.cke_colormore, a.cke_colorbox, .cke_colorauto, .cke_combo_button, .cke_panel_listItem a, a.cke_menubutton', function (e) {
                         e.preventDefault();
                         if (e.type === 'dragstart') { return false; }
-                        var attr = $(e.currentTarget).attr('oon'+e.type);
+                        var type = e.type === 'touchend' ? 'click' : e.type;
+                        var attr = $(e.currentTarget).attr('oon'+type);
                         if (!attr) { return; }
                         var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'"]+)'?(,'([^']+)')?\);/;
                         var reg2 = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'",]+)'?(,'([^']+)')?, this\);/;
@@ -169,7 +170,7 @@ define(['jquery'], function ($) {
 
                     holder = doc.getBody();
                     holder.unselectable();
-                    if (CKEDITOR.env.air) { CKEDITOR.tools.callFunction( onLoad ); }
+                    if (CKEDITOR.env.air || CKEDITOR.env.iOS) { CKEDITOR.tools.callFunction( onLoad ); }
                 } else {
                     holder = this.document.getById( this.id );
                 }

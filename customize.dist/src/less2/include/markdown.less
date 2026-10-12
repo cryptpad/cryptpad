@@ -222,8 +222,25 @@
     li {
         min-height: 22px;
     }
+    @list-indent: 1.3em;
+    ul, ol {
+        padding-inline-start: @list-indent;
+    }
     .todo-list-item {
         list-style: none;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5em;
+        .cp-task-marker {
+            flex-shrink: 0;
+            margin-left: -@list-indent;
+            svg {
+                margin-right: 0;
+            }
+        }
+        .cp-task-body {
+            min-width: 0;
+        }
     }
 
     .mediatag_cryptpad();

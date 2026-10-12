@@ -16,6 +16,8 @@ define([
     '/common/common-icons.js',
 ], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages, Pages, Icons) {
 
+    const onBatchChange = Util.mkEvent();
+
     var getDebuggingData = function (ctx, data) {
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
@@ -33,10 +35,11 @@ define([
         };
 
         if (ctx.isAdmin && ctx.anonymous) {
+            let adminId = Hash.hashChannelList([ privateData.edPublic ]).slice(0,24);
             data.sender = {
                 name: Messages.support_team,
-                accountName: 'support'
-                // XXX send edPublic? or keep it private
+                accountName: 'support',
+                adminId
             };
         }
 
@@ -161,7 +164,7 @@ define([
     };
 
     var makeForm = function (ctx, opts, cb) {
-        let { oldData, recorded, title, hideNotice } = opts || {};
+        let { oldData, recorded, title, hideNotice, hideCancel } = opts || {};
         var button;
         cb = cb && Util.once(cb);
 
@@ -170,7 +173,7 @@ define([
             $(button).click(cb);
         }
 
-        var cancel = title ? h('button.btn.btn-secondary.cp-support-reply-cancel', Messages.cancel)
+        var cancel = (title && !hideCancel) ? h('button.btn.btn-secondary.cp-support-reply-cancel', Messages.cancel)
                         : undefined;
 
         var category = h('input.cp-support-form-category', {
@@ -379,8 +382,11 @@ define([
         return form;
     };
 
+    var getLinkId = (id) => {
+        return Util.hexToBase64(id).slice(0,10);
+    };
     var makeTicket = function (ctx, opts) {
-        let { id, content, form, recorded,
+        let { id, content, form, recorded, batch,
               onShow, onHide, onClose, onReply, onMove, onDelete, onTag } = opts;
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
@@ -394,7 +400,7 @@ define([
             _actions = [remove]; // XXX update key to "Delete permanently" ?
         }
 
-        let linkId =  Util.hexToBase64(id).slice(0,10);
+        let linkId = getLinkId(id);
         var actions = h('div.cp-support-list-actions', _actions);
 
         var adminActions;
@@ -517,12 +523,28 @@ define([
                 });
             }
 
-            adminActions = h('span.cp-support-title-buttons', [ url, move, tag, show ]);
+            const box = UI.createCheckbox(`cp-support-batch-${id}`, '', ctx.batches.has(id));
+            const $cbox = $(box).click(e => {
+                e.stopPropagation();
+            });
+            if (batch) { ctx.batches.add(id); }
+            let $checkbox = $cbox.find('input').on('change', () => {
+                const val = $checkbox.is(':checked');
+                if (val) {
+                    ctx.batches.add(id);
+                } else {
+                    ctx.batches.delete(id);
+                }
+                onBatchChange.fire(ctx.batches);
+            });
+
+            adminActions = h('span.cp-support-title-buttons', [ box, url, move, tag, show ]);
         }
 
         let isPremium = content.premium ? '.cp-support-ispremium' : '';
         let title = content.title + ` (#${linkId})`;
         var name = Util.fixHTML(content.author) || Messages.anonymous;
+        const msgContainer = h('div.cp-support-ticket-messages');
         ticket = h(`div.cp-support-list-ticket${adminClasses}`, {
             'data-link-id': linkId,
             'data-id': id
@@ -537,7 +559,8 @@ define([
                 adminActions,
             ]),
             tagsContainer,
-            actions
+            actions,
+            msgContainer,
         ]);
         ticket.open = adminOpen;
 
@@ -583,13 +606,28 @@ define([
                 onReply(ticket, id, content, newForm);
             });
             $(newForm).attr('data-id', id);
-            $ticket.append(newForm);
+            $ticket.find('.cp-support-list-actions').after(newForm);
         };
         if (form) { addForm(); }
         Util.onClickEnter($(answer), addForm);
         if (!onReply) { $(answer).remove(); }
 
         return ticket;
+    };
+
+    const urlRegex = /(https?:\/\/[^\s]+?)(?=[.,?!;:]?(?:\s|$))/g;
+    const fixURLs = (ctx, div, fromAdmin) => {
+        let newText = div.textContent.replace(urlRegex, (url) => {
+            return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+        });
+        div.innerHTML = newText;
+        $(div).find('a').click(e => {
+            e.stopPropagation();
+            if (ctx.isAdmin && !fromAdmin && e?.target?.href) {
+                e.preventDefault();
+                ctx.common.openUnsafeURL(e?.target?.href);
+            }
+        });
     };
 
     var makeMessage = function (ctx, content) {
@@ -660,12 +698,14 @@ define([
             });
             $collapse.click(function () {
                 $pre.text(displayed);
+                fixURLs(ctx, pre, fromAdmin);
                 $collapse.hide();
                 $expand.show();
             });
             more = h('div', [expand, collapse]);
         }
         $pre.text(displayed);
+        fixURLs(ctx, pre, fromAdmin);
 
         var adminClass = (fromAdmin? '.cp-support-fromadmin': '');
         var premiumClass = (ctx.isAdmin && fromPremium && !fromAdmin? '.cp-support-frompremium': '');
@@ -710,6 +750,7 @@ define([
             pinUsage: pinUsage || false,
             teamsUsage: teamsUsage || false,
             moderatorKeys: Array.isArray(ApiConfig.moderatorKeys)?  ApiConfig.moderatorKeys.slice(): [],
+            batches: new Set()
         };
 
         ctx.supportModule = common.makeUniversal('support');
@@ -750,6 +791,13 @@ define([
         ui.getDebuggingData = function (data) {
             return getDebuggingData(ctx, data);
         };
+        ui.resetBatch = function () {
+            ctx.batches = new Set();
+            onBatchChange.fire(ctx.batches);
+        };
+        ui.getLinkId = getLinkId;
+
+        ui.onBatchChange = onBatchChange.reg;
 
         return ui;
     };

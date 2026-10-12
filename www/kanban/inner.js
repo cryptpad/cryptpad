@@ -4,7 +4,6 @@
 
 define([
     'jquery',
-    'json.sortify',
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
@@ -39,7 +38,6 @@ define([
     'less!/kanban/app-kanban.less'
 ], function (
     $,
-    Sortify,
     nThen,
     SFCommon,
     Framework,
@@ -358,11 +356,11 @@ define([
             },
             setValue: function (tags, preserveCursor) {
                 if (isBoard) { return; }
-                if (preserveCursor && initialTags && Sortify(tags || []) === initialTags) {
+                if (preserveCursor && initialTags && Util.sortify(tags || []) === initialTags) {
                     // Don't redraw if there is no change
                     return;
                 }
-                initialTags = Sortify(tags || []);
+                initialTags = Util.sortify(tags || []);
                 $tags.empty();
                 var input = UI.dialog.textInput();
                 $tags.append(input);
@@ -388,7 +386,7 @@ define([
                         dataObject.tags = Util.deduplicateString(_field.getTokens().map(function (t) {
                             return t.toLowerCase();
                         }));
-                        initialTags = Sortify(dataObject.tags);
+                        initialTags = Util.sortify(dataObject.tags);
                         commit();
                     });
                 };
@@ -1111,16 +1109,28 @@ define([
         var $cContainer = $('#cp-app-kanban-container');
         var addControls = function () {
             // Quick or normal mode
-            var small = h('button.cp-kanban-view-small', Icons.get('kanban-minimize'));
-            var big = h('button.cp-kanban-view', Icons.get('kanban-maximize'));
+            var small = h('button.cp-kanban-view-small', Icons.get('kanban-minimize'), {
+                'title': Messages.kanban_quickView,
+                'aria-label': Messages.kanban_quickView,
+                'aria-pressed': $cContainer.hasClass('cp-kanban-quick') ? 'true' : 'false'
+            });
+            var big = h('button.cp-kanban-view', Icons.get('kanban-maximize'), {
+                'title': Messages.kanban_fullView,
+                'aria-label': Messages.kanban_fullView,
+                'aria-pressed': $cContainer.hasClass('cp-kanban-quick') ? 'false' : 'true'
+            });
             $(small).click(function () {
                 if ($cContainer.hasClass('cp-kanban-quick')) { return; }
                 $cContainer.addClass('cp-kanban-quick');
+                small.setAttribute('aria-pressed', 'true');
+                big.setAttribute('aria-pressed', 'false');
                 //framework._.sfCommon.setPadAttribute('quickMode', true);
             });
             $(big).click(function () {
                 if (!$cContainer.hasClass('cp-kanban-quick')) { return; }
                 $cContainer.removeClass('cp-kanban-quick');
+                small.setAttribute('aria-pressed', 'false');
+                big.setAttribute('aria-pressed', 'true');
                 //framework._.sfCommon.setPadAttribute('quickMode', false);
             });
 
@@ -1304,10 +1314,10 @@ define([
 
             onRedraw.reg(function () {
                 // Redraw if new tags have been added to items
-                var old = Sortify(existing);
+                var old = Util.sortify(existing);
                 var t = getTags();
                 existing = getExistingTags(kanban.options.boards);
-                if (old === Sortify(existing)) { return; } // No change
+                if (old === Util.sortify(existing)) { return; } // No change
                 // New tags:
                 redrawList(existing);
                 setTags(t);
@@ -1522,7 +1532,7 @@ define([
             var currentContent = kanban.getBoardsJSON();
             var remoteContent = newContent.content;
 
-            if (Sortify(currentContent) !== Sortify(remoteContent)) {
+            if (Util.sortify(currentContent) !== Util.sortify(remoteContent)) {
                 verbose("Content is different.. Applying content");
                 kanban.options.boards = remoteContent;
                 updateBoards(framework, kanban, remoteContent, true);

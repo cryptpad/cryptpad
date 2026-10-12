@@ -24,6 +24,7 @@ blobstage
 logs
 privileged.conf
 config/config.js
+config/infra.js
 config/sso.js
 lib/plugins/*
 !lib/plugins/README.md
