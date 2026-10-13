@@ -82,6 +82,9 @@ define([
     var toolbar;
     var cursor;
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var andThen = function (common) {
         var Title;
         var sframeChan = common.getSframeChannel();

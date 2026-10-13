@@ -13,6 +13,9 @@ define([
 ], function ($, UI, h, Messages, nThen, ChainPad, Icons /* JsonOT */) {
     var Snapshots = {};
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     Snapshots.create = function (common, config) {
         if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
         if (Snapshots.loading) { return void console.error("Snapshot is already being loaded..."); }

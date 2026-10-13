@@ -70,6 +70,9 @@ define([
     };
     var Render = Renderer(APP);
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var debug = $.noop; //console.log;
 
     var metadataMgr;

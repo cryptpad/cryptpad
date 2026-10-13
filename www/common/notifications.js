@@ -17,7 +17,7 @@ define([
     'tui-date-picker'
 ], function($, h, Hash, UI, UIElements, Util, Constants, Marked, Messages, Pages, Icons, DatePicker) {
 
-    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '')
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
     var loc = new Intl.Locale(lang).maximize();
 
     var handlers = {};

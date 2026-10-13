@@ -56,7 +56,7 @@ define([
 
     var andThen = function (common, $container) {
         const sidebar = Sidebar.create(common, 'admin', $container);
-        var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '')
+        var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
         var loc = new Intl.Locale(lang).maximize(); 
         // UNUSED-TRANSLATIONS:START
         var categories = {
@@ -1379,7 +1379,7 @@ define([
                             UI.dialog.selectable(url),
                             data.alias,
                             data.email,
-                            new Date(endDate).toLocaleString(loc, { timeZone: "UTC" }),
+                            new Date(data.time).toLocaleString(loc, { timeZone: "UTC" }),
                             [copy, del]
                         ]);
                     });
@@ -3596,7 +3596,7 @@ define([
                         var uid = Util.find(data, ['content', 'msg', 'uid']);
                         var time = Util.find(data, ['content', 'msg', 'content', 'time']);
 
-                        var formattedTime = new Date(time || 0).toLocaleString();
+                        var formattedTime = new Date(time || 0).toLocaleString(loc, { timeZone: "UTC" });
                         var rowContent = [
                             'ID: ' + uid,
                             formattedTime,

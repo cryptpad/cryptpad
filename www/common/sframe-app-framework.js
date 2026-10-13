@@ -62,6 +62,9 @@ define([
     var badStateTimeout = typeof(AppConfig.badStateTimeout) === 'number' ?
         AppConfig.badStateTimeout : 30000;
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var create = function (options, cb) {
         var evContentUpdate = Util.mkEvent();
         var evIntegrationSave = Util.mkEvent();

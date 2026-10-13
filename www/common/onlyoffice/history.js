@@ -13,6 +13,9 @@ define([
     //var ChainPad = window.ChainPad;
     var History = {};
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     History.sortCpIndex = function (hashes) {
         return Object.keys(hashes).map(Number).sort((a, b) => {
             return a-b;

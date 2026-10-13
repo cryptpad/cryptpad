@@ -84,7 +84,7 @@ define([
 
     var onCalendarsUpdate = Util.mkEvent();
 
-    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '')
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
     var loc = new Intl.Locale(lang).maximize();            
 
     var newCalendar = function (data, cb) {

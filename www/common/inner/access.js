@@ -18,6 +18,9 @@ define([
              Messages, nThen, Icons) {
     var Access = {};
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var getOwnersTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;

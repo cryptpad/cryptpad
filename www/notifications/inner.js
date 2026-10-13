@@ -37,6 +37,9 @@ define([
 {
     var APP = {};
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var common;
     var sFrameChan;
 

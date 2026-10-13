@@ -55,6 +55,9 @@ define([
     var toolbar;
     var common;
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     nThen(function (waitFor) {
         $(waitFor(function () {
             UI.addLoadingScreen();

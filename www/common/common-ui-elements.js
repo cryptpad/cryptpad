@@ -28,7 +28,7 @@ define([
     var UIElements = {};
     var urlArgs = Config.requireConf.urlArgs;
 
-    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '')
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
     var loc = new Intl.Locale(lang).maximize(); 
 
     UIElements.getSvgLogo = function () {

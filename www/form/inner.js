@@ -85,6 +85,9 @@ define([
         blocks: {}
     };
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var is24h = UIElements.is24h();
     var dateFormat = "Y-m-d H:i";
     var timeFormat = "H:i";
@@ -5567,9 +5570,7 @@ define([
             if (APP.isEditor) { return; }
             var _endDate = content.answers.endDate;
             if (_endDate === endDate && !force) { return; }
-            endDate = _endDate;
-            const lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '')
-            const loc = new Intl.Locale(lang).maximize();            
+            endDate = _endDate;          
             var date = new Date(endDate).toLocaleString(loc, { timeZone: "UTC" });
             var text = Messages._getKey('form_isClosed', [date]);
             if (endDate > +new Date()) {

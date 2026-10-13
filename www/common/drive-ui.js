@@ -148,8 +148,10 @@ define([
     };
     var log = config.log = UI.log;
 
-    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '')
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
     var loc = new Intl.Locale(lang).maximize(); 
+
+    console.log("lang", window, navigator);
 
     var localStore = window.cryptpadStore;
     APP.store = {};

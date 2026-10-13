@@ -45,6 +45,9 @@ define([
         data: {}
     };
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var canonicalize = function(t) { return t.replace(/\r\n/g, '\n'); };
 
     var getAuthorId = function(Env, curve, uid) {

@@ -16,6 +16,9 @@ define([
     '/common/common-icons.js',
 ], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages, Pages, Icons) {
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var getDebuggingData = function (ctx, data) {
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();

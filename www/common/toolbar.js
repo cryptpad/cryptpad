@@ -24,6 +24,9 @@ define([
 MessengerUI, Messages, Pages, PadTypes, Icons) {
     var Common;
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var Bar = {
         constants: {},
     };
