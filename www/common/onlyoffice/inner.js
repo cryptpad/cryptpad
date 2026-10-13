@@ -2315,6 +2315,7 @@ define([
             APP.onLocal();
 
             APP.handleImageDrop();
+            APP.handleFocusRestore();
 
             console.log("OO ready");
         };
@@ -2557,6 +2558,14 @@ define([
                             resolve("");
                         }
                     }, void 0, common.getCache());
+                });
+            };
+
+            APP.handleFocusRestore = function () {
+                var iframe = APP.docEditor.getIframe();
+                $(document).on('click', function () {
+                    window.focus();
+                    iframe.focus();
                 });
             };
 
