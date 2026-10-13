@@ -15,6 +15,7 @@ services:
 
       # Read and accept the license before uncommenting the following line:
       # https://github.com/Euro-Office/web-apps/raw/refs/heads/main/LICENSE.txt
+      # Check out the README https://github.com/cryptpad/cryptpad/tree/main/www/common/onlyoffice/README.md
       # - CPAD_INSTALL_OFFICE=yes
 
     volumes:
