@@ -13,6 +13,9 @@ define([
     //var ChainPad = window.ChainPad;
     var History = {};
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     History.sortCpIndex = function (hashes) {
         return Object.keys(hashes).map(Number).sort((a, b) => {
             return a-b;
@@ -222,9 +225,9 @@ define([
                 const s = snapshots[title];
 
                 if (msg?.time) {
-                    title += ' - ' + new Date(msg.time).toLocaleString();
+                    title += ' - ' + new Date(msg.time).toLocaleString(loc, { timeZone: "UTC" });
                 } else if (i === 0 && cp?.time) {
-                    title += ' - ' + new Date(cp.time).toLocaleString();
+                    title += ' - ' + new Date(cp.time).toLocaleString(loc, { timeZone: "UTC" });
                 }
 
                 let snap;
@@ -249,7 +252,7 @@ define([
         const showVersion = () => {
             const patch = getCurrentMsg();
             if (!patch) { return $version.hide(); }
-            const time = new Date(patch?.time).toLocaleString();
+            const time = new Date(patch?.time).toLocaleString(loc, { timeZone: "UTC" });
             $version.text(`${getCurrentVersion()} - ${time}`).show();
             $version[0].classList.remove('cp-hidden');
         };
@@ -285,7 +288,7 @@ define([
                 const cp = hashes[id] || {};
                 let time = '';;
                 let t = cp?.time || (idx === 0 && id === 0 && ctime);
-                if (t) { time = ` - ${new Date(t).toLocaleString()}`; }
+                if (t) { time = ` - ${new Date(t).toLocaleString(loc, { timeZone: "UTC" })}`; }
                 return {
                     tag: 'a',
                     attributes: {

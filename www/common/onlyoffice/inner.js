@@ -82,6 +82,9 @@ define([
     var toolbar;
     var cursor;
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var andThen = function (common) {
         var Title;
         var sframeChan = common.getSframeChannel();
@@ -1009,7 +1012,7 @@ define([
 
                 if (!privateData.embed) {
                     var vTime = (messages[minor - 1] || currentCp)?.time;
-                    var vTimeStr = vTime ? new Date(vTime).toLocaleString()
+                    var vTimeStr = vTime ? new Date(vTime).toLocaleString(loc, { timeZone: "UTC" })
                                          : 'v' + privateData.ooVersionHash;
                     var vTxt = Messages._getKey('infobar_versionHash', [vTimeStr]);
 
