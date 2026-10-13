@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 
-# 🍂 Autumn Release (2026.9.0)
+# 🍂 Autumn Release (2026.10.0)
 
 ## Goals
 
