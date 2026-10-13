@@ -4319,7 +4319,7 @@ define([
                         }
 
                         content.form[_uid] = {
-                            q: content.form[uid].q,
+                            q: Messages._getKey('copy_title', [content.form[uid].q || Messages.form_default]),
                             opts: opts,
                             type: type,
                         };
