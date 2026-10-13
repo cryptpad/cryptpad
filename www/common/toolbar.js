@@ -488,11 +488,6 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
             hide();
         });
         */
-        $button.on('mousedown', function (e) {
-            if (document.activeElement && document.activeElement.nodeName === 'IFRAME') {
-                e.preventDefault();
-            }
-        });
         $button.click(function () {
             var visible = $content.is(':visible');
             if (visible) { hide(); }
@@ -622,11 +617,6 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
             hide(true);
         });
         */
-        $button.on('mousedown', function (e) {
-            if (document.activeElement && document.activeElement.nodeName === 'IFRAME') {
-                e.preventDefault();
-            }
-        });
         $button.click(function () {
             var visible = $content.is(':visible');
             if (visible) { hide(true); }
