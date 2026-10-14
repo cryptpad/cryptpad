@@ -508,7 +508,8 @@ define([
                 var $el = $(el);
                 var ed = $el.attr('data-ed');
                 if (!ed) { return; }
-                var name = UI.getDisplayName($el.find('.cp-usergrid-user-name').text());
+                var userData = _allowed[ed] || {};
+                var name = UI.getDisplayName(userData.displayName || userData.name);
                 nThen(function (waitFor) {
                     /*
                     var msg = Messages.allow_removeConfirm;
