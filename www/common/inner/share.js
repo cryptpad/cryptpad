@@ -148,11 +148,7 @@ define([
                         var ed = $(el).attr('data-ed');
                         var friend = curve && friends[curve];
                         var team = teams[ed];
-                        var displayName = UI.getDisplayName(
-                            (friend && (friend.displayName || friend.name)) ||
-                            (team && team.name) ||
-                            $(el).find('.cp-usergrid-user-name').text()
-                        );
+                        var displayName = UI.getDisplayName((friend || team || {}).displayName);
                         // If the selected element is a friend or a team without edit right,
                         // send a notification
                         var mailbox = friend || ((team && team.viewer) ? team : undefined);
