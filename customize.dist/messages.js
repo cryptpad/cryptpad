@@ -12,6 +12,7 @@ var map = {
     //'el': 'Ελληνικά',
     'es': 'Español',
     'es_CU': 'Español cubano',
+    'en-gb': 'English (UK)',
     'eu': 'Euskara',
     'fi': 'Suomi',
     'fr': 'Français',
