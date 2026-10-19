@@ -208,7 +208,7 @@ show_office_readme() {
 
     (
         echo -e "This will install a modified version of Euro-Office, which is based on OnlyOffice. Press 'q' to continue:\n\n"
-        curl https://raw.githubusercontent.com/cryptpad/cryptpad/tree/main/www/common/onlyoffice/README.md 2>/dev/null
+        curl https://raw.githubusercontent.com/cryptpad/cryptpad/main/www/common/onlyoffice/README.md 2>/dev/null
     ) | less
 }
 
