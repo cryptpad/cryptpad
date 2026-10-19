@@ -203,8 +203,14 @@ ask_for_license() {
 }
 
 show_office_readme() {
+    if [ ${ACCEPT_LICENSE+x} ] || [ "${PROPS[agree_license]:-no}" == yes ]; then
+        return
+    fi
+
+    ensure_command_available curl
+
     (
-        echo "This will install a modified version of Euro-Office, which is based on OnlyOffice."
+        echo -e "This will install a modified version of Euro-Office, which is based on OnlyOffice. Press 'q' to continue:\n\n"
         curl https://raw.githubusercontent.com/cryptpad/cryptpad/tree/main/www/common/onlyoffice/README.md 2>/dev/null
     ) | less
 }
