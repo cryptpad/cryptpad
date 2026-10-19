@@ -869,12 +869,14 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                         }, _w(function (obj) {
                             if (obj && obj.error) {
                                 give();
+                                w();
                                 return void _w.abort();
                             }
                             var md = obj[0];
                             var isOwner = md && Array.isArray(md.owners) && md.owners.indexOf(teamEdPublic) !== -1;
                             if (!isOwner) {
                                 give();
+                                w();
                                 return void _w.abort();
                             }
                             otherOwners = md.owners.some(function (ed) { return ed !== teamEdPublic; });
