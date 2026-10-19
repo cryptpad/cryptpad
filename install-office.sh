@@ -188,15 +188,12 @@ ask_for_license() {
         curl https://raw.githubusercontent.com/Euro-Office/web-apps/refs/heads/main/LICENSE.txt 2>/dev/null
     ) | less
 
-    read -rp "Do you accept the license of Euro-Office? (Y/N): " confirm &&
-        [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
-
     (
         echo -e "Please review the license of ONLYOFFICE and press 'q' to continue:\n\n"
         curl https://raw.githubusercontent.com/ONLYOFFICE/web-apps/master/LICENSE 2>/dev/null
     ) | less
 
-    read -rp "Do you accept the license of ONLYOFFICE? (Y/N): " confirm &&
+    read -rp "Do you accept the licenses of Euro-Office and ONLYOFFICE? (Y/N): " confirm &&
         [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
 
     set_prop "agree_license" yes
