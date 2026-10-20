@@ -5,7 +5,7 @@
 var nThen = require("nthen");
 
 var Store = require("../lib/storage/file");
-var config = require("../lib/load-config");
+const { config } = require("../lib/load-config");
 
 var store;
 var Log;

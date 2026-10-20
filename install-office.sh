@@ -25,6 +25,8 @@ main() {
 
     parse_arguments "$@"
 
+    show_office_readme
+
     ask_for_license
 
     # Check if 'oldest_needed_version' is already set, if not, set it to v9
@@ -98,8 +100,8 @@ main() {
                 rm -rf "$OO_DIR/v8/web-apps/apps/spreadsheeteditor/main/resources/help"
                 rm -rf "$OO_DIR/v8/web-apps/apps/common/main/resources/help/"
                 ;;
-            v9)  install_version v9 v9.3.2+2 7a8b4d32b000454ac304088ba042cb6fc2007e90282b7b51bf85365e4405a33b64f7f29f5aa88628fb4b94fa1e68077c56897116b2098c8b56ec34dcdcc356df ;;
-            x2t) install_x2t v9.3.0+0 e82fbf21fcdcff2cbaca5b9a49c3a3d6bc5f5f02ba9b704a7384ceb91e17e979bf7659aaf59f677edf319fde91dd847b419e018f58f38eb1df6ab433a6cd207c ;;
+            v9)  install_version v9 v9.3.2+3 181978176e443b9ff9cce127e6aa9668a4ee8e81473cb0c0c4cf0d83dea9b6636c730d40e704ebe8fdf313498a3106bafe5c4021ae937b269d05a07b7be6bbb4 ;;
+            x2t) install_x2t v9.3.2+3 ed0579097a0269877d6622b28b1e2718e1f9f4e8ac99301f5f13f5f052b3db24db789deab8c654044db588be103c139be74f83a0ca066dee1789522241c1af6e ;;
             *)
                 echo "Unknown version: $version"
                 exit 1
@@ -186,10 +188,28 @@ ask_for_license() {
         curl https://raw.githubusercontent.com/Euro-Office/web-apps/refs/heads/main/LICENSE.txt 2>/dev/null
     ) | less
 
-    read -rp "Do you accept the license? (Y/N): " confirm &&
+    (
+        echo -e "Please review the license of ONLYOFFICE and press 'q' to continue:\n\n"
+        curl https://raw.githubusercontent.com/ONLYOFFICE/web-apps/master/LICENSE 2>/dev/null
+    ) | less
+
+    read -rp "Do you accept the licenses of Euro-Office and ONLYOFFICE? (Y/N): " confirm &&
         [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
 
     set_prop "agree_license" yes
+}
+
+show_office_readme() {
+    if [ ${ACCEPT_LICENSE+x} ] || [ "${PROPS[agree_license]:-no}" == yes ]; then
+        return
+    fi
+
+    ensure_command_available curl
+
+    (
+        echo -e "This will install a modified version of Euro-Office, which is based on OnlyOffice. Press 'q' to continue:\n\n"
+        curl https://raw.githubusercontent.com/cryptpad/cryptpad/main/www/common/onlyoffice/README.md 2>/dev/null
+    ) | less
 }
 
 show_help() {

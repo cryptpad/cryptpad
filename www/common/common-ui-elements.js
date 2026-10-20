@@ -184,7 +184,7 @@ define([
 
             el = h('div.cp-usergrid-user'+(data.selected?'.cp-selected':'')+(config.large?'.large':''), {
                 'data-ed': data.edPublic,
-                'data-teamid': data.id,
+                'data-teamid': data.teamId,
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
                 'data-order': i,
@@ -2072,6 +2072,11 @@ define([
         var termsLine = template(Messages.info_termsFlavour, Pages.termsLink);
         var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
 
+        var eo = h('a', { href: 'https://github.com/Euro-Office', target: '_blank' }, 'Euro-Office').outerHTML;
+        var oo = h('a', { href: 'https://github.com/ONLYOFFICE', target: '_blank' }, 'OnlyOffice').outerHTML;
+        var scr = h('a', { href: 'https://github.com/cryptpad/cryptpad/tree/main/www/common/onlyoffice/README.md', target: '_blank' }, 'source code repository').outerHTML;
+        var officeLine = UI.setHTML(h('p'), `CryptPad office applications are based on ${eo} which is itself based on ${oo}, for full licensing information please see our ${scr}.`);
+
         var content = h('div.cp-info-menu-container', [
                 h('div.logo-block', [
                     h('img', {
@@ -2089,6 +2094,8 @@ define([
             privacyLine,
             legalLine,
             sourceLine,
+            h('hr'),
+            officeLine
         ]);
 
         $(content).find('a').attr('target', '_blank');
@@ -3432,6 +3439,7 @@ define([
         if (priv.app === 'drive') { return; }
         if (!priv.channel) { return; }
         if (priv.app === 'form' && priv.readOnly && !priv.form_auditorHash && !priv.form_auditorKey) { return; }
+        if (priv.integration) { return; }
 
         var todo = function () {
             crowdfundingState = true;

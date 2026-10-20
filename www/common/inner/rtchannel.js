@@ -198,21 +198,21 @@ define([
                 }
                 cb();
             });
-            onRTCEvent.reg(obj => {
-                switch (obj.ev) {
-                    case 'LEAVE':
-                        removeClient(obj.data);
-                        break;
-                    case 'MESSAGE':
-                        onRTCMessage.fire(obj.data);
-                        break;
-                    case 'HISTORY_SYNCED':
-                        onRTCHistorySynced.fire()
-                        break;
-
-                }
-            });
         };
+        onRTCEvent.reg(obj => {
+            switch (obj.ev) {
+                case 'LEAVE':
+                    removeClient(obj.data);
+                    break;
+                case 'MESSAGE':
+                    onRTCMessage.fire(obj.data);
+                    break;
+                case 'HISTORY_SYNCED':
+                    onRTCHistorySynced.fire()
+                    break;
+
+            }
+        });
 
         const sendCmd = (data, cb) => {
             if (APP.history) { return; }
@@ -226,6 +226,9 @@ define([
                 }, cb);
             },
             sendMsg: function (msg, cp, cb) {
+                // Don't send message if we're loading a template
+                if (APP.template) { return void cb(); }
+
                 sendCmd({
                     cmd: 'SEND_MESSAGE',
                     data: {
