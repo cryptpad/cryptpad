@@ -17,7 +17,7 @@ RUN sed -i "s@installMethod: 'unspecified'@installMethod: 'docker'@" /cryptpad/c
 RUN mv /cryptpad/config /cryptpad/config.local
 
 # Install dependencies
-RUN npm install --production \
+RUN npm install --omit=dev \
     && npm run install:components
 
 # Create actual CryptPad image
