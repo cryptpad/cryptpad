@@ -157,6 +157,11 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    // XXX
+    Messages.share_confirmation = "Successfully shared with {0}";
+    Messages.access_confirmation = "{0} now has access to this document";
+    Messages.access_removalConfirmation = "Removed access for {0}";
+
     return Messages;
 
 });
