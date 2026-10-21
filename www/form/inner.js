@@ -4319,12 +4319,12 @@ define([
                         }
 
                         content.form[_uid] = {
-                            q: content.form[uid].q,
+                            q: Messages._getKey('copy_title', [content.form[uid].q || Messages.form_default]),
                             opts: opts,
                             type: type,
                         };
 
-                        arr.splice(idx, 0, _uid);
+                        arr.splice(idx + 1, 0, _uid);
                         framework.localChange();
                         updateForm(framework, content, true);
                     });
