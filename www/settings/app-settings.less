@@ -140,9 +140,7 @@
             }
 
             .cp-password-container {
-                .cp-password-input{
-                    margin-top:0.5rem;
-                }
+                margin-top:0.5rem;
                 [type="password"], [type="text"] {
                     //width: @sidebar_block-width;
                     flex: unset;
@@ -150,10 +148,16 @@
                 button {
                     margin-top:0;
                     margin-left: 10px;
+                    svg {
+                        margin: 0;
+                    }
                 }
                 .cp-password-reveal {
                     margin-left: 0.5rem;
                     border-radius:@variables_radius;
+                    background: none;
+                    border: 0;
+                    color: inherit;
                 }
             }
             nav {
