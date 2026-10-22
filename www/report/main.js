@@ -34,7 +34,8 @@ define([
     var $report = $('#cp-report');
     var blockHash = localStorage.Block_hash;
     if (!blockHash) {
-        return void UI.alert(Messages.mustLogin, function () {
+        UI.addLoadingScreen({hideTips: true});
+        return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
             var href = Hash.hashToHref('', 'login');
             var url = Hash.getNewPadURL(href, {
                 href: '/report/',
