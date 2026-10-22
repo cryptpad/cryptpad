@@ -15,9 +15,9 @@ define([
         // It can be used to embed another cryptpad instance using the new API
 
         console.log(Api);
-        var permaKey = localStorage.CP_test_API_key || '/2/integration/edit/X3RlrgR2JhA0rI+PJ3rXufsQ/';
         var key = window.location.hash ? window.location.hash.slice(1)
-                                       : permaKey;
+                                       : localStorage.CP_test_API_key;
+        if (!key) { return; } // no hardcoded fallback key; require an explicit key source
         window.location.hash = key;
 
 // Test doc
