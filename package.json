@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "a collaborative office suite that is end-to-end encrypted and open-source",
-  "version": "2026.9.0",
+  "version": "2026.10.0",
   "license": "AGPL-3.0+",
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
     "ckeditor": "npm:ckeditor4@~4.22.1",
     "codemirror": "^5.19.0",
     "croppie": "^2.5.0",
-    "cryptpad-server": "^1.0.2",
+    "cryptpad-server": "^1.0.3",
     "dragula": "3.7.2",
     "drawio": "npm:cryptpad-diagram@~0.2.0",
     "file-saver": "1.3.1",

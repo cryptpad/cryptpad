@@ -26,6 +26,7 @@ In addition this release includes:
 ### Office applications
 
 - Euro-Office 9.3 [#2376](https://github.com/cryptpad/cryptpad/pull/2376)
+- Update to licensing information [#2416](https://github.com/cryptpad/cryptpad/pull/2416) [#2399](https://github.com/cryptpad/cryptpad/pull/2399)
 
 This release replaces our Office applications based on OnlyOffice editors with compatible Office applications based on the EuroOffice editors.
 
@@ -53,6 +54,7 @@ The CryptPad Office applications are now based on [Euro-Office](https://github.c
   - Drive export issues [#2305](https://github.com/cryptpad/cryptpad/pull/2305)
   - Correct navigation to shared folders [#2303](https://github.com/cryptpad/cryptpad/pull/2303)
   - Remove option to add file already in team drive to team [#2335](https://github.com/cryptpad/cryptpad/pull/2335)
+  - Fix team deletion sometimes not working [#2423](https://github.com/cryptpad/cryptpad/pull/2423)
 - Accessibility
   - Mark page title as heading  [#2367](https://github.com/cryptpad/cryptpad/pull/2367)
   - Add aria-label to modal input  [#2366](https://github.com/cryptpad/cryptpad/pull/2366)
@@ -89,15 +91,11 @@ The CryptPad Office applications are now based on [Euro-Office](https://github.c
 
 ## Upgrade notes
 
-If you are upgrading from a version older than `2026.5.1` please read the upgrade notes of all versions between yours and `2026.9.0` to avoid configuration issues.
+If you are upgrading from a version older than `2026.5.1` please read the upgrade notes of all versions between yours and `2026.10.0` to avoid configuration issues.
 
 This upgrade introduces a refactor of the [CryptPad server](https://github.com/cryptpad/server) with a different architecture from before, thus the upgrade instructions have extra steps compared to the usual “upgrade & restart”.
 
 To summarise for administrators, it will involve upgrading your reverse proxy configuration (there is no more two different port for the public http and the websocket connection). See [this folder](https://github.com/cryptpad/cryptpad/tree/main/docs) for more detailed information. Moreover, you will need to update any plugins you are using on your server to the latest version and if you have `cryptpad-sodium-plugin`, it is not required anymore as it is now the default behaviour (with fallback enabled if the host architecture does not support it).
-
-Please note there may be known errors when you run `npm install`:
-- EBADENGINE warnings: these are due to a dependency that requests NPM version 1. We're in the process of removing this dependency, in the meantime these warnings can safely be ignored.
-- 12 high vulnerabilities: these are all due to the same report about the braces dependency, used by multiple other dependencies. The fact that the report even constitutes a security issue is currently [being discussed and contested](https://github.com/github/advisory-database/pull/10132) and it is unclear wether a fix will be needed and issued. If a fix is issued we will make a point release ASAP, in the meantime we don't consider our exposure to this issue to warrant blocking the release since our code does not use the affected part of the braces library.
 
 To upgrade:
 
@@ -105,8 +103,8 @@ To upgrade:
 2. Get the latest code with git
 
 ```bash
-git fetch --depth 1 origin tag 2026.9.0
-git checkout 2026.9.0
+git fetch --depth 1 origin tag 2026.10.0
+git checkout 2026.10.0
 npm ci
 npm run install:components
 ./install-office.sh
