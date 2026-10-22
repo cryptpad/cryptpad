@@ -198,29 +198,35 @@ define([
             }
         });
 
-         var loadDiagram = function () {
-            checkDefaultTheme(function(theme) {
-                var defaultTheme = theme;
-                parameters.set('ui', defaultTheme);
-            });
+        var loadDiagram = function() {
+            if (!framework.isIntegrated()) {
+                checkDefaultTheme(function(theme) {
+                    var defaultTheme = theme;
+                    parameters.set('ui', defaultTheme);
+                });
+            }
             var isReadOnly = framework.isReadOnly() ? 0 : 1;
             parameters.set('chrome', isReadOnly);
             drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
-            + parameters;
+                + parameters;
         };
 
         // starting the CryptPad framework
         framework.start();
 
-        //wait for metadata to update before checking the theme and loading Drawio UI
-        var metadataMgr = framework._.sfCommon.getMetadataMgr();
-        var onChange = function () {
-            var privateData = metadataMgr.getPrivateData();
-            if (!privateData.settings.toolbar) { return; }
+        if (framework.isIntegrated()) {
             loadDiagram();
-            metadataMgr.off('change', onChange);
-        };
-        metadataMgr.onChange(onChange);
+        } else {
+            //wait for metadata to update before checking the theme and loading Drawio UI
+            var metadataMgr = framework._.sfCommon.getMetadataMgr();
+            var onChange = function() {
+                var privateData = metadataMgr.getPrivateData();
+                if (!privateData.settings.toolbar) { return; }
+                loadDiagram();
+                metadataMgr.off('change', onChange);
+            };
+            metadataMgr.onChange(onChange);
+        }
 
         window.addEventListener("message", (event) => {
             if (event.source === drawioFrame.contentWindow) {
@@ -240,23 +246,27 @@ define([
         };
 
         var mkModeButton = function (framework) {
-            var modes = [Messages.diagram_sketchTheme, Messages.diagram_simpleTheme, Messages.diagram_classicTheme];
+            var modes = [
+                {id: 'sketch', label: Messages.diagram_sketchTheme},
+                {id: 'simple', label: Messages.diagram_simpleTheme},
+                {id: 'classic', label: Messages.diagram_classicTheme},
+            ];
             var types = [];
 
             modes.forEach(function(mode){
                 types.push({
                     tag: 'a',
                     attributes: {
-                        'data-value': mode,
-                        'aria-label': Messages._getKey('diagram_modesOptionLabel', [mode]),
+                        'data-value': mode.id,
+                        'aria-label': Messages._getKey('diagram_modesOptionLabel', [mode.label]),
                     },
-                    content: mode,
+                    content: mode.label,
                     action: function () {
-                        var $self = $('a[data-value="' + mode + '"]');
-                        parameters.set('ui', mode);
+                        var $self = $('a[data-value="' + mode.id + '"]');
+                        parameters.set('ui', mode.id);
                         drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
                         + parameters;
-                        setTheme(mode, function() {
+                        setTheme(mode.id, function() {
                             $('.cp-dropdown-content').find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
                             $self.addClass('cp-dropdown-element-active');
                             $self.closest('li').focus();
