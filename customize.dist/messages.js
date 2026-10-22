@@ -157,13 +157,6 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    Messages.support_batchListTitle = "Batch list"; // XXX
-    Messages.support_batchCloseTitle = "Close selected tickets"; // XXX
-    Messages.support_closeTickets = "Close tickets";
-    Messages.support_batchSendTitle = "Send message to selected tickets";
-    Messages.support_emptyBatch = "No ticket selected";
-    Messages.support_cat_batch = "Batch actions";
-
     // XXX
     Messages.share_confirmation = "Successfully shared with {0}";
     Messages.access_confirmation = "{0} now has access to this document";
