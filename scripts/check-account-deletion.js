@@ -8,7 +8,7 @@ const Nacl = require('tweetnacl/nacl-fast');
 const Path = require('path');
 const Pins = require('../lib/pins');
 const Util = require('../lib/common-util');
-const Config = require('../lib/load-config');
+const { config } = require('../lib/load-config');
 
 var escapeKeyCharacters = function (key) {
     return key && key.replace && key.replace(/\//g, '-');
@@ -36,7 +36,7 @@ let data = [];
 let pinned = [];
 
 nThen((waitFor) => {
-    var pinPath = Config.pinPath || './pins';
+    var pinPath = config.pinPath || './pins';
 
     let f = Path.join(pinPath, edPublic.slice(0, 2), edPublic + '.ndjson');
     Fs.readFile(f, waitFor((err, content) => {
