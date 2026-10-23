@@ -22,6 +22,7 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
     "codemirror",
     "croppie",
     "file-saver",
+    "fast-diff",
     "hyper-json",
     "jquery",
     "jszip",

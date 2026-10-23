@@ -21,7 +21,7 @@ define([
         sframeChan.on('Q_RTC_OPENCHANNEL', function (data, cb) {
             // If we don't have "channels" values, it means we're not
             // loading an "old" checkpoint so we can clean attributes
-            if (!channels?.lastVersion) {
+            if (channels && !channels?.lastVersion) {
                 channels.linked = true;
                 Cryptpad.setPadAttribute('linked', true, () => {});
                 Cryptpad.setPadAttribute('rtChannel', void 0, () => {});

@@ -7,8 +7,9 @@ define([
     '/components/nthen/index.js',
     '/api/config',
     '/common/dom-ready.js',
-    '/common/sframe-common-outer.js'
-], function (nThen, ApiConfig, DomReady, SFCommonO) {
+    '/common/sframe-common-outer.js',
+    '/common/outer/rtchannel.js'
+], function (nThen, ApiConfig, DomReady, SFCommonO, RTC) {
 
     var isIntegration = Boolean(window.CP_integration_outer);
     var integration = window.CP_integration_outer || {};
@@ -32,6 +33,7 @@ define([
             noDrive: true,
             hash: hash,
             href: href,
+            addRpc: RTC.addRpc, // XXX restrict to rtchannel apps?
             useCreationScreen: !isIntegration,
             messaging: true,
             integration: isIntegration,

@@ -29,6 +29,8 @@ const factory = (Feedback, Util) => {
         var c = ctx.clients[client];
         var chan = ctx.channels[channel];
 
+console.error('OPEN RT CHANNEL', obj);
+
         const onError = (err) => {
             // Callback all connecting clients
             ctx.channels[channel].clients.forEach(c => {
