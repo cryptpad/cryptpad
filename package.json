@@ -58,6 +58,7 @@
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.1.0",
+    "@types/node": "^26.6.5",
     "eslint": "^10.0.0",
     "eslint-plugin-compat": "^6.0.1",
     "globals": "^17.3.0",
