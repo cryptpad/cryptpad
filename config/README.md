@@ -40,7 +40,7 @@ It shows examples files you will need to configure CryptPad:
   - `enforceMFA`: to enforce multifactor authentication for all users. It can
     also be set up in the admin panel. Default to false.
 - Privacy
-  - `logIp`: default: false
+  - `logIP`: default: false
     - Depending on where your instance is hosted, you may be required to log IP
       addresses of the users who make a change to a document. This setting
       allows you to do so. You can configure the logging system below in this
