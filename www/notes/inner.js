@@ -8,6 +8,9 @@ define([
     '/common/sframe-app-framework.js',
     '/customize/messages.js', // translation keys
     '/common/hyperscript.js',
+    '/common/blocknote-bundle.js',
+
+    'css!/common/blocknote.css',
     'less!/notes/app-notes.less'
     /* Here you can add your own javascript or css to load */
 ], function (
@@ -15,32 +18,26 @@ define([
     Framework,
     Messages,
     h,
-    ) {
-
-
+    BlockNote
+) {
     // This is the main initialization loop
-    let onFrameworkReady = function (framework) {
-        let $container = $('#cp-app-notes-editor');
+    const onFrameworkReady = (framework) => {
+        const priv = framework._.sfCommon.getMetadataMgr().getPrivateData();
+        const editorEl = h('div#cp-notes-content');
+        $('#cp-app-notes-editor').append(editorEl);
 
-        let $content = $(h('div#cp-notes-content')).appendTo($container);
-        let $textarea = $(h('textarea'));
-        $content.append($textarea);
-        let oldVal = '';
-        $textarea.on('change keyup paste', function () {
-            var currentVal = $textarea.val();
-            if (currentVal === oldVal) { return; } // Nothing to do
-            oldVal = currentVal;
-            framework.localChange();
+        // This is the BlockNote editor initialization
+        BlockNote.useBlockNoteEditor(editorEl, {
+            trailingBlock: true,
+            view: {
+                editable: !priv.readOnly,
+                theme: window.CryptPad_theme === 'dark' ? 'dark' : 'light',
+            },
         });
 
-        let getContent = () => {
-            return $textarea.val();
-        };
-        let setContent = (value) => {
-            return $textarea.val(value);
-        };
-
-        let content = {};
+        // no patches: the content getter keeps the initial document structure but never reads the editor
+        const content = [];
+        framework.setContentGetter(() => ({ content }));
 
         // OPTIONAL: cursor management
         framework.setCursorGetter(() => {
@@ -52,19 +49,6 @@ define([
             console.log("Other user cursor", data);
         });
 
-        framework.onContentUpdate(function (newContent) {
-            console.log('New content received from others', newContent.content);
-            content = newContent.content;
-            setContent(content);
-        });
-
-        framework.setContentGetter(function () {
-            let content = getContent();
-            console.log('Sync my content with others', content);
-            return {
-                content: content
-            };
-        });
 
         framework.onReady(function () {
             // Document is ready, you can initialize your app
@@ -79,7 +63,5 @@ define([
     Framework.create({
         toolbarContainer: '#cp-toolbar',
         contentContainer: '#cp-app-notes-editor'
-    }, (framework) => {
-        onFrameworkReady(framework);
-    });
+    }, onFrameworkReady);
 });

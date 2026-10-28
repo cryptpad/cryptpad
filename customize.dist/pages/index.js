@@ -43,6 +43,7 @@ define([
                 [ 'doc', Msg.type.doc],
                 [ 'presentation', Msg.type.presentation],
                 [ 'pad', Msg.type.pad],
+                [ 'notes', Msg.type.notes],
                 [ 'kanban', Msg.type.kanban],
                 [ 'code', Msg.type.code],
                 [ 'form', Msg.type.form],
