@@ -2,47 +2,23 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import fs from 'node:fs';
-import path from 'node:path';
-import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
+import path from 'path';
+import { createRequire } from 'module';
 import {nodeResolve} from "@rollup/plugin-node-resolve";
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import terser from '@rollup/plugin-terser';
+import postcss from 'rollup-plugin-postcss';
+import atImport from 'postcss-import';
 
 const require = createRequire(import.meta.url);
-const ROOT = path.dirname(fileURLToPath(import.meta.url));
-const IMPORT_RE = /@import\s+(?:url\s*\(\s*)?['"]([^'"]+)['"]\s*\)?\s*;/g;
-
 // Resolve CSS imports
-const resolveCssImport = (fromFile, spec) => {
-    if (spec.startsWith('.') || spec.startsWith('/')) {
-        return path.resolve(path.dirname(fromFile), spec);
+const resolveCssImport = (id, basedir) => {
+    if (id.startsWith('.') || path.isAbsolute(id)) {
+        return path.resolve(basedir, id);
     }
-    return require.resolve(spec, { paths: [path.dirname(fromFile), ROOT] });
+    return require.resolve(id, { paths: [basedir] });
 };
-
-const flattenCss = (file, seen = new Set()) => {
-    const abs = path.resolve(file);
-    if (seen.has(abs)) { return ''; }
-    seen.add(abs);
-    const css = fs.readFileSync(abs, 'utf8');
-    return css.replace(IMPORT_RE, (all, spec) => {
-        return flattenCss(resolveCssImport(abs, spec), seen);
-    });
-};
-
-const copyBlockNoteCss = () => ({
-    name: 'copy-blocknote-css',
-    buildStart () {
-        this.emitFile({
-            type: 'asset',
-            fileName: 'blocknote.css',
-            source: flattenCss(path.join(ROOT, 'node_modules/@blocknote/mantine/src/style.css'))
-        });
-    }
-});
 
 const setNodeEnv = () => ({
     name: 'set-node-env',
@@ -74,7 +50,10 @@ export default {
         warn(warning);
     },
     plugins: [
-        copyBlockNoteCss(),
+        postcss({
+            extract: path.resolve('www/common/blocknote.css'),
+            plugins: [atImport({ resolve: resolveCssImport })]
+        }),
         setNodeEnv(),
         json(),
         nodeResolve({

@@ -9,6 +9,8 @@ define([
     '/customize/messages.js', // translation keys
     '/common/hyperscript.js',
     '/common/blocknote-bundle.js',
+
+    'css!/common/blocknote.css',
     'less!/notes/app-notes.less'
     /* Here you can add your own javascript or css to load */
 ], function (

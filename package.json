@@ -69,7 +69,10 @@
     "eslint": "^10.0.0",
     "eslint-plugin-compat": "^6.0.1",
     "globals": "^17.3.0",
+    "postcss": "^8.5.32",
+    "postcss-import": "^17.0.1",
     "rollup": "^4.24.0",
+    "rollup-plugin-postcss": "^4.0.2",
     "tslib": "^2.7.0",
     "typescript": "^5.6.2"
   },
