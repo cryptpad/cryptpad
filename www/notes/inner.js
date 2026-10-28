@@ -18,17 +18,6 @@ define([
     h,
     BlockNote
 ) {
-    const getTheme = () => {
-        const store = (window.cryptpadStore && window.cryptpadStore.store) || {};
-        const stored = store['CRYPTPAD_STORE|colortheme'] || store.colortheme;
-        if (stored === 'dark' || stored === 'light') { return stored; }
-        try {
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                return 'dark';
-            }
-        } catch (e) {}
-        return 'light';
-    };
     // This is the main initialization loop
     const onFrameworkReady = (framework) => {
         const priv = framework._.sfCommon.getMetadataMgr().getPrivateData();
@@ -40,7 +29,7 @@ define([
             trailingBlock: true,
             view: {
                 editable: !priv.readOnly,
-                theme: getTheme(),
+                theme: window.CryptPad_theme === 'dark' ? 'dark' : 'light',
             },
         });
 
