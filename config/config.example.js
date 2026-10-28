@@ -74,7 +74,7 @@ module.exports = {
      *   DATABASE VOLUMES
      * ===================== */
     /* See README.md for detailed explanations */
-    filePath: './datastore/',
+    filePath: './datastore',
     archivePath: './data/archive',
     pinPath: './data/pins',
     taskPath: './data/tasks',
@@ -83,6 +83,7 @@ module.exports = {
     blobStagingPath: './data/blobstage',
     decreePath: './data/decrees',
     logPath: './data/logs',
+    challengePath: './data/challenges',
 
     /* =====================
      *       Debugging
