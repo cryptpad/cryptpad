@@ -12,6 +12,9 @@
     "url": "https://opencollective.com/cryptpad"
   },
   "dependencies": {
+    "@blocknote/core": "^0.41.1",
+    "@blocknote/mantine": "^0.41.1",
+    "@blocknote/react": "^0.41.1",
     "alertify.js": "1.0.11",
     "bootstrap": "^4.0.0",
     "bootstrap-tokenfield": "^0.12.0",
@@ -40,6 +43,8 @@
     "nthen": "0.1.8",
     "open-sans-fontface": "^1.4.0",
     "pako": "^2.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "require-css": "0.1.10",
     "requirejs": "2.3.7",
     "requirejs-plugins": "^1.0.2",
@@ -97,6 +102,7 @@
     "clear": "node scripts/clear.js",
     "installtoken": "node scripts/install.js",
     "yjs": "rollup -c rollup.configyjs.mjs",
+    "blocknote": "rollup -c rollup.configblocknote.mjs",
     "api": "rollup -c"
   },
   "browserslist": [
