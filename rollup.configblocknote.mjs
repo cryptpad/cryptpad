@@ -56,13 +56,7 @@ export default {
         }),
         setNodeEnv(),
         json(),
-        nodeResolve({
-            browser: true,
-            exportConditions: ['browser', 'import', 'module', 'default']
-        }),
-        commonjs({
-            include: /node_modules/,
-            transformMixedEsModules: true
-        })
+        nodeResolve({browser: true}),
+        commonjs()
     ]
 };
