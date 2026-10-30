@@ -50,8 +50,16 @@ define([
 
         // Sometimes `content` has additional fiels, that break the XML output. Only grab mxfile here.
         const cleaned = { mxfile: content.mxfile };
+        const doc = new DOMParser().parseFromString(x2js.js2xml(cleaned), 'application/xml');
 
-        return x2js.js2xml(cleaned);
+        doc.querySelectorAll('root').forEach((p, i) => {
+            (content.objectOrder?.[i] || []).forEach(id => {
+                const el = [...p.children].find(c => c.getAttribute('id') === id);
+                if (el) { p.appendChild(el); }
+            });
+        });
+
+        return new XMLSerializer().serializeToString(doc);
     };
 
     const parseXML = (xmlStr) => {
@@ -116,7 +124,20 @@ define([
 
     const xmlAsJsonContent = (xml) => {
         var decompressedXml = decompressDrawioXml(xml);
-        return numbersToNumbers(x2js.xml2js(decompressedXml));
+        const json = numbersToNumbers(x2js.xml2js(decompressedXml));
+
+        const doc = parseXML(decompressedXml);
+        const pageNodes = doc.querySelectorAll('root');
+        const pageArray = [...pageNodes];
+
+        json.objectOrder = pageArray.map(p => {
+            const children = p.children;
+            const childArray = [...children];
+            const ids = childArray.map(c => c.getAttribute('id'));
+            return ids;
+        });
+
+        return json;
     };
 
 
