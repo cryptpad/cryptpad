@@ -130,7 +130,7 @@ define([
         const pageNodes = doc.querySelectorAll('root');
         const pageArray = [...pageNodes];
 
-        json.objectOrder  = pageArray.map(p => {
+        json.objectOrder = pageArray.map(p => {
             const children = p.children;
             const childArray = [...children];
             const ids = childArray.map(c => c.getAttribute('id'));
