@@ -22,6 +22,8 @@ RUN npm install --production \
 
 # Create actual CryptPad image
 FROM node:lts-slim
+
+LABEL org.opencontainers.image.source="https://github.com/cryptpad/cryptpad"
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Create user and group for CryptPad so it does not run as root
