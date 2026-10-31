@@ -1008,10 +1008,9 @@ define([
                 }
                 var mustLogin = privateData.registeredOnly;
                 if (mustLogin) {
-                    UI.alert(Messages.mustLogin, function () {
+                    return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
                         funcs.setLoginRedirect('login');
-                    }, {forefront: true});
-                    return;
+                    });
                 }
                 var blocked = privateData.premiumOnly && privateData.isNewFile;
                 if (blocked) {
