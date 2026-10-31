@@ -1158,6 +1158,15 @@ define([
             $error.html(error || Messages.error);
         }
 
+        if (error === Messages.mustLogin) {
+            var btn = $('<button>', {
+                'class': 'btn btn-success',
+            }).text(Messages.login_login);
+
+            $(btn).click(function () { window.APP.common.setLoginRedirect('login'); });
+            $error.after(btn);
+        }
+
         if (errorCls) {
             const cls = transparent ? 'cp-error-message-alt'
                                     : 'cp-error-message';

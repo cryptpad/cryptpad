@@ -568,16 +568,10 @@ define([
         // If not logged in, you can only view other users's profile
         if (!privateData.readOnly && !common.isLoggedIn()) {
             UI.removeLoadingScreen();
-
-            var $p = $('<p>', {id: CREATE_ID}).text(Messages.profile_register);
-            var $a = $('<a>', {
-                href: APP.origin + '/register/'
+            var mustLogin = UI.errorLoadingScreen(Messages.mustLogin, false, function () {
+                common.setLoginRedirect('login');
             });
-            $('<button>', {
-                'class': 'btn btn-success',
-            }).text(Messages.login_register).appendTo($a);
-            $p.append($('<br>')).append($a);
-            APP.$rightside.append($p);
+            APP.$rightside.append(mustLogin);
             return;
         }
 
