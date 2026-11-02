@@ -157,6 +157,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.trimHistory_snapshotWarning = 'Note that deleting document history will also delete your snapshots.'; // XXX
+
     return Messages;
 
 });
