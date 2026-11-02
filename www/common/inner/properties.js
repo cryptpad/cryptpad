@@ -146,6 +146,7 @@ define([
             var historyPrettySize = UIElements.prettySize(historyBytes);
             var contentsPrettySize = UIElements.prettySize(bytes - historyBytes);
             var button;
+            var snapshotWarning;
             var spinner = UI.makeSpinner();
             var size = h('div.cp-app-prop', [
                 Messages.upload_size,
@@ -163,10 +164,17 @@ define([
                         h('span.cp-app-prop-content', Messages._getKey('historyTrim_contentsSize', [contentsPrettySize]))
                     ]),
                 ]),
+                snapshotWarning = h('div.cp-app-prop-snapshot-warning'),
                 button = h('button.btn.btn-danger-alt.no-margin', Messages.trimHistory_button),
                 spinner.spinner
             ]);
             $d.append(size);
+
+            var parsed = Hash.parsePadUrl(data.href || data.roHref || '');
+            var isPad = parsed.hashData && parsed.hashData.type === 'pad';
+            if (isPad) {
+                snapshotWarning.innerText = Messages.trimHistory_snapshotWarning;
+            }
 
             var $button = $(button);
             UI.confirmButton(button, {
