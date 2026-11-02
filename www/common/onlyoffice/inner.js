@@ -65,7 +65,8 @@ define([
     var APP = window.APP = {
         $: $,
         urlArgs: Util.find(ApiConfig, ['requireConf', 'urlArgs']),
-        currentVersion: OOCurrentVersion.currentVersionNumber
+        currentVersion: OOCurrentVersion.currentVersionNumber,
+        office: true
     };
 
     var CHECKPOINT_INTERVAL = 100;
@@ -84,7 +85,6 @@ define([
     var stringify =  Util.sortify;
     var toolbar;
     var cursor;
-    const onRTCEvent = Util.mkEvent();
 
     var andThen = function (common) {
         var Title;
@@ -167,22 +167,15 @@ define([
         };
 
         const {
-            addLinkedCheckpoint, checkLinkedDocs,
+            checkLinkedDocs,
             getLastCpId, getLastCp, deleteLastCp, openRtChannel,
             onRTCMessage, onRTCHistorySynced,
             rtChannel, onChainpadReady,
             onCpUploaded, onCpUploadError, uploadCheckpoint,
             restoreLastCp, checkCheckpoint,
-            deleteOffline, isUserOnline, setIds,
-            removeClient, onClientRemoved
+            isUserOnline, setIds,
+            onClientRemoved
         } = APP.rtcTools;
-
-        var isRegisteredUserOnline = function () {
-            var users = metadataMgr.getMetadata().users || {};
-            return Object.keys(users).some(function (id) {
-                return users[id] && users[id].curvePublic;
-            });
-        };
 
         const getNextUserIndex = function () {
             let nextUserIndex;
@@ -526,6 +519,13 @@ define([
             });
 
             /* XXX allow temp rpc
+        var isRegisteredUserOnline = function () {
+            var users = metadataMgr.getMetadata().users || {};
+            return Object.keys(users).some(function (id) {
+                return users[id] && users[id].curvePublic;
+            });
+        };
+
             if (!locked || !isUserOnline(locked) || force) {
                 if (!common.isLoggedIn() && !isRegisteredUserOnline() && !noLogin) {
                     var login = h('button.cp-corner-primary', Messages.login_login);

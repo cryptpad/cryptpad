@@ -29,8 +29,6 @@ const factory = (Feedback, Util) => {
         var c = ctx.clients[client];
         var chan = ctx.channels[channel];
 
-console.error('OPEN RT CHANNEL', obj);
-
         const onError = (err) => {
             // Callback all connecting clients
             ctx.channels[channel].clients.forEach(c => {
@@ -38,9 +36,17 @@ console.error('OPEN RT CHANNEL', obj);
             });
         };
         const onReady = () => {
+            ctx.channels[channel].ready = true;
             // Callback all connecting clients
             ctx.channels[channel].clients.forEach(c => {
-                ctx.clients[c]?.cb({ clients: chan.clients });
+                // We need setTimeout to make sure the "ready" callback
+                // is sent AFTER all the history messages.
+                // This is caused by events-channel.js: callback are
+                // sent instantly while new postMsg go through
+                // onReady.reg(postMsg) which adds a timeout.
+                setTimeout(() => {
+                    ctx.clients[c]?.cb({ clients: chan.clients });
+                });
             });
         };
 
@@ -68,9 +74,19 @@ console.error('OPEN RT CHANNEL', obj);
             // ==> Use our netflux ID to create our client ID
             if (!c.id) { c.id = chan.wc.myID + '-' + client; }
 
-            getHistory(ctx, client, function () {
-                cb({ clients: chan.clients });
-            });
+            if (chan.ready) {
+                getHistory(ctx, client, function () {
+                    setTimeout(() => {
+                        cb({ clients: chan.clients });
+                    });
+                });
+            } else {
+                // send already loaded history
+                getHistory(ctx, client, function () {
+                    // do nothing,
+                    // cb will be called once the channel is ready
+                });
+            }
 
             // ==> And push the new tab to the list
             chan.clients.push(client);
