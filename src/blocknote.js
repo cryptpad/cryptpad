@@ -6,6 +6,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BlockNoteEditor } from '@blocknote/core';
 import { BlockNoteView } from '@blocknote/mantine';
+import '@blocknote/mantine/style.css';
 
 // Creates a BlockNote editor and mounts it into `element`
 // `options.view` contains the BlockNoteView props (theme, editable, etc),
