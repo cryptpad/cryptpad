@@ -27,11 +27,25 @@ define([
         $('#cp-app-notes-editor').append(editorEl);
 
         // This is the BlockNote editor initialization
+        // offline provider can only "store" the Y.Doc in the browser's indexeddb (no network sync)
+        const userData = framework._.sfCommon.getMetadataMgr().getUserData();
+        const ydoc = new BlockNote.YJS.Doc();
         BlockNote.useBlockNoteEditor(editorEl, {
             trailingBlock: true,
             view: {
                 editable: !priv.readOnly,
                 theme: window.CryptPad_theme === 'dark' ? 'dark' : 'light',
+            },
+            collaboration: {
+                provider: new BlockNote.IndexeddbPersistence(
+                    'cp-notes-' + priv.channel,
+                    ydoc
+                ),
+                fragment: ydoc.getXmlFragment('document-store'),
+                user: {
+                    name: userData.name,
+                    color: userData.color,
+                },
             },
         });
 
