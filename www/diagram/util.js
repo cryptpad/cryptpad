@@ -126,6 +126,7 @@ define([
         var decompressedXml = decompressDrawioXml(xml);
         const json = numbersToNumbers(x2js.xml2js(decompressedXml));
 
+        //XML > JSON > XML conversion loses object order when tooltips present - need to keep note of original z-order here
         const doc = parseXML(decompressedXml);
         const pageNodes = doc.querySelectorAll('root');
         const pageArray = [...pageNodes];
