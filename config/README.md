@@ -126,6 +126,9 @@ It shows examples files you will need to configure CryptPad:
   - `logPath`
     - Custom location for logs written in the disk. They are stored in a
       directory per year and per month.
+  - `challengePath`:
+    - Custom location for temporary challenges for CryptPad’s public-key
+      challenge-response authentication mechanism.
 - Debugging/Logs
   - `logToStdout`: default: false
     - To write in the console as well what is logged by CryptPad (following the
