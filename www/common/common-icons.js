@@ -63,6 +63,8 @@ define([
         // Code
         "code-pad": "file-code",
         "todo": "file",
+        // Notes
+        "notes": "notebook-pen",
         // Kanban
         "kanban": "cp-file-kanban",
         "kanban-tags": "tags",

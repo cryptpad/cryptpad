@@ -17,7 +17,7 @@ const factory = () => {
      * You should never remove the drive from this list.
      */
     AppConfig.availablePadTypes = ['drive', 'teams', 'sheet', 'doc', 'presentation', 'pad', 'kanban', 'code', 'form', 'poll', 'whiteboard',
-                                'file', 'contacts', 'slide', 'convert', 'diagram', 'yjs'];
+                                'file', 'contacts', 'slide', 'convert', 'diagram', 'notes'];
 
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
@@ -209,6 +209,7 @@ const factory = () => {
         contacts: 'contacts',
         calendar: 'calendar',
         kanban: 'kanban',
+        notes: 'notes',
         doc: 'doc',
         presentation: 'presentation',
         sheet: 'sheet',
