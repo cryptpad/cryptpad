@@ -2072,6 +2072,11 @@ define([
         var termsLine = template(Messages.info_termsFlavour, Pages.termsLink);
         var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
 
+        var eo = h('a', { href: 'https://github.com/Euro-Office', target: '_blank' }, 'Euro-Office').outerHTML;
+        var oo = h('a', { href: 'https://github.com/ONLYOFFICE', target: '_blank' }, 'OnlyOffice').outerHTML;
+        var scr = h('a', { href: 'https://github.com/cryptpad/cryptpad/tree/main/www/common/onlyoffice/README.md', target: '_blank' }, 'source code repository').outerHTML;
+        var officeLine = UI.setHTML(h('p'), `CryptPad office applications are based on ${eo} which is itself based on ${oo}, for full licensing information please see our ${scr}.`);
+
         var content = h('div.cp-info-menu-container', [
                 h('div.logo-block', [
                     h('img', {
@@ -2089,6 +2094,8 @@ define([
             privacyLine,
             legalLine,
             sourceLine,
+            h('hr'),
+            officeLine
         ]);
 
         $(content).find('a').attr('target', '_blank');

@@ -104,6 +104,25 @@ module.exports = {
     logFeedback: false,
 
     /* ====================
+     *        Server
+     * ==================== */
+     /* Max workers per node in the server */
+    maxWorkers: {
+        "core": 2,
+        "storage": 2,
+        "http": 2,
+        "http-storage": 2,
+    },
+
+    /* Max queue size per worker */
+    maxJobs: {
+        "core": 10,
+        "storage": 10,
+        "http": 10,
+        "http-storage": 10,
+    },
+
+    /* ====================
      *         Extra
      * ==================== */
     installMethod: 'unspecified',

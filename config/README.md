@@ -157,6 +157,21 @@ It shows examples files you will need to configure CryptPad:
       You will need to set your logLevel to include '`feedback`'. Set this to
       `false` if you'd like to exclude feedback from your logs.
 
+- Server
+  - `maxWorkers`: default is 2 for each node type
+    - CryptPad's nodes will launch by default a number of workers equals to what
+      is set in this file.  
+      Some host environments may have a very large number of cores available or
+      you may want to limit how much computing power CryptPad can take. If so,
+      set `maxWorkers.{type}` to a positive integer.  
+      Note: If you are experiencing bottleneck in websocket connections while
+      your server is not using all the available ressources for computations,
+      you may want to increase the `maxWorkers` value for `http`.  
+      For a node type to use every CPU cores, set it to the string "`default`".
+  - `maxJobs`: default is 10 for each node type
+    - The following option sets the max queue size for those workers, the syntax
+      is the same as above. The default value for unset node type is 10.
+
 - Extra
   - `installMethod`: default: 'unspecified'
     - If server telemetry is enabled, it is sent to the CryptPad team to
