@@ -23,31 +23,71 @@ define([
     // This is the main initialization loop
     const onFrameworkReady = (framework) => {
         const priv = framework._.sfCommon.getMetadataMgr().getPrivateData();
-        const editorEl = h('div#cp-notes-content');
-        $('#cp-app-notes-editor').append(editorEl);
-
-        // This is the BlockNote editor initialization
-        // offline provider can only "store" the Y.Doc in the browser's indexeddb (no network sync)
         const userData = framework._.sfCommon.getMetadataMgr().getUserData();
-        const ydoc = new BlockNote.YJS.Doc();
-        BlockNote.useBlockNoteEditor(editorEl, {
-            trailingBlock: true,
-            view: {
-                editable: !priv.readOnly,
-                theme: window.CryptPad_theme === 'dark' ? 'dark' : 'light',
-            },
-            collaboration: {
-                provider: new BlockNote.IndexeddbPersistence(
-                    'cp-notes-' + priv.channel,
-                    ydoc
-                ),
-                fragment: ydoc.getXmlFragment('document-store'),
-                user: {
-                    name: userData.name,
-                    color: userData.color,
+        const container = $('#cp-app-notes-editor');
+
+        const createProvider = (ydoc) => {
+            const name = 'cp-notes-' + priv.channel; // replace with context.id?
+            return new BlockNote.IndexeddbPersistence(name, ydoc); // To be replaced
+        };
+        const destroyProvider = (provider) => {
+            if (!provider) { return; }
+            // only for indexeddb
+            if (typeof provider.clearData === 'function') { // to be deleted
+                return provider.clearData();
+            }
+            // not needed for current provider 
+            // if (typeof provider.destroy === 'function') {
+            //     return provider.destroy();
+            // }
+        };
+
+        let currentEditor;
+
+        const createEditor = async () => {
+            const editorEl = h('div#cp-notes-content');
+            container.append(editorEl);
+            const ydoc = new BlockNote.YJS.Doc();
+            const provider = createProvider(ydoc);
+            provider.on('synced', () => {
+                console.log('indexeddb synced');
+            });
+            currentEditor = BlockNote.useBlockNoteEditor(editorEl, {
+                trailingBlock: true,
+                view: {
+                    editable: !priv.readOnly,
+                    theme: window.CryptPad_theme === 'dark' ? 'dark' : 'light',
                 },
-            },
-        });
+                collaboration: {
+                    provider,
+                    fragment: ydoc.getXmlFragment('document-store'),
+                    user: {
+                        name: userData.name,
+                        color: userData.color,
+                    },
+                },
+            });
+        };
+
+        const resetEditor = async () => {
+            if (currentEditor) {
+                try {
+                    currentEditor.unmount();
+                    currentEditor.editor._tiptapEditor.destroy();
+                    await destroyProvider(current.provider);
+                    currentEditor.ydoc.destroy();
+                    container.empty();
+                } catch (err) {
+                    console.error(err);
+                }
+                currentEditor = null;
+            }
+            await createEditor();
+        };
+
+        createEditor();
+        // window.resetEditor = resetEditor; -- expose for testing
+        // On checkpoint creation: resetEditor({checkpoint}); -- add a context? argument
 
         // no patches: the content getter keeps the initial document structure but never reads the editor
         const content = [];
