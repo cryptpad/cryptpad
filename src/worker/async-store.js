@@ -799,7 +799,8 @@ const factory = (UserObject, ProxyManager,
 
             ownedPads.forEach(function (c) {
                 var w = waitFor();
-                sem.take(function (give) {
+                sem.take(function (_give) {
+                    const give = _give();
                     var otherOwners = false;
                     nThen(function (_w) {
                         // Don't check server metadata for blobs
