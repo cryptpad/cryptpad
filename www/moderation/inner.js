@@ -1222,7 +1222,7 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
         }));
     }).nThen(function (/*waitFor*/) {
         if (!common.isLoggedIn()) {
-            return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
+            return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
                 common.setLoginRedirect('login');
             }, true, UIElements.getLoginButton(common));
         }

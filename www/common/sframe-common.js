@@ -514,7 +514,7 @@ define([
     funcs.createPad = function (cfg, cb) {
         //var priv = ctx.metadataMgr.getPrivateData();
         if (AppConfig.disableAnonymousPadCreation && !funcs.isLoggedIn()) {
-            return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
+            return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
                 funcs.setLoginRedirect('login');
             }, true, UIElements.getLoginButton(funcs));
         }
@@ -1010,7 +1010,7 @@ define([
                 }
                 var mustLogin = privateData.registeredOnly;
                 if (mustLogin) {
-                    return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
+                    return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
                         funcs.setLoginRedirect('login');
                     }, true, UIElements.getLoginButton(funcs));
                 }

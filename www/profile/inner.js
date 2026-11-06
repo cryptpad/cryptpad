@@ -569,7 +569,7 @@ define([
         if (!privateData.readOnly && !common.isLoggedIn()) {
             UI.removeLoadingScreen();
 
-            var mustLogin = UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
+            var mustLogin = UI.errorLoadingScreen(Messages.mustLogin, false, function () {
                 common.setLoginRedirect('login');
             }, true, UIElements.getLoginButton(common));
             APP.$rightside.append(mustLogin);

@@ -44,7 +44,7 @@ define([
                     });
                 }
             };
-        return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
+        return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
             login.setLoginRedirect('login');
         }, true, UIElements.getLoginButton(login));
     }

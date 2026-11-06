@@ -2497,7 +2497,7 @@ APP.recurrenceRule = {
             APP.numberCalendars = obj.length;
             if (empty && !privateData.calendarHash) {
                 if (!privateData.loggedIn) {
-                    return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
+                    return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
                         common.setLoginRedirect('login');
                     }, true, UIElements.getLoginButton(common));
                 }

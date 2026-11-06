@@ -4860,11 +4860,6 @@ define([
         return h('div.cp-drive-tree', content);
     };
 
-    UIElements.getMustLoginError = function () {
-        var mustLoginMessage = (h('span', Messages.mustLogin));
-        return mustLoginMessage;
-    };
-
     UIElements.getLoginButton = function (common) {
         var btn = $('<button>', {
             'class': 'btn btn-success',
