@@ -515,8 +515,8 @@ define([
         //var priv = ctx.metadataMgr.getPrivateData();
         if (AppConfig.disableAnonymousPadCreation && !funcs.isLoggedIn()) {
             return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
-                common.setLoginRedirect('login');
-            }, true, UIElements.getLoginButton(common));
+                funcs.setLoginRedirect('login');
+            }, true, UIElements.getLoginButton(funcs));
         }
         ctx.sframeChan.query("Q_CREATE_PAD", {
             owned: cfg.owned,

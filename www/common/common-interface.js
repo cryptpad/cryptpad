@@ -1153,7 +1153,7 @@ define([
         var $error = $loading.find('#cp-loading-message').show();
         if (error instanceof Element) {
             $error.html('').append(error);
-            if (actions) { $error.after(actions) };
+            if (actions) { $error.after(actions); };
         } else {
             errorCls = true;
             $error.html(error || Messages.error);

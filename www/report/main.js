@@ -36,9 +36,17 @@ define([
     var blockHash = localStorage.Block_hash;
     if (!blockHash) {
         UI.addLoadingScreen({hideTips: true});
+            var login = {
+                setLoginRedirect: function () {
+                    var href = Hash.hashToHref('', 'login');
+                    window.location.href = Hash.getNewPadURL(href, {
+                        href: '/report/',
+                    });
+                }
+            };
         return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
-            common.setLoginRedirect('login');
-        }, true, UIElements.getLoginButton(common));
+            login.setLoginRedirect('login');
+        }, true, UIElements.getLoginButton(login));
     }
 
     let report = true;

@@ -4863,7 +4863,7 @@ define([
     UIElements.getMustLoginError = function () {
         var mustLoginMessage = (h('span', Messages.mustLogin));
         return mustLoginMessage;
-    }
+    };
 
     UIElements.getLoginButton = function (common) {
         var btn = $('<button>', {
@@ -4872,7 +4872,7 @@ define([
         $(btn).click(function () { common.setLoginRedirect('login'); });
 
         return btn;
-    }
+    };
 
     return UIElements;
 });
