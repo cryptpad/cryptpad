@@ -10,7 +10,7 @@ define([
 
     const debug = (x, type) => {
         if (!window.CP_DEV_MODE) { return; }
-        console.debug(x, type);
+        console.error(x, type);
     };
 
     YProvider.create = cfg => {
@@ -80,7 +80,9 @@ APP.Y = Y;
 
             // Check if new checkpoint available
             const cpData = getLastCp();
-            if (current.channel && current.channel !== cpData.rtChannel) {
+            const channel = cpData.rtChannel || oldContent?.channel;
+            if (current.channel && current.channel !== channel) {
+                debug('Reset UI on new remote checkpoint');
                 onLockChange.fire(true);
                 onResetUI.fire(cpData);
             }
@@ -138,6 +140,7 @@ APP.Y = Y;
                 const data = {
                     time: Date.now(),
                     callback: (cpData) => {
+                        debug('Reset UI on new local checkpoint');
                         onResetUI.fire(cpData, state);
                     }
                 };
@@ -150,6 +153,7 @@ APP.Y = Y;
             debug("Receiving update", data.msg);
             const update = Util.decodeBase64(data.msg);
             Y.applyUpdate(ydoc, update);
+            clearTimeout(current.cpTo);
             current.index++;
             current.lastTime = Date.now();
             onRemote.fire();
@@ -182,6 +186,7 @@ APP.Y = Y;
         const resetFromCp = (buffer, cpData, cb) => {
             const chan = cpData?.rtChannel || oldContent?.channel;
             if (chan !== current.channel) {
+                debug(`Reset with new channel: ${chan}`);
                 current.index = 0;
                 current.channel = chan;
             }
@@ -257,7 +262,8 @@ APP.Y = Y;
 
         const updateUI = (cpData, data, _ydoc) => {
             ydoc.destroy();
-            ydoc = _ydoc;
+            ydoc = APP.ydoc = _ydoc;
+
             initYDoc();
 
             let next = (err, buffer) => {

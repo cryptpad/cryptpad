@@ -1594,15 +1594,18 @@ const factory = (UserObject, ProxyManager,
                 },
                 pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
                 unpinPads: function (data, cb) { Store.unpinPads(null, data, cb); },
-            }, waitFor, function (ev, data, clients) {
+            }, waitFor, function (ev, data, clients, cb) {
                 clients.forEach(function (cId) {
+                    let callback = cb ? () => {
+                        cb(cId);
+                    } : undefined;
                     postMessage(cId, 'UNIVERSAL_EVENT', {
                         type: type,
                         data: {
                             ev: ev,
                             data: data
                         }
-                    });
+                    }, callback);
                 });
             });
         };

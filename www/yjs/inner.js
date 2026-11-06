@@ -145,14 +145,16 @@ define([
 
         provider.onResetUI((cpData, data) => {
             // new checkpoint
+            $textarea.off('change keyup paste', onInput);
             ydoc = new Y.Doc(yOpts);
             ytext = ydoc.getText('cp-textarea');
 
-            let newText = h('textarea');
+            let newText = h('textarea', {id: Util.uid()});
             textarea.replaceWith(newText);
             textarea = newText;
             $textarea = $(textarea);
             $textarea.on('change keyup paste', onInput);
+            setEditable();
 
             provider.updateUI(cpData, data, ydoc);
         });

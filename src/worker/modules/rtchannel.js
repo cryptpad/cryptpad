@@ -36,17 +36,19 @@ const factory = (Feedback, Util) => {
             });
         };
         const onReady = () => {
-            ctx.channels[channel].ready = true;
+            let chan = ctx.channels[channel];
+            chan.ready = true;
             // Callback all connecting clients
-            ctx.channels[channel].clients.forEach(c => {
-                // We need setTimeout to make sure the "ready" callback
-                // is sent AFTER all the history messages.
-                // This is caused by events-channel.js: callback are
-                // sent instantly while new postMsg go through
-                // onReady.reg(postMsg) which adds a timeout.
-                setTimeout(() => {
-                    ctx.clients[c]?.cb({ clients: chan.clients });
-                });
+            chan.clients.forEach(c => {
+                if (chan?.readyPromises[c]) {
+                    Promise.all(chan.readyPromises[c]).then(() => {
+                        ctx.clients[c]?.cb({ clients: chan.clients });
+                    });
+                } else {
+                    setTimeout(() => {
+                        ctx.clients[c]?.cb({ clients: chan.clients });
+                    });
+                }
             });
         };
 
@@ -98,6 +100,7 @@ const factory = (Feedback, Util) => {
 
             ctx.channels[channel] = ctx.channels[channel] || {
                 history: [],
+                readyPromises: {},
                 validateKey: obj.validateKey
             };
 
@@ -229,9 +232,26 @@ const factory = (Feedback, Util) => {
             if (hash === chan.lastKnownHash || hash === chan.lastCpHash) { return; }
 
             chan.lastKnownHash = hash;
+
+            // Make sure ready is sent after all messages are received by inner
+            const prom = {};
+            if (!chan.ready) {
+                chan.clients.forEach(cId => {
+                    chan.readyPromises[cId] ||= [];
+                    let p = new Promise(resolve => {
+                        prom[cId] = resolve;
+                    });
+                    chan.readyPromises[cId].push(p);
+                });
+            }
+            let cb = chan.ready ? undefined : cId => {
+                try { prom[cId](); } catch (e) {}
+            };
+
+            // Emit the message to each client
             ctx.emit('MESSAGE', {
                 msg: msg,
-            }, chan.clients);
+            }, chan.clients, cb);
             chan.history.push(msg);
         });
 
