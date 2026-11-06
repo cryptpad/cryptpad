@@ -508,6 +508,8 @@ define([
                 var $el = $(el);
                 var ed = $el.attr('data-ed');
                 if (!ed) { return; }
+                var userData = _allowed[ed] || {};
+                var name = UI.getDisplayName(userData.displayName || userData.name);
                 nThen(function (waitFor) {
                     /*
                     var msg = Messages.allow_removeConfirm;
@@ -535,7 +537,7 @@ define([
                                                                           : Messages.error;
                             return void UI.warn(text);
                         }
-                        UI.log(Messages.saved);
+                        UI.log(name ? Messages._getKey('access_removalConfirmation', [name]) : Messages.saved);
                     }));
                 });
             };
@@ -718,7 +720,10 @@ define([
                     }));
                 }
             }).nThen(function () {
-                UI.log(Messages.saved);
+                var names = dataToAdd.map(function (d) {
+                    return UI.getDisplayName(d.displayName || d.name);
+                }).filter(Boolean);
+                UI.log(names.length ? Messages._getKey('access_confirmation', [names.join(', ')]) : Messages.saved);
             });
         });
         $(addBtn).on('keydown', function (event) {
