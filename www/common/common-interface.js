@@ -1134,7 +1134,7 @@ define([
         $loading.find('.cp-loading-logo').hide();
         $loading.append(h('div.cp-loading-empty', [content]));
     };
-    UI.errorLoadingScreen = function (error, transparent, exitable, errorCls) {
+    UI.errorLoadingScreen = function (error, transparent, exitable, errorCls, actions) {
         if (error === 'Error: XDR encoding failure') {
             console.warn(error);
             return;
@@ -1153,18 +1153,10 @@ define([
         var $error = $loading.find('#cp-loading-message').show();
         if (error instanceof Element) {
             $error.html('').append(error);
+            if (actions) { $error.after(actions) };
         } else {
             errorCls = true;
             $error.html(error || Messages.error);
-        }
-
-        if (error === Messages.mustLogin) {
-            var btn = $('<button>', {
-                'class': 'btn btn-success',
-            }).text(Messages.login_login);
-
-            $(btn).click(function () { window.APP.common.setLoginRedirect('login'); });
-            $error.after(btn);
         }
 
         if (errorCls) {

@@ -1645,9 +1645,9 @@ define([
 
             var hash = privateData.teamInviteHash;
             if (!hash && !driveAPP.loggedIn) {
-                return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
+                return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
                     common.setLoginRedirect('login');
-                });
+                }, true, UIElements.getLoginButton());
             }
             if (!hash) {
                 delete mainCategories.link;

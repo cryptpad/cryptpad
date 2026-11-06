@@ -4860,6 +4860,19 @@ define([
         return h('div.cp-drive-tree', content);
     };
 
+    UIElements.getMustLoginError = function () {
+        var mustLoginMessage = (h('p', Messages.mustLogin));
+        return mustLoginMessage;
+    }
+
+    UIElements.getLoginButton = function () {
+        var btn = $('<button>', {
+            'class': 'btn btn-success',
+        }).text(Messages.login_login);
+        $(btn).click(function () { window.APP.common.setLoginRedirect('login'); });
+
+        return btn;
+    }
 
     return UIElements;
 });

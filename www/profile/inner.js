@@ -568,9 +568,10 @@ define([
         // If not logged in, you can only view other users's profile
         if (!privateData.readOnly && !common.isLoggedIn()) {
             UI.removeLoadingScreen();
-            var mustLogin = UI.errorLoadingScreen(Messages.mustLogin, false, function () {
+
+            var mustLogin = UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
                 common.setLoginRedirect('login');
-            });
+            }, true, UIElements.getLoginButton());
             APP.$rightside.append(mustLogin);
             return;
         }

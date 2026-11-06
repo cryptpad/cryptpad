@@ -15,6 +15,7 @@ define([
     '/common/cryptpad-common.js',
     '/common/cache-store.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     'chainpad-netflux',
     '/components/chainpad-crypto/crypto.js',
     '/common/user-object.js',
@@ -29,20 +30,15 @@ define([
     '/components/tweetnacl/nacl-fast.min.js',
     'less!/customize/src/less2/pages/page-report.less',
 ], function ($, ApiConfig, h, Messages,
-            nThen, Hash, Util, Constants, Crypt, Cryptpad, Cache, UI, CPNetflux,
+            nThen, Hash, Util, Constants, Crypt, Cryptpad, Cache, UI, UIElements, CPNetflux,
             Crypto, UserObject, Clipboard, Block, /*Roster,*/ Rpc, Pinpad, LocalStore) {
     var $report = $('#cp-report');
     var blockHash = localStorage.Block_hash;
     if (!blockHash) {
         UI.addLoadingScreen({hideTips: true});
-        return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
-            var href = Hash.hashToHref('', 'login');
-            var url = Hash.getNewPadURL(href, {
-                href: '/report/',
-            });
-            console.log(url);
-            window.location.href = url;
-        });
+        return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
+            common.setLoginRedirect('login');
+        }, true, UIElements.getLoginButton());
     }
 
     let report = true;
