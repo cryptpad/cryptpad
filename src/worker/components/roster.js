@@ -40,6 +40,17 @@ var factory = function (Util, Hash, CPNetflux, nThen, Crypto) {
         return Boolean(obj && typeof(obj) === 'object' && !Array.isArray(obj));
     };
 
+    const allowedArgs = new Set([
+        'avatar', 'badge', 'curvePublic', 'displayName',
+        'edPublic', 'notifications', 'pending', 'pendingOwner',
+        'profile', 'role', 'uid', 'user'
+    ]);
+    const containsInvalidArgs = obj => {
+        return Object.keys(obj || {}).some(key => {
+            return !allowedArgs.has(key);
+        });
+    };
+
     var getMessageId = function (msgString) {
         return msgString.slice(0, 64);
     };
@@ -252,6 +263,7 @@ var factory = function (Util, Hash, CPNetflux, nThen, Crypto) {
 
             var data = args[curve];
             if (!isMap(data)) { throw new Error("INVALID_ARGUMENTS"); }
+            if (containsInvalidArgs(data)) { throw new Error('FORBIDDEN_ARGUMENTS'); }
 
             var current = Util.clone(members[curve]);
 
@@ -296,7 +308,7 @@ var factory = function (Util, Hash, CPNetflux, nThen, Crypto) {
 
             if (Util.sortify(current) !== Util.sortify(members[curve])) {
                 changed = true;
-                members[curve] = current;
+                members[curve] = Util.clone(current);
             }
         });
 
