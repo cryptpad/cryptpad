@@ -38,7 +38,7 @@ define([
         UI.addLoadingScreen({hideTips: true});
         return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
             common.setLoginRedirect('login');
-        }, true, UIElements.getLoginButton());
+        }, true, UIElements.getLoginButton(common));
     }
 
     let report = true;

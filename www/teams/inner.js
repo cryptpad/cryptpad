@@ -1647,7 +1647,7 @@ define([
             if (!hash && !driveAPP.loggedIn) {
                 return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
                     common.setLoginRedirect('login');
-                }, true, UIElements.getLoginButton());
+                }, true, UIElements.getLoginButton(common));
             }
             if (!hash) {
                 delete mainCategories.link;

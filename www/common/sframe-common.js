@@ -516,7 +516,7 @@ define([
         if (AppConfig.disableAnonymousPadCreation && !funcs.isLoggedIn()) {
             return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
                 common.setLoginRedirect('login');
-            }, true, UIElements.getLoginButton());
+            }, true, UIElements.getLoginButton(common));
         }
         ctx.sframeChan.query("Q_CREATE_PAD", {
             owned: cfg.owned,
@@ -1012,7 +1012,7 @@ define([
                 if (mustLogin) {
                     return void UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
                         funcs.setLoginRedirect('login');
-                    }, true, UIElements.getLoginButton());
+                    }, true, UIElements.getLoginButton(funcs));
                 }
                 var blocked = privateData.premiumOnly && privateData.isNewFile;
                 if (blocked) {

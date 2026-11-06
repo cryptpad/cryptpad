@@ -571,7 +571,7 @@ define([
 
             var mustLogin = UI.errorLoadingScreen(UIElements.getMustLoginError(), false, function () {
                 common.setLoginRedirect('login');
-            }, true, UIElements.getLoginButton());
+            }, true, UIElements.getLoginButton(common));
             APP.$rightside.append(mustLogin);
             return;
         }
