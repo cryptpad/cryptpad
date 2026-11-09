@@ -760,7 +760,7 @@ define([
             var _date;
             if (opts.type === "day") {
                 _date = new Date(data);
-                data = _date.toLocaleDateString();
+                data = _date.toLocaleDateString(loc, { timeZone: "UTC" });
             }
             if (opts.type === "time") {
                 _date = new Date(data);
@@ -793,7 +793,7 @@ define([
             var _days = {};
             extractValues(opts.values).forEach(function (d) {
                 var date = new Date(d);
-                var day = date.toLocaleDateString();
+                var day = date.toLocaleDateString(loc, { timeZone: "UTC" });
                 _days[day] = {
                     n: (_days[day] && _days[day].n) || 0,
                     name: allDays[date.getDay()]
