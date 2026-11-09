@@ -17,8 +17,9 @@ Eviction.prepareEnv(mainConfig, (err, Env) => {
 
     Eviction.archived(Env, (err, report) => {
         if (!report) { return; }
-        Env.Log.info('EVICT_ARCHIVED_FINAL_REPORT', report);
-        process.exit(0);
+        Env.Log.info('EVICT_ARCHIVED_FINAL_REPORT', report, () => {
+            process.exit(0);
+        });
     });
 
 });
