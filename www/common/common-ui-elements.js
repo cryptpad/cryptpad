@@ -2138,21 +2138,25 @@ define([
         if (config.displayNameCls) {
             var userAdminContent = [];
             if (accountName) {
-                userAdminContent.push(h('span', [
+                userAdminContent.push(h('span', {
+                    title: priv.accountName,
+                }, [
                     Messages.user_accountName,
                     ': ',
                     h('span', accountName),
                 ]));
-                userAdminContent.push(h('br'));
             }
             if (config.displayName && !AppConfig.disableProfile) {
                 // Hide "Display name:" in read only mode
-                userAdminContent.push(h('span', [
+                var initialDisplayName = UI.getDisplayName((metadataMgr.getUserData() || {}).name);
+                userAdminContent.push(h('span', {
+                    title: initialDisplayName,
+                }, [
                     Messages.user_displayName,
                     ': ',
                     h('span', {
                         class: displayNameCls,
-                    }),
+                    }, initialDisplayName),
                 ]));
             }
             options.push({
@@ -2488,6 +2492,12 @@ define([
             var newName = UI.getDisplayName(myData.name);
             var url = myData.avatar;
             $displayName.text(newName);
+            var nameEl = $displayName.parent()[0];
+            if (nameEl && nameEl._tippy) {
+                nameEl._tippy.set({ content: Util.fixHTML(newName) });
+            } else if (nameEl) {
+                nameEl.setAttribute('title', newName);
+            }
             if ((accountName && oldUrl !== url) || !accountName && uid !== oldUid || oldName !== newName) {
                 $avatar.html('');
                 Common.displayAvatar($avatar, url, newName, function ($img) {
