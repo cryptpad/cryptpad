@@ -9,7 +9,7 @@ const inter = readline.createInterface({
     output: process.stdout
 });
 
-var config = require("../lib/load-config");
+const { config } = require("../lib/load-config");
 var Env = require("../lib/env").create(config);
 Env.Log = { error: console.log };
 

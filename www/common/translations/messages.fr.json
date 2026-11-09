@@ -1900,5 +1900,11 @@
     "form_guestPublicTitle": "Copier votre lien public",
     "form_guestPublicBody": "Partagez ce lien avec les participant·es pour qu'iels puissent remplir votre formulaire.",
     "creation_expireValue": "Délai de destruction",
-    "creation_expireUnit": "Unité de temps du délai de destruction"
+    "creation_expireUnit": "Unité de temps du délai de destruction",
+    "support_batchListTitle": "Liste sélectionnée",
+    "support_batchCloseTitle": "Fermer les tickets sélectionnés",
+    "support_closeTickets": "Fermer les tickets",
+    "support_batchSendTitle": "Envoyer à la sélection",
+    "support_emptyBatch": "Aucun ticket sélectionné",
+    "support_cat_batch": "Actions groupées"
 }

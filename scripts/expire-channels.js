@@ -6,7 +6,7 @@ var nThen = require("nthen");
 var Tasks = require("../lib/storage/tasks");
 var Logger = require("../lib/log");
 
-var config = require("../lib/load-config");
+const { config } = require("../lib/load-config");
 var FileStorage = require('../lib/storage/file');
 
 nThen(function (w) {

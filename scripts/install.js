@@ -7,7 +7,7 @@ const Fs = require("fs");
 const Path = require("path");
 const Decrees = require("../lib/decrees");
 
-var config = require("../lib/load-config");
+const { config } = require("../lib/load-config");
 var Hash = require('../www/common/common-hash');
 var Env = require("../lib/env").create(config);
 

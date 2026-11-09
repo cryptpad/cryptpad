@@ -4634,7 +4634,7 @@ define([
                     // _displayDirectory(path, force);
                     // cb();
                 }
-                if (opt?.sf) {
+                if (opt?.sf && APP.loggedIn) { // anonymous drives don’t store shared folders
                     path = ['sf', String(APP.newSharedFolder), 'root'];
 
                 }
@@ -5306,7 +5306,6 @@ define([
                     var auditorHash;
                     if (parsed.hash && parsed.type === "form") {
                         var formData = Hash.getFormData(null, parsed.hash, data.password);
-                        console.log(formData);
                         if (formData) {
                             auditorHash = formData.form_auditorHash;
                         }
