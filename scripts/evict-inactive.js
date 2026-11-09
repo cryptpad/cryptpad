@@ -4,6 +4,7 @@
 
 const Eviction = require("cryptpad-server/build/eviction");
 const mainConfig = require("../lib/load-config");
+mainConfig.myId = 'eviction';
 
 Eviction.prepareEnv(mainConfig, (err, Env) => {
     if (err) {
