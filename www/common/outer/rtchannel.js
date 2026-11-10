@@ -52,8 +52,9 @@ define([
             execCommand(obj, cb);
         });
 
-        Cryptpad.universal.onEvent.reg(function (data) {
+        Cryptpad.universal.onEvent.reg(function (data, cb) {
             if (data?.type !== 'rtchannel') { return; }
+            cb();
             const obj = data?.data || {};
             if (obj.ev === 'MESSAGE' && !/^cp\|/.test(obj.data)) {
                 try {

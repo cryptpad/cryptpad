@@ -82,7 +82,8 @@ define([
         }
 
         if (Object.keys(teams).length) {
-            common.getPadTeams({channel: config.channel}, function (err, teamIds) {
+            let chan = config.channel;
+            common.getPadTeams({channel: chan}, function (err, teamIds) {
                 if (err) { console.error(err); }
                 teamIds = teamIds || [];
 
@@ -919,6 +920,14 @@ define([
     var getFileContactsTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
+
+        // get blob id
+        let hash = opts?.hashes?.fileHash;
+        if (hash) {
+            let s = Hash.getSecrets('file', hash, opts.password);
+            opts.channel = s.channel;
+        }
+
         var friendsObject = opts.hasFriends ? createShareWithFriends(opts, null, opts.getLinkValue) : UIElements.noContactsMessage(common);
         var friendsList = friendsObject.content;
 

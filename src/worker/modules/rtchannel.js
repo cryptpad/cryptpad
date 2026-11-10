@@ -29,8 +29,6 @@ const factory = (Feedback, Util) => {
         var c = ctx.clients[client];
         var chan = ctx.channels[channel];
 
-console.error('OPEN RT CHANNEL', obj);
-
         const onError = (err) => {
             // Callback all connecting clients
             ctx.channels[channel].clients.forEach(c => {
@@ -38,9 +36,19 @@ console.error('OPEN RT CHANNEL', obj);
             });
         };
         const onReady = () => {
+            let chan = ctx.channels[channel];
+            chan.ready = true;
             // Callback all connecting clients
-            ctx.channels[channel].clients.forEach(c => {
-                ctx.clients[c]?.cb({ clients: chan.clients });
+            chan.clients.forEach(c => {
+                if (chan?.readyPromises[c]) {
+                    Promise.all(chan.readyPromises[c]).then(() => {
+                        ctx.clients[c]?.cb({ clients: chan.clients });
+                    });
+                } else {
+                    setTimeout(() => {
+                        ctx.clients[c]?.cb({ clients: chan.clients });
+                    });
+                }
             });
         };
 
@@ -68,9 +76,19 @@ console.error('OPEN RT CHANNEL', obj);
             // ==> Use our netflux ID to create our client ID
             if (!c.id) { c.id = chan.wc.myID + '-' + client; }
 
-            getHistory(ctx, client, function () {
-                cb({ clients: chan.clients });
-            });
+            if (chan.ready) {
+                getHistory(ctx, client, function () {
+                    setTimeout(() => {
+                        cb({ clients: chan.clients });
+                    });
+                });
+            } else {
+                // send already loaded history
+                getHistory(ctx, client, function () {
+                    // do nothing,
+                    // cb will be called once the channel is ready
+                });
+            }
 
             // ==> And push the new tab to the list
             chan.clients.push(client);
@@ -82,6 +100,7 @@ console.error('OPEN RT CHANNEL', obj);
 
             ctx.channels[channel] = ctx.channels[channel] || {
                 history: [],
+                readyPromises: {},
                 validateKey: obj.validateKey
             };
 
@@ -213,9 +232,26 @@ console.error('OPEN RT CHANNEL', obj);
             if (hash === chan.lastKnownHash || hash === chan.lastCpHash) { return; }
 
             chan.lastKnownHash = hash;
+
+            // Make sure ready is sent after all messages are received by inner
+            const prom = {};
+            if (!chan.ready) {
+                chan.clients.forEach(cId => {
+                    chan.readyPromises[cId] ||= [];
+                    let p = new Promise(resolve => {
+                        prom[cId] = resolve;
+                    });
+                    chan.readyPromises[cId].push(p);
+                });
+            }
+            let cb = chan.ready ? undefined : cId => {
+                try { prom[cId](); } catch (e) {}
+            };
+
+            // Emit the message to each client
             ctx.emit('MESSAGE', {
                 msg: msg,
-            }, chan.clients);
+            }, chan.clients, cb);
             chan.history.push(msg);
         });
 

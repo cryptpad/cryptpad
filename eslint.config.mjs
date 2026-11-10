@@ -63,6 +63,7 @@ export default defineConfig([
         "www/code/orgmode.js",
         "www/common/worker.bundle.js",
         "www/common/worker.bundle.min.js",
+        "www/common/yjs-bundle.js",
         "rollup.config.mjs",
         "*/lucide.js",
         "scripts/**",

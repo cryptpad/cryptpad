@@ -26,8 +26,9 @@ define([
     ) {
 
     const { YJS:Y, Diff } = YBundle;
-    const APP = {
-        currentVersion: 1
+    const APP = window.APP = {
+        currentVersion: 1,
+        locked: true,
     };
 
     // This is the main initialization loop
@@ -41,12 +42,14 @@ define([
         let $textarea = $(textarea);
         $content.append($textarea);
 
-        const ydoc = new Y.Doc();
-        const ytext = ydoc.getText('cp-textarea');
+        const yOpts = {};
         const myId = Util.uid();
 
+        let ydoc = new Y.Doc(yOpts);
+        let ytext = ydoc.getText('cp-textarea');
+
         const provider = YProvider.create({
-            APP, framework, common, ydoc, myId
+            APP, framework, common, ydoc, myId, yOpts
         });
 
 
@@ -58,6 +61,7 @@ define([
                         // EQUAL
                         pos += d[1].length;
                     } else if (d[0] === Diff.DELETE) {
+
                         // DELETE
                         ytext.delete(pos, d[1].length);
                     } else {
@@ -70,14 +74,14 @@ define([
         };
 
         let oldVal = '';
-        $textarea.on('change keyup paste', function () {
+        const onInput = () => {
             var currentVal = $textarea.val();
             const oldVal = ytext.toString();
             if (currentVal === oldVal) { return; } // Nothing to do
-            console.error(currentVal, oldVal);
             let diff = Diff.default(oldVal, currentVal, textarea.selectionStart);
             applyDiff(diff);
-        });
+        };
+        $textarea.on('change keyup paste', onInput);
         provider.onRemote(() => {
             $textarea.val(ytext.toString());
         });
@@ -108,10 +112,20 @@ define([
             console.log("Other user cursor", data);
         });
         */
+        const setEditable = () => {
+            let editable = APP.online && !APP.readOnly && !APP.locked;
+            $textarea.prop('readonly', editable ? false : 'readonly');
+        };
+
+        APP.setEdit = setEditable;
+        setEditable();
 
         framework.onContentUpdate(function (newContent) {
             console.log('New content received from others', newContent.content);
-            setContent(newContent.content);
+            // Update local content
+            content = newContent.content;
+            // Update Yjs & rtChannel object
+            provider.chainpadContentUpdate(newContent.content);
         });
 
         framework.setContentGetter(function () {
@@ -120,6 +134,34 @@ define([
             return {
                 content: content
             };
+        });
+
+        framework.onEditableChange(function () {
+            APP.online = !framework.isLocked(); // connection state
+            APP.readonly = framework.isReadOnly(); // access-rights
+            if (APP.online) { provider.setIds(); }
+            setEditable();
+        });
+
+        provider.onResetUI((cpData, data) => {
+            // new checkpoint
+            $textarea.off('change keyup paste', onInput);
+            ydoc = new Y.Doc(yOpts);
+            ytext = ydoc.getText('cp-textarea');
+
+            let newText = h('textarea', {id: Util.uid()});
+            textarea.replaceWith(newText);
+            textarea = newText;
+            $textarea = $(textarea);
+            $textarea.on('change keyup paste', onInput);
+            setEditable();
+
+            provider.updateUI(cpData, data, ydoc);
+        });
+
+        provider.onLockChange(locked => {
+            APP.locked = locked;
+            setEditable();
         });
 
         framework.onReady(function () {
@@ -133,7 +175,8 @@ define([
                 //checkLinkedDocs(); XXX
             }
 
-            provider.initWS();
+            provider.setIds();
+            provider.initDoc();
         });
 
         // Start the framework

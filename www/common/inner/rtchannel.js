@@ -281,8 +281,10 @@ define([
                 rtChannel: Hash.createChannelId(),
                 version: APP.currentVersion
             };
-            content.locks = {};
-            content.ids = {};
+            if (APP.office) {
+                content.locks = {};
+                content.ids = {};
+            }
             onCpUploaded.fire();
             APP.onLocal();
             APP.realtime.onSettle(function () {
@@ -366,11 +368,13 @@ define([
         // XXX XXX XXX XXX XXX
         const makeCheckpoint = (force, cb) => {
             let lock = content.saveLock && isUserOnline(content.saveLock);
+            console.error('CHECK LOCK', content.saveLock);
             if (lock && !force) { return void cb(false); }
             // XXX !loggedIn ==> allow temp rpc?
             if (!common.isLoggedIn()) { return void cb(false); }
 
             content.saveLock = myLockId;
+            console.error('SET LOCK', myLockId);
             APP.onLocal();
             APP.realtime.onSettle(function () {
                 cb(true);
@@ -427,7 +431,7 @@ define([
             if (!myLockId) {
                 myLockId = Util.createRandomInteger();
                 let f = (id) => {
-                    return ids[id].lockId === myLockId;
+                    return content.ids[id].lockId === myLockId;
                 };
                 while (Object.keys(content.ids).some(f)) {
                     myLockId = Util.createRandomInteger();
