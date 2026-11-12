@@ -1134,7 +1134,7 @@ define([
         $loading.find('.cp-loading-logo').hide();
         $loading.append(h('div.cp-loading-empty', [content]));
     };
-    UI.errorLoadingScreen = function (error, transparent, exitable, errorCls) {
+    UI.errorLoadingScreen = function (error, transparent, exitable, errorCls, actions) {
         if (error === 'Error: XDR encoding failure') {
             console.warn(error);
             return;
@@ -1157,6 +1157,7 @@ define([
             errorCls = true;
             $error.html(error || Messages.error);
         }
+        if (actions) { $error.after(actions); };
 
         if (errorCls) {
             const cls = transparent ? 'cp-error-message-alt'

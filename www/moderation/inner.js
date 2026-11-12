@@ -1221,6 +1221,13 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
             APP.disableSupportNotif = !!value;
         }));
     }).nThen(function (/*waitFor*/) {
+        if (!common.isLoggedIn()) {
+            return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
+                common.setLoginRedirect('login');
+            }, true, UIElements.getLoginButton(common));
+        }
+
+
         createToolbar();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
