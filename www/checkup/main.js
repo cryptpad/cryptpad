@@ -967,7 +967,7 @@ define([
             var $outer = trimmedUnsafe;
             var $sandbox = trimmedSafe;
             var result = validateCSP(raw, msg, {
-                'default-src': ["'none'"],
+                'default-src': ["'self'", $outer],
                 'style-src': ["'unsafe-inline'", "'self'", $outer],
                 'font-src': ["'self'", 'data:', $outer],
                 'child-src': [$outer],
@@ -1010,7 +1010,7 @@ define([
             var $outer = trimmedUnsafe;
             var $sandbox = trimmedSafe;
             var result = validateCSP(raw, msg, {
-                'default-src': ["'none'"],
+                'default-src': ["'self'", $outer],
                 'style-src': ["'unsafe-inline'", "'self'", $outer],
                 'font-src': ["'self'", 'data:', $outer],
                 'child-src': [$outer],
