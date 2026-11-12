@@ -5,7 +5,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import * as Y from 'yjs';
-import { IndexeddbPersistence } from 'y-indexeddb';
 import { BlockNoteEditor, filterSuggestionItems, insertOrUpdateBlockForSlashMenu } from '@blocknote/core';
 import { withCollaboration } from '@blocknote/core/yjs';
 import { BlockNoteView } from '@blocknote/mantine';
@@ -66,4 +65,4 @@ const useBlockNoteEditor = (element, { view = {}, ...options } = {}) => {
     };
 };
 
-export default { useBlockNoteEditor, YJS: Y, IndexeddbPersistence };
+export default { useBlockNoteEditor, YJS: Y };

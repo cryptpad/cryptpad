@@ -11,7 +11,7 @@ define([
     '/customize/messages.js', // translation keys
     '/common/hyperscript.js',
     '/common/blocknote-bundle.js',
-    '/notes/util.js',
+    '/common/inner/image-util.js',
     '/common/yjs-provider.js',
 
     'css!/common/blocknote.css',
@@ -25,7 +25,7 @@ define([
     Messages,
     h,
     BlockNote,
-    NotesUtil,
+    ImageUtil,
     YProvider
 ) {
     const Y = BlockNote.YJS;
@@ -53,7 +53,7 @@ define([
                 common.setPadAttribute('atime', +new Date(), null, data.href);
                 cb({
                     name: data.name,
-                    url: NotesUtil.getCryptPadUrl(data.src, data.key, data.fileType),
+                    url: ImageUtil.getCryptPadUrl(data.src, data.key, data.fileType),
                 });
             });
         };
@@ -83,7 +83,7 @@ define([
             });
             APP.editor = currentEditor = BlockNote.useBlockNoteEditor(editorEl, {
                 trailingBlock: true,
-                resolveFileUrl: NotesUtil.resolveImageUrl,
+                resolveFileUrl: ImageUtil.resolveImageUrl,
                 view: {
                     editable: !priv.readOnly,
                     theme: window.CryptPad_theme === 'dark' ? 'dark' : 'light',
