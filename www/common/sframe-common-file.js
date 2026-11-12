@@ -530,6 +530,7 @@ define([
                 if (e) { console.error(e); }
                 file_arraybuffer = buffer;
                 if (!Thumb.isSupportedType(file)) { return getName(); }
+                if (file.noThumb) { return getName(); }
                 nThen(function (w) {
                     // make a resized thumbnail from the image..
                     Thumb.fromBlob(file, w(function (e, thumb64) {
