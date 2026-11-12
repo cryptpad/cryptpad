@@ -4,47 +4,20 @@
 
 define([
     '/common/common-util.js',
-    '/file/file-crypto.js',
-    '/common/cache-store.js',
     '/components/x2js/x2js.js',
     '/components/pako/dist/pako.min.js',
     '/common/common-hash.js',
+    '/common/inner/image-util.js',
     '/api/config',
 ], function (
     Util,
-    FileCrypto,
-    Cache,
     X2JS,
     pako,
     Hash,
+    ImageUtil,
     ApiConfig,
 ) {
     const x2js = new X2JS();
-
-    const parseCryptPadUrl = function(href) {
-        const url = new URL(href);
-        const protocol = url.searchParams.get('protocol');
-        const key = url.hash.substring(1);  // remove leading '#'
-        const type = url.searchParams.get('type');
-        url.search = '';
-        url.hash = '';
-        return { src: url.href.replace(/cryptpad?:\/\//, `${protocol}//`), key, type };
-    };
-
-    const getCryptPadUrl = function(src, key, type) {
-        const url = new URL(src);
-        const params = new URLSearchParams();
-        params.set('type', type);
-        params.set('protocol', url.protocol);
-        url.search = params.toString();
-        url.hash = key;
-        return url.href.replace(/https?:\/\//, 'cryptpad://');
-    };
-
-    const setBlobType = (blob, mimeType) => {
-        const fixedBlob = new Blob([blob], {type: mimeType});
-        return fixedBlob;
-    };
 
     const jsonContentAsXML = (content) => {
 
@@ -151,7 +124,7 @@ define([
         const src = fileHost + Hash.getBlobPathFromHex(hexFileName);
         const key = secret.keys && secret.keys.cryptKey;
         const cryptKey = Util.encodeBase64(key);
-        return getCryptPadUrl(src, cryptKey, data.fileType);
+        return ImageUtil.getCryptPadUrl(src, cryptKey, data.fileType);
     };
 
     const uploadFile = async (fileManager, blob) => {
@@ -178,8 +151,9 @@ define([
     };
 
     return {
-        parseCryptPadUrl,
-        getCryptPadUrl,
+        getCryptPadUrl: ImageUtil.getCryptPadUrl,
+        parseCryptPadUrl: ImageUtil.parseCryptPadUrl,
+        loadImage: ImageUtil.loadImage,
         jsonContentAsXML,
         parseXML,
         xmlAsJsonContent,
@@ -188,30 +162,5 @@ define([
         stringifyDrawioStyle,
         uploadFile,
         createSimpleFileManager,
-
-        loadImage: function(href) {
-            return new Promise((resolve, reject) => {
-                const { src, key, type } = parseCryptPadUrl(href);
-                Util.fetch(src, function (err, u8) {
-                    if (err) {
-                        console.error(err);
-                        return void reject(err);
-                    }
-                    try {
-                        FileCrypto.decrypt(u8, Util.decodeBase64(key), (err, res) => {
-                            if (err || !res.content) {
-                                console.error("Decrypting failed");
-                                return void reject(err);
-                            }
-
-                            resolve(setBlobType(res.content, type));
-                        });
-                    } catch (e) {
-                        console.error(e);
-                        reject(err);
-                    }
-                }, void 0, Cache);
-            });
-        }
     };
 });

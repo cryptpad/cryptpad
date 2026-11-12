@@ -1,12 +1,10 @@
 define([
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/common/yjs-bundle.js',
     '/file/file-crypto.js',
     '/common/inner/rtchannel.js',
-], (Util, Hash, YBundle, FileCrypto, RtChannel) => {
+], (Util, Hash, FileCrypto, RtChannel) => {
     const YProvider = {};
-    const { YJS:Y } = YBundle;
 
     const debug = (x, type) => {
         if (!window.CP_DEV_MODE) { return; }
@@ -14,7 +12,7 @@ define([
     };
 
     YProvider.create = cfg => {
-        const { APP, framework, common, myId, yOpts } = cfg;
+        const { APP, framework, common, myId, yOpts, Y } = cfg;
         let { ydoc } = cfg;
 
 APP.ydoc = ydoc;
@@ -42,7 +40,7 @@ APP.Y = Y;
             synced: false
         };
 
-        const CHECKPOINT_INTERVAL = 10;
+        const CHECKPOINT_INTERVAL = 100;
 
         // Yjs/BlockNote
         const onSynced = Util.mkEvent(true);
@@ -152,7 +150,7 @@ APP.Y = Y;
         onRTCMessage.reg(data => {
             debug("Receiving update", data.msg);
             const update = Util.decodeBase64(data.msg);
-            Y.applyUpdate(ydoc, update);
+            Y.applyUpdate(ydoc, update, 'remote');
             clearTimeout(current.cpTo);
             current.index++;
             current.lastTime = Date.now();
@@ -161,7 +159,7 @@ APP.Y = Y;
 
         // On local ydoc update: send message
         const onUpdate = (update, origin) => {
-            if (origin !== myId) { return; }
+            if (origin === 'remote') { return; }
             const msg = Util.encodeBase64(update);
             current.lastTime = Date.now();
             rtChannel.sendMsg(msg, false, () => {
