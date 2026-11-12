@@ -2507,7 +2507,7 @@ APP.recurrenceRule = {
                 if (!privateData.loggedIn) {
                     return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
                         common.setLoginRedirect('login');
-                    });
+                    }, true, UIElements.getLoginButton(common));
                 }
                 // No calendar yet, create one
                 newCalendar({
