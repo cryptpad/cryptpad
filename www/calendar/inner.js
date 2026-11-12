@@ -84,6 +84,9 @@ define([
 
     var onCalendarsUpdate = Util.mkEvent();
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize();            
+
     var newCalendar = function (data, cb) {
         APP.module.execCommand('CREATE', data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
@@ -445,12 +448,12 @@ define([
             });
 
             if (startDate === endDate && startTime === endTime) {
-                return start._date.toLocaleString();
+                return start._date.toLocaleString(loc, { timeZone: "UTC" });
             }
             if (startDate === endDate) {
                 return Messages._getKey('calendar_dateTimeRange', [startDate, startTime, endTime]);
             }
-            return Messages._getKey('calendar_dateRange', [start._date.toLocaleString(), end._date.toLocaleString()]);
+            return Messages._getKey('calendar_dateRange', [start._date.toLocaleString(loc, { timeZone: "UTC" }), end._date.toLocaleString(loc, { timeZone: "UTC" })]);
         }
     };
 

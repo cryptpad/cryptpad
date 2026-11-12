@@ -45,6 +45,9 @@ define([
         data: {}
     };
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var canonicalize = function(t) { return t.replace(/\r\n/g, '\n'); };
 
     var getAuthorId = function(Env, curve, uid) {
@@ -490,7 +493,7 @@ define([
                         avatar,
                         h('span.cp-comment-metadata', [
                             h('span.cp-comment-author', name),
-                            h('span.cp-comment-time', date.toLocaleString())
+                            h('span.cp-comment-time', date.toLocaleString(loc, { timeZone: "UTC" }))
                         ]),
                         edit
                     ]),

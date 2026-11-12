@@ -24,6 +24,9 @@ define([
 MessengerUI, Messages, Pages, PadTypes, Icons) {
     var Common;
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var Bar = {
         constants: {},
     };
@@ -1092,8 +1095,8 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
         $(button).click(function () {
             if (!m || !m.start || !m.end) { return; }
             UI.alert(Messages._getKey('broadcast_maintenance', [
-                new Date(m.start).toLocaleString(),
-                new Date(m.end).toLocaleString(),
+                new Date(m.start).toLocaleString(loc, { timeZone: "UTC" }),
+                new Date(m.end).toLocaleString(loc, { timeZone: "UTC" }),
             ]), null, true);
         });
 
