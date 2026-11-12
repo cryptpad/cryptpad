@@ -9,6 +9,7 @@ define([
     '/customize/messages.js', // translation keys
     '/common/hyperscript.js',
     '/common/blocknote-bundle.js',
+    '/notes/util.js',
 
     'css!/common/blocknote.css',
     'less!/notes/app-notes.less'
@@ -18,13 +19,32 @@ define([
     Framework,
     Messages,
     h,
-    BlockNote
+    BlockNote,
+    NotesUtil
 ) {
     // This is the main initialization loop
     const onFrameworkReady = (framework) => {
-        const priv = framework._.sfCommon.getMetadataMgr().getPrivateData();
-        const userData = framework._.sfCommon.getMetadataMgr().getUserData();
+        const common = framework._.sfCommon;
+        const priv = common.getMetadataMgr().getPrivateData();
+        const userData = common.getMetadataMgr().getUserData();
         const container = $('#cp-app-notes-editor');
+
+        const uploadImageFromCryptDrive = (cb) => {
+            common.openFilePicker({
+                types: ['file'],
+                where: ['root'],
+                filter: {
+                    fileType: ['image/png', 'image/jpeg']
+                }
+            }, (data) => {
+                if (data.type !== 'file') { return; }
+                common.setPadAttribute('atime', +new Date(), null, data.href);
+                cb({
+                    name: data.name,
+                    url: NotesUtil.getCryptPadUrl(data.src, data.key, data.fileType),
+                });
+            });
+        };
 
         const createProvider = (ydoc) => {
             const name = 'cp-notes-' + priv.channel; // replace with context.id?
@@ -54,9 +74,11 @@ define([
             });
             currentEditor = BlockNote.useBlockNoteEditor(editorEl, {
                 trailingBlock: true,
+                resolveFileUrl: NotesUtil.resolveImageUrl,
                 view: {
                     editable: !priv.readOnly,
                     theme: window.CryptPad_theme === 'dark' ? 'dark' : 'light',
+                    uploadImageFromCryptDrive,
                 },
                 collaboration: {
                     provider,
