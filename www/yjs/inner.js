@@ -49,7 +49,7 @@ define([
         let ytext = ydoc.getText('cp-textarea');
 
         const provider = YProvider.create({
-            APP, framework, common, ydoc, myId, yOpts
+            APP, framework, common, ydoc, myId, yOpts, Y
         });
 
 

@@ -6,9 +6,12 @@
 define([
     'jquery',
     '/common/sframe-app-framework.js',
+    '/common/common-hash.js',
+    '/common/common-util.js',
     '/customize/messages.js', // translation keys
     '/common/hyperscript.js',
     '/common/blocknote-bundle.js',
+    '/common/yjs-provider.js',
 
     'css!/common/blocknote.css',
     'less!/notes/app-notes.less'
@@ -16,50 +19,58 @@ define([
 ], function (
     $,
     Framework,
+    Hash,
+    Util,
     Messages,
     h,
-    BlockNote
+    BlockNote,
+    YProvider
 ) {
+    const Y = BlockNote.YJS;
+    const APP = window.APP = {
+        currentVersion: 1,
+        locked: true,
+    };
+
     // This is the main initialization loop
     const onFrameworkReady = (framework) => {
         const priv = framework._.sfCommon.getMetadataMgr().getPrivateData();
         const userData = framework._.sfCommon.getMetadataMgr().getUserData();
-        const container = $('#cp-app-notes-editor');
+        const common = framework._.sfCommon;
 
-        const createProvider = (ydoc) => {
-            const name = 'cp-notes-' + priv.channel; // replace with context.id?
-            return new BlockNote.IndexeddbPersistence(name, ydoc); // To be replaced
+        const $container = $('#cp-app-notes-editor');
+
+        const yOpts = {};
+        const myId = Util.uid();
+
+        let ydoc = new Y.Doc(yOpts);
+        const provider = YProvider.create({
+            APP, framework, common, ydoc, myId, yOpts, Y
+        });
+
+        let content = {
+            hashes: {},
+            ids: {},
+            version: 1
         };
-        const destroyProvider = (provider) => {
-            if (!provider) { return; }
-            // only for indexeddb
-            if (typeof provider.clearData === 'function') { // to be deleted
-                return provider.clearData();
-            }
-            // not needed for current provider 
-            // if (typeof provider.destroy === 'function') {
-            //     return provider.destroy();
-            // }
-        };
+        provider.setContent(content);
 
         let currentEditor;
 
         const createEditor = async () => {
             const editorEl = h('div#cp-notes-content');
-            container.append(editorEl);
-            const ydoc = new BlockNote.YJS.Doc();
-            const provider = createProvider(ydoc);
-            provider.on('synced', () => {
-                console.log('indexeddb synced');
+            $container.append(editorEl);
+            provider.provider.on('synced', () => {
+                console.error('provider synced');
             });
-            currentEditor = BlockNote.useBlockNoteEditor(editorEl, {
+            APP.editor = currentEditor = BlockNote.useBlockNoteEditor(editorEl, {
                 trailingBlock: true,
                 view: {
                     editable: !priv.readOnly,
                     theme: window.CryptPad_theme === 'dark' ? 'dark' : 'light',
                 },
                 collaboration: {
-                    provider,
+                    provider: provider.provider,
                     fragment: ydoc.getXmlFragment('document-store'),
                     user: {
                         name: userData.name,
@@ -68,15 +79,16 @@ define([
                 },
             });
         };
+        createEditor();
 
         const resetEditor = async () => {
             if (currentEditor) {
                 try {
                     currentEditor.unmount();
                     currentEditor.editor._tiptapEditor.destroy();
-                    await destroyProvider(current.provider);
+                    //await destroyProvider(current.provider);
                     currentEditor.ydoc.destroy();
-                    container.empty();
+                    $container.empty();
                 } catch (err) {
                     console.error(err);
                 }
@@ -84,29 +96,60 @@ define([
             }
             await createEditor();
         };
+        provider.onResetUI(async (cpData, data) => {
+            ydoc = new Y.Doc(yOpts);
+            await resetEditor();
+            setEditable();
 
-        createEditor();
-        // window.resetEditor = resetEditor; -- expose for testing
-        // On checkpoint creation: resetEditor({checkpoint}); -- add a context? argument
-
-        // no patches: the content getter keeps the initial document structure but never reads the editor
-        const content = [];
-        framework.setContentGetter(() => ({ content }));
-
-        // OPTIONAL: cursor management
-        framework.setCursorGetter(() => {
-            let myCursor = {};
-            // Get your cursor position here
-            return myCursor;
+            provider.updateUI(cpData, data, ydoc);
         });
-        framework.onCursorUpdate(data => {
-            console.log("Other user cursor", data);
+
+        const setEditable = () => {
+            let editable = APP.online && !APP.readOnly && !APP.locked;
+            console.error('EDITABLE?', editable);
+            // XXX
+        };
+
+        framework.onEditableChange(function () {
+            APP.online = !framework.isLocked(); // connection state
+            APP.readonly = framework.isReadOnly(); // access-rights
+            if (APP.online) { provider.setIds(); }
+            setEditable();
+        });
+        provider.onLockChange(locked => {
+            APP.locked = locked; // rtchannel ready/locked
+            setEditable();
+        });
+
+        framework.onContentUpdate(function (newContent) {
+            console.log('New content received from others', newContent.content);
+            // Update local content
+            content = newContent.content;
+            // Update Yjs & rtChannel object
+            provider.chainpadContentUpdate(newContent.content);
+        });
+
+        framework.setContentGetter(function () {
+            console.log('Sync my content with others', content);
+            return {
+                content: content
+            };
         });
 
 
         framework.onReady(function () {
             // Document is ready, you can initialize your app
             console.log('Document is ready:', content);
+
+            if (!content.channel && !Object.keys(content.hashes).length) {
+                content.channel = Hash.createChannelId();
+                content.ctime ||= +new Date();
+                framework.localChange();
+                //checkLinkedDocs(); XXX
+            }
+
+            provider.setIds();
+            provider.initDoc();
         });
 
         // Start the framework
