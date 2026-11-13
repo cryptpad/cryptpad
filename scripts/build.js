@@ -112,7 +112,9 @@ var appImagePath = a => {
 };
 
 var buildPath = Path.resolve('./customize');
-var tmpPath = Path.join(OS.tmpdir(), '/CRYPTPAD_TEMP_BUILD/');
+// A new directory with a random name, so no other user of a shared temporary directory can put
+// something in its place
+var tmpPath = Fs.mkdtempSync(Path.join(OS.tmpdir(), 'CRYPTPAD_TEMP_BUILD-'));
 
 var write = function (content, dest) {
     console.log(`Creating ${dest}`);
@@ -125,8 +127,6 @@ var write = function (content, dest) {
 };
 
 console.log("Creating target directories");
-// remove tmp path so we start fresh
-Fse.removeSync(tmpPath);
 
 var appIndexesToBuild = [
     'sheet',
