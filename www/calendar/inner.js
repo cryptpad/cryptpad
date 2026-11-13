@@ -2200,6 +2200,7 @@ APP.recurrenceRule = {
             var $container = $el.closest('.tui-full-calendar-floating-layer');
             $container.addClass('cp-calendar-popup-flex');
             $container.css('display', 'flex').mousedown(function (e) {
+                e.stopPropagation();
                 if ($(e.target).is('.cp-calendar-popup-flex')) {
                     $el.find('.tui-full-calendar-popup-close').click();
                 }
@@ -2363,6 +2364,13 @@ APP.recurrenceRule = {
             const $desc = $el.find('.tui-full-calendar-section-detail');
             $desc.attr('id', 'tui-full-calendar-section-detail');
             $el.attr('aria-describedby', 'tui-full-calendar-section-detail');
+            var onDocMouseDown = function (e) {
+                if ($el[0].contains(e.target)) { return; }
+                e.stopPropagation();
+                $el.closest('.tui-full-calendar-floating-layer').hide();
+                document.removeEventListener('mousedown', onDocMouseDown, true);
+            };
+            document.addEventListener('mousedown', onDocMouseDown, true);
 
             $el.find('.tui-full-calendar-popup-edit').addClass('btn btn-primary');
             $el.find('.tui-full-calendar-popup-edit .tui-full-calendar-icon').append(Icons.get('edit'));
