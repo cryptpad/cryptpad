@@ -154,8 +154,7 @@ define([
             notifsList.after(loadmore);
             $(loadmore).click();
         }
-
-        common.mailbox.subscribe(["notifications", "reminders"], {
+        common.mailbox.subscribe(['notifications', 'team', 'broadcast', 'reminders', 'supportteam'], {
             onMessage: function (data, el) {
                 addNotification(data, el);
             },

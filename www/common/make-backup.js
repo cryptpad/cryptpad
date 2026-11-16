@@ -195,7 +195,7 @@ define([
 
             var to;
 
-            var done = function () {
+            var done = Util.once(function () {
                 if (ctx.stop) { return; }
                 if (to) { clearTimeout(to); }
                 //setTimeout(g, 2000);
@@ -203,7 +203,7 @@ define([
                 ctx.updateProgress('download', {max: ctx.max, current: ctx.done});
                 g();
                 w();
-            };
+            });
 
             var error = function (err) {
                 if (ctx.stop) { return; }
@@ -248,12 +248,13 @@ define([
                         };
                         transform(ctx, parsed.type, val, function (res) {
                             if (ctx.stop) { return; }
+                            if (res.error) { return void error(err); }
                             if (!res.data) { return void error('EEMPTY'); }
                             var fileName = getUnique(sanitize(rawName), res.ext, existingNames);
                             existingNames.push(fileName.toLowerCase());
                             zip.file(fileName, res.data, opts);
                             console.log('DONE ---- ' + fileName);
-                            setTimeout(done, 500);
+                            setTimeout(done, 1);
                         }, {
                             hash: parsed.hash,
                             password: fData.password
@@ -277,7 +278,7 @@ define([
                         existingNames.push(fileName.toLowerCase());
                         zip.file(fileName, res.content, opts);
                         console.log('DONE ---- ' + fileName);
-                        setTimeout(done, 1000);
+                        setTimeout(done, 1);
                     });
                     it = setInterval(function () {
                         if (ctx.stop) {
@@ -295,7 +296,7 @@ define([
                     var content = new Blob([fData.href, '\n'], { type: "text/plain;charset=utf-8" });
                     zip.file(fileName, content, opts);
                     console.log('DONE ---- ' + fileName);
-                    setTimeout(done, 1000);
+                    setTimeout(done, 1);
                 };
                 if (parsed.hashData.type === 'file') {
                     return void todoFile();
@@ -344,7 +345,7 @@ define([
     // Main function. Create the empty zip and fill it starting from drive.root
     var create = function (data, getPad, fileHost, cb, progress, cache, sframeChan) {
         if (!data || !data.uo || !data.uo.drive) { return void cb('EEMPTY'); }
-        var sem = Saferphore.create(5);
+        var sem = Saferphore.create(1);
         var ctx = {
             fileHost: fileHost,
             get: getPad,
@@ -481,7 +482,6 @@ define([
         var addErrors = function(errs) {
             if (!errs.length) { return; }
             var onClick = function() {
-                console.error('clicked?');
                 $(errors).toggle();
             };
             $(error).click(onClick).appendTo(actions);

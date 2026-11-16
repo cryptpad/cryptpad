@@ -24,7 +24,6 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
     "file-saver",
     "hyper-json",
     "jquery",
-    "json.sortify",
     "jszip",
     "dragula",
     "html2canvas",

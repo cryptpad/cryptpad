@@ -20,6 +20,7 @@ define([
         var u8 = data.u8;
         var metadata = data.metadata;
         var key = data.key;
+        var linked = data.linked;
 
         var onError = data.onError || function () {};
         var onPending = data.onPending || function () {};
@@ -141,7 +142,9 @@ define([
             });
         };
 
-        common.uploadStatus(teamId, id, estimate, function (e, pending) {
+        common.uploadStatus({
+            teamId, id, linked, size: estimate
+        }, function (e, pending) {
             if (e) {
                 console.error(e);
                 onError(e);
@@ -166,6 +169,7 @@ define([
     module.upload = function (file, noStore, common, updateProgress, onComplete, onError, onPending) {
         var u8 = file.blob; // This is not a blob but a uint8array
         var metadata = file.metadata;
+        var linked = file.linked;
 
         var owned = file.owned;
         var teamId = file.teamId;
@@ -209,6 +213,7 @@ define([
             module.uploadU8(common, {
                 teamId: teamId,
                 u8: u8,
+                linked,
                 metadata: metadata,
                 key: key,
                 id: id,

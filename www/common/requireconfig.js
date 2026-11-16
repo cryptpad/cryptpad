@@ -16,8 +16,6 @@ define([
             // jquery declares itself as literally "jquery" so it cannot be pulled by path :(
             "jquery": "/components/jquery/dist/jquery.min",
             "mermaid": "/lib/mermaid/mermaid.min",
-            // json.sortify same
-            "json.sortify": "/components/json.sortify/dist/JSON.sortify",
             cm: '/components/codemirror',
             'tui-code-snippet': '/lib/calendar/tui-code-snippet.min',
             'tui-date-picker': '/lib/calendar/date-picker',

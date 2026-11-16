@@ -522,6 +522,13 @@ define([
             mkHelpMenu(framework);
         }
 
+        window.addEventListener('keydown', function (e) {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
+                e.preventDefault();
+                $('.cp-toolbar-icon-print').click();
+            }
+        });
+
         var evModeChange = Util.mkEvent();
         evModeChange.reg(previewPane.modeChange);
         evModeChange.reg(markdownTb.modeChange);

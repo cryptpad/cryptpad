@@ -230,7 +230,7 @@ define([
         };
 
         var convert = function (obj, cb) {
-            console.error(obj);
+            //console.error(obj);
             obj.fileName = sanitize(obj.fileName);
             getX2T(function (x2t) {
                 // Fonts

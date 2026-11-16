@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define(['json.sortify'], function (Sortify) {
+define(['/common/common-util.js'], function (Util) {
     var UNINIT = 'uninitialized';
     var create = function (sframeChan) {
         var meta = UNINIT;
@@ -81,9 +81,9 @@ define(['json.sortify'], function (Sortify) {
             // Always update the userlist in the lazy object, otherwise it may be outdated
             // and metadataMgr.updateMetadata() won't do anything, and so we won't push events
             // to the userlist UI ==> phantom viewers
-            var lazyUserStr = Sortify(metadataLazyObj.users[meta.user.netfluxId]);
+            var lazyUserStr = Util.sortify(metadataLazyObj.users[meta.user.netfluxId]);
             dirty = false;
-            if (lazy || lazyUserStr !== Sortify(meta.user)) {
+            if (lazy || lazyUserStr !== Util.sortify(meta.user)) {
                 metadataLazyObj = JSON.parse(JSON.stringify(metadataObj));
                 lazyChangeHandlers.slice().forEach(function (f) { f(); });
             } else {
@@ -162,7 +162,7 @@ define(['json.sortify'], function (Sortify) {
                 // JSON.parse(JSON.stringify()) reorders the json, so we have to use sortify even
                 // if it's on our own computer
                 if (!m) { return; }
-                if (Sortify(metadataLazyObj) === Sortify(m)) { return; }
+                if (Util.sortify(metadataLazyObj) === Util.sortify(m)) { return; }
                 metadataObj = JSON.parse(JSON.stringify(m));
                 metadataLazyObj = JSON.parse(JSON.stringify(m));
                 change(false);

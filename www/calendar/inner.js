@@ -4,7 +4,6 @@
 
 define([
     'jquery',
-    'json.sortify',
     '/components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
     '/components/nthen/index.js',
@@ -47,7 +46,6 @@ define([
     'less!/calendar/app-calendar.less',
 ], function (
     $,
-    JSONSortify,
     Crypto,
     Toolbar,
     nThen,
@@ -1081,13 +1079,13 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             if (event.calendar) { // Don't update reminders and recurrence with drag&drop event
                 var oldReminders = ev.raw.reminders || originalEvent.reminders;
                 var reminders = APP.notificationsEntries;
-                if (JSONSortify(oldReminders || []) !== JSONSortify(reminders)) {
+                if (Util.sortify(oldReminders || []) !== Util.sortify(reminders)) {
                     changes.reminders = reminders;
                 }
 
                 var oldRec = ev.recurrenceRule;
                 var rec = APP.recurrenceRule;
-                if (JSONSortify(oldRec || '') !== JSONSortify(rec)) {
+                if (Util.sortify(oldRec || '') !== Util.sortify(rec)) {
                     changes.recurrenceRule = rec;
                 }
 
@@ -1555,7 +1553,7 @@ APP.recurrenceRule = {
         // Basic recurrence
         // Messages.calendar_rec_daily, .calendar_rec_weekly, .calendar_rec_monthly, .calendar_rec_yearly, .calendar_rec_weekdays, .calendar_rec_weekend
         ['daily', 'weekly', 'monthly', 'yearly'].forEach(function (rec) {
-            basicStr[rec] = JSONSortify({freq: rec});
+            basicStr[rec] = Util.sortify({freq: rec});
             options.push({
                 tag: 'a',
                 attributes: {
@@ -1572,7 +1570,7 @@ APP.recurrenceRule = {
         // Weekdays / Weekend
         var isWeekend = [0,6].includes(date.getDay());
         var weekValue = isWeekend ? ['SA', 'SU'] : ['MO', 'TU', 'WE', 'TH', 'FR'];
-        basicStr.days = JSONSortify({
+        basicStr.days = Util.sortify({
             freq: 'daily',
             by: { day: weekValue }
         });
@@ -1610,7 +1608,7 @@ APP.recurrenceRule = {
             $translated.empty();
 
             // Dropdown value
-            var recStr = JSONSortify(APP.recurrenceRule);
+            var recStr = Util.sortify(APP.recurrenceRule);
             var set = Object.keys(basicStr).some(function (k) {
                 if (recStr === basicStr[k]) {
                     $block.setValue(basicStr[k]);

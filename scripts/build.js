@@ -7,7 +7,7 @@ var Fse = require("fs-extra");
 var Path = require("path");
 var OS = require("os");
 
-var config = require("../lib/load-config");
+const { config, infra } = require("../lib/load-config");
 
 var swap = function (s, o) {
     return s
@@ -108,7 +108,7 @@ var imagePath = `/customize/images/opengraph_preview/`;
 
 var appImagePath = a => {
     var partial = previewExists(`og-${a}.png`) && `og-${a}.png` || `og-default.png`;
-    return new URL(imagePath + partial, config.httpUnsafeOrigin).href;
+    return new URL(imagePath + partial, infra.public.origin).href;
 };
 
 var buildPath = Path.resolve('./customize');
@@ -218,7 +218,7 @@ appIndexesToBuild.forEach(function (app) {
     var type = types[app];
     var built = processPage(src.replace(patt, (current) => {
         return current + swap(ogData, {
-            url: new URL(`/${app}/`, config.httpUnsafeOrigin).href,
+            url: new URL(`/${app}/`, infra.public.origin).href,
             title: type && `Encrypted ${type}` || 'CryptPad',
             image: appImagePath(app),
             description: Messages.og_default,
@@ -237,7 +237,7 @@ appIndexesToBuild.forEach(function (app) {
 
 var instance;
 try {
-    instance = new URL(config.httpUnsafeOrigin).hostname;
+    instance = new URL(infra.public.origin).hostname;
 } catch (err) {
     console.error("Failed to parse instance domain name\nAborting...");
     return void process.exit(1);
@@ -284,12 +284,12 @@ try {
     console.log(`Parsing ${srcPath}`);
     var src = Fs.readFileSync(srcPath, 'utf8');
     var patt = /<\/title>/;
-    var href = new URL(obj.url, config.httpUnsafeOrigin).href;
+    var href = new URL(obj.url, infra.public.origin).href;
     var built = processPage(src.replace(patt, (current) => {
         return current + swap(ogData, {
             url: href,
             title: obj.title || "CryptPad",
-            image: new URL(imagePath + 'og-default.png', config.httpUnsafeOrigin).href,
+            image: new URL(imagePath + 'og-default.png', infra.public.origin).href,
             description: Messages.og_default,
         });
     }));

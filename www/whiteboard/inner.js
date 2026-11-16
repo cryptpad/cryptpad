@@ -4,7 +4,6 @@
 
 define([
     'jquery',
-    'json.sortify',
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
@@ -24,7 +23,6 @@ define([
     'less!/whiteboard/app-whiteboard.less'
 ], function (
     $,
-    Sortify,
     nThen,
     SFCommon,
     Framework,
@@ -265,7 +263,7 @@ define([
 
         var first = true;
         var updatePalette = function (newPalette) {
-            if (first || Sortify(palette) !== Sortify(newPalette)) {
+            if (first || Util.sortify(palette) !== Util.sortify(newPalette)) {
                 palette = newPalette;
                 $colors.html('<div class="hidden">&nbsp;</div>');
                 $colors.css('width', (palette.length * 20)+'px');
@@ -557,19 +555,23 @@ define([
             }, [
                 h('button#cp-app-whiteboard-clear.btn.btn-danger', [Icons.get ('clear-canvas'), Messages.canvas_clear]), ' ',
                 h('div.cp-whiteboard-type', [
-                    h('button.btn.brush.btn-primary', {title: Messages.canvas_brush}, Icons.get('customize')),
-                    h('button.btn.move', {title: Messages.canvas_select}, Icons.get('select')),
+                    h('button.btn.brush.btn-primary', {title: Messages.canvas_brush, 'aria-label': Messages.canvas_brush}, Icons.get('customize')),
+                    h('button.btn.move', {title: Messages.canvas_select, 'aria-label': Messages.canvas_select}, Icons.get('select')),
                 ]),
                 h('div.cp-whiteboard-history', [
-                    h('button.btn.undo', {title: Messages.undo}, Icons.get('undo')),
-                    h('button.btn.redo', {title: Messages.redo}, Icons.get('redo')),
+                    h('button.btn.undo', {title: Messages.undo, 'aria-label': Messages.undo}, Icons.get('undo')),
+                    h('button.btn.redo', {title: Messages.redo, 'aria-label': Messages.redo}, Icons.get('redo')),
                 ]),
                 h('div.cp-whiteboard-text', [
-                    h('button.btn', Icons.get('type')),
+                    h('button.btn', {
+                            title: Messages.form_text_text,
+                            'aria-label': Messages.form_text_text
+                        }, Icons.get('type')),
                 ]),
                 h('button.btn#cp-app-whiteboard-delete', {
                     disabled: 'disabled',
-                    title: Messages.canvas_delete
+                    title: Messages.canvas_delete,
+                    'aria-label': Messages.canvas_delete
                 }, Icons.get('trash-full')),
                 /*
                 h('button#cp-app-whiteboard-toggledraw.btn.btn-secondary', Messages.canvas_disable),

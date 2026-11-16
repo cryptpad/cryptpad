@@ -485,6 +485,7 @@ define([
                     queue.push({
                         blob: file_arraybuffer,
                         metadata: metadata,
+                        linked: file.linked,
                         password: password,
                         owned: owned,
                         forceSave: forceSave,

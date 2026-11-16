@@ -371,7 +371,7 @@
     "profile_upload": " Sube un nuevo avatar",
     "contacts_request": "<em>{0}</em> le gustaría agregarte como contacto.<b>Aceptar</b>?",
     "contacts_warning": "Todo lo que escriba aquí es persistente y está disponible para todos los usuarios actuales y futuros de este documento. ¡Cuidado con la información sensible!",
-    "contacts_confirmRemoveHistory": "¿Estás seguro de que deseas eliminar permanentemente tu historial de chat? Los datos no se pueden restaurar",
+    "contacts_confirmRemoveHistory": "¿Estás seguro de que deseas eliminar tu historial de chat? Los datos no se pueden restaurar.",
     "settings_importTitle": "Importa los documentos recientes de este navegador a tu CryptDrive",
     "settings_autostoreHint": "<b>Automatico</b> Todos los documentos que visitas se almacenan en tu CryptDrive.<br><b>Manual (siempre pregunta)</b> Si aún no has almacenado un documento, se te preguntará si deseas almacenarlo en tu CryptDrive.<br><b>Manual (nunca pregunte)</b> Los documentos no se almacenan automáticamente en su CryptDrive. La opción para almacenarlos quedará oculta.",
     "pad_mediatagTitle": "Configuración de etiquetas de medios",

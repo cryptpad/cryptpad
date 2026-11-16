@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
+var factory = function (Util, Hash, CPNetflux, nThen, Crypto) {
     var Roster = {};
 
     // this constant is somewhat arbitrary.
@@ -38,6 +38,17 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
     var isMap = function (obj) {
         return Boolean(obj && typeof(obj) === 'object' && !Array.isArray(obj));
+    };
+
+    const allowedArgs = new Set([
+        'avatar', 'badge', 'curvePublic', 'displayName',
+        'edPublic', 'notifications', 'pending', 'pendingOwner',
+        'profile', 'role', 'uid', 'user'
+    ]);
+    const containsInvalidArgs = obj => {
+        return Object.keys(obj || {}).some(key => {
+            return !allowedArgs.has(key);
+        });
     };
 
     var getMessageId = function (msgString) {
@@ -252,6 +263,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
             var data = args[curve];
             if (!isMap(data)) { throw new Error("INVALID_ARGUMENTS"); }
+            if (containsInvalidArgs(data)) { throw new Error('FORBIDDEN_ARGUMENTS'); }
 
             var current = Util.clone(members[curve]);
 
@@ -294,9 +306,9 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 current[key] = data[key];
             });
 
-            if (Sortify(current) !== Sortify(members[curve])) {
+            if (Util.sortify(current) !== Util.sortify(members[curve])) {
                 changed = true;
-                members[curve] = current;
+                members[curve] = Util.clone(current);
             }
         });
 
@@ -323,7 +335,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
             roster.internal.initialized = true;
             return true;
-        } else if (Sortify(args) !== Sortify(roster.state)) {
+        } else if (Util.sortify(args) !== Util.sortify(roster.state)) {
             // a checkpoint must reinsert the previous state
             throw new Error("CHECKPOINT_DOES_NOT_MATCH_PREVIOUS_STATE");
         }
@@ -727,7 +739,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             }
             if (!changed) { return void cb("NO_CHANGE"); }
 
-            var ciphertext = crypto.encrypt(Sortify(msg));
+            var ciphertext = crypto.encrypt(Util.sortify(msg));
 
             var id = getMessageId(ciphertext);
 
@@ -928,7 +940,6 @@ module.exports = factory(
     require("../../common/common-util"),
     require("../../common/common-hash"),
     require('chainpad-netflux'),
-    require('json.sortify'),
     require("nthen"),
     require("chainpad-crypto")
 );

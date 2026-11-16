@@ -748,11 +748,13 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
         }).appendTo($hoverable);
         var $pencilIcon = $('<span>', {
             'class': 'cp-toolbar-title-edit',
-            'title': Messages.clickToEdit
+            'title': Messages.clickToEdit,
+            'aria-label': Messages.clickToEdit
         });
         var $saveIcon = $('<span>', {
             'class': 'cp-toolbar-title-save',
-            'title': Messages.saveTitle
+            'title': Messages.saveTitle,
+            'aria-label': Messages.saveTitle
         }).hide();
         if (config.readOnly === 1) {
             $hoverable.append($('<span>', {'class': 'cp-toolbar-title-readonly'})
@@ -797,14 +799,21 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
                 $saveIcon.hide();
             });
         };
-        $input.on('keyup', function (e) {
+        $input.on('keydown', function (e) {
             if (e.which === 13 && toolbar.connected === true) {
+                e.preventDefault();
                 save();
-            } else if (e.which === 27) {
+            }
+        });
+        $input.on('keyup', function (e) {
+            if (e.which === 27) {
                 $input.hide();
                 $text.show();
                 $pencilIcon.show();
                 $saveIcon.hide();
+                setTimeout(() => {
+                    $text.focus();
+                }, 0);
                 //$pencilIcon.css('display', '');
             } else if (e.which === 32) {
                 e.stopPropagation();
@@ -812,7 +821,11 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
         });
         $saveIcon.click(save);
 
-        var displayInput = function () {
+        var displayInput = function (event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             if (toolbar.connected === false) { return; }
             if (toolbar.history) { return; }
             $input.width(Math.max(($text.width() + 10), 300)+'px');
@@ -831,12 +844,12 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
         };
         $text.on('click keypress', function (event) {
             if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                displayInput();
+                displayInput(event);
             }
         });
         $pencilIcon.on('click keypress', function (event) {
             if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                displayInput();
+                displayInput(event);
             }
         });
         return $titleContainer;
@@ -845,16 +858,16 @@ MessengerUI, Messages, Pages, PadTypes, Icons) {
 
     var createPageTitle = function (toolbar, config) {
         if (!config.pageTitle) { return; }
-        var $titleContainer = $('<span>', {
+        var $titleContainer = $('<div>', {
             'class': TITLE_CLS
         }).appendTo(toolbar.$top);
 
         toolbar.$top.find('.filler').hide();
 
-        var $hoverable = $('<span>', {'class': 'cp-toolbar-title-hoverable'}).appendTo($titleContainer);
+        var $hoverable = $('<div>', {'class': 'cp-toolbar-title-hoverable'}).appendTo($titleContainer);
 
         // Buttons
-        var $b = $('<span>', {
+        var $b = $('<h1>', {
             'class': 'cp-toolbar-title-value cp-toolbar-title-value-page'
         }).appendTo($hoverable).text(config.pageTitle);
 

@@ -1881,5 +1881,6 @@
     "contacts_historyCleared": "Istoricul chat-ului a fost șters pentru toată lumea",
     "diagram_modesOptionLabel": "Schimbă tema cu {0}, va reîmprospăta aplicația",
     "diagram_sketchTheme": "Schiță",
-    "diagram_simpleTheme": "Simplu"
+    "diagram_simpleTheme": "Simplu",
+    "sent_chatMessage": "{0} ți-a trimis un mesaj"
 }

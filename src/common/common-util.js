@@ -857,6 +857,35 @@ const factory = (NaclUtil) => {
     };
     /* End of code copied from saferphore */
 
+    const isNumericalExpr = /^(0|[1-9]\d*)$/;
+    const sortKeys = obj => {
+        if (Array.isArray(obj)) {
+            return obj.map(sortKeys);
+        }
+        if (obj instanceof Object) {
+            let numeric = [];
+            let nonNumeric = [];
+            Object.keys(obj).forEach(key => {
+                if (isNumericalExpr.test(key)) {
+                    numeric.push(+key);
+                } else {
+                    nonNumeric.push(key);
+                }
+            });
+            return numeric.sort((a, b) => a - b).concat(nonNumeric.sort()).reduce((result, key) => {
+                result[key] = sortKeys(obj[key]);
+                return result;
+            }, {});
+        }
+        return obj;
+    };
+
+    // Should have the same behaviour as
+    // https://www.npmjs.com/package/json.sortify when called with one argument
+    Util.sortify = (obj) => {
+        return JSON.stringify(sortKeys(obj));
+    };
+
     return Util;
 };
 

@@ -9,7 +9,7 @@ const nThen = require("nthen");
 const Semaphore = require("saferphore");
 const Logger = require("../../lib/log");
 const BlobStorage = require("../../lib/storage/blob");
-let config = require("../../lib/load-config");
+let { config } = require("../../lib/load-config");
 
 
 const blobPath = config.blobPath || './blob';
