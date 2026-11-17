@@ -78,9 +78,6 @@ define([
         const createEditor = async () => {
             const editorEl = h('div#cp-notes-content');
             $container.append(editorEl);
-            provider.provider.on('synced', () => {
-                console.error('provider synced');
-            });
             APP.editor = currentEditor = BlockNote.useBlockNoteEditor(editorEl, {
                 trailingBlock: true,
                 resolveFileUrl: NotesUtil.resolveImageUrl,
@@ -101,9 +98,17 @@ define([
         };
         createEditor();
 
+        let oldCursor;
         const resetEditor = async () => {
             if (currentEditor) {
                 try {
+                    const selection = currentEditor.editor._tiptapEditor?.state?.selection;
+                    if (selection) {
+                        oldCursor = {
+                            anchor: selection?.$anchor.pos || 0,
+                            head: selection?.$head.pos || 0
+                        };
+                    }
                     currentEditor.unmount();
                     currentEditor.editor._tiptapEditor.destroy();
                     //await destroyProvider(current.provider);
@@ -115,6 +120,18 @@ define([
                 currentEditor = null;
             }
             await createEditor();
+            if (oldCursor) {
+                const { anchor, head } = oldCursor;
+                const restore = () => {
+                    setTimeout(() => {
+                        currentEditor.editor._tiptapEditor.commands.setTextSelection({ from: anchor, to: head });
+                        currentEditor.editor.focus();
+                    });
+                    provider.provider.off('synced', restore);
+                };
+                provider.provider.on('synced', restore);
+                oldCursor = undefined;
+            }
         };
         provider.onResetUI(async (cpData, data) => {
             ydoc = new Y.Doc(yOpts);
@@ -127,7 +144,7 @@ define([
         const setEditable = () => {
             let editable = APP.online && !APP.readOnly && !APP.locked;
             console.error('EDITABLE?', editable);
-            // XXX
+            currentEditor?.editor?._tiptapEditor.setEditable(editable)
         };
 
         framework.onEditableChange(function () {

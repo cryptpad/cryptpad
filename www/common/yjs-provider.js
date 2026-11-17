@@ -11,6 +11,10 @@ define([
         console.error(x, type);
     };
 
+// XXX TODO
+// - no checkpoint when slash menu is open?
+//    otherwise the menu will close and "/" will be printed
+// - linked documents
     YProvider.create = cfg => {
         const { APP, framework, common, myId, yOpts, Y } = cfg;
         let { ydoc } = cfg;
@@ -40,10 +44,10 @@ APP.Y = Y;
             synced: false
         };
 
-        const CHECKPOINT_INTERVAL = 100;
+        const CHECKPOINT_INTERVAL = 10;
 
         // Yjs/BlockNote
-        const onSynced = Util.mkEvent(true);
+        const onSynced = Util.mkEvent();
 
         // Yjs/CryptPad
         const onRemote = Util.mkEvent();
@@ -185,13 +189,14 @@ APP.Y = Y;
             const chan = cpData?.rtChannel || oldContent?.channel;
             if (chan !== current.channel) {
                 debug(`Reset with new channel: ${chan}`);
+                onSynced.fire(false);
                 current.index = 0;
                 current.channel = chan;
             }
 
             if (cpData?.file && buffer) {
                 let u8 = new Uint8Array(buffer);
-                Y.applyUpdate(ydoc, u8);
+                Y.applyUpdate(ydoc, u8, 'remote');
                 onRemote.fire();
             }
 
