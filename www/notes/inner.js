@@ -29,6 +29,7 @@ define([
     YProvider
 ) {
     const Y = BlockNote.YJS;
+    const awarenessProtocol = BlockNote.awarenessProtocol;
     const APP = window.APP = {
         currentVersion: 1,
         locked: true,
@@ -37,8 +38,9 @@ define([
     // This is the main initialization loop
     const onFrameworkReady = (framework) => {
         const common = framework._.sfCommon;
-        const priv = common.getMetadataMgr().getPrivateData();
-        const userData = common.getMetadataMgr().getUserData();
+        const metadataMgr = common.getMetadataMgr();
+        const priv = metadataMgr.getPrivateData();
+        const userData = metadataMgr.getUserData();
         const $container = $('#cp-app-notes-editor');
 
         const uploadImageFromCryptDrive = (cb) => {
@@ -63,7 +65,7 @@ define([
 
         let ydoc = new Y.Doc(yOpts);
         const provider = YProvider.create({
-            APP, framework, common, ydoc, myId, yOpts, Y
+            APP, framework, common, ydoc, myId, yOpts, Y, awarenessProtocol
         });
 
         let content = {
@@ -74,6 +76,11 @@ define([
         provider.setContent(content);
 
         let currentEditor;
+        let user = {
+            name: userData.name,
+            color: userData.color,
+            id: `${metadataMgr.getNetfluxId()}-${priv.clientId}`
+        };
 
         const createEditor = async () => {
             const editorEl = h('div#cp-notes-content');
@@ -89,14 +96,22 @@ define([
                 collaboration: {
                     provider: provider.provider,
                     fragment: ydoc.getXmlFragment('document-store'),
-                    user: {
-                        name: userData.name,
-                        color: userData.color,
-                    },
+                    user: user
                 },
             });
         };
         createEditor();
+
+        metadataMgr.onChange(() => {
+            const userData = metadataMgr.getUserData();
+            if (userData.name !== user.name || userData.color !== user.color) {
+                user.name = userData.name;
+                user.color = userData.color;
+            }
+            const netfluxId = metadataMgr.getNetfluxId();
+            const priv = metadataMgr.getPrivateData();
+            user.id = `${netfluxId}-${priv.clientId}`;
+        });
 
         let oldCursor;
         const resetEditor = async () => {
@@ -143,7 +158,6 @@ define([
 
         const setEditable = () => {
             let editable = APP.online && !APP.readOnly && !APP.locked;
-            console.error('EDITABLE?', editable);
             currentEditor?.editor?._tiptapEditor.setEditable(editable)
         };
 

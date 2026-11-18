@@ -188,10 +188,12 @@ const factory = (Util, Constants, Crypto) => {
         var c = ctx.clients[client];
         if (!c) { return void cb({error: 'NO_CLIENT'}); }
         var proxy = ctx.store.proxy || {};
-        data.color = Util.find(proxy, ['settings', 'general', 'cursor', 'color']);
-        data.name = proxy[Constants.displayNameKey] || ctx.store.noDriveName || Messages.anonymous;
-        data.avatar = Util.find(proxy, ['profile', 'avatar']);
-        data.uid = Util.find(proxy, ['uid']) || ctx.store.noDriveUid;
+        if (typeof(data) !== "string") { // base64 encoded for yjs
+            data.color = Util.find(proxy, ['settings', 'general', 'cursor', 'color']);
+            data.name = proxy[Constants.displayNameKey] || ctx.store.noDriveName || Messages.anonymous;
+            data.avatar = Util.find(proxy, ['profile', 'avatar']);
+            data.uid = Util.find(proxy, ['uid']) || ctx.store.noDriveUid;
+        }
         c.cursor = data;
         sendMyCursor(ctx, client);
         cb();

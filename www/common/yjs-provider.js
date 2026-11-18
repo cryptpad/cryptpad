@@ -16,11 +16,13 @@ define([
 //    otherwise the menu will close and "/" will be printed
 // - linked documents
     YProvider.create = cfg => {
-        const { APP, framework, common, myId, yOpts, Y } = cfg;
+        const { APP, framework, common, myId, yOpts, Y, awarenessProtocol } = cfg;
         let { ydoc } = cfg;
 
 APP.ydoc = ydoc;
 APP.Y = Y;
+
+        let awareness;
 
         APP.onLocal ||= framework?.localChange;
         APP.realtime ||= framework?._.cpNfInner.chainpad;
@@ -44,7 +46,7 @@ APP.Y = Y;
             synced: false
         };
 
-        const CHECKPOINT_INTERVAL = 10;
+        const CHECKPOINT_INTERVAL = 200;
 
         // Yjs/BlockNote
         const onSynced = Util.mkEvent();
@@ -60,6 +62,50 @@ APP.Y = Y;
             lastTime: 0
         };
         let oldContent;
+
+
+        const getClientsFromState = (id, state) => {
+            let clients = [];
+            state.keys().forEach(i => {
+                let user = state.get(i)?.user;
+                if (!user) { return; }
+                if (user.id.indexOf(id) === 0) {
+                    clients.push(i);
+                }
+            });
+            return clients;
+        };
+
+        let cursorData = {};
+        framework.setCursorGetter(() => {
+            return cursorData;
+        });
+        framework.onCursorUpdate(({id, cursor, leave}) => {
+            if (id && leave && typeof(cursor) === "undefined") {
+                const state = awareness?.getStates();
+                const toRemove = getClientsFromState(id, state);
+                awarenessProtocol.removeAwarenessStates(awareness, toRemove, "remote");
+            }
+            if (typeof(cursor) !== "string") { return; }
+            let update = Util.decodeBase64(cursor);
+            awarenessProtocol.applyAwarenessUpdate(awareness, update, "remote");
+        });
+        const initAwareness = () => {
+            awareness = provider.awareness = new awarenessProtocol.Awareness(ydoc);
+            awareness.on("update", ({ added, updated, removed }, origin) => {
+                // Only send updates that originated locally (ignore updates received from the network)
+                if (origin === "remote") return;
+
+                const clients = added.concat(updated).concat(removed);
+                const update = awarenessProtocol.encodeAwarenessUpdate(awareness, clients); // Uint8Array
+
+                // Send to cursor channel?
+                cursorData = Util.encodeBase64(update);
+                framework.updateCursor();
+            });
+        };
+
+        initAwareness();
 
         // On chainpad change, check new saveLock and update "content"
         const chainpadContentUpdate = (content) => {
@@ -266,8 +312,9 @@ APP.Y = Y;
         const updateUI = (cpData, data, _ydoc) => {
             ydoc.destroy();
             ydoc = APP.ydoc = _ydoc;
-
             initYDoc();
+
+            initAwareness();
 
             let next = (err, buffer) => {
                 return void resetFromCp(buffer, cpData, () => {
