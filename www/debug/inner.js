@@ -55,6 +55,9 @@ define([
     var toolbar;
     var common;
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     nThen(function (waitFor) {
         $(waitFor(function () {
             UI.addLoadingScreen();
@@ -219,7 +222,7 @@ define([
                             href: origin+p.href,
                             target: '_blank'
                         }, p.href)),
-                        h('td', new Date(p.atime).toLocaleString()),
+                        h('td', new Date(p.atime).toLocaleString(loc, { timeZone: "UTC" })),
                         h('td', p.owned ? 'Yes' : 'No'),
                         h('td'+(p.expired || removed ?'.cp-debug-nok':'.cp-debug-ok'),
                             p.expired ? 'Expired' :

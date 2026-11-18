@@ -18,6 +18,9 @@ define([
              Messages, nThen, Icons) {
     var Access = {};
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     var getOwnersTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
@@ -877,7 +880,7 @@ define([
             if (!opts.noExpiration) {
                 var expire = Messages.creation_expireFalse;
                 if (data.expire && typeof (data.expire) === "number") {
-                    expire = new Date(data.expire).toLocaleString();
+                    expire = new Date(data.expire).toLocaleString(loc, { timeZone: "UTC" });
                 }
                 $d.append(h('div.cp-app-prop', [
                     Messages.creation_expiration,

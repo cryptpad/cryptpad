@@ -17,6 +17,9 @@ define([
     //var ChainPad = window.ChainPad;
     var History = {};
 
+    var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '');
+    var loc = new Intl.Locale(lang).maximize(); 
+
     History.create = function (common, config) {
         if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
         if (History.loading) { return void console.error("History is already being loaded..."); }
@@ -386,7 +389,7 @@ define([
             // we can consider we have only states.length - 1 versions
             var time = states[idx].time;
             if (time) {
-                $time.text(new Date(time).toLocaleString());
+                $time.text(new Date(time).toLocaleString(loc, { timeZone: "UTC" }));
             } else { $time.text(''); }
 
             if (config.debug) {
