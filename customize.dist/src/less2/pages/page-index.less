@@ -269,8 +269,8 @@
             }
             .subscribe-btn {
                 text-align: center;
-                background-color: @cp_buttons-primary;
-                color: @cryptpad_text_col;
+                background-color: @cryptpad_color_link;
+                color: @cryptpad_text_col_inv;
                 font-size: 1.4rem;
                 margin: 10px 0;
                 border-radius: @infopages-radius-L;
@@ -280,7 +280,8 @@
                     margin-right: 10px;
                 }
                 &:hover, &:focus {
-                    background-color:  contrast(@cp_buttons-primary-text, darken(@cp_buttons-primary, 10%), lighten(@cp_buttons-primary, 10%));
+                    background-color: @cp_static-card-bg;
+                    color: @cryptpad_text_col;
                 }
             }
         }
