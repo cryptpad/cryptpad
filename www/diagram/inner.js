@@ -220,8 +220,6 @@ define([
             //wait for metadata to update before checking the theme and loading Drawio UI
             var metadataMgr = framework._.sfCommon.getMetadataMgr();
             var onChange = function() {
-                var privateData = metadataMgr.getPrivateData();
-                if (!privateData.settings.toolbar) { return; }
                 loadDiagram();
                 metadataMgr.off('change', onChange);
             };
