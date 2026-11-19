@@ -126,7 +126,6 @@ define([
                     }
                     currentEditor.unmount();
                     currentEditor.editor._tiptapEditor.destroy();
-                    //await destroyProvider(current.provider);
                     currentEditor.ydoc.destroy();
                     $container.empty();
                 } catch (err) {
@@ -151,6 +150,7 @@ define([
         };
         provider.onResetUI(async (cpData, data) => {
             ydoc = new Y.Doc(yOpts);
+            provider.reset(ydoc);
             await resetEditor();
             setEditable();
 

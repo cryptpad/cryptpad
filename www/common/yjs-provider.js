@@ -46,7 +46,7 @@ APP.Y = Y;
             synced: false
         };
 
-        const CHECKPOINT_INTERVAL = 200;
+        const CHECKPOINT_INTERVAL = 20;
 
         // Yjs/BlockNote
         const onSynced = Util.mkEvent();
@@ -63,6 +63,10 @@ APP.Y = Y;
         };
         let oldContent;
 
+        const getLastChannel = () => {
+            const cpData = getLastCp();
+            return cpData.rtChannel || oldContent?.channel;
+        };
 
         const getClientsFromState = (id, state) => {
             let clients = [];
@@ -76,31 +80,79 @@ APP.Y = Y;
             return clients;
         };
 
+        const applyRemoteCursor = u => {
+            try {
+                let update = Util.decodeBase64(u);
+                awarenessProtocol.applyAwarenessUpdate(awareness, update, "remote");
+            } catch (e) { console.error(e, u); }
+        };
+
         let cursorData = {};
+        let cursorQueue = [];
         framework.setCursorGetter(() => {
             return cursorData;
         });
         framework.onCursorUpdate(({id, cursor, leave}) => {
+            // Delete from queue all updates applying to the same client
+            cursorQueue = cursorQueue.filter(obj => {
+                let _id = obj.id;
+                if (_id.indexOf(id) === 0) {
+                    debug('Remove cursor from queue', obj);
+                    return false;
+                }
+                return true;
+            });
+
+            // Remove from UI all cursors from disconnected users
             if (id && leave && typeof(cursor) === "undefined") {
                 const state = awareness?.getStates();
                 const toRemove = getClientsFromState(id, state);
                 awarenessProtocol.removeAwarenessStates(awareness, toRemove, "remote");
             }
-            if (typeof(cursor) !== "string") { return; }
-            let update = Util.decodeBase64(cursor);
-            awarenessProtocol.applyAwarenessUpdate(awareness, update, "remote");
+
+            if (typeof(cursor?.u) !== "string") { return; }
+            const theirChan = cursor?.c;
+            // Make sure the cursor matches our current channel
+            if (theirChan !== current.ready) {
+                // If this is a cursor for a new channel not yet loaded,
+                // keep it in memory
+                if (theirChan === getLastChannel()) {
+                    debug('Push cursor to queue');
+                    cursorQueue.push({id, u: cursor?.u});
+                }
+                // Otherwise if it is for an old checkpoint, just ignore it
+                return;
+            }
+
+            // Correct channel: apply the cursor update
+            applyRemoteCursor(cursor?.u);
         });
+        // When new channel is ready, apply all queued cursors
+        onSynced.reg(synced => {
+            if (!synced) { return; }
+            cursorQueue.forEach(obj => {
+                applyRemoteCursor(obj?.u);
+            });
+            cursorQueue = [];
+        });
+
+
         const initAwareness = () => {
+            if (awareness?.destroy) { awareness.destroy(); }
             awareness = provider.awareness = new awarenessProtocol.Awareness(ydoc);
+            const id = Util.uid();
+            awareness.id = id;
             awareness.on("update", ({ added, updated, removed }, origin) => {
-                // Only send updates that originated locally (ignore updates received from the network)
-                if (origin === "remote") return;
+                if (origin === "remote") { return; } // only my local cursor
 
                 const clients = added.concat(updated).concat(removed);
                 const update = awarenessProtocol.encodeAwarenessUpdate(awareness, clients); // Uint8Array
 
-                // Send to cursor channel?
-                cursorData = Util.encodeBase64(update);
+                // Send to cursor channel
+                cursorData = {
+                    c: current.ready,
+                    u: Util.encodeBase64(update)
+                };
                 framework.updateCursor();
             });
         };
@@ -143,9 +195,6 @@ APP.Y = Y;
                 clonedValue._integrate(clone, null);
                 clone.share.set(key, clonedValue);
             });
-
-            // console.error('before', Y.encodeStateAsUpdate(ydoc));
-            // console.error('after', Y.encodeStateAsUpdate(clone));
 
             const state = Y.encodeStateAsUpdate(clone);
             const blob = new Blob([state], {});
@@ -248,6 +297,7 @@ APP.Y = Y;
 
 
             openRtChannel(cpData, () => {
+                current.ready = chan;
                 debug('rtchannel ready');
                 provider.synced = true;
                 onSynced.fire(true);
@@ -309,13 +359,15 @@ APP.Y = Y;
             });
         };
 
-        const updateUI = (cpData, data, _ydoc) => {
+        const reset = (_ydoc) => {
+            // reset ydoc
             ydoc.destroy();
             ydoc = APP.ydoc = _ydoc;
             initYDoc();
-
+            // reset awareness
             initAwareness();
-
+        };
+        const updateUI = (cpData, data, _ydoc) => {
             let next = (err, buffer) => {
                 return void resetFromCp(buffer, cpData, () => {
 
@@ -348,6 +400,7 @@ APP.Y = Y;
             setContent,
             setIds,
             chainpadContentUpdate,
+            reset,
             provider
         };
     };
