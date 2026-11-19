@@ -156,7 +156,8 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
-
+    // XXX
+    Messages.guestLoginPrompt = "<a>Log in</a> if you think your account should be able to access it.";
     return Messages;
 
 });

@@ -861,14 +861,24 @@ define([
             UI.addTooltips();
 
             ctx.sframeChan.on("EV_PAD_NODATA", function () {
-                var error = Pages.setHTML(h('span'), Messages.safeLinks_error);
+                var html = Messages.safeLinks_error;
+                if (!funcs.isLoggedIn()) {
+                    html += '<br><br>' + Messages.guestLoginPrompt;
+                }
+                var error = Pages.setHTML(h('span'), html);
                 var i = error.querySelector('i');
                 if (i) {
                     $(i).empty().append(Icons.get('share'));
                 }
-                var a = error.querySelector('a');
-                if (a) {
-                    a.setAttribute('href', Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/user_account.html#confidentiality"));
+                var links = error.querySelectorAll('a');
+                if (links[0]) {
+                    links[0].setAttribute('href', Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/user_account.html#confidentiality"));
+                }
+                if (links[1]) {
+                    $(links[1]).attr('href', '/login/').click(function (ev) {
+                        ev.preventDefault();
+                        funcs.setLoginRedirect('login');
+                    });
                 }
                 UI.errorLoadingScreen(error);
             });
