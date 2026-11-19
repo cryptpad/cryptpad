@@ -137,7 +137,8 @@ define([
             await createEditor();
             if (oldCursor) {
                 const { anchor, head } = oldCursor;
-                const restore = () => {
+                const restore = (synced) => {
+                    if (!synced) { return; }
                     setTimeout(() => {
                         currentEditor.editor._tiptapEditor.commands.setTextSelection({ from: anchor, to: head });
                         currentEditor.editor.focus();
