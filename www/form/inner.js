@@ -3737,6 +3737,7 @@ define([
             sframeChan.query('Q_FORM_SUBMIT', {
                 mailbox: content.answers,
                 results: results,
+                forgetAnonymous: content.answers.forgetAnonymous,
                 anonymous: content.answers.makeAnonymous || !loggedIn
                             || (!wantName && !APP.cantAnon) // use ephemeral keys
             }, function (err, data) {
@@ -3763,6 +3764,11 @@ define([
                 APP.answeredInForm = false;
 
                 APP.getMyAnswers();
+
+                // Use a toast message, as the form will reset when anonymous history is forgotten
+                if(content.answers.forgetAnonymous && !loggedIn) {
+                    UI.log(Messages.saved);
+                }
 
                 // TODO show the author that they can "mute" the pad
                 var priv = metadataMgr.getPrivateData();
@@ -5008,7 +5014,7 @@ define([
 
 
             // Mute form responses
-            var notifContainer = h('div.cp-form-anon-container');
+            var notifContainer = h('div.cp-form-mute-container');
             var notifStr = h('div');
             var $notif = $(notifContainer);
             var $notifStr = $(notifStr);
@@ -5038,9 +5044,45 @@ define([
                         else { $notifStr.text(''); }
                     });
                 });
-                $anon.append(h('div.cp-form-actions', radioContainer));
+                $notif.append(h('div.cp-form-actions', radioContainer));
             };
             refreshNotif();
+
+            // Let anonymous sessions forget answers - if and only if the form allows multiple, uneditable responses
+            var forgetContainer = h('div.cp-form-forget-container');
+            var forgetStr = h('div');
+            var $forget = $(forgetContainer);
+            var $forgetStr = $(forgetStr);
+            var refreshForget = function () {
+                $forget.empty();
+                if(content.answers.anonymous && content.answers.multiple && content.answers.cantEdit) {
+                    var forgetful = content.answers.forgetAnonymous;
+                    if (forgetful) { $forgetStr.text(Messages.form_forgetful); }
+                    else { $forgetStr.text(''); }
+                    var cbox = UI.createCheckbox('cp-form-make-forget',
+                            Messages.form_makeForget, forgetful, {});
+                    var radioContainer = h('div.cp-form-forget-radio', [cbox]);
+                    var $r = $(radioContainer).find('input').on('change', function() {
+                        var val = Util.isChecked($r);
+                        content.answers.forgetAnonymous = val;
+                        if (val) { $forgetStr.text(Messages.form_forgetful); }
+                        else { $forgetStr.text(''); }
+                        framework.localChange();
+                        framework._.cpNfInner.chainpad.onSettle(function () {
+                            UI.log(Messages.saved);
+                        });
+                    });
+                    $forget.append(h('div.cp-form-actions', radioContainer));
+                }
+                else {
+                    $forgetStr.text('');
+                    if(content.answers.forgetAnonymous) {
+                        content.answers.forgetAnonymous = false;
+                        framework.localChange();
+                    }
+                }
+            };
+            refreshForget();
 
             // Allow guest(anonymous) answers
             var privacyContainer = h('div.cp-form-privacy-container');
@@ -5073,6 +5115,7 @@ define([
                     var val = $('input:radio[name="cp-form-privacy"]:checked').val();
                     val = Number(val) || 0;
                     content.answers.anonymous = Boolean(val);
+                    refreshForget();
                     framework.localChange();
                     framework._.cpNfInner.chainpad.onSettle(function () {
                         UI.log(Messages.saved);
@@ -5153,6 +5196,7 @@ define([
                             });
                         });
                     }
+                    refreshForget();
                     framework.localChange();
                     framework._.cpNfInner.chainpad.onSettle(function () {
                         UI.log(Messages.saved);
@@ -5353,6 +5397,7 @@ define([
             evOnChange.reg(refreshAnon);
             evOnChange.reg(refreshNotif);
             evOnChange.reg(refreshEditable);
+            evOnChange.reg(refreshForget);
             evOnChange.reg(refreshEndDate);
             evOnChange.reg(refreshColorTheme);
 
@@ -5373,6 +5418,7 @@ define([
                 resultsType,
                 privacyContainer,
                 editableContainer,
+                forgetContainer,
             ]);
             var modalBtn = h('button.btn.btn-secondary', [
                 Icons.get('settings'),
@@ -5391,7 +5437,8 @@ define([
                 notifStr,
                 resultsStr,
                 privacyStr,
-                editableStr
+                editableStr,
+                forgetStr
             ]);
 
             var toggleOffclass = 'ontouchstart' in window ? 'cp-toggle-active' : undefined;
