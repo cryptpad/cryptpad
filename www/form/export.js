@@ -136,30 +136,61 @@ define([
         });
         array.push(questions);
 
+        /**
+         * Numeric "Text" answers must stay JS strings for the CSV output 
+         * (escapeCSV treats falsy values as empty), but need to be real
+         * Numbers for the "array" format so the Sheet importer 
+         * (method `makePatch` inside onlyoffice/inner.js) creates numeric
+         * cells instead of text cells.
+         * 
+         * @returns {*|number}
+         */
+        var toCellValue = function (key, str) {
+            var opts = form[key].opts;
+            if (
+                form[key].type === 'input' &&
+                opts && opts.type === 'number' &&
+                str !== '' &&
+                !isNaN(Number(str))
+            ) {
+                return Number(str);
+            }
+            return str;
+        };
+
         sortedKeys.forEach(function (k) {
                 var obj = answers[k];
                 csv += '\n';
                 var time = new Date(obj.time).toISOString();
                 var msg = obj.msg || {};
                 var user = msg._userdata || {};
-                var line = [];
-                line.push(time);
-                line.push(user.name || Messages.anonymous);
+                var username = user.name || Messages.anonymous;
+                var line = [
+                    time,
+                    username,
+                ];
+                var arrLine = [
+                    time,
+                    username,
+                ];
                 order.forEach(function (key) {
                     var type = form[key].type;
                     if (!TYPES[type]) { return; } // Ignore static types
                     if (TYPES[type].exportCSV) {
                         var res = TYPES[type].exportCSV(msg[key], form[key]);
                         Array.prototype.push.apply(line, res);
+                        Array.prototype.push.apply(arrLine, res);
                         return;
                     }
-                    line.push(String(msg[key] || ''));
+                    var str = String(msg[key] || '');
+                    line.push(str);
+                    arrLine.push(toCellValue(key, str));
                 });
                 line.forEach(function (v, i) {
                     if (i) { csv += ','; }
                     csv += escapeCSV(v);
                 });
-                array.push(line);
+                array.push(arrLine);
         });
         if (isArray) { return array; }
         return csv;
