@@ -2433,7 +2433,14 @@ define([
             // defined but never used
             //var mode = (content && content.version > 2 && lock) ? "view" : "edit";
 
-            const lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '').slice(0,2);
+            // OnlyOffice/Euro-Office uses region-specific locale files for some
+            // languages (zh-tw.json, pt-pt.json), the others use 2-letter codes
+            const ooLanguages = {
+                'zh_Hant': 'zh-TW',
+                'pt-pt': 'pt-PT'
+            };
+            const cpLang = window.cryptpadLanguage || navigator.language || navigator.userLanguage || '';
+            const lang = ooLanguages[cpLang] || cpLang.slice(0,2);
 
             // Config
             APP.ooconfig = createOOConfig(blob, file, lock, fromContent, lang, force);
