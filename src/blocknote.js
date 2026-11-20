@@ -11,7 +11,7 @@ import { BlockNoteView } from '@blocknote/mantine';
 import { FormattingToolbar, FormattingToolbarController, SuggestionMenuController, getDefaultReactSlashMenuItems, getFormattingToolbarItems, useBlockNoteEditor as useEditor, useComponentsContext, useDictionary, useSelectedBlocks } from '@blocknote/react';
 import '@blocknote/mantine/style.css';
 
-const CryptDriveFileButton = ({ dictKey, icon, editableOnly, onAction }) => {
+const CryptDriveFileButton = ({ dictKey, icon, onAction }) => {
     const editor = useEditor();
     const toolbarElements = useComponentsContext();
     const [selectedImg] = useSelectedBlocks(editor);
