@@ -503,7 +503,7 @@ define([
                 id: 'cp-settings-delete-account',
                 placeholder: Messages.settings_changePasswordCurrent,
                 autocomplete: 'current-password',
-            }, true),
+            }),
             button
         ]);
         var $form = $(form);
@@ -641,18 +641,18 @@ define([
                 id: 'cp-settings-change-password-current',
                 placeholder: Messages.settings_changePasswordCurrent,
                 autocomplete: 'current-password',
-            }, true),
+            }),
             UI.passwordInput({
                 id: 'cp-settings-change-password-new',
                 placeholder: Messages.settings_changePasswordNew,
                 autocomplete: 'new-password',
-            }, true),
+            }),
             UI.passwordInput({
                 id: 'cp-settings-change-password-new2',
                 placeholder: Messages.settings_changePasswordNewConfirm,
                 autocomplete: 'new-password',
-            }, true),
-            h('button.btn.btn-primary', [ Icons.get('password-change'), Messages.settings_changePasswordButton ])
+            }),
+            h('button.btn.btn-primary.cp-settings-change-password-submit', [ Icons.get('password-change'), Messages.settings_changePasswordButton ])
         ]);
 
         $(form).appendTo($div);
@@ -772,7 +772,7 @@ define([
                 });
         };
 
-        $(form).find('button').click(function() {
+        $(form).find('.cp-settings-change-password-submit').click(function() {
             todo();
         });
         $(form).find('input').keydown(function(e) {
@@ -798,7 +798,7 @@ define([
             UI.passwordInput({
                 id: 'cp-settings-migrate-password',
                 placeholder: Messages.settings_changePasswordCurrent
-            }, true),
+            }),
             h('button.btn.btn-primary', Messages.settings_ownDriveButton)
         ]);
         var $form = $(form);

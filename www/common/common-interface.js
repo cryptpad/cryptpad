@@ -996,7 +996,7 @@ define([
         Alertify.error(Util.fixHTML(msg));
     };
 
-    UI.passwordInput = function (opts, displayEye) {
+    UI.passwordInput = function (opts) {
         opts = opts || {};
         var attributes = merge({
             type: 'password',
@@ -1007,9 +1007,8 @@ define([
         var input = h('input.cp-password-input', attributes);
         let passwordReveal = Icons.get('password-reveal');
         let passwordHide = Icons.get('password-hide');
-        var eye = h('span.cp-password-reveal', {
-            tabindex: 0,
-            role: 'button',
+        var eye = h('button.cp-password-reveal', {
+            type: 'button',
             'aria-label': Messages.show_password,
             'aria-pressed': 'false'
         },[
@@ -1019,31 +1018,13 @@ define([
         var $eye = $(eye);
         var $input = $(input);
 
-        if (displayEye) {
-            $eye.mousedown(function () {
-                $input.prop('type', 'text');
-                $input.focus();
-            }).mouseup(function(){
-                $input.prop('type', 'password');
-                $input.focus();
-            }).mouseout(function(){
-                $input.prop('type', 'password');
-                $input.focus();
-            });
-        } else {
-            Util.onClickEnter($eye, function (e) {
-                e.stopPropagation();
-                if ($input.prop('type') === 'password') {
-                    $input.prop('type', 'text').focus();
-                    $eye.empty().append(passwordHide);
-                    $eye.attr('aria-label', Messages.hide_password).attr('aria-pressed', 'true');
-                } else {
-                    $input.prop('type', 'password').focus();
-                    $eye.empty().append(passwordReveal);
-                    $eye.attr('aria-label', Messages.show_password).attr('aria-pressed', 'false');
-                }
-            });
-        }
+        $eye.on('click', function (e) {
+            e.stopPropagation();
+            var isHidden = $input.prop('type') === 'password';
+            $input.prop('type', isHidden ? 'text' : 'password');
+            $eye.empty().append(isHidden ? passwordHide : passwordReveal);
+            $eye.attr('aria-pressed', isHidden ? 'true' : 'false');
+        });
 
         return h('span.cp-password-container', [
             input,
