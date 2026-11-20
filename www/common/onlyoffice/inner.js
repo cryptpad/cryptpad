@@ -513,48 +513,13 @@ define([
 
             if (!needCp) { return; }
 
-            APP.rtcTools.makeCheckpoint(force, proceed => {
-                if (!proceed) { return; }
-                saveToServer();
-            });
-
-            /* XXX allow temp rpc
-        var isRegisteredUserOnline = function () {
-            var users = metadataMgr.getMetadata().users || {};
-            return Object.keys(users).some(function (id) {
-                return users[id] && users[id].curvePublic;
-            });
-        };
 
             if (!locked || !isUserOnline(locked) || force) {
-                if (!common.isLoggedIn() && !isRegisteredUserOnline() && !noLogin) {
-                    var login = h('button.cp-corner-primary', Messages.login_login);
-                    var register = h('button.cp-corner-primary', Messages.login_register);
-                    var cancel = h('button.cp-corner-cancel', Messages.cancel);
-                    var actions = h('div', [cancel, register, login]);
-                    var modal = UI.cornerPopup(Messages.oo_login, actions, '', {alt: true});
-                    $(register).click(function () {
-                        common.setLoginRedirect('register');
-                        modal.delete();
-                    });
-                    $(login).click(function () {
-                        common.setLoginRedirect('login');
-                        modal.delete();
-                    });
-                    $(cancel).click(function () {
-                        modal.delete();
-                        noLogin = true;
-                    });
-                    return;
-                }
-                if (!common.isLoggedIn()) { return; }
-                content.saveLock = myOOId;
-                APP.onLocal();
-                APP.realtime.onSettle(function () {
+                APP.rtcTools.makeCheckpoint(force, proceed => {
+                    if (!proceed) { return; }
                     saveToServer();
                 });
             }
-            */
         };
 
         var loadInitDocument = function (type, useNewDefault) {
@@ -3477,7 +3442,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var m = metadataMgr.getChannelMembers().filter(function (str) {
                     return str.length === 32;
                 }).length;
-                if ((m - v) === 1 && !readOnly && common.isLoggedIn()) {
+                if ((m - v) === 1 && !readOnly) {
                     var needCp = ooChannel.queue.length > CHECKPOINT_INTERVAL;
                     APP.initCheckpoint = needCp;
                 }

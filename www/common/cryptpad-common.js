@@ -87,6 +87,15 @@ define([
                 return;
             }
 
+            if (anon) {
+                // Push temp keys
+                postMessage("GET_TEMP_KEYS", {}, waitFor(function (obj) {
+                    if (!obj || obj.error) { return; }
+                    keys.push(obj);
+                }));
+                return;
+            }
+
             // Push account keys
             postMessage("GET", {
                 key: ['edPrivate'],

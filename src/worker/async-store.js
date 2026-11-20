@@ -120,6 +120,10 @@ const factory = (UserObject, ProxyManager,
             }).nThen(function () { cb(); });
         };
 
+        Store.getTempKeys = function (clientId, data, cb) {
+            if (!store) { return void cb({ error: 'ENOTFOUND' }); }
+            cb(store?.tempKeys);
+        };
         Store.get = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
@@ -440,10 +444,10 @@ const factory = (UserObject, ProxyManager,
                 if (e) { return void cb({error: e}); }
                 store.rpc = call;
                 cb(call);
-            });
+            }, Cache, true);
         };
         var initRpc = function (clientId, data, cb) {
-            if (!store.loggedIn) { return cb(); }
+            if (!store.loggedIn) { return initTempRpc(clientId, cb); }
             if (store.rpc) { return void cb(account); }
             Pinpad.create(store.network, store.proxy, function (e, call) {
                 if (e) { return void cb({error: e}); }
@@ -2856,10 +2860,6 @@ const factory = (UserObject, ProxyManager,
                 return void onNoDrive(clientId, obj => {
                     if (obj?.error) {
                         Feedback.send("NO_DRIVE_ERROR", true);
-                    }
-                    if (!!data.neverDrive) {
-                        // Send temp RPC keys to the browser to allow upload
-                        obj.tempKeys = store?.tempKeys;
                     }
                     cb(obj);
                 }, !!data.neverDrive);

@@ -365,20 +365,16 @@ define([
             });
         };
 
-        // XXX XXX XXX XXX XXX
         const makeCheckpoint = (force, cb) => {
+            // Check lock
             let lock = content.saveLock && isUserOnline(content.saveLock);
-            console.error('CHECK LOCK', content.saveLock);
             if (lock && !force) { return void cb(false); }
-            // XXX !loggedIn ==> allow temp rpc?
-            if (!common.isLoggedIn()) { return void cb(false); }
 
+            // Allowed: take lock and upload
             content.saveLock = myLockId;
-            console.error('SET LOCK', myLockId);
             APP.onLocal();
             APP.realtime.onSettle(function () {
                 cb(true);
-                //saveToServer(); // XXX managed by the app because we need to get the content, filetype, special cases, ooChannel, migrate, etc.
             });
         };
 
@@ -484,6 +480,7 @@ define([
         tools.restoreLastCp = restoreLastCp;
         tools.checkCheckpoint = checkCheckpoint;
         tools.makeCheckpoint = makeCheckpoint;
+        tools.isUserOnline = isUserOnline;
 
         // RtChannel
         tools.openRtChannel = openRtChannel;
