@@ -14,7 +14,7 @@ define([
     '/common/common-constants.js',
     '/common/pad-types.js',
     '/common/extensions.js',
-    '/common/common-icons.js'
+    '/common/common-icons.js',
 ], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements, Constants, PadTypes, Extensions, Icons) {
     return function () {
         document.title = Msg.features;
@@ -73,70 +73,23 @@ define([
             return (SPECIAL_GROUP_ITEMS[key] || defaultGroupItem)(key);
         };
 
-        var anonymousFeatures =
-            h('div.col-12.col-sm-4.cp-anon-user',[
-                h('div.card',[
-                    h('div.title-card',[
-                        h('h3.text-center',Msg.features_anon)
-                    ]),
-                    h('div.card-body.cp-pricing',[
-                        h('div.text-center', '0€'),
-                        h('div.text-center', Msg.features_noData),
-                    ]),
-                    h('ul.list-group.list-group-flush', [
-                        'apps',
-                        'file0', // Msg.features_f_file0, .features_f_file0_note
-                        'core', // Msg.features_f_core, Msg.features_f_core_note
-                        'cryptdrive0', // Msg.features_f_cryptdrive0, .features_f_cryptdrive0_note
-                        'storage0'
-                    ].map(groupItem)),
-                ]),
-            ]);
-
-        var registeredFeatures =
-            h('div.col-12.col-sm-4.cp-regis-user',[
-                h('div.card',[
-                    h('div.title-card',[
-                        h('h3.text-center',Msg.features_registered)
-                    ]),
-                    h('div.card-body.cp-pricing',[
-                        h('div.text-center', '0€'),
-                        h('div.text-center', Msg.features_noData),
-                    ]),
-                    h('ul.list-group.list-group-flush', [
-                        'anon', // Msg.features_f_anon, .features_f_anon_note
-                        'social', // Msg.features_f_social, .features_f_social_note
-                        'file1',
-                        'cryptdrive1', // Msg.features_f_cryptdrive1, .features_f_cryptdrive1_note
-                        'devices', // Msg.features_f_devices, .features_f_devices_note
-                        'storage1' // Msg.features_f_storage1, .features_f_storage1_note
-                    ].map(groupItem)),
-                    h('div.card-body',[
-                        h('div.cp-features-register#cp-features-register', [
-                            h('a', {
-                                href: '/register/',
-                                class: 'cp-features-register-button',
-                            }, Msg.features_f_register)
-                        ]),
-                    ]),
-                ]),
-            ]);
-
         var featureCard = function (feature) {
-            return h('div.col-12.col-sm-4.cp-regis-user', [
-                h('div.card', [
+            return h('div.cp-card-item', [
+                h('div.cp-feature-card', [
                     h('div.title-card', [
-                        h('h3.text-center', feature.title)
+                        h('h3', feature.title)
                     ]),
-                    h('div.card-body.cp-pricing', [
+                    h('div.feature-card-section.cp-feature-icon', [
                         h('div', Icons.get(feature.icon))
                     ]),
                     h('div.feature-title', feature.subtitle),
-                    h('div.text-center.feature-content', feature.content),
-                    h('div.card-body', [
-                        h('div.cp-features-register', [
-                            h('a.cp-features-register-button', {
-                                href: feature.href || '/register/'
+                    h('div.feature-content', feature.content),
+                    h('div.feature-card-section', [
+                        h('div.cp-features-docs', [
+                            h('a.cp-features-docs-button', {
+                                href: feature.href || 'https://docs.cryptpad.org/',
+                                target: '_blank',
+                                rel: 'noopener noreferrer'
                             }, Icons.get('documentation'), 'Learn more')
                         ])
                     ])
@@ -145,97 +98,149 @@ define([
         };
 
         var infoCard = function (info) {
-            return h('div.col-12.col-md-6.col-lg-3.cp-regis-user.cp-small-feature', [
-                h('div.card', [
+            return h('div.cp-card-item.cp-small-feature', [
+                h('div.cp-feature-small-card', [
                     h('div.feature-icon', Icons.get(info.icon)),
                     h('div.feature-title', info.title),
-                    h('div.text-center.feature-content', info.content)
+                    h('div.feature-content', info.content)
                 ])
             ]);
         };
 
+        var trySection = function () {
+            return h('div.cp-container.cp-features-web', [
+                h('div.cp-features-try', [
+                    h('div.cp-features-try-text', [
+                        h('h2.cp-features-try-title', Msg.features_try_title),
+                        h('p.cp-features-try-subtitle', Msg.features_try_subtitle),
+                        h('p.cp-features-try-content', Msg.features_try_content)
+                    ]),
+                    h('div.cp-features-docs', [
+                        h('a.cp-features-docs-button', {
+                            href: '/drive/'
+                        }, Msg.features_try_button)
+                    ])
+                ])
+            ]);
+        };
+
+        var docsApps = 'https://docs.cryptpad.org/en/user_guide/apps/';
+
         var featureList = [
             {
-                title: 'Code',
+                title: Msg.type.code,
                 icon: 'code',
-                subtitle: 'An encrypted markdown code editor',
-                content: 'In addition to the basic lightweight syntax, CryptPad supports diagrams with Mermaid.js, mindmaps with Markmap, and mathematical equations with Mathjax.'
+                subtitle: Msg.features_code_subtitle,
+                content: Msg.features_code_content,
+                href: docsApps + 'code.html'
             },
             {
-                title: 'Diagram',
+                title: Msg.type.diagram,
                 icon: 'diagram',
-                subtitle: 'Versatile diagramming options',
-                content: 'CryptPad Diagram is the collaboration diagram tool for secure mind-mapping, flowcharts, whiteboard, and more.'
+                subtitle: Msg.features_diagram_subtitle,
+                content: Msg.features_diagram_content,
+                href: docsApps + 'diagram.html'
             },
             {
-                title: 'Forms',
+                title: Msg.type.form,
                 icon: 'form',
-                subtitle: 'Customizable and responsive design',
-                content: 'The privacy-first Google Forms alternative to create and share surveys, without sharing your data with unwanted third-parties.'
+                subtitle: Msg.features_forms_subtitle,
+                content: Msg.features_forms_content,
+                href: docsApps + 'form.html'
             },
             {
-                title: 'Kanban',
+                title: Msg.type.kanban,
                 icon: 'kanban',
-                subtitle: 'Drag-and-drop interface',
-                content: 'A secure and customizable kanban board app for organizing tasks, ideas, and workflows, all end-to-end encrypted and hosted in EU.'
+                subtitle: Msg.features_kanban_subtitle,
+                content: Msg.features_kanban_content,
+                href: docsApps + 'kanban.html'
             },
             {
-                title: 'Presentation',
+                title: Msg.type.presentation,
                 icon: 'presentation',
-                subtitle: 'Presentations made with familiar tools',
-                content: "Format slides with text, images, shapes, and transitions. This presentation editor gives you the functionality you'd expect, without the surveillance."
+                subtitle: Msg.features_presentation_subtitle,
+                content: Msg.features_presentation_content,
+                href: docsApps + 'presentation.html'
             },
             {
-                title: 'Sheet',
+                title: Msg.type.sheet,
                 icon: 'sheet',
-                subtitle: 'Flexible file support',
-                content: "Import .xlsx, .ods, or .csv. Export .xlsx, .pdf, or .html. Sheets delivers the same experience as popular spreadsheets. If you've used Excel or Google Sheets, CryptPad's interface will feel instantly natural."
+                subtitle: Msg.features_sheet_subtitle,
+                content: Msg.features_sheet_content,
+                href: docsApps + 'sheets.html'
             },
             {
-                title: 'Word',
+                title: Msg.type.doc,
                 icon: 'doc',
-                subtitle: 'Comprehensive editing tools',
-                content: 'CryptPad Document is a privacy-first Microsoft Word and Google Docs alternative that allows you to create and collaborate in real time.'
+                subtitle: Msg.features_doc_subtitle,
+                content: Msg.features_doc_content,
+                href: docsApps + 'document.html'
             },
             {
-                title: 'Markdown slides',
+                title: Msg.type.slide,
                 icon: 'slide',
-                subtitle: 'Code-driven presentations',
-                content: 'Create sleek, fast presentations using simple Markdown syntax with instant side-by-side preview.'
+                subtitle: Msg.features_slide_subtitle,
+                content: Msg.features_slide_content,
+                href: docsApps + 'slides.html'
             },
             {
-                title: 'Richtext',
+                title: Msg.type.pad,
                 icon: 'pad',
-                subtitle: 'Quick and collaborative text editing',
-                content: 'A lightweight and straightforward rich-text pad for quick notes, documentation, and real-time collaborative writing.'
+                subtitle: Msg.features_pad_subtitle,
+                content: Msg.features_pad_content,
+                href: docsApps + 'richtext.html'
             }
         ];
 
         var infoList = [
             {
                 icon: 'lock',
-                title: 'Private by design',
-                content: 'Work in a suite designed for privacy-first collaboration.'
+                title: Msg.features_info_private_title,
+                content: Msg.features_info_private_content
             },
             {
                 icon: 'teams',
-                title: 'Real-time collaboration',
-                content: 'Keep the team in the same document, board or plan.'
+                title: Msg.features_info_collab_title,
+                content: Msg.features_info_collab_content
             },
             {
                 icon: 'folder',
-                title: 'One connected workspace',
-                content: 'Move naturally between creation, planning and storage.'
+                title: Msg.features_info_workspace_title,
+                content: Msg.features_info_workspace_content
             },
             {
                 icon: 'limit',
-                title: 'Fine-grained control',
-                content: 'Choose who can access, view and contribute to your work.'
+                title: Msg.features_info_control_title,
+                content: Msg.features_info_control_content
+            }
+        ];
+
+        var bottomInfoList = [
+            {
+                icon: 'drive',
+                title: Msg.type.drive,
+                content: Msg.features_info_drive_content
+            },
+            {
+                icon: 'teams',
+                title: Msg.type.teams,
+                content: Msg.features_info_teams_content
+            },
+            {
+                icon: 'calendar',
+                title: Msg.calendar,
+                content: Msg.features_info_calendar_content
+            },
+            {
+                icon: 'contacts',
+                title: Msg.type.contacts,
+                content: Msg.features_info_contacts_content
             }
         ];
 
         var availableFeatures = featureList.map(featureCard);
         var info = infoList.map(infoCard);
+        var bottomInfo = bottomInfoList.map(infoCard);
 
         // Msg.features_premium
         // Msg.features_pricing
@@ -251,12 +256,17 @@ define([
 
         return h('div#cp-main', [
             Pages.infopageTopbar(),
-            h('div.container.cp-container',[
-                h('div.row.cp-page-title',[
-                    h('div.col-12.text-center', h('h1', "One private workspace. Everything connected.")),
+            h('div.cp-container',[
+                h('div.cp-page-title',[
+                    h('h1', "One private workspace. Everything connected.")
                 ]),
-                h('div.row.cp-container.cp-features-web.justify-content-sm-center', info),
-                h('div.row.cp-container.cp-features-web.justify-content-sm-center', availableFeatures),
+                h('div.cp-container.cp-features-web', h('div.info-cards-container', info)),
+                h('div.cp-container.cp-features-web', h('div.features-grid-container', availableFeatures)),
+                h('div.cp-page-title', [
+                    h('h2', Msg.features_teamwork_title)
+                ]),
+                h('div.cp-container.cp-features-web', h('div.info-cards-container', bottomInfo)),
+                trySection()
             ]),
             Pages.infopageFooter()
         ]);
