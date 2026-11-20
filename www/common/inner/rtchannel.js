@@ -208,7 +208,7 @@ define([
                     onRTCMessage.fire(obj.data);
                     break;
                 case 'HISTORY_SYNCED':
-                    onRTCHistorySynced.fire()
+                    onRTCHistorySynced.fire();
                     break;
 
             }
@@ -241,7 +241,7 @@ define([
 
         const onCpUploaded = Util.mkEvent();
         const onCpUploadError = Util.mkEvent();
-        const onUploaded = (ev, data, err) => {
+        const onUploaded = (ev, data) => {
             // Save as template: make a new chainpad with a single CP
             if (ev.newTemplate) {
                 var _content = ev.newTemplate;
@@ -333,6 +333,27 @@ define([
             });
         };
 
+        const deleteOffline = () => {
+            const ids = content.ids;
+            const users = Object.keys(metadataMgr.getMetadata().users);
+            Object.keys(ids).forEach(function (id) {
+                let nId = id.slice(0,32);
+                if (users.indexOf(nId) === -1) {
+                    delete ids[id];
+                }
+            });
+            APP.onLocal();
+        };
+        const isUserOnline = (lockId) => {
+            // Remove ids for users that have left the channel
+            deleteOffline();
+            const ids = content.ids;
+            // Check if the provided id is in the ID list
+            return Object.keys(ids).some(function (id) {
+                return lockId === ids[id].lockId;
+            });
+        };
+
         const fmConfig = {
             noHandlers: true,
             noStore: true,
@@ -398,26 +419,6 @@ define([
             }, to);
         };
 
-        const deleteOffline = () => {
-            const ids = content.ids;
-            const users = Object.keys(metadataMgr.getMetadata().users);
-            Object.keys(ids).forEach(function (id) {
-                let nId = id.slice(0,32);
-                if (users.indexOf(nId) === -1) {
-                    delete ids[id];
-                }
-            });
-            APP.onLocal();
-        };
-        const isUserOnline = (lockId) => {
-            // Remove ids for users that have left the channel
-            deleteOffline();
-            const ids = content.ids;
-            // Check if the provided id is in the ID list
-            return Object.keys(ids).some(function (id) {
-                return lockId === ids[id].lockId;
-            });
-        };
         const setIds = (data = {}) => {
             deleteOffline(); // Remove offline users' ids
 

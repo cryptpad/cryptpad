@@ -148,6 +148,12 @@ define([
                 oldCursor = undefined;
             }
         };
+
+        const setEditable = () => {
+            let editable = APP.online && !APP.readOnly && !APP.locked;
+            currentEditor?.editor?._tiptapEditor.setEditable(editable);
+        };
+
         provider.onResetUI(async (cpData, data) => {
             ydoc = new Y.Doc(yOpts);
             provider.reset(ydoc);
@@ -156,11 +162,6 @@ define([
 
             provider.updateUI(cpData, data, ydoc);
         });
-
-        const setEditable = () => {
-            let editable = APP.online && !APP.readOnly && !APP.locked;
-            currentEditor?.editor?._tiptapEditor.setEditable(editable)
-        };
 
         framework.onEditableChange(function () {
             APP.online = !framework.isLocked(); // connection state

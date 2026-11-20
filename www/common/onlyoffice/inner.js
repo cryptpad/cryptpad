@@ -352,7 +352,7 @@ define([
             });
         };
 
-        onRTCHistorySynced.reg(data => {
+        onRTCHistorySynced.reg(() => {
             if (typeof(APP.onHistorySynced) !== "function") { return; }
             APP.onHistorySynced();
             delete APP.onHistorySynced;
@@ -500,8 +500,6 @@ define([
 
             uploadCheckpoint(blob, data, true);
         };
-
-        var noLogin = false;
 
         var makeCheckpoint = function (force) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
@@ -3431,7 +3429,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var useNewDefault = content.version && content.version >= 2;
 
             loadDocument(newDoc, useNewDefault, (cpObj, cpData) => {
-            openRtChannel(cpData, Util.once(function (err, data) {
+            openRtChannel(cpData, Util.once(function () {
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
@@ -3849,7 +3847,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 UI.addLoadingScreen();
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             APP.rtcTools = RtChannel.init(APP, common);
         }).nThen(function (waitFor) {
             // XXX

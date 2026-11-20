@@ -4,9 +4,8 @@
 
 // Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
-    '/components/nthen/index.js',
-    '/api/config',
-], function (nThen, ApiConfig) {
+    '/common/common-hash.js',
+], function (Hash) {
     const RTC = {};
 
     RTC.addRpc = (sframeChan, Cryptpad, Utils, channels) => {

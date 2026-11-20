@@ -16,7 +16,7 @@ define([
 //    otherwise the menu will close and "/" will be printed
 // - linked documents
     YProvider.create = cfg => {
-        const { APP, framework, common, myId, yOpts, Y, awarenessProtocol } = cfg;
+        const { APP, framework, common, yOpts, Y, awarenessProtocol } = cfg;
         let { ydoc } = cfg;
 
 APP.ydoc = ydoc;
@@ -302,6 +302,7 @@ APP.Y = Y;
                 provider.synced = true;
                 onSynced.fire(true);
                 onLockChange.fire(false);
+                cb();
             });
         };
 
@@ -367,7 +368,7 @@ APP.Y = Y;
             // reset awareness
             initAwareness();
         };
-        const updateUI = (cpData, data, _ydoc) => {
+        const updateUI = (cpData, data) => {
             let next = (err, buffer) => {
                 return void resetFromCp(buffer, cpData, () => {
 

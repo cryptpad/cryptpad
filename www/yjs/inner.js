@@ -55,7 +55,7 @@ define([
 
         const applyDiff = diffs => {
             let pos = 0;
-            ydoc.transact((_) => {
+            ydoc.transact(() => {
                 diffs.forEach(d => {
                     if (d[0] === Diff.EQUAL) {
                         // EQUAL
@@ -73,7 +73,6 @@ define([
             }, myId);
         };
 
-        let oldVal = '';
         const onInput = () => {
             var currentVal = $textarea.val();
             const oldVal = ytext.toString();
@@ -95,10 +94,6 @@ define([
         provider.setContent(content);
         let getContent = () => {
             return content;
-        };
-        let setContent = (value) => {
-            content = value;
-            provider.setContent(content);
         };
 
         // OPTIONAL: cursor management
