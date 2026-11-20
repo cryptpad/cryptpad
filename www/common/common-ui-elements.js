@@ -4860,6 +4860,14 @@ define([
         return h('div.cp-drive-tree', content);
     };
 
+    UIElements.getLoginButton = function (common) {
+        var btn = $('<button>', {
+            'class': 'btn btn-success',
+        }).text(Messages.login_login);
+        $(btn).click(function () { common.setLoginRedirect('login'); });
+
+        return btn;
+    };
 
     return UIElements;
 });

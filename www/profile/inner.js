@@ -569,15 +569,10 @@ define([
         if (!privateData.readOnly && !common.isLoggedIn()) {
             UI.removeLoadingScreen();
 
-            var $p = $('<p>', {id: CREATE_ID}).text(Messages.profile_register);
-            var $a = $('<a>', {
-                href: APP.origin + '/register/'
-            });
-            $('<button>', {
-                'class': 'btn btn-success',
-            }).text(Messages.login_register).appendTo($a);
-            $p.append($('<br>')).append($a);
-            APP.$rightside.append($p);
+            var mustLogin = UI.errorLoadingScreen(Messages.mustLogin, false, function () {
+                common.setLoginRedirect('login');
+            }, true, UIElements.getLoginButton(common));
+            APP.$rightside.append(mustLogin);
             return;
         }
 

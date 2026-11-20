@@ -514,7 +514,9 @@ define([
     funcs.createPad = function (cfg, cb) {
         //var priv = ctx.metadataMgr.getPrivateData();
         if (AppConfig.disableAnonymousPadCreation && !funcs.isLoggedIn()) {
-            return void UI.errorLoadingScreen(Messages.mustLogin);
+            return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
+                funcs.setLoginRedirect('login');
+            }, true, UIElements.getLoginButton(funcs));
         }
         ctx.sframeChan.query("Q_CREATE_PAD", {
             owned: cfg.owned,
@@ -1008,10 +1010,9 @@ define([
                 }
                 var mustLogin = privateData.registeredOnly;
                 if (mustLogin) {
-                    UI.alert(Messages.mustLogin, function () {
+                    return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
                         funcs.setLoginRedirect('login');
-                    }, {forefront: true});
-                    return;
+                    }, true, UIElements.getLoginButton(funcs));
                 }
                 var blocked = privateData.premiumOnly && privateData.isNewFile;
                 if (blocked) {
