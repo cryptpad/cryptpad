@@ -1096,20 +1096,28 @@ define([
         $div.addClass('cp-online');
         var container = h('div#cp-app-contacts-container.cp-app-contacts-inapp');
         var content = [container];
-        APP.module.execCommand('OPEN_TEAM_CHAT', {
+        APP.module.execCommand('GET_TEAM_ROSTER', {
             teamId: APP.team
-        }, function (obj) {
-            if (obj && obj.error) {
-                if (obj.error === 'OFFLINE') { return; }
-                return void UI.alert(Messages.error);
-            }
-            common.setTeamChat(obj.channel);
-            MessengerUI.create($(container), common, {
-                chat: $('.cp-team-cat-chat'),
-                team: true,
-                readOnly: obj.readOnly
+        }, function (roster) {
+            var userData = common.getMetadataMgr().getUserData();
+            var user = (roster && !roster.error) ? roster[userData.curvePublic] : undefined;
+            var isOwner = user && user.role === 'OWNER' && !user.pendingOwner;
+            APP.module.execCommand('OPEN_TEAM_CHAT', {
+                teamId: APP.team
+            }, function (obj) {
+                if (obj && obj.error) {
+                    if (obj.error === 'OFFLINE') { return; }
+                    return void UI.alert(Messages.error);
+                }
+                common.setTeamChat(obj.channel);
+                MessengerUI.create($(container), common, {
+                    chat: $('.cp-team-cat-chat'),
+                    team: true,
+                    readOnly: obj.readOnly,
+                    canClearHistory: isOwner && !obj.readOnly
+                });
+                cb(content);
             });
-            cb(content);
         });
     });
 

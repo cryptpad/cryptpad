@@ -384,10 +384,12 @@ define([
                 data.isFriendChat ? removeHistory : undefined
             ];
             if (isApp) {
+                var canClearHistory = data.isTeamChat && toolbar && toolbar.canClearHistory;
                 headerContent = [
                     backButton,
                     h('div.cp-app-contacts-header-title', Messages.contacts_padTitle),
-                    moreHistory
+                    moreHistory,
+                    canClearHistory ? removeHistory : undefined
                 ];
             }
             var header = h('div.cp-app-contacts-header', headerContent);
