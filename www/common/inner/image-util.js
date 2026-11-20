@@ -67,10 +67,15 @@ define([
         return loadImage(href).then((blob) => URL.createObjectURL(blob));
     };
 
+    const downloadImage = async function (href, name) {
+        return loadImage(href).then((blob) => window.saveAs(blob, name));
+    };
+
     return {
         getCryptPadUrl,
         parseCryptPadUrl,
         loadImage,
         resolveImageUrl,
+        downloadImage
     };
 });

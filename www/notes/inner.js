@@ -49,7 +49,7 @@ define([
                     fileType: ['image/png', 'image/jpeg']
                 }
             }, (data) => {
-                if (data.type !== 'file') { return; }
+                if (!data || data.type !== 'file') { return; }
                 common.setPadAttribute('atime', +new Date(), null, data.href);
                 cb({
                     name: data.name,
@@ -78,9 +78,6 @@ define([
         const createEditor = async () => {
             const editorEl = h('div#cp-notes-content');
             $container.append(editorEl);
-            provider.provider.on('synced', () => {
-                console.error('provider synced');
-            });
             APP.editor = currentEditor = BlockNote.useBlockNoteEditor(editorEl, {
                 trailingBlock: true,
                 resolveFileUrl: ImageUtil.resolveImageUrl,
@@ -88,6 +85,7 @@ define([
                     editable: !priv.readOnly,
                     theme: window.CryptPad_theme === 'dark' ? 'dark' : 'light',
                     uploadImageFromCryptDrive,
+                    downloadImage: ImageUtil.downloadImage
                 },
                 collaboration: {
                     provider: provider.provider,
@@ -99,7 +97,11 @@ define([
                 },
             });
         };
-        createEditor();
+        // mount only after the checkpoint is in the Yjs doc
+        provider.provider.on('synced', () => {
+            console.error('provider synced');
+            if (!currentEditor) { createEditor(); }
+        });
 
         const resetEditor = async () => {
             if (currentEditor) {
