@@ -17,62 +17,6 @@ define([
     '/common/common-icons.js',
 ], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements, Constants, PadTypes, Extensions, Icons) {
     return function () {
-        document.title = Msg.features;
-        Msg.features_f_apps_note = PadTypes.availableTypes.map(function (app) {
-            if (AppConfig.registeredOnlyTypes.indexOf(app) !== -1) { return; }
-            if (AppConfig.premiumTypes && AppConfig.premiumTypes.includes(app)) { return; }
-            if (Constants.earlyAccessApps && Constants.earlyAccessApps.includes(app) &&
-                  AppConfig.enableEarlyAccess) { return; }
-            return Msg.type[app];
-        }).filter(function (x) { return x; }).join(', ');
-
-        var groupItemTemplate = function (title, content) {
-            return h('li.list-group-item', [
-                Icons.get('check'),
-                h('div.cp-content', [
-                    h('div.cp-feature', title),
-                    h('div.cp-note', content),
-                ])
-            ]);
-        };
-
-        var defaultGroupItem = function (key) {
-            return groupItemTemplate(
-                Msg['features_f_' + key],
-                Msg['features_f_' + key + '_note']
-            );
-        };
-
-        var SPECIAL_GROUP_ITEMS = {};
-        SPECIAL_GROUP_ITEMS.storage0 = function (f) {
-            return groupItemTemplate(
-                Msg['features_f_' + f], // .features_f_storage0
-                Msg._getKey('features_f_' + f + '_note', [Config.inactiveTime]) // .features_f_storage0_note
-            );
-        };
-        SPECIAL_GROUP_ITEMS.file1 = function (f) {
-            return groupItemTemplate(
-                Msg['features_f_' + f], // .features_f_file1
-                Msg._getKey('features_f_' + f + '_note', [Config.maxUploadSize / 1024 / 1024]) // .features_f_file1_note
-            );
-        };
-        SPECIAL_GROUP_ITEMS.storage1 = function (f) {
-            return groupItemTemplate(
-                Msg._getKey('features_f_' + f, [UIElements.prettySize(Config.defaultStorageLimit)]), // .features_f_storage1
-                Msg['features_f_' + f + '_note'] // .features_f_storage1_note
-            );
-        };
-        SPECIAL_GROUP_ITEMS.storage2 = function (f) {
-            return groupItemTemplate(
-                Msg['features_f_' + f], // .features_f_storage2
-                Msg._getKey('features_f_' + f + '_note', [Config.premiumUploadSize / 1024 / 1024]) // .features_f_storage2_note
-            );
-        };
-
-        var groupItem = function (key) {
-            return (SPECIAL_GROUP_ITEMS[key] || defaultGroupItem)(key);
-        };
-
         var featureCard = function (feature) {
             return h('div.cp-card-item', [
                 h('div.cp-feature-card', [
@@ -241,18 +185,6 @@ define([
         var availableFeatures = featureList.map(featureCard);
         var info = infoList.map(infoCard);
         var bottomInfo = bottomInfoList.map(infoCard);
-
-        // Msg.features_premium
-        // Msg.features_pricing
-        // Msg.features_emailRequired
-        // Msg.features_f_subscribe, .features_f_subscribe_note
-        // Msg.features_f_reg, .features_f_reg_note
-        // Msg.features_f_support, .features_f_support_note
-        // Msg.features_f_supporter, .features_f_supporter_note
-        Extensions.getExtensionsSync('EXTRA_PRICING').forEach(ext => {
-            if (!ext.getContent) { return; }
-            availableFeatures.push(ext.getContent(groupItem));
-        });
 
         return h('div#cp-main', [
             Pages.infopageTopbar(),
