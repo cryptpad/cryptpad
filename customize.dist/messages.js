@@ -201,6 +201,7 @@ define(req, function(AppConfig, Default, Language) {
     Messages.features_try_subtitle = "Bring your next project into one private workspace.";
     Messages.features_try_content= "Explore the apps, organise the work in Drive and collaborate with clear control.";
     Messages.features_try_button = "Try it now";
+    Messages.help_generic = "Learn more";
     return Messages;
 
 });

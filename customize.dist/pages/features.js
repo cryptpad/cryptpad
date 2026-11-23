@@ -35,7 +35,7 @@ define([
                                 href: feature.href || 'https://docs.cryptpad.org/',
                                 target: '_blank',
                                 rel: 'noopener noreferrer'
-                            }, Icons.get('documentation'), 'Learn more')
+                            }, Icons.get('documentation'), Msg.help_generic)
                         ])
                     ])
                 ])
