@@ -352,7 +352,7 @@ define([
             });
         };
 
-        onRTCHistorySynced.reg(data => {
+        onRTCHistorySynced.reg(() => {
             if (typeof(APP.onHistorySynced) !== "function") { return; }
             APP.onHistorySynced();
             delete APP.onHistorySynced;
@@ -501,8 +501,6 @@ define([
             uploadCheckpoint(blob, data, true);
         };
 
-        var noLogin = false;
-
         var makeCheckpoint = function (force) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
 
@@ -513,48 +511,13 @@ define([
 
             if (!needCp) { return; }
 
-            APP.rtcTools.makeCheckpoint(force, proceed => {
-                if (!proceed) { return; }
-                saveToServer();
-            });
-
-            /* XXX allow temp rpc
-        var isRegisteredUserOnline = function () {
-            var users = metadataMgr.getMetadata().users || {};
-            return Object.keys(users).some(function (id) {
-                return users[id] && users[id].curvePublic;
-            });
-        };
 
             if (!locked || !isUserOnline(locked) || force) {
-                if (!common.isLoggedIn() && !isRegisteredUserOnline() && !noLogin) {
-                    var login = h('button.cp-corner-primary', Messages.login_login);
-                    var register = h('button.cp-corner-primary', Messages.login_register);
-                    var cancel = h('button.cp-corner-cancel', Messages.cancel);
-                    var actions = h('div', [cancel, register, login]);
-                    var modal = UI.cornerPopup(Messages.oo_login, actions, '', {alt: true});
-                    $(register).click(function () {
-                        common.setLoginRedirect('register');
-                        modal.delete();
-                    });
-                    $(login).click(function () {
-                        common.setLoginRedirect('login');
-                        modal.delete();
-                    });
-                    $(cancel).click(function () {
-                        modal.delete();
-                        noLogin = true;
-                    });
-                    return;
-                }
-                if (!common.isLoggedIn()) { return; }
-                content.saveLock = myOOId;
-                APP.onLocal();
-                APP.realtime.onSettle(function () {
+                APP.rtcTools.makeCheckpoint(force, proceed => {
+                    if (!proceed) { return; }
                     saveToServer();
                 });
             }
-            */
         };
 
         var loadInitDocument = function (type, useNewDefault) {
@@ -3466,7 +3429,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var useNewDefault = content.version && content.version >= 2;
 
             loadDocument(newDoc, useNewDefault, (cpObj, cpData) => {
-            openRtChannel(cpData, Util.once(function (err, data) {
+            openRtChannel(cpData, Util.once(function () {
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 initializing = false;
@@ -3477,7 +3440,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var m = metadataMgr.getChannelMembers().filter(function (str) {
                     return str.length === 32;
                 }).length;
-                if ((m - v) === 1 && !readOnly && common.isLoggedIn()) {
+                if ((m - v) === 1 && !readOnly) {
                     var needCp = ooChannel.queue.length > CHECKPOINT_INTERVAL;
                     APP.initCheckpoint = needCp;
                 }
@@ -3884,7 +3847,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 UI.addLoadingScreen();
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             APP.rtcTools = RtChannel.init(APP, common);
         }).nThen(function (waitFor) {
             // XXX

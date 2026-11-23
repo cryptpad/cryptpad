@@ -7,6 +7,7 @@
 @import (reference) "../../customize/src/less2/include/framework.less";
 @import (reference) "../../customize/src/less2/include/tools.less";
 @import (reference) "../../customize/src/less2/include/avatar.less";
+@import (inline) "../common/blocknote.css";
 
 // body
 &.cp-app-notes {
@@ -23,12 +24,27 @@
 
     #cp-app-notes-editor {
         display: flex;
+        flex: 1;
+        min-height: 0;
+        min-width: 0;
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+        z-index: 0;
 
         #cp-notes-content {
             flex: 1;
-            textarea {
-                height: 300px;
-                width: 800px;
+            min-height: 0;
+            overflow: auto;
+
+            .bn-editor {
+                min-height: 100%;
+                max-width: 52rem;
+                margin: 0 auto;
+                padding-top: 4rem;
+                padding-bottom: 40vh;
+                padding-inline: 54px 12px;
+                background-color: @cp_app-bg;
             }
         }
     }

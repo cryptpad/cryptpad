@@ -31,6 +31,7 @@ const factory = AStore => {
             // Store
             GET: Store.get,
             SET: Store.set,
+            GET_TEMP_KEYS: Store.getTempKeys,
             ADD_PAD: Store.addPad,
             SET_PAD_TITLE: Store.setPadTitle,
             MOVE_TO_TRASH: Store.moveToTrash,

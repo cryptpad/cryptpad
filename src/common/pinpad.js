@@ -4,7 +4,7 @@
 
 (function () {
 var factory = function (Util, Rpc) {
-    var create = function (network, proxy, _cb, Cache) {
+    var create = function (network, proxy, _cb, Cache, tempRpc) {
         if (typeof(_cb) !== 'function') { throw new Error("Expected callback"); }
         var cb = Util.once(Util.mkAsync(_cb));
 
@@ -25,6 +25,54 @@ var factory = function (Util, Rpc) {
 
             // expose the supplied publicKey as an identifier
             exp.publicKey = edPublic;
+
+            // upload command
+            exp.uploadComplete = function (id, cb) {
+                rpc.send('UPLOAD_COMPLETE', id, function (e, res) {
+                    if (e) { return void cb(e); }
+                    var id = res[0];
+                    if (typeof(id) !== 'string') {
+                        return void cb('INVALID_ID');
+                    }
+                    cb(void 0, id);
+                });
+            };
+
+            exp.ownedUploadComplete = function (id, cb) {
+                rpc.send('OWNED_UPLOAD_COMPLETE', id, function (e, res) {
+                    if (e) { return void cb(e); }
+                    var id = res[0];
+                    if (typeof(id) !== 'string') {
+                        return void cb('INVALID_ID');
+                    }
+                    cb(void 0, id);
+                });
+            };
+
+            exp.uploadStatus = function (data, cb) {
+                if (typeof(data?.size) !== 'number') {
+                    return void setTimeout(function () {
+                        cb('INVALID_SIZE');
+                    });
+                }
+                rpc.send('UPLOAD_STATUS', data, function (e, res) {
+                    if (e) { return void cb(e); }
+                    var pending = res[0];
+                    if (typeof(pending) !== 'boolean') {
+                        return void cb('INVALID_RESPONSE');
+                    }
+                    cb(void 0, pending);
+                });
+            };
+
+            exp.uploadCancel = function (data, cb) {
+                rpc.send('UPLOAD_CANCEL', data, function (e) {
+                    if (e) { return void cb(e); }
+                    cb();
+                });
+            };
+
+            if (tempRpc) { return void cb(e, exp); }
 
             // expose the RPC module's raw 'send' command
             exp.send = rpc.send;
@@ -153,51 +201,6 @@ var factory = function (Util, Rpc) {
                     } else {
                         cb('INVALID_RESPONSE');
                     }
-                });
-            };
-
-            exp.uploadComplete = function (id, cb) {
-                rpc.send('UPLOAD_COMPLETE', id, function (e, res) {
-                    if (e) { return void cb(e); }
-                    var id = res[0];
-                    if (typeof(id) !== 'string') {
-                        return void cb('INVALID_ID');
-                    }
-                    cb(void 0, id);
-                });
-            };
-
-            exp.ownedUploadComplete = function (id, cb) {
-                rpc.send('OWNED_UPLOAD_COMPLETE', id, function (e, res) {
-                    if (e) { return void cb(e); }
-                    var id = res[0];
-                    if (typeof(id) !== 'string') {
-                        return void cb('INVALID_ID');
-                    }
-                    cb(void 0, id);
-                });
-            };
-
-            exp.uploadStatus = function (data, cb) {
-                if (typeof(data?.size) !== 'number') {
-                    return void setTimeout(function () {
-                        cb('INVALID_SIZE');
-                    });
-                }
-                rpc.send('UPLOAD_STATUS', data, function (e, res) {
-                    if (e) { return void cb(e); }
-                    var pending = res[0];
-                    if (typeof(pending) !== 'boolean') {
-                        return void cb('INVALID_RESPONSE');
-                    }
-                    cb(void 0, pending);
-                });
-            };
-
-            exp.uploadCancel = function (data, cb) {
-                rpc.send('UPLOAD_CANCEL', data, function (e) {
-                    if (e) { return void cb(e); }
-                    cb();
                 });
             };
 

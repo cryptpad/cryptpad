@@ -1,24 +1,28 @@
 define([
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/common/yjs-bundle.js',
     '/file/file-crypto.js',
     '/common/inner/rtchannel.js',
-], (Util, Hash, YBundle, FileCrypto, RtChannel) => {
+], (Util, Hash, FileCrypto, RtChannel) => {
     const YProvider = {};
-    const { YJS:Y } = YBundle;
 
     const debug = (x, type) => {
         if (!window.CP_DEV_MODE) { return; }
         console.error(x, type);
     };
 
+// XXX TODO
+// - no checkpoint when slash menu is open?
+//    otherwise the menu will close and "/" will be printed
+// - linked documents
     YProvider.create = cfg => {
-        const { APP, framework, common, myId, yOpts } = cfg;
+        const { APP, framework, common, yOpts, Y, awarenessProtocol } = cfg;
         let { ydoc } = cfg;
 
 APP.ydoc = ydoc;
 APP.Y = Y;
+
+        let awareness;
 
         APP.onLocal ||= framework?.localChange;
         APP.realtime ||= framework?._.cpNfInner.chainpad;
@@ -36,16 +40,17 @@ APP.Y = Y;
             checkCheckpoint,
             makeCheckpoint,
             uploadCheckpoint,
+            checkLinkedDocs,
             setIds
         } = rtcTools;
         const provider = {
             synced: false
         };
 
-        const CHECKPOINT_INTERVAL = 10;
+        const CHECKPOINT_INTERVAL = 20;
 
         // Yjs/BlockNote
-        const onSynced = Util.mkEvent(true);
+        const onSynced = Util.mkEvent();
 
         // Yjs/CryptPad
         const onRemote = Util.mkEvent();
@@ -58,6 +63,102 @@ APP.Y = Y;
             lastTime: 0
         };
         let oldContent;
+
+        const getLastChannel = () => {
+            const cpData = getLastCp();
+            return cpData.rtChannel || oldContent?.channel;
+        };
+
+        const getClientsFromState = (id, state) => {
+            let clients = [];
+            state.keys().forEach(i => {
+                let user = state.get(i)?.user;
+                if (!user) { return; }
+                if (user.id.indexOf(id) === 0) {
+                    clients.push(i);
+                }
+            });
+            return clients;
+        };
+
+        const applyRemoteCursor = u => {
+            try {
+                let update = Util.decodeBase64(u);
+                awarenessProtocol.applyAwarenessUpdate(awareness, update, "remote");
+            } catch (e) { console.error(e, u); }
+        };
+
+        let cursorData = {};
+        let cursorQueue = [];
+        framework.setCursorGetter(() => {
+            return cursorData;
+        });
+        framework.onCursorUpdate(({id, cursor, leave}) => {
+            // Delete from queue all updates applying to the same client
+            cursorQueue = cursorQueue.filter(obj => {
+                let _id = obj.id;
+                if (_id.indexOf(id) === 0) {
+                    debug('Remove cursor from queue', obj);
+                    return false;
+                }
+                return true;
+            });
+
+            // Remove from UI all cursors from disconnected users
+            if (id && leave && typeof(cursor) === "undefined") {
+                const state = awareness?.getStates();
+                const toRemove = getClientsFromState(id, state);
+                awarenessProtocol.removeAwarenessStates(awareness, toRemove, "remote");
+            }
+
+            if (typeof(cursor?.u) !== "string") { return; }
+            const theirChan = cursor?.c;
+            // Make sure the cursor matches our current channel
+            if (theirChan !== current.ready) {
+                // If this is a cursor for a new channel not yet loaded,
+                // keep it in memory
+                if (theirChan === getLastChannel()) {
+                    debug('Push cursor to queue');
+                    cursorQueue.push({id, u: cursor?.u});
+                }
+                // Otherwise if it is for an old checkpoint, just ignore it
+                return;
+            }
+
+            // Correct channel: apply the cursor update
+            applyRemoteCursor(cursor?.u);
+        });
+        // When new channel is ready, apply all queued cursors
+        onSynced.reg(synced => {
+            if (!synced) { return; }
+            cursorQueue.forEach(obj => {
+                applyRemoteCursor(obj?.u);
+            });
+            cursorQueue = [];
+        });
+
+
+        const initAwareness = () => {
+            if (awareness?.destroy) { awareness.destroy(); }
+            awareness = provider.awareness = new awarenessProtocol.Awareness(ydoc);
+            const id = Util.uid();
+            awareness.id = id;
+            awareness.on("update", ({ added, updated, removed }, origin) => {
+                if (origin === "remote") { return; } // only my local cursor
+
+                const clients = added.concat(updated).concat(removed);
+                const update = awarenessProtocol.encodeAwarenessUpdate(awareness, clients); // Uint8Array
+
+                // Send to cursor channel
+                cursorData = {
+                    c: current.ready,
+                    u: Util.encodeBase64(update)
+                };
+                framework.updateCursor();
+            });
+        };
+
+        initAwareness();
 
         // On chainpad change, check new saveLock and update "content"
         const chainpadContentUpdate = (content) => {
@@ -89,15 +190,12 @@ APP.Y = Y;
         };
 
         const getCloneBlob = () => {
-            const clone = new Y.Doc(yOpts); // XXX options
+            const clone = new Y.Doc(yOpts);
             ydoc.share.forEach((value, key) => {
                 let clonedValue = value.clone();
                 clonedValue._integrate(clone, null);
                 clone.share.set(key, clonedValue);
             });
-
-            // console.error('before', Y.encodeStateAsUpdate(ydoc));
-            // console.error('after', Y.encodeStateAsUpdate(clone));
 
             const state = Y.encodeStateAsUpdate(clone);
             const blob = new Blob([state], {});
@@ -131,9 +229,8 @@ APP.Y = Y;
             makeCheckpoint(false, proceed => {
                 // If someone else has locked th document, abort
                 if (!proceed) { return; }
-                // We've taken the saveLock
 
-                // XXX "saveToServer"
+                // We've taken the saveLock
                 const { blob, state } = getCloneBlob();
                 blob.noThumb = true;
                 blob.name = metadataMgr.getMetadataLazy().title || 'doc';
@@ -152,7 +249,7 @@ APP.Y = Y;
         onRTCMessage.reg(data => {
             debug("Receiving update", data.msg);
             const update = Util.decodeBase64(data.msg);
-            Y.applyUpdate(ydoc, update);
+            Y.applyUpdate(ydoc, update, 'remote');
             clearTimeout(current.cpTo);
             current.index++;
             current.lastTime = Date.now();
@@ -161,7 +258,7 @@ APP.Y = Y;
 
         // On local ydoc update: send message
         const onUpdate = (update, origin) => {
-            if (origin !== myId) { return; }
+            if (origin === 'remote') { return; }
             const msg = Util.encodeBase64(update);
             current.lastTime = Date.now();
             rtChannel.sendMsg(msg, false, () => {
@@ -187,22 +284,25 @@ APP.Y = Y;
             const chan = cpData?.rtChannel || oldContent?.channel;
             if (chan !== current.channel) {
                 debug(`Reset with new channel: ${chan}`);
+                onSynced.fire(false);
                 current.index = 0;
                 current.channel = chan;
             }
 
             if (cpData?.file && buffer) {
                 let u8 = new Uint8Array(buffer);
-                Y.applyUpdate(ydoc, u8);
+                Y.applyUpdate(ydoc, u8, 'remote');
                 onRemote.fire();
             }
 
 
             openRtChannel(cpData, () => {
+                current.ready = chan;
                 debug('rtchannel ready');
                 provider.synced = true;
                 onSynced.fire(true);
                 onLockChange.fire(false);
+                cb();
             });
         };
 
@@ -251,6 +351,8 @@ APP.Y = Y;
 
         // Initialize ydoc with latest content
         const initDoc = () => {
+            checkLinkedDocs();
+
             const cpData = getLastCp();
 
             loadCp(cpData, (err, buffer) => {
@@ -260,12 +362,15 @@ APP.Y = Y;
             });
         };
 
-        const updateUI = (cpData, data, _ydoc) => {
+        const reset = (_ydoc) => {
+            // reset ydoc
             ydoc.destroy();
             ydoc = APP.ydoc = _ydoc;
-
             initYDoc();
-
+            // reset awareness
+            initAwareness();
+        };
+        const updateUI = (cpData, data) => {
             let next = (err, buffer) => {
                 return void resetFromCp(buffer, cpData, () => {
 
@@ -298,6 +403,7 @@ APP.Y = Y;
             setContent,
             setIds,
             chainpadContentUpdate,
+            reset,
             provider
         };
     };
