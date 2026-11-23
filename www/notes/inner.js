@@ -82,7 +82,7 @@ define([
 
         let currentEditor;
         let user = {
-            name: userData.name,
+            name: userData.name || Messages.anonymous,
             color: userData.color,
             id: `${metadataMgr.getNetfluxId()}-${priv.clientId}`
         };
@@ -130,7 +130,7 @@ define([
         metadataMgr.onChange(() => {
             const userData = metadataMgr.getUserData();
             if (userData.name !== user.name || userData.color !== user.color) {
-                user.name = userData.name;
+                user.name = userData.name || Messages.anonymous;
                 user.color = userData.color;
             }
             const netfluxId = metadataMgr.getNetfluxId();
