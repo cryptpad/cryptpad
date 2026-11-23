@@ -35,6 +35,11 @@ define([
         locked: true,
     };
 
+    const debug = (x, type) => {
+        if (!window.CP_DEV_MODE) { return; }
+        console.error(x, type);
+    };
+
     // This is the main initialization loop
     const onFrameworkReady = (framework) => {
         const common = framework._.sfCommon;
@@ -84,6 +89,7 @@ define([
 
         const createEditor = async () => {
             const editorEl = h('div#cp-notes-content');
+            $container.find('#cp-notes-content').remove();
             $container.append(editorEl);
             APP.editor = currentEditor = BlockNote.useBlockNoteEditor(editorEl, {
                 trailingBlock: true,
@@ -102,9 +108,23 @@ define([
             });
         };
         // mount only after the checkpoint is in the Yjs doc
-        provider.provider.on('synced', () => {
-            console.error('provider synced');
-            if (!currentEditor) { createEditor(); }
+        let oldCursor;
+        provider.provider.on('synced', async (synced) => {
+            if (!synced) { return; }
+            // If no editor, create it
+            if (currentEditor) { return; }
+            await createEditor();
+            setEditable();
+            // Restore previous cursor?
+            if (!oldCursor) { return; }
+            const { anchor, head } = oldCursor;
+            const restore = () => {
+                currentEditor.editor._tiptapEditor.commands.setTextSelection({ from: anchor, to: head });
+                currentEditor.editor.focus();
+                currentEditor.editor._tiptapEditor.off('create', restore);
+            };
+            currentEditor.editor._tiptapEditor.on('create', restore);
+            oldCursor = undefined;
         });
 
         metadataMgr.onChange(() => {
@@ -118,47 +138,29 @@ define([
             user.id = `${netfluxId}-${priv.clientId}`;
         });
 
-        let oldCursor;
-        const resetEditor = async () => {
-            if (currentEditor) {
-                try {
-                    const selection = currentEditor.editor._tiptapEditor?.state?.selection;
-                    if (selection) {
-                        oldCursor = {
-                            anchor: selection?.$anchor.pos || 0,
-                            head: selection?.$head.pos || 0
-                        };
-                    }
-                    currentEditor.unmount();
-                    currentEditor.editor._tiptapEditor.destroy();
-                    currentEditor.ydoc.destroy();
-                    $container.empty();
-                } catch (err) {
-                    console.error(err);
+        const removeEditor = () => {
+            if (!currentEditor) { return; }
+            try {
+                const selection = currentEditor.editor._tiptapEditor?.state?.selection;
+                if (selection) {
+                    oldCursor = {
+                        anchor: selection?.$anchor.pos || 0,
+                        head: selection?.$head.pos || 0
+                    };
                 }
-                currentEditor = null;
+                currentEditor.unmount();
+                currentEditor.editor._tiptapEditor.destroy();
+                currentEditor.ydoc.destroy();
+                $container.find('#cp-notes-content').empty();
+            } catch (err) {
+                console.error(err);
             }
-            await createEditor();
-            if (oldCursor) {
-                const { anchor, head } = oldCursor;
-                const restore = (synced) => {
-                    if (!synced) { return; }
-                    setTimeout(() => {
-                        currentEditor.editor._tiptapEditor.commands.setTextSelection({ from: anchor, to: head });
-                        currentEditor.editor.focus();
-                    });
-                    provider.provider.off('synced', restore);
-                };
-                provider.provider.on('synced', restore);
-                oldCursor = undefined;
-            }
+            currentEditor = undefined;
         };
         provider.onResetUI(async (cpData, data) => {
             ydoc = new Y.Doc(yOpts);
+            removeEditor();
             provider.reset(ydoc);
-            await resetEditor();
-            setEditable();
-
             provider.updateUI(cpData, data, ydoc);
         });
 
@@ -179,7 +181,7 @@ define([
         });
 
         framework.onContentUpdate(function (newContent) {
-            console.log('New content received from others', newContent.content);
+            debug('New content received from others', newContent.content);
             // Update local content
             content = newContent.content;
             // Update Yjs & rtChannel object
@@ -187,7 +189,7 @@ define([
         });
 
         framework.setContentGetter(function () {
-            console.log('Sync my content with others', content);
+            debug('Sync my content with others', content);
             return {
                 content: content
             };
@@ -196,7 +198,7 @@ define([
 
         framework.onReady(function () {
             // Document is ready, you can initialize your app
-            console.log('Document is ready:', content);
+            debug('Document is ready:', content);
 
             if (!content.channel && !Object.keys(content.hashes).length) {
                 content.channel = Hash.createChannelId();
