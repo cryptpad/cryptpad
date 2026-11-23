@@ -190,7 +190,7 @@ define([
             Pages.infopageTopbar(),
             h('div.cp-container',[
                 h('div.cp-page-title',[
-                    h('h1', "One private workspace. Everything connected.")
+                    h('h1', Msg.features_page_title)
                 ]),
                 h('div.cp-container.cp-features-web', h('div.info-cards-container', info)),
                 h('div.cp-container.cp-features-web', h('div.features-grid-container', availableFeatures)),
