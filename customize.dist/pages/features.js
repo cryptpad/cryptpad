@@ -32,7 +32,7 @@ define([
                     h('div.feature-card-section', [
                         h('div.cp-features-docs', [
                             h('a.cp-features-docs-button', {
-                                href: feature.href || 'https://docs.cryptpad.org/',
+                                href: feature.href || 'https://cryptpad.org/',
                                 target: '_blank',
                                 rel: 'noopener noreferrer'
                             }, Icons.get('documentation'), Msg.help_generic)
@@ -69,7 +69,7 @@ define([
             ]);
         };
 
-        var docsApps = 'https://docs.cryptpad.org/en/user_guide/apps/';
+        var orgApps = 'https://cryptpad.org/apps/';
 
         var featureList = [
             {
@@ -77,63 +77,63 @@ define([
                 icon: 'code',
                 subtitle: Msg.features_code_subtitle,
                 content: Msg.features_code_content,
-                href: docsApps + 'code.html'
+                href: orgApps + 'markdown'
             },
             {
                 title: Msg.type.diagram,
                 icon: 'diagram',
                 subtitle: Msg.features_diagram_subtitle,
                 content: Msg.features_diagram_content,
-                href: docsApps + 'diagram.html'
+                href: orgApps + 'diagram'
             },
             {
                 title: Msg.type.form,
                 icon: 'form',
                 subtitle: Msg.features_forms_subtitle,
                 content: Msg.features_forms_content,
-                href: docsApps + 'form.html'
+                href: orgApps + 'form'
             },
             {
                 title: Msg.type.kanban,
                 icon: 'kanban',
                 subtitle: Msg.features_kanban_subtitle,
                 content: Msg.features_kanban_content,
-                href: docsApps + 'kanban.html'
+                href: orgApps + 'kanban'
             },
             {
                 title: Msg.type.presentation,
                 icon: 'presentation',
                 subtitle: Msg.features_presentation_subtitle,
                 content: Msg.features_presentation_content,
-                href: docsApps + 'presentation.html'
+                href: orgApps + 'presentation'
             },
             {
                 title: Msg.type.sheet,
                 icon: 'sheet',
                 subtitle: Msg.features_sheet_subtitle,
                 content: Msg.features_sheet_content,
-                href: docsApps + 'sheets.html'
+                href: orgApps + 'sheet'
             },
             {
                 title: Msg.type.doc,
                 icon: 'doc',
                 subtitle: Msg.features_doc_subtitle,
                 content: Msg.features_doc_content,
-                href: docsApps + 'document.html'
+                href: orgApps + 'document'
             },
             {
                 title: Msg.type.slide,
                 icon: 'slide',
                 subtitle: Msg.features_slide_subtitle,
                 content: Msg.features_slide_content,
-                href: docsApps + 'slides.html'
+                href: orgApps + 'presentation'
             },
             {
                 title: Msg.type.pad,
                 icon: 'pad',
                 subtitle: Msg.features_pad_subtitle,
                 content: Msg.features_pad_content,
-                href: docsApps + 'richtext.html'
+                href: orgApps + 'rich-text'
             }
         ];
 
@@ -205,4 +205,3 @@ define([
         ]);
     };
 });
-
