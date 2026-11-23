@@ -17,6 +17,7 @@ define([
     '/common/common-icons.js',
 ], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements, Constants, PadTypes, Extensions, Icons) {
     return function () {
+        document.title = Msg.features;
         var featureCard = function (feature) {
             return h('div.cp-card-item', [
                 h('div.cp-feature-card', [
