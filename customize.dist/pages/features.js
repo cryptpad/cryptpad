@@ -3,19 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
-    'jquery',
     '/common/hyperscript.js',
     '/customize/messages.js',
-    '/customize/application_config.js',
-    '/common/outer/local-store.js',
     '/customize/pages.js',
-    '/api/config',
-    '/common/common-ui-elements.js',
-    '/common/common-constants.js',
-    '/common/pad-types.js',
-    '/common/extensions.js',
-    '/common/common-icons.js',
-], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements, Constants, PadTypes, Extensions, Icons) {
+    '/common/common-icons.js'
+], function (h, Msg, Pages, Icons) {
     return function () {
         document.title = Msg.features;
         var featureCard = function (feature) {
