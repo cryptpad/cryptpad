@@ -40,6 +40,7 @@ APP.Y = Y;
             checkCheckpoint,
             makeCheckpoint,
             uploadCheckpoint,
+            checkLinkedDocs,
             setIds
         } = rtcTools;
         const provider = {
@@ -189,7 +190,7 @@ APP.Y = Y;
         };
 
         const getCloneBlob = () => {
-            const clone = new Y.Doc(yOpts); // XXX options
+            const clone = new Y.Doc(yOpts);
             ydoc.share.forEach((value, key) => {
                 let clonedValue = value.clone();
                 clonedValue._integrate(clone, null);
@@ -228,9 +229,8 @@ APP.Y = Y;
             makeCheckpoint(false, proceed => {
                 // If someone else has locked th document, abort
                 if (!proceed) { return; }
-                // We've taken the saveLock
 
-                // XXX "saveToServer"
+                // We've taken the saveLock
                 const { blob, state } = getCloneBlob();
                 blob.noThumb = true;
                 blob.name = metadataMgr.getMetadataLazy().title || 'doc';
@@ -351,6 +351,8 @@ APP.Y = Y;
 
         // Initialize ydoc with latest content
         const initDoc = () => {
+            checkLinkedDocs();
+
             const cpData = getLastCp();
 
             loadCp(cpData, (err, buffer) => {

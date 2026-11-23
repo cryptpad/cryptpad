@@ -205,7 +205,6 @@ define([
                 content.channel = Hash.createChannelId();
                 content.ctime ||= +new Date();
                 framework.localChange();
-                //checkLinkedDocs(); XXX
             }
 
             provider.setIds();
