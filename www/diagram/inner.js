@@ -199,12 +199,6 @@ define([
         });
 
         var loadDiagram = function() {
-            if (!framework.isIntegrated()) {
-                checkDefaultTheme(function(theme) {
-                    var defaultTheme = theme;
-                    parameters.set('ui', defaultTheme);
-                });
-            }
             var isReadOnly = framework.isReadOnly() ? 0 : 1;
             parameters.set('chrome', isReadOnly);
             drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
@@ -217,15 +211,11 @@ define([
         if (framework.isIntegrated()) {
             loadDiagram();
         } else {
-            //wait for metadata to update before checking the theme and loading Drawio UI
-            var metadataMgr = framework._.sfCommon.getMetadataMgr();
-            var onChange = function() {
-                var privateData = metadataMgr.getPrivateData();
-                if (!privateData.settings.toolbar) { return; }
+            framework._.sfCommon.getAttribute(['diagram', 'mode'], function (err, mode) {
+                if (err) { console.error(err); }
+                parameters.set('ui', mode || 'sketch');
                 loadDiagram();
-                metadataMgr.off('change', onChange);
-            };
-            metadataMgr.onChange(onChange);
+            });
         }
 
         window.addEventListener("message", (event) => {
