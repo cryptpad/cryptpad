@@ -288,6 +288,10 @@ define([
         var t = {
             element: target || h('input'),
         };
+        $(t.element).find('input').addBack('input').attr({ // remove the off-screen input from the tab order
+            tabindex: '-1',
+            'aria-hidden': 'true'
+        });
         var $t = t.tokenfield = $(t.element).tokenfield({
             autocomplete: {
                 source: autocomplete,
@@ -342,13 +346,17 @@ define([
                     $container.prepend(h('span.tokenfield-empty', Messages.kanban_noTags));
                 }
                 $tokens.find('.close').attr('tabindex', 0).empty().append(Icons.get('delete-token')).on('keydown', e => {
-                    e.stopPropagation();
+                    if (e.which !== 9) {
+                        e.stopPropagation();
+                    }
                 });
                 $tokens.find('.token-label').attr('tabindex', 0).on('keydown', function (e) {
                     if (e.which === 13 || e.which === 32) {
                         $(this).dblclick();
                     }
-                    e.stopPropagation();
+                    if (e.which !== 9) {
+                        e.stopPropagation();
+                    }
                 });
                 $form.append($input);
                 $form.append($button);
@@ -505,6 +513,7 @@ define([
         setTimeout(function () {
             field.setTokens(tags);
             field.focus();
+            UI.addTabListener(tagger);
         });
 
         var $field = field.tokenfield.closest('.tokenfield').find('.token-input');
@@ -592,7 +601,13 @@ define([
     let addTabListener = UI.addTabListener = frame => {
         $(frame).attr('role', 'dialog').attr('aria-modal', 'true');
         // find focusable elements
-        let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)');
+        let getFocusable = () => $(frame)
+            .find('a, button, input, textarea, [tabindex]')
+            .filter(':visible')
+            .not(':disabled')
+            .not('[tabindex="-1"]');
+
+        let modalElements = getFocusable();
 
         if (modalElements.length === 0) {
             // there are no focusable elements -> nothing to do for us here
@@ -603,7 +618,7 @@ define([
         modalElements[0].focus();
 
         $(frame).on('keydown', function (e) {
-            modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)'); // for modals with dynamic content
+            modalElements = getFocusable(); // for modals with dynamic content
 
             if (e.which === 9) { // Tab
                 if (e.shiftKey) {
