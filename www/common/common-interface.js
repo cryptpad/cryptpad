@@ -346,13 +346,17 @@ define([
                     $container.prepend(h('span.tokenfield-empty', Messages.kanban_noTags));
                 }
                 $tokens.find('.close').attr('tabindex', 0).empty().append(Icons.get('delete-token')).on('keydown', e => {
-                    e.stopPropagation();
+                    if (e.which !== 9) {
+                        e.stopPropagation();
+                    }
                 });
                 $tokens.find('.token-label').attr('tabindex', 0).on('keydown', function (e) {
                     if (e.which === 13 || e.which === 32) {
                         $(this).dblclick();
                     }
-                    e.stopPropagation();
+                    if (e.which !== 9) {
+                        e.stopPropagation();
+                    }
                 });
                 $form.append($input);
                 $form.append($button);
