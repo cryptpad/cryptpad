@@ -1343,6 +1343,14 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         // Added edit access: make sure I'm not a viewer
         if (state && myRole === "VIEWER") { return void cb(false); }
 
+        // Reject corrupted keys
+        if (state) {
+            if (teamData?.keys?.drive?.edPrivate) { return void cb(false); }
+            if (!data?.keys?.drive?.edPrivate) { return void cb(false); }
+            const edPub = Hash.getSignPublicFromPrivate(data?.keys?.drive?.edPrivate);
+            if (edPub !== teamData?.keys?.drive?.edPublic) { return void cb(false); }
+        }
+
         // Update our proxy
         if (state) {
             teamData.hash = data.hash;
