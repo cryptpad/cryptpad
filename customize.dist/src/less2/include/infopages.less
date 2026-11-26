@@ -271,17 +271,16 @@ body.html {
             width: 250px;
             font-family: "IBM Plex Mono";
             font-size: 1.8em;
-            img {
+            margin-right: 0;
+            img, svg {
                 max-width: 40px;
                 margin-right: 10px;
             }
             @media (max-width: 326px) {
                 width: 180px;
             }
-            margin-right: 0;
         }
         a {
-            //border: 2px solid transparent;
             white-space: nowrap;
             color: @cp_static-title;
             background-color: @cp_static-card-bg;
@@ -293,10 +292,12 @@ body.html {
             color: @cp_static-link;
             display: flex;
             align-items: center;
-            img {
+            img, svg {
                 width: @variables_icon_width;
                 height: @variables_icon_height;
+                min-width: @variables_icon_width;
                 margin-right: 10px;
+                flex-shrink: 0;
             }
             &.cp-back-home {
                 margin-right: auto;
@@ -322,6 +323,37 @@ body.html {
         .navbar-toggler {
             margin-top: 10px;
             color: @cp_static-topbar-fg;
+        }
+
+        @media (max-width: 768px) {
+            flex-wrap: nowrap;
+            padding: 0.5rem 0.75rem;
+
+            .nav-link {
+                font-size: 0;
+                padding: 0.55rem 0.65rem;
+                margin: 3px;
+
+                img, svg {
+                    width: 1.25rem;
+                    height: 1.25rem;
+                    min-width: 1.25rem;
+                    margin-right: 0;
+                }
+
+                &:last-child {
+                    font-size: 0.9rem;
+                    padding: 0.5rem 0.75rem;
+                    max-width: 120px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: block;
+
+                    img, svg {
+                        margin-right: 6px;
+                    }
+                }
+            }
         }
     }
 }
