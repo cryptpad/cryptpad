@@ -54,7 +54,7 @@ define([
                     ]),
                     h('div.cp-features-docs', [
                         h('a.cp-features-docs-button', {
-                            href: '/drive/'
+                            href: '/'
                         }, Msg.features_try_button)
                     ])
                 ])
@@ -65,39 +65,11 @@ define([
 
         var featureList = [
             {
-                title: Msg.type.code,
-                icon: 'code',
-                subtitle: Msg.features_code_subtitle,
-                content: Msg.features_code_content,
-                href: orgApps + 'markdown'
-            },
-            {
-                title: Msg.type.diagram,
-                icon: 'diagram',
-                subtitle: Msg.features_diagram_subtitle,
-                content: Msg.features_diagram_content,
-                href: orgApps + 'diagram'
-            },
-            {
-                title: Msg.type.form,
-                icon: 'form',
-                subtitle: Msg.features_forms_subtitle,
-                content: Msg.features_forms_content,
-                href: orgApps + 'form'
-            },
-            {
-                title: Msg.type.kanban,
-                icon: 'kanban',
-                subtitle: Msg.features_kanban_subtitle,
-                content: Msg.features_kanban_content,
-                href: orgApps + 'kanban'
-            },
-            {
-                title: Msg.type.presentation,
-                icon: 'presentation',
-                subtitle: Msg.features_presentation_subtitle,
-                content: Msg.features_presentation_content,
-                href: orgApps + 'presentation'
+                title: Msg.type.pad,
+                icon: 'pad',
+                subtitle: Msg.features_pad_subtitle,
+                content: Msg.features_pad_content,
+                href: orgApps + 'rich-text'
             },
             {
                 title: Msg.type.sheet,
@@ -114,19 +86,47 @@ define([
                 href: orgApps + 'document'
             },
             {
+                title: Msg.type.form,
+                icon: 'form',
+                subtitle: Msg.features_forms_subtitle,
+                content: Msg.features_forms_content,
+                href: orgApps + 'form'
+            },
+            {
+                title: Msg.type.code,
+                icon: 'code',
+                subtitle: Msg.features_code_subtitle,
+                content: Msg.features_code_content,
+                href: orgApps + 'markdown'
+            },
+            {
+                title: Msg.type.kanban,
+                icon: 'kanban',
+                subtitle: Msg.features_kanban_subtitle,
+                content: Msg.features_kanban_content,
+                href: orgApps + 'kanban'
+            },
+            {
+                title: Msg.type.presentation,
+                icon: 'presentation',
+                subtitle: Msg.features_presentation_subtitle,
+                content: Msg.features_presentation_content,
+                href: orgApps + 'presentation'
+            },
+            {
+                title: Msg.type.diagram,
+                icon: 'diagram',
+                subtitle: Msg.features_diagram_subtitle,
+                content: Msg.features_diagram_content,
+                href: orgApps + 'diagram'
+            },
+            {
                 title: Msg.type.slide,
                 icon: 'slide',
                 subtitle: Msg.features_slide_subtitle,
                 content: Msg.features_slide_content,
-                href: orgApps + 'presentation'
+                href: orgApps + 'slide'
             },
-            {
-                title: Msg.type.pad,
-                icon: 'pad',
-                subtitle: Msg.features_pad_subtitle,
-                content: Msg.features_pad_content,
-                href: orgApps + 'rich-text'
-            }
         ];
 
         var infoList = [
@@ -183,7 +183,8 @@ define([
             Pages.infopageTopbar(),
             h('div.cp-container',[
                 h('div.cp-page-title',[
-                    h('h1', Msg.features_page_title)
+                    h('h1', Msg.features_page_title),
+                    h('h2', Msg.features_page_subtitle)
                 ]),
                 h('div.cp-container.cp-features-web', h('div.info-cards-container', info)),
                 h('div.cp-container.cp-features-web', h('div.features-grid-container', availableFeatures)),

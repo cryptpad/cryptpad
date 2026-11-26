@@ -158,7 +158,8 @@ define(req, function(AppConfig, Default, Language) {
     };
 
     // WIP
-    Messages.features_page_title = "One private workspace. Everything connected.";
+    Messages.features_page_title = "CryptPad features";
+    Messages.features_page_subtitle = "One private workspace. Everything connected.";
     Messages.features_teamwork_title = "Everything you need to stay organized";
     Messages.features_learn_more = "Learn more";
     Messages.features_code_subtitle = "An encrypted markdown code editor";
