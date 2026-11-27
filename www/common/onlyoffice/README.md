@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 This software integrates office applications that are based on modified Euro-Office, itself based on the original ONLYOFFICE work. Modified versions must preserve notices sufficient to allow users to identify the original developer and the source of the original work.
 
 Office applications with versions < 9 are based on OnlyOffice, versions >= 9 are based on Euro-Office.

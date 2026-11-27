@@ -710,6 +710,7 @@ define([
         var adminClass = (fromAdmin? '.cp-support-fromadmin': '');
         var premiumClass = (ctx.isAdmin && fromPremium && !fromAdmin? '.cp-support-frompremium': '');
         var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
+        if (content.sender?.adminId) { name = Messages.support_team; }
         return h('div.cp-support-list-message' + adminClass + premiumClass, {}, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
                 UI.setHTML(h('span'), Messages._getKey('support_from', [name])),

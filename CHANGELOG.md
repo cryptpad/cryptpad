@@ -4,6 +4,45 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# 🍂🩹 Autumn fix release (2026.10.1)
+
+This release contains the following fixes: 
+
+- Fix team and account deletion infinite spinner [#2436](https://github.com/cryptpad/cryptpad/pull/2436)
+- Fix team mailbox not archived when the team is deleted
+- Fix static files can't be shared with teams [#2434](https://github.com/cryptpad/cryptpad/issues/2434)
+- Fix invalid CSP errors in Firefox browser console
+- Fix possible parse error on the server
+- Fix filenames of log files produced by the eviction scripts
+- Fix eviction script stopping too early
+
+
+## Upgrade notes
+
+⚠️ This release contains security fixes (highest CVSS 4.0 score: 7.3 (High)). We advise administrators to update their instance as soon as possible.
+
+If you are upgrading from a version older than `2026.10.0` please read the upgrade notes of all versions between yours and `2026.10.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch --depth 1 origin tag 2026.10.1
+git checkout 2026.10.1
+npm ci
+npm run install:components
+./install-office.sh
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+## Contributors
+
+CryptPad team: @AAAMON @Chouhartem @dariiing @davidbenque @DianaXWiki @wginolas @yflory @zuzanna-maria
+
 
 # 🍂 Autumn Release (2026.10.0)
 
