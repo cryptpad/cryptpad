@@ -15,7 +15,7 @@ This file is intended to be used as a log of what third-party source we have ven
 * [jquery.ui 1.12.1](https://jqueryui.com/) for its 'autocomplete' extension which is used for our tag picker
 * [jscolor v2.0.5](https://jscolor.com/) for providing a consistent color picker across all browsers
 * [less.min.js v3.11.1](https://github.com/less/less.js/releases/tag/v3.11.1) with a minor modification to produce slightly more compact CSS
-* [mermaid 10.2.4](https://github.com/mermaid-js/mermaid/releases/tag/v10.2.4) extends our markdown integration to support a variety of diagram types
+* [mermaid 12.3.0](https://github.com/mermaid-js/mermaid/releases/tag/v12.3.0) extends our markdown integration to support a variety of diagram types
 * [Moment v2.29.4](http://momentjs.com/) for providing a date parser
 * [our fork of tippy.js v1.2.0](https://github.com/xwiki-labs/tippyjs) for adding tooltips.
 * [pdfjs](https://mozilla.github.io/pdf.js/) with some minor modifications to prevent CSP errors

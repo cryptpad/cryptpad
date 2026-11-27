@@ -223,7 +223,7 @@ define([
 
     renderer.code = function (code, language) {
         if (!code || typeof(code) !== 'string' || !code.trim()) { return defaultCode.apply(renderer, arguments); }
-        if (language === 'mermaid' && code.match(/^(flowchart|graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph|stateDiagram|erDiagram|journey|requirementDiagram|GitGraph|mindmap|timeline|zenuml|quadrantChart|C4Context)/)) {
+        if (language === 'mermaid' && code.match(/^(flowchart|graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph|stateDiagram|erDiagram|journey|requirementDiagram|gitGraph|mindmap|timeline|zenuml|quadrantChart|C4Context|architecture|block|cynefin|eventmodeling|ishikawa|kanban|packet|radar|railroad|sankey|swimlane|treeView|treemap|usecase|journey|venn|wardley|xychart|zenuml)/)) {
             return '<pre class="mermaid" data-plugin="mermaid">'+Util.fixHTML(code)+'</pre>';
         } else if (language === 'markmap') {
             return '<pre class="markmap" data-plugin="markmap">'+Util.fixHTML(code)+'</pre>';
