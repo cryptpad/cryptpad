@@ -221,19 +221,12 @@ define([
             Msg.homePage
         ]);
 
-        let pricingName = Msg.features;
-        Extensions.getExtensionsSync('PRICING_NAME').some(ext => {
-            if (!ext.name) { return; }
-            pricingName = ext.name;
-            return true;
-        });
-
         return h('nav.navbar.navbar-expand-lg',
             [
                 !isHome? homeLink: undefined,
                 h('a.nav-item.nav-link', { href: '/features.html', role: 'button'}, [
                     Icons.get('properties'),
-                    pricingName
+                    Msg.features
                 ]),
                 h('a.nav-item.nav-link', { href: 'https://docs.cryptpad.org'}, [
                     Icons.get('documentation'),
