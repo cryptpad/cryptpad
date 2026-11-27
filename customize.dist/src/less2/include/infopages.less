@@ -287,7 +287,8 @@ body.html {
             border-radius: @infopages-radius;
         }
         .nav-link {
-            padding: 0.5em 0.7em;
+            height: 2.5rem;
+            padding: 0 0.75em;
             margin: 5px;
             color: @cp_static-link;
             display: flex;
@@ -296,11 +297,20 @@ body.html {
                 width: @variables_icon_width;
                 height: @variables_icon_height;
                 min-width: @variables_icon_width;
-                margin-right: 10px;
-                flex-shrink: 0;
+                margin-right: 5px;
             }
             &.cp-back-home {
                 margin-right: auto;
+            }
+            &:last-child {
+                display: block;
+                line-height: 2.5rem;
+                max-width: 220px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                svg {
+                    margin-top: -2px;
+                }
             }
             &:hover {
                 color: @cryptpad_text_col;
@@ -327,11 +337,14 @@ body.html {
 
         @media (max-width: 768px) {
             flex-wrap: nowrap;
-            padding: 0.5rem 0.75rem;
+            align-items: center;
 
             .nav-link {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
                 font-size: 0;
-                padding: 0.55rem 0.65rem;
+                padding: 0 0.65rem;
                 margin: 3px;
 
                 img, svg {
@@ -342,15 +355,10 @@ body.html {
                 }
 
                 &:last-child {
-                    font-size: 0.9rem;
-                    padding: 0.5rem 0.75rem;
+                    font-size: 1rem;
                     max-width: 120px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    display: block;
-
-                    img, svg {
-                        margin-right: 6px;
+                    svg {
+                        margin-right: 5px;
                     }
                 }
             }
