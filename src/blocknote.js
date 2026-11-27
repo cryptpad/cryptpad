@@ -5,7 +5,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import * as Y from 'yjs';
-import * as awarenessProtocol from 'y-protocols/awareness'
+import * as awarenessProtocol from 'y-protocols/awareness';
 import { BlockNoteEditor, filterSuggestionItems, insertOrUpdateBlockForSlashMenu } from '@blocknote/core';
 import { withCollaboration } from '@blocknote/core/yjs';
 import { BlockNoteView } from '@blocknote/mantine';
@@ -44,17 +44,17 @@ const CryptDriveReplaceButton = ({uploadImageFromCryptDrive}) => {
             });
         }
     });
-}
+};
 
 const CryptDriveDownloadButton = ({downloadImage}) => {
     return React.createElement(CryptDriveFileButton, {
         dictKey: 'file_download',
         icon: 'hard-drive-download',
         onAction: (editor, selectedImg) => {
-            downloadImage(selectedImg.props.url, selectedImg.props.name)
+            downloadImage(selectedImg.props.url, selectedImg.props.name);
         }
     });
-}
+};
 const getCryptDriveMenuItems = (editor, uploadImageFromCryptDrive) => {
     return getDefaultReactSlashMenuItems(editor)
         .filter((item) => !['video', 'audio', 'file'].includes(item.key))

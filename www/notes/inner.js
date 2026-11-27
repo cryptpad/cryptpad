@@ -37,7 +37,7 @@ define([
 
     const debug = (x, type) => {
         if (!window.CP_DEV_MODE) { return; }
-        console.error(x, type);
+        console.debug(x, type);
     };
 
     // This is the main initialization loop
@@ -65,12 +65,18 @@ define([
             });
         };
 
+        let currentEditor;
+        const setEditable = () => {
+            let editable = APP.online && !APP.readOnly && !APP.locked && !APP.history;
+            currentEditor?.editor?._tiptapEditor.setEditable(editable);
+        };
+
         const yOpts = {};
         const myId = Util.uid();
 
         let ydoc = new Y.Doc(yOpts);
         const provider = YProvider.create({
-            APP, framework, common, ydoc, myId, yOpts, Y, awarenessProtocol
+            APP, framework, common, ydoc, myId, yOpts, Y, awarenessProtocol, setEditable
         });
 
         let content = {
@@ -80,7 +86,6 @@ define([
         };
         provider.setContent(content);
 
-        let currentEditor;
         let user = {
             name: userData.name || Messages.anonymous,
             color: userData.color,
@@ -158,11 +163,6 @@ define([
             currentEditor = undefined;
         };
 
-        const setEditable = () => {
-            let editable = APP.online && !APP.readOnly && !APP.locked;
-            currentEditor?.editor?._tiptapEditor.setEditable(editable);
-        };
-
         provider.onResetUI(async (cpData, data) => {
             ydoc = new Y.Doc(yOpts);
             removeEditor();
@@ -211,12 +211,15 @@ define([
             provider.initDoc();
         });
 
+        provider.getHistory();
+
         // Start the framework
         framework.start();
     };
 
     // Framework initialization
     Framework.create({
+        disableHistory: true,
         toolbarContainer: '#cp-toolbar',
         contentContainer: '#cp-app-notes-editor'
     }, onFrameworkReady);

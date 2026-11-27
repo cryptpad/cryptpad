@@ -174,7 +174,8 @@ define([
             onCpUploaded, onCpUploadError, uploadCheckpoint,
             restoreLastCp, checkCheckpoint,
             isUserOnline, setIds,
-            onClientRemoved
+            onClientRemoved,
+            initHistory, onHistoryClick
         } = APP.rtcTools;
 
         const getNextUserIndex = function () {
@@ -3123,40 +3124,17 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     });
                 };
 
-                var $historyButton = common.createButton('', true, {
-                    name: 'history',
-                    icon: 'history',
-                    text: Messages.historyText,
-                    tippy: Messages.historyButton
+                const $history = initHistory({
+                    onPatch, onPatchBack, onCheckpoint, makeSnapshot,
+                    onRevert: commit,
+                    setHistory: setHistoryMode
                 });
-                if (!AppConfig.enableHistory) {
-                    $historyButton.css('display', 'none');
-                }
-
-                $historyButton.click(function () {
+                onHistoryClick(() => {
                     ooChannel.historyLastHash = ooChannel.lastHash;
                     ooChannel.currentIndex = ooChannel.cpIndex;
                     Feedback.send('OO_HISTORY');
-                    var histConfig = {
-                        onPatch: onPatch,
-                        onPatchBack: onPatchBack,
-                        onCheckpoint: onCheckpoint,
-                        onRevert: commit,
-                        setHistory: setHistoryMode,
-                        makeSnapshot,
-                        onlyoffice: {
-                            hashes: content.hashes || {},
-                            channel: content.channel,
-                            lastHash: ooChannel.lastHash,
-                            ctime: content.ctime
-                        },
-                        $toolbar: $('.cp-toolbar-container')
-                    };
-                    History.create(common, histConfig);
                 });
-
-                var $historyDropdown = UIElements.getEntryFromButton($historyButton);
-                $historyDropdown.appendTo(toolbar.$drawer);
+                $history.appendTo(toolbar.$drawer);
 
                 // Snapshots
                 var $snapshotButton = common.createButton('snapshots', true, {

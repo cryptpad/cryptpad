@@ -116,7 +116,7 @@ define([
         var sframeChan = common.getSframeChannel();
         History.readOnly = common.getMetadataMgr().getPrivateData().readOnly || !common.isLoggedIn();
 
-        if (!config.onlyoffice || !config.setHistory || !config.onCheckpoint || !config.onPatch || !config.makeSnapshot) {
+        if (!config.state || !config.setHistory || !config.onCheckpoint || !config.onPatch || !config.makeSnapshot) {
             throw new Error("Missing config element");
         }
 
@@ -124,9 +124,9 @@ define([
 
         const ooMessages = {};
 
-        const hashes = config.onlyoffice.hashes;
-        const mainRtChannel = config.onlyoffice.channel;
-        const ctime = config.onlyoffice.ctime;
+        const hashes = config.state.hashes;
+        const mainRtChannel = config.state.channel;
+        const ctime = config.state.ctime;
 
         const sortedCp = History.sortCpIndex(hashes);
 
@@ -446,7 +446,8 @@ define([
             // XXX
             onKeyDown = function (e) {
                 var p = function () { e.preventDefault(); };
-                if ([38, 39].indexOf(e.which) >= 0) { p(); return $next.click(); } // Right
+                if ([38, 39].indexOf(e.which) >= 0) { p(); return $next.click(); } // Right, up
+                if ([37, 40].indexOf(e.which) >= 0) { p(); return $prev.click(); } // Left, down
                 if (e.which === 27) { p(); return $(close).click(); }
             };
             onKeyUp = function (e) { e.stopPropagation(); };

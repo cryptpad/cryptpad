@@ -442,6 +442,47 @@ define([
             return myLockId;
         };
 
+        const onHistoryClick = Util.mkEvent();
+        const initHistory = (options) => {
+            const {
+                onRevert, onCheckpoint,
+                onPatch, onPatchBack,
+                setHistory, makeSnapshot
+            } = options;
+            const $historyButton = common.createButton('', true, {
+                name: 'history',
+                icon: 'history',
+                text: Messages.historyText,
+                tippy: Messages.historyButton
+            });
+            if (!AppConfig.enableHistory) {
+                $historyButton.css('display', 'none');
+            }
+
+            $historyButton.click(function () {
+                onHistoryClick.fire();
+                const histConfig = {
+                    onPatch, onPatchBack,
+                    onCheckpoint, onRevert,
+                    setHistory, makeSnapshot,
+                    state: {
+                        hashes: content.hashes || {},
+                        channel: content.channel,
+                        ctime: content.ctime
+                    },
+                    $toolbar: $('.cp-toolbar-container')
+                };
+                History.create(common, histConfig);
+            });
+
+            return UIElements.getEntryFromButton($historyButton);
+        };
+
+        // History
+        tools.initHistory = initHistory;
+        tools.onHistoryClick = onHistoryClick.reg;
+
+
         // TODO: Maybe later?
         // loadLastDocument ? (download static file + decrypt)
         // loadDocument?

@@ -995,7 +995,7 @@ define([
 
             /* add a history button */
             var privateDat = cpNfInner.metadataMgr.getPrivateData();
-            if (!(privateDat.isPresent && privateDat.app === 'code')) {
+            if (!(privateDat.isPresent && privateDat.app === 'code') && !options?.disableHistory) {
                 var histConfig = {
                     onLocal: onLocal,
                     onRemote: onRemote,

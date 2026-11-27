@@ -8,7 +8,7 @@ define([
 
     const debug = (x, type) => {
         if (!window.CP_DEV_MODE) { return; }
-        console.error(x, type);
+        console.debug(x, type);
     };
 
 // XXX TODO
@@ -16,7 +16,10 @@ define([
 //    otherwise the menu will close and "/" will be printed
 // - linked documents
     YProvider.create = cfg => {
-        const { APP, framework, common, yOpts, Y, awarenessProtocol } = cfg;
+        const {
+            APP, framework, common,
+            yOpts, Y, awarenessProtocol, setEditable
+        } = cfg;
         let { ydoc } = cfg;
 
 APP.ydoc = ydoc;
@@ -29,6 +32,7 @@ APP.Y = Y;
 
         const metadataMgr = common.getMetadataMgr();
         const privateData = metadataMgr.getPrivateData();
+        const toolbar = framework._.toolbar;
 
         const rtcTools = RtChannel.init(APP, common);
         const {
@@ -41,13 +45,14 @@ APP.Y = Y;
             makeCheckpoint,
             uploadCheckpoint,
             checkLinkedDocs,
+            initHistory,
             setIds
         } = rtcTools;
         const provider = {
             synced: false
         };
 
-        const CHECKPOINT_INTERVAL = 20;
+        const CHECKPOINT_INTERVAL = 200;
 
         // Yjs/BlockNote
         const onSynced = Util.mkEvent();
@@ -94,6 +99,9 @@ APP.Y = Y;
             return cursorData;
         });
         framework.onCursorUpdate(({id, cursor, leave}) => {
+            // no cursor in history mode
+            if (APP.history) { return; }
+
             // Delete from queue all updates applying to the same client
             cursorQueue = cursorQueue.filter(obj => {
                 let _id = obj.id;
@@ -215,18 +223,21 @@ APP.Y = Y;
 
             return true; // allow cp
         };
-        const checkNewCheckpoint = () => {
+        const checkNewCheckpoint = (force) => {
             let canCp = canCheckpoint();
-            if (canCp === false) { return; } // not enough messages
-            if (typeof(canCp) === "number") { // timeout before cp allowed
-                clearTimeout(current.cpTo);
-                current.cpTo = setTimeout(checkNewCheckpoint, canCp);
-                return;
+            if (!force) {
+                if (canCp === false) { return; } // not enough messages
+                if (typeof(canCp) === "number") {
+                    // timeout before cp allowed
+                    clearTimeout(current.cpTo);
+                    current.cpTo = setTimeout(checkNewCheckpoint, canCp);
+                    return;
+                }
             }
 
             // We should make a checkpoint, get the saveLock
             onLockChange.fire(true);
-            makeCheckpoint(false, proceed => {
+            makeCheckpoint(!!force, proceed => {
                 // If someone else has locked th document, abort
                 if (!proceed) { return; }
 
@@ -246,10 +257,16 @@ APP.Y = Y;
         };
 
         // New incoming remote message
-        onRTCMessage.reg(data => {
-            debug("Receiving update", data.msg);
-            const update = Util.decodeBase64(data.msg);
+        const applyRemotePatch = patch => {
+            const update = Util.decodeBase64(patch);
             Y.applyUpdate(ydoc, update, 'remote');
+        };
+        onRTCMessage.reg(data => {
+            if (APP.history) {
+                return void debug('Incoming messages ignored in history mode');
+            }
+            debug("Receiving update", data.msg);
+            applyRemotePatch(data.msg);
             clearTimeout(current.cpTo);
             current.index++;
             current.lastTime = Date.now();
@@ -259,6 +276,9 @@ APP.Y = Y;
         // On local ydoc update: send message
         const onUpdate = (update, origin) => {
             if (origin === 'remote') { return; }
+            if (APP.history) {
+                return void debug('Error: local update in history mode, ignored');
+            }
             const msg = Util.encodeBase64(update);
             current.lastTime = Date.now();
             rtChannel.sendMsg(msg, false, () => {
@@ -271,7 +291,6 @@ APP.Y = Y;
             ydoc.off('update', onUpdate);
             ydoc.off('destroy', onDestroy);
         };
-
         const initYDoc = () => {
             ydoc.on('update', onUpdate);
             ydoc.on('destroy', onDestroy);
@@ -295,6 +314,17 @@ APP.Y = Y;
                 onRemote.fire();
             }
 
+            if (APP.stopHistory) { APP.history = false; }
+            if (APP.history) {
+                if (Array.isArray(current.historyQueue)) {
+                    current.historyQueue.forEach(patch => {
+                        applyRemotePatch(patch);
+                    });
+                }
+                provider.synced = true;
+                onSynced.fire(true);
+                return void cb();
+            }
 
             openRtChannel(cpData, () => {
                 current.ready = chan;
@@ -349,7 +379,7 @@ APP.Y = Y;
             xhr.send(null);
         };
 
-        // Initialize ydoc with latest content
+        // Initialize ydoc with latest content, 1st time only
         const initDoc = () => {
             checkLinkedDocs();
 
@@ -362,6 +392,7 @@ APP.Y = Y;
             });
         };
 
+        // Reste Yjs on checkpoint
         const reset = (_ydoc) => {
             // reset ydoc
             ydoc.destroy();
@@ -370,16 +401,73 @@ APP.Y = Y;
             // reset awareness
             initAwareness();
         };
+        // Reload data on checkpoint
         const updateUI = (cpData, data) => {
             let next = (err, buffer) => {
+                if (APP.history && !current.historyCpBuffer) {
+                    current.historyCpBuffer = buffer;
+                }
                 return void resetFromCp(buffer, cpData, () => {
 
                 });
             };
 
             if (data) { return void next(void 0, data); }
+            if (APP.history && current.historyCpBuffer) {
+                return void next(void 0, current.historyCpBuffer);
+            }
             loadCp(cpData, next);
         };
+
+        // History mode
+        const getHistory = () => {
+            const onPatch = (patch) => { // Apply patch from history
+                debug('History patch', patch);
+                applyRemotePatch(JSON.parse(patch.msg));
+            };
+            const onPatchBack = (cpData, msgs) => { // Show older history state
+                debug('History patch back', {cpData, msgs});
+                current.historyQueue = msgs.map(obj => {
+                    return JSON.parse(obj.msg);
+                });
+                onResetUI.fire(cpData);
+            };
+            const onCheckpoint = (cpData) => { // Load history checkpoint
+                console.error('History load checkpoint', cpData);
+                delete current.historyCpBuffer;
+                onResetUI.fire(cpData);
+            };
+            const makeSnapshot = () => { // XXX TODO
+            };
+            const onRevert = () => { // Commit the currently visible state
+                APP.stopHistory = true;
+                checkNewCheckpoint(true);
+                toolbar.setHistory(false);
+
+                delete current.historyCpBuffer;
+                delete current.historyQueue;
+            };
+            const setHistory = (bool) => { // Enter or leave history mode
+                bool = !!bool; // force boolean
+                APP.history = bool;
+                toolbar.setHistory(bool);
+                APP.stopHistory = false;
+                delete current.historyCpBuffer;
+                delete current.historyQueue;
+                setEditable();
+            };
+
+
+            const $history = initHistory({
+                onPatch, onPatchBack, onCheckpoint, makeSnapshot,
+                onRevert, setHistory
+            });
+
+            toolbar.$drawer.append($history);
+        };
+
+
+
 
         // Yjs provider API (https://github.com/yjs/y-indexeddb)
         // only "synced" event currently used by blocknote
@@ -403,6 +491,7 @@ APP.Y = Y;
             setContent,
             setIds,
             chainpadContentUpdate,
+            getHistory,
             reset,
             provider
         };
