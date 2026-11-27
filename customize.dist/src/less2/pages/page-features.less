@@ -10,114 +10,322 @@
 &.cp-page-features {
     .infopages_main();
 
-    .cp-features-register {
-        text-align: center;
-        padding: 20px;
+    .cp-container {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
-    .cp-features-register-button {
-        text-decoration: none;
+
+    .cp-page-title {
         text-align: center;
+        margin: 2rem auto;
+
+        h1 {
+            text-align: center;
+            margin: 0 auto;
+        }
+    }
+
+    .cp-features-docs {
+        box-sizing: border-box;
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    .cp-features-docs-button {
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+        text-decoration: none;
         background-color: @cp_buttons-primary;
-        color: @cryptpad_text_col_inv;
-        font-size: 20px;
+        color: @cryptpad_color_white;
+        font-size: 18px;
         margin: 10px 0;
         border-radius: @infopages-radius;
         padding: 10px 20px;
+        svg {
+            flex-shrink: 0;
+        }
+
         &:hover, &:focus {
-            background-color:  contrast(@cp_buttons-primary-text, darken(@cp_buttons-primary, 10%), lighten(@cp_buttons-primary, 10%));
+            background-color: contrast(@cp_buttons-primary-text, darken(@cp_buttons-primary, 10%), lighten(@cp_buttons-primary, 10%));
         }
         &:visited {
-            color: @cryptpad_text_col_inv;
+            color: @cryptpad_color_white;
         }
     }
     .cp-features-web {
-        .card {
-            .cp-shadow();
-            border: none;
-            background-color: @cp_static-card-bg;
-            border-radius: @infopages-radius;
-            .title-card {
-                background-color: @cryptpad_color_brand;
-                padding: 20px;
-                border-radius: @infopages-radius @infopages-radius 0 0;
+        min-height: 0 !important;
+        height: auto;
+
+        .info-cards-container {
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            width: 100%;
+            max-width: 1000px;
+            padding: 0 1rem;
+            margin: 0 auto 2.5rem;
+
+            @media (max-width: 768px) and (min-width: 576px) {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
-            .card-body, .title-card {
+
+            @media (min-width: 769px) {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        .features-grid-container {
+            display: grid;
+            gap: 2rem;
+            width: 100%;
+            padding: 0 1rem;
+
+            @media (max-width: 1200px) and (min-width: 576px) {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+
+                > .cp-card-item {
+                    grid-column: span 2;
+
+                    &:last-child:nth-child(odd) {
+                        grid-column: 2 / span 2;
+                    }
+                }
+            }
+            @media (min-width: 1201px) {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        .cp-card-item {
+            display: flex;
+            margin: 0;
+        }
+
+        .cp-small-feature {
+            width: 100%;
+            height: auto;
+
+            .cp-feature-small-card {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                text-align: center;
+                width: 100%;
+                height: 100%;
+                padding: 1rem;
+                background-color: fade(@cp_static-card-bg, 60%);
+                border: 1px solid fade(@cryptpad_text_col, 10%);
+                border-radius: @infopages-radius-L;
+                transition: border-color 0.2s ease;
+            }
+
+            .feature-icon {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                flex-flow: column;
-                padding: 12px;
-                h3 {
+                width: 4.5rem;
+                height: 4.5rem;
+                color: @cryptpad_color_brand;
+
+                svg {
+                    width: 3.75rem;
+                    height: 3.75rem;
                     margin: 0;
                 }
-                &.cp-pricing {
-                    div {
-                        font-size: 1.2em;
-                        color: @cp_static-link;
-                        a {
-                            text-decoration: underline;
-                        }
-                        &:first-child {
-                            font-weight: bold;
-                        }
-                        &:last-child {
-                            font-size: 1em;
-                        }
-                    }
-                }
-                &:last-child {
-                    border-top: 1px solid fade(@cryptpad_text_col, 30%);
-                }
             }
-        }
-        h3 {
-            color: @cryptpad_color_white;
-        }
-        .list-group {
-            li {
+
+            .feature-title {
                 display: flex;
                 align-items: center;
-                padding-left: 0;
-                padding-right: 5px;
-                svg {
-                    width: 30px;
-                    color: @cryptpad_color_brand;
-                }
+                justify-content: center;
+                min-height: 2.8em;
+                font-size: 1.15em;
+                font-weight: bold;
+                line-height: 1.3;
+                text-align: center;
+                margin: 0 0 0.5rem;
             }
-            div {
-                &.cp-content {
-                    flex: 1;
-                    display: flex;
-                    flex-flow: column;
-                }
-                &.cp-feature {
-                    font-weight: bold;
-                }
-            }
-        }
-        div.cp-note {
-            font-size: 0.8em;
-        }
-        .list-group-item {
-            background-color: transparent;
-            &:first-child {
-                border-top: 1px solid fade(@cryptpad_text_col, 30%);
-            }
-            &:not(:last-child) {
-                border-bottom: 1px solid fade(@cryptpad_text_col, 30%);
-            }
-        }
-    }
 
-    .cp-regis-user {
-        @media (max-width:575px) {
-            margin-top: 3em;
+            .feature-content {
+                font-size: 0.88em;
+                line-height: 1.4;
+                text-align: center;
+                margin: 0;
+            }
         }
-    }
-    .cp-premium-user {
-        @media (max-width:575px) {
-            margin-top: 3em;
+
+        .cp-feature-card {
+            .cp-shadow();
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+            border: 1px solid fade(@cryptpad_text_col, 10%);
+            background-color: @cp_static-card-bg;
+            border-radius: @infopages-radius-L;
+            transition: transform 0.2s ease, border-color 0.4s ease;
+
+            &:hover {
+                transform: translateY(-2px);
+                border-color: fade(@cryptpad_text_col, 20%);
+            }
+
+            .title-card,
+            .feature-card-section {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .title-card {
+                font-family: "IBM Plex Mono";
+                font-size: 1.4em;
+
+                h3 {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0;
+                    line-height: 1.25;
+                    min-height: 2.75em;
+                    text-align: center;
+                    color: @cp_static-link;
+                }
+            }
+
+            .feature-card-section {
+                padding: 0 12px 12px;
+            }
+
+            .cp-feature-icon {
+                svg {
+                    height: 8rem;
+                    width: 8rem;
+                    stroke-width: 1.2;
+                    margin: 0;
+                }
+
+                > div {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 3.4em;
+                    line-height: 1.35;
+                    font-size: 1.2em;
+                    color: @cp_static-link;
+                    text-align: center;
+                }
+            }
+
+            .feature-title {
+                font-size: 1.4em;
+                text-align: center;
+                padding: 0 1rem;
+            }
+
+            .feature-content {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                align-self: stretch;
+                flex: 1 0 auto;
+                margin: 1rem;
+                text-align: center;
+            }
+        }
+
+        .cp-features-try {
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            column-gap: 3rem;
+            row-gap: 1.25rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 2.5rem 0 1.5rem;
+            padding: 2rem;
+            background: transparent none;
+            border: none;
+            box-shadow: none;
+
+            .cp-features-try-text {
+                min-width: 0;
+                text-align: left;
+            }
+
+            .cp-features-try-title {
+                margin: 0 0 0.35rem;
+                font-weight: 600;
+                line-height: 1.25;
+                text-align: left;
+            }
+
+            .cp-features-try-subtitle {
+                margin: 0 0 0.35rem;
+                font-size: 1.075rem;
+                font-weight: 500;
+                line-height: 1.4;
+                opacity: 0.92;
+                text-align: left;
+            }
+
+            .cp-features-try-content {
+                max-width: 44rem;
+                margin: 0;
+                font-size: 0.95rem;
+                line-height: 1.55;
+                opacity: 0.8;
+                text-align: left;
+            }
+
+            .cp-features-try-action {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                margin: 0;
+                padding: 0;
+                width: auto;
+            }
+
+            .cp-features-docs-button {
+                white-space: nowrap;
+                margin: 0;
+            }
+
+            @media (max-width: 768px) {
+                grid-template-columns: 1fr;
+                justify-items: center;
+                padding: 1.5rem 0;
+
+                .cp-features-try-text,
+                .cp-features-try-title,
+                .cp-features-try-subtitle,
+                .cp-features-try-content {
+                    text-align: center;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+
+                .cp-features-try-action {
+                    justify-content: center;
+                    width: 100%;
+                }
+            }
         }
     }
 }
-

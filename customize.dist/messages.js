@@ -157,6 +157,52 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    // WIP
+    Messages.features_page_title = "CryptPad features";
+    Messages.features_page_subtitle = "One private workspace. Everything connected.";
+    Messages.features_teamwork_title = "Everything you need to stay organized";
+    Messages.features_learn_more = "Learn more";
+    Messages.features_code_subtitle = "Encrypted Markdown editor";
+    Messages.features_code_content = "Write with lightweight Markdown syntax plus built in support for Mermaid.js diagrams, Markmap mindmaps, and MathJax equations.";
+    Messages.features_diagram_subtitle = "Versatile diagramming tools";
+    Messages.features_diagram_content = "Collaborative diagramming workspace for secure mind mapping, flowcharts, wireframes, and whiteboarding in real time.";
+    Messages.features_forms_subtitle = "Custom responsive forms";
+    Messages.features_forms_content = "Create, customize, and share encrypted surveys and polls while keeping every response completely private.";
+    Messages.features_kanban_subtitle = "Visual board interface";
+    Messages.features_kanban_content = "Secure, customizable Kanban boards for organizing tasks, ideas, and workflows, encrypted and hosted in the EU.";
+    Messages.features_presentation_subtitle = "Familiar slide editor";
+    Messages.features_presentation_content = "Format slides with text, images, shapes, and transitions, giving you the presentation tools you expect without the surveillance.";
+    Messages.features_sheet_subtitle = "Flexible spreadsheet support";
+    Messages.features_sheet_content = "Import and export .xlsx, .ods, .csv, or .pdf. Enjoy familiar formulas and spreadsheet tools with full encryption.";
+    Messages.features_word_subtitle = "Full document editing";
+    Messages.features_word_content = "Create, format, and collaborate on rich office documents in real time with full compatibility for standard file formats.";
+    Messages.features_slides_subtitle = "Markdown slide decks";
+    Messages.features_slides_content = "Create sleek, fast presentations using simple Markdown syntax with an instant split screen preview.";
+    Messages.features_richtext_subtitle = "Fast collaborative text editing";
+    Messages.features_richtext_content = "Lightweight, straightforward text pad for quick notes, documentation, and collaborative writing in real time.";
+    Messages.features_doc_subtitle = "Full document editing";
+    Messages.features_doc_content = "Create, format, and collaborate on rich office documents in real time with full compatibility for standard file formats.";
+    Messages.features_slide_subtitle = "Markdown slide decks";
+    Messages.features_slide_content = "Create sleek, fast presentations using simple Markdown syntax with an instant split screen preview.";
+    Messages.features_pad_subtitle = "Fast collaborative text editing";
+    Messages.features_pad_content = "Lightweight, straightforward text pad for quick notes, documentation, and collaborative writing in real time.";
+    Messages.features_info_private_title = "Completely private by design";
+    Messages.features_info_private_content = "Work in a suite built from the ground up for private collaboration.";
+    Messages.features_info_collab_title = "Live team collaboration";
+    Messages.features_info_collab_content = "Keep your team aligned inside the same document, board, or plan.";
+    Messages.features_info_workspace_title = "One connected workspace";
+    Messages.features_info_workspace_content = "Move naturally between creation, planning, and encrypted storage.";
+    Messages.features_info_control_title = "Granular access control";
+    Messages.features_info_control_content = "Choose exactly who can access, view, and contribute to your work.";
+    Messages.features_info_drive_content = "Store, organize, and share all your encrypted files and folders in one central workspace.";
+    Messages.features_info_teams_content = "Create dedicated shared spaces with role based permissions to collaborate smoothly across your organization.";
+    Messages.features_info_calendar_content = "Plan schedules, manage events, and share private calendars with teammates without exposing your agenda.";
+    Messages.features_info_contacts_content = "Connect securely with collaborators, verify identities, and share documents directly with trusted people.";
+    Messages.features_try_title = "Ready when you are";
+    Messages.features_try_subtitle = "Bring your next project into one private workspace.";
+    Messages.features_try_content = "Explore the apps, organize your work in Drive, and collaborate with clear control.";
+    Messages.features_try_button = "Try it now";
+    Messages.help_generic = "Learn more";
     return Messages;
 
 });
